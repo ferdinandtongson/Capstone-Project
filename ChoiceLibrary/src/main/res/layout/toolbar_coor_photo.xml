@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/choiceToolbar_appBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/ChoiceTheme.Toolbar.AppBar">
+
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/choiceToolbar_collapsing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentScrim="@color/colorPrimaryDark"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        style="@style/ChoiceTheme.Toolbar.Collapsing">
+
+        <me.makeachoice.library.android.base.view.widget.DynamicHeightNetworkImageView
+            android:id="@+id/choiceToolbar_imgPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:background="@color/colorPrimary"
+            app:layout_collapseMode="parallax"
+            app:layout_collapseParallaxMultiplier="1.0"
+            style="@style/ChoiceTheme.Toolbar.Image.Photo"/>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/choiceToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_collapseMode="pin">
+
+            <TextView
+                android:id="@+id/choiceToolbar_txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ChoiceTheme.Toolbar.Title.TextAppearance"/>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+</android.support.design.widget.AppBarLayout>

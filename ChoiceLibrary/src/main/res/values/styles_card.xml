@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- clipToPadding and scrollbarStyle allows for overscroll shadow at the the top and bottom of
+    the recycler list without the shadow being attached to the padding -->
+    <style name="ChoiceTheme.Card" parent="Theme.AppCompat.Light">
+        <item name="android:layout_marginTop">@dimen/card_margin</item>
+        <item name="android:layout_marginRight">@dimen/card_margin</item>
+        <item name="android:layout_marginLeft">@dimen/card_margin</item>
+        <item name="android:layout_marginBottom">@dimen/card_margin</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="ChoiceTheme.Card.ImageView" parent="Theme.AppCompat.Light">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@color/lightgray</item>
+    </style>
+
+    <style name="ChoiceTheme.Card.Title" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:paddingTop">@dimen/card_title_top_padding</item>
+        <item name="android:paddingRight">@dimen/card_title_outside_padding</item>
+        <item name="android:paddingLeft">@dimen/card_title_outside_padding</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">4</item>
+    </style>
+
+    <style name="ChoiceTheme.Card.Subtitle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:paddingTop">@dimen/card_title_top_padding</item>
+        <item name="android:paddingRight">@dimen/card_title_outside_padding</item>
+        <item name="android:paddingLeft">@dimen/card_title_outside_padding</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/darkgray</item>
+    </style>
+
+</resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ChoiceTheme.Toolbar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="ChoiceTheme.Toolbar.Container" parent="ChoiceTheme.Toolbar">
+        <item name="android:layout_height">@dimen/toolbar_container_height</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="ChoiceTheme.Toolbar.Title" parent="ChoiceTheme.Toolbar">
+        <item name="android:layout_height">@dimen/toolbar_title_height</item>
+    </style>
+
+    <style name="ChoiceTheme.Toolbar.Title.TextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:gravity">start</item>
+    </style>
+
+    <style name="ChoiceTheme.Toolbar.Image">
+        <item name="android:layout_marginLeft">@dimen/toolbar_image_outside_margin</item>
+        <item name="android:layout_marginRight">@dimen/toolbar_image_outside_margin</item>
+    </style>
+
+    <style name="ChoiceTheme.Toolbar.Image.Logo">
+        <item name="android:layout_gravity">start</item>
+        <item name="android:layout_width">@dimen/toolbar_photo_width</item>
+    </style>
+
+    <style name="ChoiceTheme.Toolbar.Image.Photo">
+        <item name="android:layout_marginTop">@dimen/toolbar_photo_top_margin</item>
+        <item name="android:layout_marginLeft">@dimen/toolbar_photo_outside_margin</item>
+        <item name="android:layout_marginRight">@dimen/toolbar_photo_outside_margin</item>
+        <item name="android:layout_marginBottom">@dimen/toolbar_photo_bottom_margin</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <!--
+    -->
+
+    <style name="ChoiceTheme.Toolbar.AppBar">
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="ChoiceTheme.Toolbar.Collapsing">
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+</resources>

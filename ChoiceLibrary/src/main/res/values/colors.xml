@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/powderOrangeish_60</color>
+    <color name="colorPrimaryDark">@color/powderOrangeish</color>
+    <color name="colorAccent">@color/powderBlueish</color>
+    <color name="textColorPrimary">@color/white</color>
+
+    <color name="powderBlueish">#90C3D4</color>
+    <color name="powderPurpleish">#C390D4</color>
+    <color name="powderGreenish">#A1D490</color>
+    <color name="powderBrownish">#D4A190</color>
+    <color name="powderOrangeish">#FF6103</color>
+    <color name="powderReddish">#CF2738</color>
+
+    <color name="powderBlueish_20">#3390C3D4</color>
+    <color name="powderReddish_20">#33CF2738</color>
+
+    <color name="powderBlueish_60">#9990C3D4</color>
+    <color name="powderOrangeish_60">#99FF6103</color>
+    <color name="powderReddish_60">#99CF2738</color>
+
+    <color name="powderBlueish_90">#CC90C3D4</color>
+    <color name="powderPurpleish_90">#CCC390D4</color>
+    <color name="powderGreenish_90">#CCA1D490</color>
+    <color name="powderBrownish_90">#CCD4A190</color>
+    <color name="powderOrangeish_90">#CCFF6103</color>
+    <color name="powderReddish_90">#CCCF2738</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="lightgray">#ffe0e0e0</color>
+    <color name="darkgray">#999999</color>
+
+</resources>

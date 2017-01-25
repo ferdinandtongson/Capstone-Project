@@ -1,0 +1,15 @@
+<resources xmlns:android="http://schemas.android.com/tools">
+
+    <!-- clipToPadding and scrollbarStyle allows for overscroll shadow at the the top and bottom of
+    the recycler list without the shadow being attached to the padding -->
+    <style name="ChoiceTheme.Recycler" parent="Theme.AppCompat.Light">
+        <item name="android:clipToPadding">false</item>
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:paddingTop">@dimen/recycler_top_padding</item>
+        <item name="android:paddingRight">@dimen/recycler_outside_padding</item>
+        <item name="android:paddingLeft">@dimen/recycler_outside_padding</item>
+        <item name="android:paddingBottom">@dimen/recycler_bottom_padding</item>
+    </style>
+
+</resources>

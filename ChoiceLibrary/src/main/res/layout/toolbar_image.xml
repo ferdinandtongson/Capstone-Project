@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceToolbar_container"
+    android:layout_width="match_parent"
+    style="@style/ChoiceTheme.Toolbar.Container">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/choiceToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/choiceToolbar_txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ChoiceTheme.Toolbar.Title.TextAppearance" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/choiceToolbar_imgLogo"
+        android:layout_height="wrap_content"
+        style="@style/ChoiceTheme.Toolbar.Image.Logo"/>
+
+</LinearLayout>

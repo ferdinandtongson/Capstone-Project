@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name" translatable="false">AbstractLibrary</string>
+
+    <string name="toolbar_menu_description" translatable="true">Menu Navigation</string>
+
+    <string name="msg_no_network" translatable="true">Failed to connect....please check network connection!</string>
+    <string name="dia_btn_refresh" translatable="true">Refresh</string>
+    <string name="dia_btn_close" translatable="true">Close</string>
+</resources>

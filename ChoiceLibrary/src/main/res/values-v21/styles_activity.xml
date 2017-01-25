@@ -1,0 +1,11 @@
+<resources xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <!-- Base application theme. -->
+    <style name="ChoiceTheme.Activity" parent="Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+</resources>

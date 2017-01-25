@@ -1,0 +1,17 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/choiceMainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/ChoiceTheme.Activity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/choiceViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include
+        layout="@layout/toolbar_image"
+        app:layout_scrollFlags="scroll|enterAlways"/>
+
+</FrameLayout>
