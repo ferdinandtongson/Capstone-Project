@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">GymRatPTA</string>
+    <string name="app_title" translatable="true">Gym Rat</string>
+    <string name="app_subtitle" translatable="true">Personal Trainer Assistant</string>
+
+    <!-- toolbar -->
+    <string name="toolbar_menu_quick_help" translatable="true">Quick Help</string>
+    <string name="toolbar_menu_sign_out" translatable="true">Sign Out</string>
+
 </resources>

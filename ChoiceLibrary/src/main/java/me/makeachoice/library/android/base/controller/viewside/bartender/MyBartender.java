@@ -3,7 +3,6 @@ package me.makeachoice.library.android.base.controller.viewside.bartender;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +19,6 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      void optionsItemSelected(MenuItem) - called by onOptionsItemSelected(MenuItem) when a menu
  *          item is clicked
  */
-
 /**************************************************************************************************/
 
 public abstract class MyBartender implements MyActivity.OptionsMenuBridge{
@@ -29,22 +27,35 @@ public abstract class MyBartender implements MyActivity.OptionsMenuBridge{
 /*
  * Class Variables:
  *      MyActivity mActivity - Activity using bartender
- *      Toolbar mToolbar - toolbar object
  *      int mMenuId - menu resource id number
+ *      int NO_MENU_OPTIONS - int value for no menu item options
+ *      Toolbar mToolbar - toolbar object
+ *
+ *      OnNavigationIconClick mOnNavClick - communication bridge when the navigation icon is clicked
+ *      OnMenuItemClick mOnMenuClick - communication bridge when a menu icon is clicked
  */
 /**************************************************************************************************/
 
-    //MyActivity mActivity - Activity using bartender
+    //mActivity - Activity using bartender
     protected MyActivity mActivity;
 
-    //Toolbar mToolbar - toolbar object
-    protected Toolbar mToolbar;
-
-    //int mMenuId - menu resource id number
+    //mMenuId - menu resource id number
     protected int mMenuId;
 
-    //int NO_MENU_OPTIONS - int value for no menu item options
+    //NO_MENU_OPTIONS - int value for no menu item options
     public final static int NO_MENU_OPTIONS = -1;
+
+    //mToolbar - toolbar object
+    protected Toolbar mToolbar;
+
+    //mOnMenuClick - communication bridge when a menu icon is clicked
+    protected OnMenuItemClick mOnMenuClick;
+
+    //Implemented communication bridge for menu icon click
+    public interface OnMenuItemClick{
+        //called when user clicks on menu item
+        void onMenuItemClick(MenuItem item);
+    }
 
 /**************************************************************************************************/
 
@@ -60,7 +71,6 @@ public abstract class MyBartender implements MyActivity.OptionsMenuBridge{
      */
     public void createOptionsMenu(Menu menu){
         if(mMenuId != NO_MENU_OPTIONS){
-            Log.d("Choice", "     here");
             mActivity.getMenuInflater().inflate(mMenuId, menu);
         }
     }
@@ -171,8 +181,12 @@ public abstract class MyBartender implements MyActivity.OptionsMenuBridge{
     /*
      * void setNavigationOnClickListener(View.OnClickListener) - set navigation onClickListener
      */
-    public void setNavigationOnClickListener(View.OnClickListener listener){
+    public void setOnNavigationClickListener(View.OnClickListener listener){
         mToolbar.setNavigationOnClickListener(listener);
+    }
+
+    public void setOnMenuItemClick(OnMenuItemClick listener){
+        mOnMenuClick = listener;
     }
 
 /**************************************************************************************************/

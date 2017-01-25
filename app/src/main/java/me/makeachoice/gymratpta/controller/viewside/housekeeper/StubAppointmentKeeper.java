@@ -3,13 +3,13 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
-import me.makeachoice.gymratpta.controller.viewside.toolbar.SimpleToolbar;
-import me.makeachoice.gymratpta.view.activity.AppointmentActivity;
-import me.makeachoice.gymratpta.view.activity.ClientActivity;
+import me.makeachoice.gymratpta.controller.viewside.toolbar.HomeToolbar;
+import me.makeachoice.library.android.base.controller.viewside.bartender.MyBartender;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
@@ -59,8 +59,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubAppointmentKeeper extends MyHouseKeeper implements AppointmentActivity.Bridge,
-        SimpleToolbar.Bridge{
+public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -119,18 +118,7 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements AppointmentA
         //get Boss application
         mBoss = (Boss)mActivity.getApplication();
 
-        //notify boss if Tablet
-        mBoss.setIsTablet(isTablet());
-
-        if (isTablet()) {
-            initializeForTabletLayout();
-        }else{
-            initializeForMobileLayout();
-        }
-
-        initializeToolbar();
-        TextView txtTitle = (TextView)mActivity.findViewById(R.id.txtTitle);
-        txtTitle.setText(me.makeachoice.gymratpta.controller.manager.HouseKeeperRegistry.KEEPER_CLIENT);
+        initializeForMobileLayout();
 
     }
 
@@ -156,32 +144,35 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements AppointmentA
      * void initializeForMobileLayout() - initialize ui for mobile device
      */
     private void initializeForMobileLayout(){
-        //TODO - initialize mobile layout components, maybe check for network availability
-        Log.d("Choice", "MainKeeper.initMobile");
-        //TODO - initialize bottom navigator bar, if necessary
-        //TODO - initialize ViewPager, Recycler, FragmentManager
-        //TODO - initialize any other view components
+        initializeToolbar();
+        TextView txtTitle = (TextView)mActivity.findViewById(R.id.txtTitle);
+        txtTitle.setText(me.makeachoice.gymratpta.controller.manager.HouseKeeperRegistry.KEEPER_APPOINTMENT);
     }
 
     /*
-     * void initializeForTabletLayout() - initialize ui for tablet device
+     * void initializeToolbar() - initialize toolbar component
      */
-    private void initializeForTabletLayout(){
-        Log.d("Choice", "MainKeeper.initTablet");
-        //TODO - initialize tablet layout components, this will only be called if this housekeeper
-        //is maintaining a master activity since this is called during the activities onCreate().
-        //See initializeTabletLayout() for when the housekeeper is maintaining a detail activity
+    private void initializeToolbar() {
 
-    }
+        //create toolbar component
+        HomeToolbar toolbar = new HomeToolbar(mActivity);
+        toolbar.setOnNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //react to click
+                Log.d("Choice", "StubAppointmentKeeper.onNavIconClick");
+            }
+        });
 
-    /*
-     * void initializeTabletDetailLayout(MyActivity) - initialize detail ui for tablet device, this
-     *      housekeeper is paired with a master housekeeper (master-detail layout)
-     */
-    public void initializeTabletDetailLayout(MyActivity activity){
-        //get current activity context
-        mActivity = activity;
+        toolbar.setOnMenuItemClick(new MyBartender.OnMenuItemClick() {
+            @Override
+            public void onMenuItemClick(MenuItem menuItem) {
+                Log.d("Choice", "StudAppointmentKeeper.onMenuItemClick");
+            }
+        });
 
+        //set bartender as options menu bridge
+        mActivity.setOptionsMenuBridge(toolbar);
     }
 
 /**************************************************************************************************/
@@ -203,46 +194,6 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements AppointmentA
 /**************************************************************************************************/
 
 
-    /*
-     * void initializeToolbar() - initialize toolbar component
-     */
-    private void initializeToolbar() {
 
-        //create toolbar component
-        SimpleToolbar toolbar = new SimpleToolbar(mActivity, R.id.choiceToolbar, R.menu.toolbar_home);
-
-        //get string values for title and subtitle values
-        //String title = mActivity.getResources().getString(APP_TITLE_ID);
-        //String subtitle = mActivity.getResources().getString(APP_SUBTITLE_ID);
-        String title = "Gym Rat";
-        String subtitle = "Personal Trainer Assistant";
-
-        //set title values
-        toolbar.setTitle(title, subtitle);
-
-        //set navigation icon
-        toolbar.setNavigationIcon(R.drawable.gym_rat_right_48dp);
-
-        //set overflow icon
-        toolbar.setOverflowIcon(R.drawable.ic_more_vert_black_36dp);
-
-        toolbar.setBridge(this);
-
-        //set bartender as options menu bridge
-        mActivity.setOptionsMenuBridge(toolbar);
-    }
-
-    public void onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            /*case R.id.toolbar_sign_out:
-                mSignOutToolbar = true;
-                AuthUI.getInstance()
-                        .signOut(mActivity);*/
-        }
-    }
-
-    public void onNavigationIconClick() {
-        //does nothing
-    }
 
 }
