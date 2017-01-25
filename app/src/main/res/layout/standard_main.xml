@@ -1,0 +1,36 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/choiceCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    style="@style/ChoiceTheme.Activity">
+
+    <!--
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/drawer_nav_header"
+        app:menu="@menu/drawer_nav_main" /> -->
+
+    <include
+        layout="@layout/toolbar_title"
+        android:visibility="visible"
+        app:layout_scrollFlags="scroll|enterAlways"/>
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="65dp"
+        android:text="Hello World!"
+        android:textSize="24dp"/>
+
+    <!--
+    <include
+        layout="@layout/fab"/> -->
+
+</android.support.design.widget.CoordinatorLayout>
