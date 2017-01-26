@@ -85,16 +85,16 @@ public class HouseKeeperRegistry extends MyHouseKeeperRegistry {
      */
     public void initializeHouseKeepers(){
         Log.d("Choice", "HouseKeeperRegistry.initializeHouseKeepers");
-        StubClientKeeper clientKeeper = new StubClientKeeper(R.layout.standard_main);
+        StubClientKeeper clientKeeper = new StubClientKeeper(R.layout.standard_simple);
         registerHouseKeeper(KEEPER_CLIENT, clientKeeper);
 
-        StubAppointmentKeeper appointmentKeeper = new StubAppointmentKeeper(R.layout.standard_main);
+        StubAppointmentKeeper appointmentKeeper = new StubAppointmentKeeper(R.layout.standard_activity);
         registerHouseKeeper(KEEPER_APPOINTMENT, appointmentKeeper);
 
-        StubSessionKeeper sessionKeeper = new StubSessionKeeper(R.layout.standard_main);
+        StubSessionKeeper sessionKeeper = new StubSessionKeeper(R.layout.standard_simple);
         registerHouseKeeper(KEEPER_SESSION, sessionKeeper);
 
-        StubExerciseKeeper exerciseKeeper = new StubExerciseKeeper(R.layout.standard_main);
+        StubExerciseKeeper exerciseKeeper = new StubExerciseKeeper(R.layout.standard_simple);
         registerHouseKeeper(KEEPER_EXERCISE, exerciseKeeper);
 
         //ClientKeeper clientKeeper = new ClientKeeper(R.layout.standard_recycler_all);

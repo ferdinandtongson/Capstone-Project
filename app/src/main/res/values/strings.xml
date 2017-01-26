@@ -1,9 +1,30 @@
 <resources>
-    <string name="app_title" translatable="true">Gym Rat</string>
-    <string name="app_subtitle" translatable="true">Personal Trainer Assistant</string>
+    <string name="app_title" translatable="false">@string/gym_rat</string>
+    <string name="app_subtitle" translatable="false">@string/personal_trainer_assistant</string>
 
     <!-- toolbar -->
-    <string name="toolbar_menu_quick_help" translatable="true">Quick Help</string>
-    <string name="toolbar_menu_sign_out" translatable="true">Sign Out</string>
+    <string name="toolbar_menu_quick_help" translatable="false">@string/quick_help</string>
+    <string name="toolbar_menu_sign_out" translatable="false">@string/sign_out</string>
+
+    <!-- drawer -->
+    <string name="drawer_menu_appointments" translatable="false">@string/appointments</string>
+    <string name="drawer_menu_sessions" translatable="false">@string/sessions</string>
+    <string name="drawer_menu_clients" translatable="false">@string/clients</string>
+    <string name="drawer_menu_exercises" translatable="false">@string/exercises</string>
+    <string name="drawer_menu_settings" translatable="false">@string/settings</string>
+    <string name="drawer_menu_help" translatable="false">@string/help</string>
+
+
+    <!-- dictionary -->
+    <string name="appointments" translatable="true">Appointments</string>
+    <string name="clients" translatable="true">Clients</string>
+    <string name="exercises" translatable="true">Exercises</string>
+    <string name="help" translatable="true">Help</string>
+    <string name="gym_rat" translatable="true">Gym Rat</string>
+    <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
+    <string name="quick_help" translatable="true">Quick Help</string>
+    <string name="sessions" translatable="true">Sessions</string>
+    <string name="settings" translatable="true">Settings</string>
+    <string name="sign_out" translatable="true">Sign Out</string>
 
 </resources>

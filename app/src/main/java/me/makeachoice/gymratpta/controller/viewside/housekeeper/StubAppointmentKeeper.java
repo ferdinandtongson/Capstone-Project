@@ -1,13 +1,18 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
+import me.makeachoice.gymratpta.controller.viewside.drawer.HomeDrawer;
 import me.makeachoice.gymratpta.controller.viewside.toolbar.HomeToolbar;
 import me.makeachoice.library.android.base.controller.viewside.bartender.MyBartender;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
@@ -145,8 +150,9 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.B
      */
     private void initializeForMobileLayout(){
         initializeToolbar();
+        initializeNavigationView();
         TextView txtTitle = (TextView)mActivity.findViewById(R.id.txtTitle);
-        txtTitle.setText(me.makeachoice.gymratpta.controller.manager.HouseKeeperRegistry.KEEPER_APPOINTMENT);
+        //txtTitle.setText(me.makeachoice.gymratpta.controller.manager.HouseKeeperRegistry.KEEPER_APPOINTMENT);
     }
 
     /*
@@ -161,6 +167,8 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.B
             public void onClick(View view) {
                 //react to click
                 Log.d("Choice", "StubAppointmentKeeper.onNavIconClick");
+                mDrawer.openDrawer();
+
             }
         });
 
@@ -173,6 +181,11 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.B
 
         //set bartender as options menu bridge
         mActivity.setOptionsMenuBridge(toolbar);
+    }
+
+    HomeDrawer mDrawer;
+    private void initializeNavigationView(){
+        mDrawer = new HomeDrawer(mActivity);
     }
 
 /**************************************************************************************************/

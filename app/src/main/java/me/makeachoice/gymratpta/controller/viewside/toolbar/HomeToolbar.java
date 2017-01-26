@@ -1,9 +1,11 @@
 package me.makeachoice.gymratpta.controller.viewside.toolbar;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 import me.makeachoice.library.android.base.controller.viewside.bartender.MyBartender;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
@@ -48,22 +50,20 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      void setLogoDescription(int) - set content description using string resource id
  *      void setLogoDescription(String) - set content description
  */
-
 /**************************************************************************************************/
-
 
 public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBridge{
 
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      Bridge mBridge - communication bridge
  */
 /**************************************************************************************************/
 
     private final int DEFAULT_TOOLBAR_ID = R.id.choiceToolbar;
-    private final int DEFAULT_MENU_ID = R.menu.toolbar_home;
-    private final int DEFAULT_NAV_ICON_ID = R.drawable.gym_rat_right_48dp;
+    private final int DEFAULT_MENU_ID = R.menu.toolbar_menu;
+    private final int DEFAULT_NAV_ICON_ID = R.drawable.gym_rat_black_right_48dp;
+    private final int DEFAULT_OVERFLOW_ICON_ID = R.drawable.ic_more_vert_white_36dp;
     private final int DEFAULT_TITLE_ID = R.string.app_title;
     private final int DEFAULT_SUBTITLE_ID = R.string.app_subtitle;
 
@@ -110,8 +110,6 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
 
     /*
      * void initialize(int,int) - initializes toolbar
-     * @param toolbarId - resource id of toolbar object
-     * @param iconId - drawable resource id for navigation icon
      */
     //@Override
     protected void initialize(int toolbarId, int iconId, String title, String subtitle){
@@ -126,6 +124,14 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
         //set title and subtitle of toolbar, can only be called after setSupportActionBar()
         setTitle(title, subtitle);
 
+        int bgColor = DeprecatedUtility.getColor(mActivity, R.color.orange);
+        int textColor = DeprecatedUtility.getColor(mActivity, R.color.white);
+        mToolbar.setBackgroundColor(bgColor);
+        mToolbar.setTitleTextColor(textColor);
+        mToolbar.setSubtitleTextColor(textColor);
+
+        Drawable drawable = DeprecatedUtility.getDrawable(mActivity, DEFAULT_OVERFLOW_ICON_ID);
+        mToolbar.setOverflowIcon(drawable);
     }
 
 /**************************************************************************************************/
