@@ -76,7 +76,7 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
 
         //get layout id
         mActivityLayoutId = layoutId;
-        mNavigationId = R.id.nav_appointments;
+        mSelectedNavItemId = R.id.nav_appointments;
     }
 
 /**************************************************************************************************/

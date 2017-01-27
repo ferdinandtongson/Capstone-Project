@@ -1,8 +1,13 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
+import me.makeachoice.gymratpta.model.item.ContactsItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -51,7 +56,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubSessionKeeper extends GymRatBaseKeeper implements MyActivity.Bridge{
+public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -76,7 +81,7 @@ public class StubSessionKeeper extends GymRatBaseKeeper implements MyActivity.Br
 
         //get layout id
         mActivityLayoutId = layoutId;
-        mNavigationId = R.id.nav_sessions;
+        mSelectedNavItemId = R.id.nav_sessions;
     }
 
 /**************************************************************************************************/
@@ -129,6 +134,30 @@ public class StubSessionKeeper extends GymRatBaseKeeper implements MyActivity.Br
      * void initializeLayout() - initialize ui for mobile device
      */
     private void initializeLayout(){
+        Log.d("Choice", "ClientKeeper.initializeLayout");
+        String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_noSessions);
+        setEmptyMessage(emptyMsg);
+
+        initializeAdapter();
+    }
+
+    private ClientRecyclerAdapter mAdapter;
+    private void initializeAdapter() {
+        Log.d("Choice", "     initialize adapter");
+        //layout resource file id used by recyclerView adapter
+        int adapterLayoutId = R.layout.item_client;
+
+        ArrayList<ContactsItem> mContactsList = new ArrayList();
+
+        //create adapter consumed by the recyclerView
+        mAdapter = new ClientRecyclerAdapter(mActivity, adapterLayoutId);
+        mAdapter.swapData(mContactsList);
+        Log.d("Choice", "          adapter: " + mAdapter.toString());
+        Log.d("Choice", "          recycler: " + mBasicRecycler.toString());
+
+        mBasicRecycler.setAdapter(mAdapter);
+
+        isEmptyRecycler(mContactsList.isEmpty());
 
     }
 

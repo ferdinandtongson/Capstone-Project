@@ -26,16 +26,20 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *          todo - add d-pad navigation
  *                  todo - toolbar
  *                  todo - drawer
- * TODO - nee to add menu item click function for toolbar options menu
+ * TODO - need to add menu item click function for toolbar options menu
  *          todo - quick help functionality
  *          todo - user sign out functionality
+ * TODO - need to style components
+ *          todo - toolbar
+ *          todo - drawer
+ *          todo - navigation header
  */
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * GymRatBaseKeeper is the base HouseKeeper for all HouseKeeper classes used in the GymRat project. It's
- * main function is to handle the initialization and event handling of the toolbar and drawer
+ * GymRatBaseKeeper is the base HouseKeeper for all HouseKeeper classes used in the GymRat project.
+ * It's main function is to handle the initialization and event handling of the toolbar and drawer
  * components
  *
  * Variables from MyHouseKeeper:
@@ -67,15 +71,19 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
 /*
  * Class Variables:
  *      mBoss - Boss application
- *      mNavigationId - drawer navigation id
+ *      mHomeDrawer - drawer navigation component
+ *      mSelectedNavItemId - used to determine which menu item is selected in the drawer
  */
 /**************************************************************************************************/
 
     //mBoss - Boss application
     protected Boss mBoss;
 
-    //mNavigationId - drawer navigation id
-    protected int mNavigationId;
+    //mHomeDrawer - drawer navigation component
+    protected HomeDrawer mHomeDrawer;
+
+    //mSelectedNavItemId - used to determine which menu item is selected in the drawer
+    protected int mSelectedNavItemId;
 
 /**************************************************************************************************/
 
@@ -111,6 +119,8 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
 /*
  * Layout Initialization Methods:
  *      void initializeNavigation() - initialize navigation ui
+ *      void initializeToolbar() - initialize toolbar component
+ *      void initializeDrawer() - initialize drawer navigation component
  */
 /**************************************************************************************************/
     /*
@@ -121,7 +131,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
         initializeToolbar();
 
         //initialize drawer and navigation components
-        initializeNavigationView();
+        initializeDrawer();
     }
 
     /*
@@ -162,10 +172,15 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
 
     }
 
-    HomeDrawer mHomeDrawer;
-    private void initializeNavigationView(){
+    /*
+     * void initializeDrawer() - initialize drawer navigation component
+     */
+    private void initializeDrawer(){
+        //instantiate homeDrawer class
         mHomeDrawer = new HomeDrawer(mActivity);
-        mHomeDrawer.setNavigationItemChecked(mNavigationId);
+
+        //selected menu item in navigation drawer
+        mHomeDrawer.setNavigationItemChecked(mSelectedNavItemId);
     }
 
 /**************************************************************************************************/
@@ -173,15 +188,8 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
 /**************************************************************************************************/
 /*
  * Class Methods
- *      void backPressed() - called when Activity.onBackPressed is called
  */
 /**************************************************************************************************/
-    /*
-     * void backPressed() - called when Activity.onBackPressed is called
-     */
-    @Override
-    public void backPressed(){
-    }
 
 
 /**************************************************************************************************/

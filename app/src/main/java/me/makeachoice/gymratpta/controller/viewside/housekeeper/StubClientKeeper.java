@@ -1,8 +1,18 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
+import me.makeachoice.gymratpta.model.item.ContactsItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -51,7 +61,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubClientKeeper extends GymRatBaseKeeper implements MyActivity.Bridge{
+public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -76,7 +86,7 @@ public class StubClientKeeper extends GymRatBaseKeeper implements MyActivity.Bri
 
         //get layout id
         mActivityLayoutId = layoutId;
-        mNavigationId = R.id.nav_clients;
+        mSelectedNavItemId = R.id.nav_clients;
     }
 
 /**************************************************************************************************/
@@ -129,9 +139,92 @@ public class StubClientKeeper extends GymRatBaseKeeper implements MyActivity.Bri
      * void initializeLayout() - initialize ui for mobile device
      */
     private void initializeLayout(){
+        Log.d("Choice", "ClientKeeper.initializeLayout");
+        String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_addClients);
+        setEmptyMessage(emptyMsg);
+
+        initializeAdapter();
+    }
+
+    private ClientRecyclerAdapter mAdapter;
+    private void initializeAdapter() {
+        Log.d("Choice", "     initialize adapter");
+        //layout resource file id used by recyclerView adapter
+        int adapterLayoutId = R.layout.item_client;
+
+        mData = createContactsStub();
+
+        //create adapter consumed by the recyclerView
+        mAdapter = new ClientRecyclerAdapter(mActivity, adapterLayoutId);
+        mAdapter.swapData(mData);
+        Log.d("Choice", "          adapter: " + mAdapter.toString());
+        Log.d("Choice", "          recycler: " + mBasicRecycler.toString());
+
+        mBasicRecycler.setAdapter(mAdapter);
+
+        isEmptyRecycler(mData.isEmpty());
 
     }
-    
+
+    ArrayList<ContactsItem> mData;
+    private ArrayList<ContactsItem> createContactsStub(){
+        ArrayList<ContactsItem> contactList = new ArrayList();
+
+        ContactsItem item01 = new ContactsItem();
+        item01.contactName = "Quess Starbringer";
+        item01.clientStatus = "Active";
+
+        ContactsItem item02 = new ContactsItem();
+        item02.contactName = "Quess Starbringer";
+        item02.clientStatus = "Active";
+
+        ContactsItem item03 = new ContactsItem();
+        item03.contactName = "Quess Starbringer";
+        item03.clientStatus = "Active";
+
+        ContactsItem item04 = new ContactsItem();
+        item04.contactName = "Quess Starbringer";
+        item04.clientStatus = "Active";
+
+        ContactsItem item05 = new ContactsItem();
+        item05.contactName = "Quess Starbringer";
+        item05.clientStatus = "Active";
+
+        ContactsItem item06 = new ContactsItem();
+        item06.contactName = "Quess Starbringer";
+        item06.clientStatus = "Active";
+
+        ContactsItem item07 = new ContactsItem();
+        item07.contactName = "Quess Starbringer";
+        item07.clientStatus = "Active";
+
+        ContactsItem item08 = new ContactsItem();
+        item08.contactName = "Quess Starbringer";
+        item08.clientStatus = "Active";
+
+        ContactsItem item09 = new ContactsItem();
+        item09.contactName = "Quess Starbringer";
+        item09.clientStatus = "Active";
+
+        ContactsItem item10 = new ContactsItem();
+        item10.contactName = "Quess Starbringer";
+        item10.clientStatus = "Active";
+
+        contactList.add(item01);
+        contactList.add(item02);
+        contactList.add(item03);
+        contactList.add(item04);
+        contactList.add(item05);
+        contactList.add(item06);
+        contactList.add(item07);
+        contactList.add(item08);
+        contactList.add(item09);
+        contactList.add(item10);
+
+        return contactList;
+    }
+
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/

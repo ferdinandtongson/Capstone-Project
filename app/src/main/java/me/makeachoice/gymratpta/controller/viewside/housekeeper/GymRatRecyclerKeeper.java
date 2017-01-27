@@ -1,31 +1,32 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.view.View;
+import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- *  TODO - housekeeper description
- *  TODO - create activity class
- *  TODO - create activity layout
- *  TODO - define housekeeper id in res/values/strings.xml
- *  <!-- HouseKeeper Names -->
- *  <string name="housekeeper_main" translatable="false">Main HouseKeeper</string>
- *  TODO - initialize and register housekeeper in Boss class
- *  TODO - handle saved instance states from bundle
- *  TODO - initialize mobile layout components
- *  TODO - initialize activity components, for example
- *  TODO - initialize tablet layout components
+ * TODO - need to style components
+ *          todo - recyler
+ *          todo - "empty" textView
+ *          todo - fab
+ * TODO - need to add accessibility values to fab and "empty" textView
+ *          todo - add content description to "empty" textView
+ *          todo - add content description to FAB
+ *          todo - how to access FAB with d-pad?
  */
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * TODO - housekeeper description,
- * Each housekeeper is responsible for an activity. It communicates directly with Boss, Activity
- * and Maids maintaining fragments within the Activity, if any.
+ * GymRatRecyclerKeeper extends GymRatBaseKeeper and adds initialization and event handle of a
+ * recyclerView along with an "empty" textView component (shown when the recycler is empty) and a
+ * floating action button (FAB) the displays when reaching the end of the recycler view list
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -33,9 +34,19 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      int mActivityLayoutId - Activity resource layout id
  *      boolean mIsTablet - boolean flag used to determine if device is a tablet
  *
+ * Variables from GymRatBaseKeeper:
+ *      mBoss - Boss application
+ *      mHomeDrawer - drawer navigation component
+ *      mSelectedNavItemId - used to determine which menu item is selected in the drawer
+ *
  * Methods from MyHouseKeeper
  *      void create(MyActivity,Bundle) - called by onCreate(Bundle) in the activity lifecycle
  *      boolean isTablet() - return device flag if device is tablet or not
+ *
+ * Methods from GymRatBaseKeeper
+ *      void initializeNavigation() - initialize navigation ui
+ *      void initializeToolbar() - initialize toolbar component
+ *      void initializeDrawer() - initialize drawer navigation component
  *
  * MyHouseKeeper Implements MyActivity.Bridge
  *      void start() - called by onStart() in the activity lifecycle
@@ -48,36 +59,27 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      void activityResult(...) - result of Activity called by this Activity
  *
  */
-
 /**************************************************************************************************/
 
-public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.Bridge{
+public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      mBoss - Boss application
+ *      mTxtEmpty - textView component displayed when recycler is empty
+ *      mBasicRecycler - recycler component
+ *      mFAB - floating action button component
  */
 /**************************************************************************************************/
 
+    //mTxtEmpty - textView component displayed when recycler is empty
+    protected TextView mTxtEmpty;
 
-/**************************************************************************************************/
+    //mBasicRecycler - recycler component
+    protected BasicRecycler mBasicRecycler;
 
-/**************************************************************************************************/
-/*
- * _templateKeeper - constructor
- */
-/**************************************************************************************************/
-    /*
-     * _templateKeeper - constructor
-     * @param layoutId - layout resource id used by Keeper
-     */
-    public StubExerciseKeeper(int layoutId){
-
-        //get layout id
-        mActivityLayoutId = layoutId;
-        mSelectedNavItemId = R.id.nav_exercises;
-    }
+    //mFAB - floating action button component
+    protected FloatingActionButton mFAB;
 
 /**************************************************************************************************/
 
@@ -85,7 +87,6 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
 /*
  * Activity Lifecycle Methods
  *      void create(MyActivity,Bundle) - called when Activity.onCreate is called
- *      void openBundle(Bundle) - opens bundle to set saved instance states during create()
  */
 /**************************************************************************************************/
     /*
@@ -98,23 +99,10 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
      * @param bundle - instant state values
      */
     public void create(MyActivity activity, Bundle bundle){
-        //TODO - uncomment after Boss is defined
         super.create(activity, bundle);
 
-        if(bundle != null){
-            //open bundle to set saved instance states
-            openBundle(bundle);
-        }
-
-        initializeLayout();
-    }
-
-    /*
-     * void openBundle(Bundle) - opens bundle to set saved instance states during create().
-     */
-    protected void openBundle(Bundle bundle){
-        //TODO - handle saved instance states from bundle
-        //set saved instance state data
+        //initialize recycler components
+        initializeRecyclerComponents();
     }
 
 /**************************************************************************************************/
@@ -122,14 +110,23 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
 /**************************************************************************************************/
 /*
  * Layout Initialization Methods:
- *      void initializeLayout() - initialize ui
+ *      void initializeRecyclerComponents() - initialize recycler and related components
  */
 /**************************************************************************************************/
     /*
-     * void initializeLayout() - initialize ui for mobile device
+     * void initializeRecyclerComponents() - initialize recycler and related components
      */
-    private void initializeLayout(){
+    private void initializeRecyclerComponents(){
+        //initialize recycler component
+        mBasicRecycler = new BasicRecycler(mActivity);
 
+        //initialize "empty" textView component
+        int emptyViewId = R.id.choiceEmptyView;
+        mTxtEmpty = (TextView) mActivity.findViewById(emptyViewId);
+
+        //initialize floating action button component
+        int fabId = R.id.choiceFab;
+        mFAB = (FloatingActionButton) mActivity.findViewById(fabId);
     }
 
 /**************************************************************************************************/
@@ -137,14 +134,35 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
 /**************************************************************************************************/
 /*
  * Class Methods
- *      void backPressed() - called when Activity.onBackPressed is called
+ *      void setEmptyMessage(String) - set "empty" message to be displayed when recycler is empty
+ *      void setOnClickFABListener(View.OnClickListener) - set onClick listener for FAB
+ *      void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
  */
 /**************************************************************************************************/
     /*
-     * void backPressed() - called when Activity.onBackPressed is called
+     * void setEmptyMessage(String) - set "empty" message to be displayed when recycler is empty
      */
-    @Override
-    public void backPressed(){
+    protected void setEmptyMessage(String msg){
+        mTxtEmpty.setText(msg);
+    }
+
+    /*
+     * void setOnClickFABListener(View.OnClickListener) - set onClick listener for FAB
+     */
+    protected void setOnClickFABListener(View.OnClickListener listener){
+        mFAB.setOnClickListener(listener);
+    }
+
+    /*
+     * void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
+     */
+    protected void checkForEmptyRecycler(boolean isEmpty){
+        if(isEmpty){
+            mTxtEmpty.setVisibility(View.VISIBLE);
+        }
+        else{
+            mTxtEmpty.setVisibility(View.GONE);
+        }
     }
 
 
