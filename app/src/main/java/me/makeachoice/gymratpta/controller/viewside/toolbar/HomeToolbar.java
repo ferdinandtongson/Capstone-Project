@@ -2,7 +2,11 @@ package me.makeachoice.gymratpta.controller.viewside.toolbar;
 
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
+
+import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
@@ -132,6 +136,8 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
 
         Drawable drawable = DeprecatedUtility.getDrawable(mActivity, DEFAULT_OVERFLOW_ICON_ID);
         mToolbar.setOverflowIcon(drawable);
+
+        mToolbar.setNavigationContentDescription("Open Drawer Navigation");
     }
 
 /**************************************************************************************************/
@@ -155,4 +161,30 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
 
 /**************************************************************************************************/
 
+    public View getToolbarNavigationIcon(){
+        //check if contentDescription previously was set
+        boolean hadContentDescription = TextUtils.isEmpty(mToolbar.getNavigationContentDescription());
+
+        String contentDescription;
+        if(hadContentDescription){
+            contentDescription = mToolbar.getNavigationContentDescription().toString();
+        }
+        else{
+            contentDescription = "navigationIcon";
+            mToolbar.setNavigationContentDescription(contentDescription);
+        }
+
+        ArrayList<View> potentialViews = new ArrayList<View>();
+        //find the view based on it's content description, set programatically or with android:contentDescription
+        mToolbar.findViewsWithText(potentialViews,contentDescription, View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
+        //Nav icon is always instantiated at this point because calling setNavigationContentDescription ensures its existence
+        View navIcon = null;
+        if(potentialViews.size() > 0){
+            navIcon = potentialViews.get(0); //navigation icon is ImageButton
+        }
+        //Clear content description if not previously present
+        if(hadContentDescription)
+            mToolbar.setNavigationContentDescription(null);
+        return navIcon;
+    }
 }
