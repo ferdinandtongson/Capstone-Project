@@ -72,16 +72,11 @@ public class HouseKeeperRegistry extends MyHouseKeeperRegistry {
 /**************************************************************************************************/
 /*
  * Initialize Methods:
- *      MyHouseKeeper requestHouseKeeper(String) - request HouseKeeper from registry
- *      void registerHouseKeeper(String,MyHouseKeeper) - register HouseKeeper
- *      void unregisterHouseKeeper(int) - remove MyHouseKeeper from buffer
- *      void onFinish() - nulls all of the data in the buffer
+ *      void initializeHouseKeepers() - initialize and register HouseKeepers
  */
 /**************************************************************************************************/
     /*
-     * void initializeHouseKeepers() - request HouseKeeper from register
-     * @param keeperKey - registry key of HouseKeeper
-     * @return - HouseKeeper object requested
+     * void initializeHouseKeepers() - initialize and register HouseKeepers
      */
     public void initializeHouseKeepers(){
         Log.d("Choice", "HouseKeeperRegistry.initializeHouseKeepers");

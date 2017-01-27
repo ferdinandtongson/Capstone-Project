@@ -2,76 +2,71 @@ package me.makeachoice.library.android.base.controller.manager;
 
 import java.util.HashMap;
 
-import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
+import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
 
 
 /**************************************************************************************************/
 /*
- * MyHouseKeeperRegistry used to register HouseKeeper classes to a HashMap registry.
+ * MyMaidRegistry used to register Maid classes to a HashMap registry.
  */
 /**************************************************************************************************/
 
-public abstract class MyHouseKeeperRegistry {
+public abstract class MyMaidRegistry {
 
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      HashMap<String,MyHouseKeeper> mRegistry - buffer holding MyHouseKeeper classes
+ *      HashMap<String,MyMaid> mRegistry - buffer holding MyMaid classes
  */
 /**************************************************************************************************/
 
-    //mRegistry - buffer holding MyHouseKeeper classes
-    private HashMap<String, MyHouseKeeper> mRegistry = new HashMap<>();
+    //mRegistry - buffer holding MyMaid classes
+    private HashMap<String, MyMaid> mRegistry = new HashMap<>();
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * Abstract methods
- *      void initializeHouseKeepers() - initialize HouseKeepers
  */
 /**************************************************************************************************/
-    /*
-     * void initializeHouseKeepers() - initialize HouseKeepers
-     */
-    protected abstract void initializeHouseKeepers();
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * Public Methods:
- *      MyHouseKeeper requestHouseKeeper(String) - request HouseKeeper from registry
- *      void registerHouseKeeper(String,MyHouseKeeper) - register HouseKeeper
- *      void unregisterHouseKeeper(String) - remove MyHouseKeeper from buffer
+ *      MyMaid requestHouseKeeper(String) - request Maid from registry
+ *      void registerHouseKeeper(String,MyMaid) - register Maid
+ *      void unregisterMaid(String) - remove Maid from registry
  *      void onFinish() - nulls all of the data in the buffer
  */
 /**************************************************************************************************/
     /*
-     * MyHouseKeeper getHouseKeeper(String) - request HouseKeeper from register
+     * MyMaid requestMaid(String) - request Maid from register
      */
-    public MyHouseKeeper requestHouseKeeper(String keeperKey){
-        //check if HouseKeeper with key is registered
+    public MyMaid requestMaid(String keeperKey){
+        //check if Maid with key is registered
         if(mRegistry.containsKey(keeperKey)){
-            //return HouseKeeper requested
+            //return Maid requested
             return mRegistry.get(keeperKey);
         }
 
-        //invalid HouseKeeper requested
+        //invalid Maid requested
         return null;
     }
 
     /*
-     * void registerHouseKeeper(String,MyHouseKeeper) - register HouseKeeper
+     * void registerMaid(String,MyMaid) - register Maid
      */
-    public void registerHouseKeeper(String keeperKey, MyHouseKeeper houseKeeper){
+    public void registerMaid(String keeperKey, MyMaid houseKeeper){
         mRegistry.put(keeperKey, houseKeeper);
     }
 
     /*
-     * void unregisterHouseKeeper(String) - remove HouseKeeper from registry
+     * void unregisterMaid(String) - remove Maid from registry
      */
-    public void unregisterHouseKeeper(String keeperKey){
+    public void unregisterMaid(String keeperKey){
         mRegistry.remove(keeperKey);
     }
 

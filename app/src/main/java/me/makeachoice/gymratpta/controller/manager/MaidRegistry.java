@@ -1,8 +1,6 @@
 package me.makeachoice.gymratpta.controller.manager;
 
-import java.util.HashMap;
-
-import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
+import me.makeachoice.library.android.base.controller.manager.MyMaidRegistry;
 
 /**************************************************************************************************/
 /*
@@ -11,7 +9,7 @@ import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
 
 /**************************************************************************************************/
 
-public class MaidRegistry {
+public class MaidRegistry extends MyMaidRegistry {
 
 /**************************************************************************************************/
 /*
@@ -20,22 +18,29 @@ public class MaidRegistry {
  */
 /**************************************************************************************************/
 
-    //mRegistry - buffer holding MyMaid classes
-    private HashMap<Integer, MyMaid> mRegistry = new HashMap<>();
+    private static MaidRegistry instance = null;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * MaidRegistry - constructor, initialize hashMap registry
+ * Singleton Constructor - MaidRegistry
  */
 /**************************************************************************************************/
     /*
      * Constructor - initialize registry buffer
      */
-    public MaidRegistry(){
-        //buffer holding MyMaid classes
-        mRegistry = new HashMap<>();
+    private MaidRegistry() {
+    }
+
+    /*
+     * Singleton constructor
+     */
+    public static MaidRegistry getInstance() {
+        if(instance == null) {
+            instance = new MaidRegistry();
+        }
+        return instance;
     }
 
 /**************************************************************************************************/
@@ -49,47 +54,7 @@ public class MaidRegistry {
  *      void onFinish() - nulls all of the data in the buffer
  */
 /**************************************************************************************************/
-    /*
-     * MyMaid requestMaid(int) - request Maid from buffer
-     * @param id - id number of Maid
-     * @return - Maid object requested
-     */
-    public MyMaid requestMaid(int id){
-        //check if maid with id number is in buffer
-        if(mRegistry.containsKey(id)){
-            //return maid requested
-            return mRegistry.get(id);
-        }
 
-        //invalid maid requested
-        return null;
-    }
-
-    /*
-     * void registerMaid(int,MyMaid) - register MyMaid into buffer
-     * @param id - id number of Maid
-     * @param maid - maid object to be registered
-     */
-    public void registerMaid(int id, MyMaid maid){
-        mRegistry.put(id, maid);
-    }
-
-    /*
-     * void unregisterMaid(int) - remove MyMaid from buffer
-     * @param id - id number of Maid
-     */
-    public void unregisterMaid(int id){
-        mRegistry.remove(id);
-    }
-
-    /*
-     * void onFinish() - nulls all of the data in the buffer
-     */
-    public void onFinish(){
-        //clear and null refresh buffer
-        mRegistry.clear();
-        mRegistry = null;
-    }
 
 /**************************************************************************************************/
 
