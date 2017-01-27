@@ -54,12 +54,12 @@ public class MaidRegistry extends MyMaidRegistry {
  */
 /**************************************************************************************************/
 
-    public MyMaid initializeExerciseMaid(int maidId, int layoutId){
+    public MyMaid initializeExerciseMaid(String maidKey, int layoutId){
         //create article maid
-        ExerciseMaid maid = new ExerciseMaid(maidId, layoutId);
+        ExerciseMaid maid = new ExerciseMaid(maidKey, layoutId);
 
         //register maid
-        registerMaid(MAID_EXERCISE, maid);
+        registerMaid(maidKey, maid);
 
         return maid;
     }

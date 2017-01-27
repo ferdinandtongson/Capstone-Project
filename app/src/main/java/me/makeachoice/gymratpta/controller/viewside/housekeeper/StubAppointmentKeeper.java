@@ -1,8 +1,14 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
+import me.makeachoice.gymratpta.controller.viewside.bottomnav.MyBottomNav;
+import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -106,6 +112,7 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
         }
 
         initializeLayout();
+
     }
 
     /*
@@ -128,7 +135,79 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
      * void initializeLayout() - initialize ui for mobile device
      */
     private void initializeLayout(){
+        initializeMaid();
+        initializeBottomNavigation();
 
+    }
+
+    private void initializeMaid(){
+        MaidRegistry maidRegistry = MaidRegistry.getInstance();
+        int layoutId = R.layout.standard_recycler_fab;
+
+        maidRegistry.initializeExerciseMaid(MaidRegistry.MAID_EXERCISE, layoutId);
+    }
+
+    private MyBottomNav mBottomNav;
+    private void initializeBottomNavigation(){
+        //create bottom navigator
+        mBottomNav = new MyBottomNav(mActivity, R.id.choiceBottomNavigation, R.menu.bottom_nav_exercise_menu);
+
+        //map navigator item position to MaidId
+        mBottomNav.setPositionToMaidIdMap(MyBottomNav.ITEM_01, MaidRegistry.MAID_EXERCISE);
+        mBottomNav.setPositionToMaidIdMap(MyBottomNav.ITEM_02, MaidRegistry.MAID_EXERCISE);
+
+        //set bottom navigation bridge listener
+        //mBottomNav.setBridge(this);
+
+        //select menu item to match default start page
+        mBottomNav.selectMenuItem(0);
+
+    }
+
+
+    /*
+     * void bottomNavigationItemSelected(int) - called by bottom navigation button
+     */
+    public void bottomNavigationItemSelected(int position){
+
+        MyMaid maid;
+        MaidRegistry maidRegistry = MaidRegistry.getInstance();
+
+        switch (position) {
+            case MyBottomNav.ITEM_01: // 0 - viewPage of lists of exercises
+
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_EXERCISE);
+                break;
+            case MyBottomNav.ITEM_02: // 1 - list of ercise routines
+
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_EXERCISE);
+                break;
+            default:
+                maid = null;
+        }
+
+        //load fragment
+        loadFragment(maid);
+    }
+
+    /*
+     * void loadFragment(MyMaid) - load appropriate fragment requested by user
+     */
+    private void loadFragment(MyMaid maid){
+        //get fragment manger
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+
+        //get fragment transaction object
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        //get fragment managed by maid
+        Fragment fragment = maid.getFragment();
+
+        //add fragment to fragment container
+        fragmentTransaction.replace(R.id.choiceFragmentContainer, fragment);
+
+        //commit fragment transaction
+        fragmentTransaction.commit();
     }
 
 /**************************************************************************************************/

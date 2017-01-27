@@ -83,7 +83,7 @@ public class HouseKeeperRegistry extends MyHouseKeeperRegistry {
         StubClientKeeper clientKeeper = new StubClientKeeper(R.layout.activity_recycler);
         registerHouseKeeper(KEEPER_CLIENT, clientKeeper);
 
-        StubAppointmentKeeper appointmentKeeper = new StubAppointmentKeeper(R.layout.activity_simple);
+        StubAppointmentKeeper appointmentKeeper = new StubAppointmentKeeper(R.layout.activity_bottom_nav);
         registerHouseKeeper(KEEPER_APPOINTMENT, appointmentKeeper);
 
         StubSessionKeeper sessionKeeper = new StubSessionKeeper(R.layout.activity_recycler);

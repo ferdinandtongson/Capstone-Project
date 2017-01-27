@@ -7,23 +7,26 @@
     android:background="@drawable/orange_background"
     style="@style/ChoiceTheme.Activity">
 
-    <include
-        layout="@layout/toolbar_title"
-        android:visibility="visible"
-        app:layout_scrollFlags="scroll|enterAlways"/>
 
-    <FrameLayout android:id="@+id/choiceFragmentContainer"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/choiceRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="55dp"
-        android:paddingBottom="55dp"/>
+        android:padding="7dp"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/choiceBottomNavigation"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:itemIconTint="@color/powderBlueish"
-        app:itemTextColor="@color/powderBlueish"/>
+    <TextView
+        android:id="@+id/choiceEmptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="24sp"
+        />
+
+    <include
+        layout="@layout/fab"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -17,8 +17,7 @@ public abstract class MyFragment extends Fragment {
 /**************************************************************************************************/
 /*
  * Class Variables
- *      String KEY_MAID_ID - key value used to store maid id into Bundle
- *      Integer mMaidId - id number of the Maid class taking care of the fragment
+ *      mMaidKey - maid key of the Maid class taking care of the fragment
  *      View mLayout - View layout of the fragment
  *      Bridge mBridge - class implementing Bridge interface
  *
@@ -35,11 +34,8 @@ public abstract class MyFragment extends Fragment {
  */
 /**************************************************************************************************/
 
-    //KEY_MAID_ID - key value used to store the maid id into Bundle
-    protected static String KEY_MAID_ID = "MaidId";
-
-    //mMaidId - id number of the Maid class taking care of the fragment
-    protected Integer mMaidId;
+    //mMaidKey - maid key of the Maid class taking care of the fragment
+    protected String mMaidKey;
 
     //mLayout - View layout of the fragment
     protected View mLayout;
@@ -116,10 +112,10 @@ public abstract class MyFragment extends Fragment {
     }
 
     /*
-     * void setMaidId(Integer) - sets the id number of the Maid taking care of the fragment
+     * void setMaidKey(String) - sets the key string of the Maid taking care of the fragment
      */
-    public void setMaidId(Integer id){
-        mMaidId = id;
+    public void setMaidKey(String maidKey){
+        mMaidKey = maidKey;
     }
 
 

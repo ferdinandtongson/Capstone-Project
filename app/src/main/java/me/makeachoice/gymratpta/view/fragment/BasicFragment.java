@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.makeachoice.gymratpta.controller.manager.Boss;
+import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.library.android.base.view.fragment.MyFragment;
 
 /**************************************************************************************************/
@@ -14,7 +15,7 @@ import me.makeachoice.library.android.base.view.fragment.MyFragment;
  * a Maid class.
  *
  * MyFragment Class Variables
- *      String KEY_MAID_ID - key value used to store maid id into Bundle
+ *      mMaidKey - maid key of the Maid class taking care of the fragment
  *      Integer mMaidId - id number of the Maid class taking care of the fragment
  *      View mLayout - View layout of the fragment
  *      Bridge mBridge - class implementing Bridge interface
@@ -31,22 +32,39 @@ import me.makeachoice.library.android.base.view.fragment.MyFragment;
 
 public class BasicFragment extends MyFragment {
 
-    /*
-     * Fragment subclasses require an empty default constructor. If you don't provide one but
-     * specify a non-empty constructor, Lint will give you an error.
-     *
-     * Android may destroy and later re-create an activity and all its associated fragments when
-     * the app goes into the background. When the activity comes back, its FragmentManager starts
-     * re-creating fragments by using the empty default constructor. If it cannot find one, you
-     * get an exception
-     */
-    public static BasicFragment newInstance(int id){
+/**************************************************************************************************/
+/*
+ * Class Variables:
+ *      String mTagKey - tag used to get maid key from bundle
+ */
+/**************************************************************************************************/
+
+    //mTagKey - tag used to get maid key from bundle
+    private String mTagKey;
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Fragment subclasses require an empty default constructor. If you don't provide one but
+ * specify a non-empty constructor, Lint will give you an error.
+ *
+ * Android may destroy and later re-create an activity and all its associated fragments when
+ * the app goes into the background. When the activity comes back, its FragmentManager starts
+ * re-creating fragments by using the empty default constructor. If it cannot find one, you
+ * get an exception
+ */
+/**************************************************************************************************/
+
+    public static BasicFragment newInstance(String maidKey){
         BasicFragment f = new BasicFragment();
         // Supply num input as an argument.
         Bundle args = new Bundle();
 
-        //add maid id to bundle
-        args.putInt(KEY_MAID_ID, id);
+        String tagKey = f.getString(R.string.tag_maid_key);
+
+        //add maid key to bundle
+        args.putString(tagKey, maidKey);
 
         //set bundle in arguments
         f.setArguments(args);
@@ -81,18 +99,21 @@ public class BasicFragment extends MyFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //get tag used to store maid key
+        mTagKey = getString(R.string.tag_maid_key);
+
         //check if bundle has been sent/saved
         if(savedInstanceState != null){
             //get id number of maid maintaining this fragment
-            mMaidId = savedInstanceState.getInt(KEY_MAID_ID);
+            mMaidKey = savedInstanceState.getString(mTagKey);
         }
 
         //get application context, the Boss
-        Boss boss = (Boss)getActivity().getApplicationContext();
+        MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         try{
             //make sure Maid is implementing the Bridge interface
-            mBridge = (Bridge)boss.requestMaid(mMaidId);
+            mBridge = (Bridge)maidRegistry.requestMaid(mMaidKey);
         }catch(ClassCastException e){
             throw new ClassCastException("Maid must implement Bridge interface");
         }
@@ -112,7 +133,7 @@ public class BasicFragment extends MyFragment {
      */
     @Override
     public void onSaveInstanceState(Bundle bundle){
-        bundle.putInt(MyFragment.KEY_MAID_ID, mMaidId);
+        bundle.putString(mTagKey, mMaidKey);
         super.onSaveInstanceState(bundle);
     }
 

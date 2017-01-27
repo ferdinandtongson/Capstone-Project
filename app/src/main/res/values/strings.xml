@@ -15,6 +15,10 @@
     <string name="drawer_menu_settings" translatable="false">@string/settings</string>
     <string name="drawer_menu_help" translatable="false">@string/help</string>
 
+    <!-- bottom nav: exercise -->
+    <string name="bottom_nav_menu_exercises" translatable="false">@string/exercises</string>
+    <string name="bottom_nav_menu_routines" translatable="false">@string/routines</string>
+
     <!-- empty recycler -->
     <string name="emptyRecycler_addClients" translatable="false">@string/add_clients</string>
     <string name="emptyRecycler_noSessions" translatable="false">@string/no_sessions</string>
@@ -33,6 +37,7 @@
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="quick_help" translatable="true">Quick Help</string>
+    <string name="routines" translatable="true">Routines</string>
     <string name="sessions" translatable="true">Sessions</string>
     <string name="settings" translatable="true">Settings</string>
     <string name="sign_out" translatable="true">Sign Out</string>

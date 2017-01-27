@@ -16,15 +16,15 @@ public abstract class MyMaid {
 /**************************************************************************************************/
 /*
  * Class Variables
- *      int mMaidId - id number of instance Maid
+ *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
  *      View mLayout - fragment layout view holding the child views
  *      MyFragment mFragment - fragment being maintained by the Maid
  */
 /**************************************************************************************************/
 
-    //mMaidId - id number of instance Maid
-    protected int mMaidId;
+    //mMaidKey - key string of instance Maid
+    protected String mMaidKey;
 
     //mLayoutId - resource id number of fragment layout
     protected int mLayoutId;
@@ -43,13 +43,12 @@ public abstract class MyMaid {
  *      void destroyView() - called when fragment is being removed
  *      void detach() - called when fragment is being disassociated from Activity
  *      void saveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
- *      int getMaidId() - get maid id number
+ *      String getKey() - get maid key value
  *      MyFragment getFragment() - get fragment maintained by maid
  */
 /**************************************************************************************************/
     /*
      * void activityCreated() - called when Activity.onCreate() completed
-     * @param bundle - saved instant state of fragment
      */
     public void activityCreated(Bundle bundle){
         //Activity.onCreate() completed
@@ -71,23 +70,20 @@ public abstract class MyMaid {
 
     /*
      * void saveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
-     * @param bundle - bundle object used to save any instance states
      */
     public void saveInstanceState(Bundle bundle){
         //save state to bundle
     }
 
     /*
-     * int getMaidId() - get maid id number
-     * @return - maid id number
+     * String getKey() - get maid key value
      */
-    public int getMaidId(){
-        return mMaidId;
+    public String getKey(){
+        return mMaidKey;
     }
 
     /*
      * MyFragment getFragment() - get fragment maintained by maid
-     * @return - MyFragment maintained by maid
      */
     public MyFragment getFragment(){
         return mFragment;

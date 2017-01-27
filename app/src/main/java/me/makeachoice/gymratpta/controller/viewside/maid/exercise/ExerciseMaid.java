@@ -54,12 +54,10 @@ public class ExerciseMaid extends MyMaid {
 /**************************************************************************************************/
     /*
      * ExerciseMaid(...) - constructor
-     * @param maidId - maid id number
-     * @param layoutId - resource layout id number used by fragment
      */
-    public ExerciseMaid(int maidId, int layoutId){
+    public ExerciseMaid(String maidKey, int layoutId){
         //maid id number
-        mMaidId = maidId;
+        //mMaidId = maidId;
 
         //fragment layout id number
         mLayoutId = layoutId;
@@ -67,8 +65,8 @@ public class ExerciseMaid extends MyMaid {
         //create fragment
         mFragment = new BasicFragment();
 
-        //attach maid id to fragment
-        mFragment.setMaidId(mMaidId);
+        //attach maid key to fragment
+        mFragment.setMaidKey(maidKey);
     }
 
 /**************************************************************************************************/
