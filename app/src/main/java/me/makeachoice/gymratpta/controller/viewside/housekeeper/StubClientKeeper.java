@@ -162,7 +162,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
         mBasicRecycler.setAdapter(mAdapter);
 
-        isEmptyRecycler(mData.isEmpty());
+        checkForEmptyRecycler(mData.isEmpty());
 
     }
 

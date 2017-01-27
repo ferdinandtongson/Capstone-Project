@@ -1,4 +1,5 @@
 <resources>
+    <!-- app title -->
     <string name="app_title" translatable="false">@string/gym_rat</string>
     <string name="app_subtitle" translatable="false">@string/personal_trainer_assistant</string>
 
@@ -14,13 +15,22 @@
     <string name="drawer_menu_settings" translatable="false">@string/settings</string>
     <string name="drawer_menu_help" translatable="false">@string/help</string>
 
+    <!-- empty recycler -->
+    <string name="emptyRecycler_addClients" translatable="false">@string/add_clients</string>
+    <string name="emptyRecycler_noSessions" translatable="false">@string/no_sessions</string>
+
+    <!-- recycler tags -->
+    <string name="recycler_tagPosition" translatable="false">tag_position</string>
+    <string name="recycler_tagItem" translatable="false">tag_item</string>
 
     <!-- dictionary -->
+    <string name="add_clients" translatable="true">Add Clients</string>
     <string name="appointments" translatable="true">Appointments</string>
     <string name="clients" translatable="true">Clients</string>
     <string name="exercises" translatable="true">Exercises</string>
     <string name="help" translatable="true">Help</string>
     <string name="gym_rat" translatable="true">Gym Rat</string>
+    <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="quick_help" translatable="true">Quick Help</string>
     <string name="sessions" translatable="true">Sessions</string>

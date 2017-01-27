@@ -157,7 +157,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 
         mBasicRecycler.setAdapter(mAdapter);
 
-        isEmptyRecycler(mContactsList.isEmpty());
+        checkForEmptyRecycler(mContactsList.isEmpty());
 
     }
 
