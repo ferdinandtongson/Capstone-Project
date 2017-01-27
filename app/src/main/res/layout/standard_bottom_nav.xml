@@ -1,0 +1,24 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/choiceCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/orange_background"
+    style="@style/ChoiceTheme.Activity">
+
+
+    <FrameLayout android:id="@+id/choiceFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:margin_top="55dp"
+        android:paddingBottom="55dp"/>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/choiceBottomNavigation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:itemIconTint="@color/orange"
+        app:itemTextColor="@color/orange"/>
+
+</android.support.design.widget.CoordinatorLayout>
