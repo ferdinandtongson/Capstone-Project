@@ -1,21 +1,8 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.manager.Boss;
-import me.makeachoice.gymratpta.controller.viewside.drawer.HomeDrawer;
-import me.makeachoice.gymratpta.controller.viewside.toolbar.HomeToolbar;
-import me.makeachoice.library.android.base.controller.viewside.bartender.MyBartender;
-import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -64,7 +51,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.Bridge{
+public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -73,8 +60,6 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.B
  */
 /**************************************************************************************************/
 
-    //mBoss - Boss application
-    private Boss mBoss;
 
 /**************************************************************************************************/
 
@@ -91,6 +76,7 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.B
 
         //get layout id
         mActivityLayoutId = layoutId;
+        mNavigationId = R.id.nav_appointments;
     }
 
 /**************************************************************************************************/
@@ -112,7 +98,6 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.B
      * @param bundle - instant state values
      */
     public void create(MyActivity activity, Bundle bundle){
-        //TODO - uncomment after Boss is defined
         super.create(activity, bundle);
 
         if(bundle != null){
@@ -120,11 +105,7 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.B
             openBundle(bundle);
         }
 
-        //get Boss application
-        mBoss = (Boss)mActivity.getApplication();
-
-        initializeForMobileLayout();
-
+        initializeLayout();
     }
 
     /*
@@ -140,52 +121,14 @@ public class StubAppointmentKeeper extends MyHouseKeeper implements MyActivity.B
 /**************************************************************************************************/
 /*
  * Layout Initialization Methods:
- *      void initializeForMobileLayout(MyActivity) - initialize ui for mobile device
- *      void initializeForTabletLayout() - initialize ui for tablet device
- *      void initializeTabletDetailLayout(MyActivity) - initialize detail ui for tablet device
+ *      void initializeLayout() - initialize ui
  */
 /**************************************************************************************************/
     /*
-     * void initializeForMobileLayout() - initialize ui for mobile device
+     * void initializeLayout() - initialize ui for mobile device
      */
-    private void initializeForMobileLayout(){
-        initializeToolbar();
-        initializeNavigationView();
-        TextView txtTitle = (TextView)mActivity.findViewById(R.id.txtTitle);
-        //txtTitle.setText(me.makeachoice.gymratpta.controller.manager.HouseKeeperRegistry.KEEPER_APPOINTMENT);
-    }
+    private void initializeLayout(){
 
-    /*
-     * void initializeToolbar() - initialize toolbar component
-     */
-    private void initializeToolbar() {
-
-        //create toolbar component
-        HomeToolbar toolbar = new HomeToolbar(mActivity);
-        toolbar.setOnNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //react to click
-                Log.d("Choice", "StubAppointmentKeeper.onNavIconClick");
-                mDrawer.openDrawer();
-
-            }
-        });
-
-        toolbar.setOnMenuItemClick(new MyBartender.OnMenuItemClick() {
-            @Override
-            public void onMenuItemClick(MenuItem menuItem) {
-                Log.d("Choice", "StudAppointmentKeeper.onMenuItemClick");
-            }
-        });
-
-        //set bartender as options menu bridge
-        mActivity.setOptionsMenuBridge(toolbar);
-    }
-
-    HomeDrawer mDrawer;
-    private void initializeNavigationView(){
-        mDrawer = new HomeDrawer(mActivity);
     }
 
 /**************************************************************************************************/

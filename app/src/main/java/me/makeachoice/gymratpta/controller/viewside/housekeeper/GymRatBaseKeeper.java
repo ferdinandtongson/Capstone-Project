@@ -1,31 +1,42 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.Boss;
+import me.makeachoice.gymratpta.controller.viewside.drawer.HomeDrawer;
+import me.makeachoice.gymratpta.controller.viewside.toolbar.HomeToolbar;
+import me.makeachoice.library.android.base.controller.viewside.bartender.MyBartender;
+import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- *  TODO - housekeeper description
- *  TODO - create activity class
- *  TODO - create activity layout
- *  TODO - define housekeeper id in res/values/strings.xml
- *  <!-- HouseKeeper Names -->
- *  <string name="housekeeper_main" translatable="false">Main HouseKeeper</string>
- *  TODO - initialize and register housekeeper in Boss class
- *  TODO - handle saved instance states from bundle
- *  TODO - initialize mobile layout components
- *  TODO - initialize activity components, for example
- *  TODO - initialize tablet layout components
+ * TODO - Need to add shared transition animation between toolbar and drawer component
+ *          todo - components to animate are Gym Rat icon, title and subtitle
+ * TODO - need to add accessibility values to toolbar and drawer menu items
+ *          todo - add content descriptions to toolbar
+ *                  todo - navigation icon, title, subtitle, options menu, menu items
+ *          todo - add content descriptions to drawer
+ *                  todo - navigation icon, title, subtitle, menu items
+ *          todo - add d-pad navigation
+ *                  todo - toolbar
+ *                  todo - drawer
+ * TODO - nee to add menu item click function for toolbar options menu
+ *          todo - quick help functionality
+ *          todo - user sign out functionality
  */
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * TODO - housekeeper description,
- * Each housekeeper is responsible for an activity. It communicates directly with Boss, Activity
- * and Maids maintaining fragments within the Activity, if any.
+ * GymRatBaseKeeper is the base HouseKeeper for all HouseKeeper classes used in the GymRat project. It's
+ * main function is to handle the initialization and event handling of the toolbar and drawer
+ * components
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -48,36 +59,23 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      void activityResult(...) - result of Activity called by this Activity
  *
  */
-
 /**************************************************************************************************/
 
-public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.Bridge{
+public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
  * Class Variables:
  *      mBoss - Boss application
+ *      mNavigationId - drawer navigation id
  */
 /**************************************************************************************************/
 
+    //mBoss - Boss application
+    protected Boss mBoss;
 
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * _templateKeeper - constructor
- */
-/**************************************************************************************************/
-    /*
-     * _templateKeeper - constructor
-     * @param layoutId - layout resource id used by Keeper
-     */
-    public StubExerciseKeeper(int layoutId){
-
-        //get layout id
-        mActivityLayoutId = layoutId;
-        mNavigationId = R.id.nav_exercises;
-    }
+    //mNavigationId - drawer navigation id
+    protected int mNavigationId;
 
 /**************************************************************************************************/
 
@@ -98,23 +96,13 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
      * @param bundle - instant state values
      */
     public void create(MyActivity activity, Bundle bundle){
-        //TODO - uncomment after Boss is defined
         super.create(activity, bundle);
 
-        if(bundle != null){
-            //open bundle to set saved instance states
-            openBundle(bundle);
-        }
+        //get Boss application
+        mBoss = (Boss)mActivity.getApplication();
 
-        initializeLayout();
-    }
-
-    /*
-     * void openBundle(Bundle) - opens bundle to set saved instance states during create().
-     */
-    protected void openBundle(Bundle bundle){
-        //TODO - handle saved instance states from bundle
-        //set saved instance state data
+        //initialize navigation components
+        initializeNavigation();
     }
 
 /**************************************************************************************************/
@@ -122,14 +110,62 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
 /**************************************************************************************************/
 /*
  * Layout Initialization Methods:
- *      void initializeLayout() - initialize ui
+ *      void initializeNavigation() - initialize navigation ui
  */
 /**************************************************************************************************/
     /*
-     * void initializeLayout() - initialize ui for mobile device
+     * void initializeNavigation() - initialize navigation ui
      */
-    private void initializeLayout(){
+    private void initializeNavigation(){
+        //initialize toolbar component
+        initializeToolbar();
 
+        //initialize drawer and navigation components
+        initializeNavigationView();
+    }
+
+    /*
+     * void initializeToolbar() - initialize toolbar component
+     */
+    private void initializeToolbar() {
+
+        //create toolbar component
+        HomeToolbar toolbar = new HomeToolbar(mActivity);
+        toolbar.setOnNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //react to click
+                mHomeDrawer.openDrawer();
+
+            }
+        });
+
+        toolbar.setOnMenuItemClick(new MyBartender.OnMenuItemClick() {
+            @Override
+            public void onMenuItemClick(MenuItem menuItem) {
+                Log.d("Choice", "StudAppointmentKeeper.onMenuItemClick");
+                //TODO - handle toolbar options menu item click
+            }
+        });
+
+        View navigationIcon = toolbar.getToolbarNavigationIcon();
+
+        //check api level is 21 or greater
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //TODO - this is used for creating a transition from toolbar to drawer
+            String transitionName = mActivity.getResources().getString(R.string.trans_navIcon);
+            navigationIcon.setTransitionName(transitionName);
+        }
+
+        //set bartender as options menu bridge
+        mActivity.setOptionsMenuBridge(toolbar);
+
+    }
+
+    HomeDrawer mHomeDrawer;
+    private void initializeNavigationView(){
+        mHomeDrawer = new HomeDrawer(mActivity);
+        mHomeDrawer.setNavigationItemChecked(mNavigationId);
     }
 
 /**************************************************************************************************/

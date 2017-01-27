@@ -1,13 +1,8 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.manager.Boss;
-import me.makeachoice.gymratpta.view.activity.ClientActivity;
-import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -56,7 +51,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubSessionKeeper extends MyHouseKeeper implements ClientActivity.Bridge{
+public class StubSessionKeeper extends GymRatBaseKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -65,8 +60,6 @@ public class StubSessionKeeper extends MyHouseKeeper implements ClientActivity.B
  */
 /**************************************************************************************************/
 
-    //mBoss - Boss application
-    private Boss mBoss;
 
 /**************************************************************************************************/
 
@@ -83,6 +76,7 @@ public class StubSessionKeeper extends MyHouseKeeper implements ClientActivity.B
 
         //get layout id
         mActivityLayoutId = layoutId;
+        mNavigationId = R.id.nav_sessions;
     }
 
 /**************************************************************************************************/
@@ -112,21 +106,7 @@ public class StubSessionKeeper extends MyHouseKeeper implements ClientActivity.B
             openBundle(bundle);
         }
 
-        //get Boss application
-        mBoss = (Boss)mActivity.getApplication();
-
-        //notify boss if Tablet
-        mBoss.setIsTablet(isTablet());
-
-        if (isTablet()) {
-            initializeForTabletLayout();
-        }else{
-            initializeForMobileLayout();
-        }
-
-        TextView txtTitle = (TextView)mActivity.findViewById(R.id.txtTitle);
-        txtTitle.setText(me.makeachoice.gymratpta.controller.manager.HouseKeeperRegistry.KEEPER_CLIENT);
-
+        initializeLayout();
     }
 
     /*
@@ -142,40 +122,13 @@ public class StubSessionKeeper extends MyHouseKeeper implements ClientActivity.B
 /**************************************************************************************************/
 /*
  * Layout Initialization Methods:
- *      void initializeForMobileLayout(MyActivity) - initialize ui for mobile device
- *      void initializeForTabletLayout() - initialize ui for tablet device
- *      void initializeTabletDetailLayout(MyActivity) - initialize detail ui for tablet device
+ *      void initializeLayout() - initialize ui
  */
 /**************************************************************************************************/
     /*
-     * void initializeForMobileLayout() - initialize ui for mobile device
+     * void initializeLayout() - initialize ui for mobile device
      */
-    private void initializeForMobileLayout(){
-        //TODO - initialize mobile layout components, maybe check for network availability
-        Log.d("Choice", "MainKeeper.initMobile");
-        //TODO - initialize bottom navigator bar, if necessary
-        //TODO - initialize ViewPager, Recycler, FragmentManager
-        //TODO - initialize any other view components
-    }
-
-    /*
-     * void initializeForTabletLayout() - initialize ui for tablet device
-     */
-    private void initializeForTabletLayout(){
-        Log.d("Choice", "MainKeeper.initTablet");
-        //TODO - initialize tablet layout components, this will only be called if this housekeeper
-        //is maintaining a master activity since this is called during the activities onCreate().
-        //See initializeTabletLayout() for when the housekeeper is maintaining a detail activity
-
-    }
-
-    /*
-     * void initializeTabletDetailLayout(MyActivity) - initialize detail ui for tablet device, this
-     *      housekeeper is paired with a master housekeeper (master-detail layout)
-     */
-    public void initializeTabletDetailLayout(MyActivity activity){
-        //get current activity context
-        mActivity = activity;
+    private void initializeLayout(){
 
     }
 
@@ -196,6 +149,7 @@ public class StubSessionKeeper extends MyHouseKeeper implements ClientActivity.B
 
 
 /**************************************************************************************************/
+
 
 
 
