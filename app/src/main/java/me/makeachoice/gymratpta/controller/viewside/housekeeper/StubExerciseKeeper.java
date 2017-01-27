@@ -3,6 +3,8 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 import android.os.Bundle;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
+import me.makeachoice.gymratpta.controller.viewside.bottomnav.ExerciseNav;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -51,7 +53,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.Bridge{
+public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.Bridge {
 
 /**************************************************************************************************/
 /*
@@ -76,7 +78,7 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
 
         //get layout id
         mActivityLayoutId = layoutId;
-        mSelectedNavItemId = R.id.nav_exercises;
+        mSelectedNavItemId = R.id.nav_appointments;
     }
 
 /**************************************************************************************************/
@@ -98,7 +100,6 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
      * @param bundle - instant state values
      */
     public void create(MyActivity activity, Bundle bundle){
-        //TODO - uncomment after Boss is defined
         super.create(activity, bundle);
 
         if(bundle != null){
@@ -107,6 +108,7 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
         }
 
         initializeLayout();
+
     }
 
     /*
@@ -129,7 +131,22 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
      * void initializeLayout() - initialize ui for mobile device
      */
     private void initializeLayout(){
+        initializeMaid();
+        initializeBottomNavigation();
 
+    }
+
+    private void initializeMaid(){
+        MaidRegistry maidRegistry = MaidRegistry.getInstance();
+        int layoutId = R.layout.standard_recycler_fab;
+
+        maidRegistry.initializeExerciseMaid(MaidRegistry.MAID_EXERCISE, layoutId);
+    }
+
+    private void initializeBottomNavigation(){
+
+        //create bottom navigator
+        ExerciseNav nav = new ExerciseNav(mActivity);
     }
 
 /**************************************************************************************************/
@@ -146,7 +163,6 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
     @Override
     public void backPressed(){
     }
-
 
 /**************************************************************************************************/
 
