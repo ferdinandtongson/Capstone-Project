@@ -9,6 +9,13 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+    <ImageView
+        android:id="@+id/choiceBackgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/sun_background"
+        />
+
     <include
         layout="@layout/standard_recycler_all"
         android:layout_width="match_parent"
