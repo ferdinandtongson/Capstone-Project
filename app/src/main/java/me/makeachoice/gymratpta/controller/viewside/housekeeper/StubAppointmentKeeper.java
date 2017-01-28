@@ -5,30 +5,23 @@ import android.os.Bundle;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.AppointmentNav;
-import me.makeachoice.gymratpta.controller.viewside.bottomnav.ExerciseNav;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- *  TODO - housekeeper description
- *  TODO - create activity class
- *  TODO - create activity layout
- *  TODO - define housekeeper id in res/values/strings.xml
- *  <!-- HouseKeeper Names -->
- *  <string name="housekeeper_main" translatable="false">Main HouseKeeper</string>
- *  TODO - initialize and register housekeeper in Boss class
- *  TODO - handle saved instance states from bundle
- *  TODO - initialize mobile layout components
- *  TODO - initialize activity components, for example
- *  TODO - initialize tablet layout components
+ * TODO - need to add accessibility values to bottom navigation menu items
+ *          todo - add content descriptions to menu items
+ *          todo - add d-pad navigation
+ * TODO - need to style components
+ *          todo - bottom navigation
  */
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * TODO - housekeeper description,
- * Each housekeeper is responsible for an activity. It communicates directly with Boss, Activity
- * and Maids maintaining fragments within the Activity, if any.
+ * AppointmentKeeper is responsible for maintaining the Appointment screen. It is directly responsible
+ * for handling toolbar and drawer events (see GymRatBaseKeeper), bottom navigation events (see
+ * AppointmentNav) and the creation of DayMaid and WeekMaid.
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -36,9 +29,19 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      int mActivityLayoutId - Activity resource layout id
  *      boolean mIsTablet - boolean flag used to determine if device is a tablet
  *
+ * Variables from GymRatBaseKeeper:
+ *      mBoss - Boss application
+ *      mHomeDrawer - drawer navigation component
+ *      mSelectedNavItemId - used to determine which menu item is selected in the drawer
+ *
  * Methods from MyHouseKeeper
  *      void create(MyActivity,Bundle) - called by onCreate(Bundle) in the activity lifecycle
  *      boolean isTablet() - return device flag if device is tablet or not
+ *
+ * Methods from GymRatBaseKeeper
+ *      void initializeNavigation() - initialize navigation ui
+ *      void initializeToolbar() - initialize toolbar component
+ *      void initializeDrawer() - initialize drawer navigation component
  *
  * MyHouseKeeper Implements MyActivity.Bridge
  *      void start() - called by onStart() in the activity lifecycle
@@ -49,9 +52,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      void backPressed() - called by onBackPressed() in the activity
  *      void saveInstanceState(Bundle) - called before onDestroy(), save state to bundle
  *      void activityResult(...) - result of Activity called by this Activity
- *
  */
-
 /**************************************************************************************************/
 
 public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivity.Bridge {
@@ -59,7 +60,6 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      mBoss - Boss application
  */
 /**************************************************************************************************/
 
@@ -68,17 +68,18 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
 
 /**************************************************************************************************/
 /*
- * _templateKeeper - constructor
+ * StubAppointmentKeeper - constructor
  */
 /**************************************************************************************************/
     /*
-     * _templateKeeper - constructor
-     * @param layoutId - layout resource id used by Keeper
+     * StubAppointmentKeeper - constructor
      */
     public StubAppointmentKeeper(int layoutId){
 
         //get layout id
         mActivityLayoutId = layoutId;
+
+        //used to determine which drawer menu item is selected
         mSelectedNavItemId = R.id.nav_appointments;
     }
 
@@ -115,7 +116,7 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
     /*
      * void openBundle(Bundle) - opens bundle to set saved instance states during create().
      */
-    protected void openBundle(Bundle bundle){
+    private void openBundle(Bundle bundle){
         //TODO - handle saved instance states from bundle
         //set saved instance state data
     }
@@ -125,18 +126,25 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
 /**************************************************************************************************/
 /*
  * Layout Initialization Methods:
- *      void initializeLayout() - initialize ui
+ *      void initializeLayout() - initialize maids and bottom navigation
+ *      void initializeMaid() - initialize DayMaid and WeekMaid
+ *      void initializeBottomNavigation - initialize bottom navigation for the appointment screen
  */
 /**************************************************************************************************/
     /*
-     * void initializeLayout() - initialize ui for mobile device
+     * void initializeLayout() - initialize maids and bottom navigation
      */
     private void initializeLayout(){
+        //initialize maids
         initializeMaid();
-        initializeBottomNavigation();
 
+        //initialize bottom navigation
+        initializeBottomNavigation();
     }
 
+    /*
+     * void initializeMaid() - initialize DayMaid and WeekMaid
+     */
     private void initializeMaid(){
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
         int layoutId = R.layout.standard_recycler_fab;
@@ -144,10 +152,13 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
         maidRegistry.initializeExerciseMaid(MaidRegistry.MAID_EXERCISE, layoutId);
     }
 
+    /*
+     * void initializeBottomNavigation - initialize bottom navigation for the appointment screen
+     */
     private void initializeBottomNavigation(){
 
         //create bottom navigator
-        AppointmentNav nav = new AppointmentNav(mActivity);
+        new AppointmentNav(mActivity);
     }
 
 /**************************************************************************************************/
