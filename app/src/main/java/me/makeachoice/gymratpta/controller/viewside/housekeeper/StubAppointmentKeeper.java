@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
+import me.makeachoice.gymratpta.controller.viewside.bottomnav.AppointmentNav;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.ExerciseNav;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
@@ -146,7 +147,7 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
     private void initializeBottomNavigation(){
 
         //create bottom navigator
-        ExerciseNav nav = new ExerciseNav(mActivity);
+        AppointmentNav nav = new AppointmentNav(mActivity);
     }
 
 /**************************************************************************************************/

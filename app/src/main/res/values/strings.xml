@@ -18,6 +18,9 @@
     <!-- bottom nav: exercise -->
     <string name="bottom_nav_menu_exercises" translatable="false">@string/exercises</string>
     <string name="bottom_nav_menu_routines" translatable="false">@string/routines</string>
+    <!-- bottom nav: Appointment -->
+    <string name="bottom_nav_appointment_day" translatable="true">@string/for_the_day</string>
+    <string name="bottom_nav_appointment_week" translatable="true">@string/for_the_week</string>
 
     <!-- empty recycler -->
     <string name="emptyRecycler_addClients" translatable="false">@string/add_clients</string>
@@ -32,6 +35,8 @@
     <string name="appointments" translatable="true">Appointments</string>
     <string name="clients" translatable="true">Clients</string>
     <string name="exercises" translatable="true">Exercises</string>
+    <string name="for_the_day" translatable="true">For the Day</string>
+    <string name="for_the_week" translatable="true">For the Week</string>
     <string name="help" translatable="true">Help</string>
     <string name="gym_rat" translatable="true">Gym Rat</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
