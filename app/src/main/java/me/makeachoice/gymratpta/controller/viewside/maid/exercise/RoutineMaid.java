@@ -6,21 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
-import java.util.ArrayList;
-
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
-import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * ExerciseMaid initializes and takes care of the viewPager fragment that show different lists of
- * exercises separated by category
- *
+ * TODO - add description
  * Variables from MyMaid:
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
@@ -35,18 +28,16 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      String getKey() - get maid key value
  *      MyFragment getFragment() - get fragment maintained by maid
  */
+
 /**************************************************************************************************/
 
-public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
+public class RoutineMaid extends MyMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
  * Class Variables
  */
 /**************************************************************************************************/
-
-    //mCategories - list of category items used by viewPager tabLayout
-    ArrayList<CategoryItem> mCategories;
 
 
 /**************************************************************************************************/
@@ -59,12 +50,11 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
     /*
      * ExerciseMaid(...) - constructor
      */
-    public ExerciseMaid(String maidKey, int layoutId){
+    public RoutineMaid(String maidKey, int layoutId){
         //fragment layout id number
         mLayoutId = layoutId;
 
         //create fragment
-        //mFragment = BasicFragment.newInstance(maidKey);
         mFragment = new BasicFragment();
 
         //attach maid key to fragment
@@ -129,82 +119,15 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
     /*
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
-    private void prepareFragment() {
+    private void prepareFragment(){
         MyActivity activity = (MyActivity)mFragment.getActivity();
 
         TextView txtTitle = (TextView)activity.findViewById(R.id.stub_txtTitle);
-        txtTitle.setText("ExerciseMaid");
-
-        //load category and exercise data
-        //loadData();
-
-        //initialize maids used by viewPager
-        //initializeViewPagerMaids(mCategories.size());
-
-        //initialize view pager
-        /*ExerciseViewPager pager = new ExerciseViewPager(mFragment.getActivity(),
-                mFragment.getChildFragmentManager(), mCategories);*/
+        txtTitle.setText("RoutineMaid");
 
     }
 
-    /*
-     * void loadData() - load category and exercise data
-     */
-    private void loadData(){
-        //create category stub data
-        createCategoryStub();
-
-        //create exercise stub data
-        //createExercisesStub();
-    }
-
-    /*
-     * void initializeMaid(int) - initialize Maids used by the viewPager component
-     */
-    private void initializeViewPagerMaids(int size){
-        //layout resource id maid will use to create fragment
-        int layoutId = R.layout.standard_recycler_fab;
-
-        //initialize maids
-        for(int i = 0; i < size; i++){
-            //create unique maid id numbers using a base number
-            String maidKey = MaidRegistry.MAID_EXERCISE_LIST + i;
-
-            MaidRegistry maidRegistry = MaidRegistry.getInstance();
-
-            //initialize maid
-            maidRegistry.initializeExerciseListMaid(maidKey, layoutId, i);
-        }
-    }
 
 /**************************************************************************************************/
-
-    private void createCategoryStub(){
-        mCategories = new ArrayList();
-
-        CategoryItem item01 = new CategoryItem();
-        item01.categoryName = "Arms";
-        CategoryItem item02 = new CategoryItem();
-        item02.categoryName = "Back";
-        CategoryItem item03 = new CategoryItem();
-        item03.categoryName = "Cardio";
-        CategoryItem item04 = new CategoryItem();
-        item04.categoryName = "Chest";
-        CategoryItem item05 = new CategoryItem();
-        item05.categoryName = "Core";
-        CategoryItem item06 = new CategoryItem();
-        item06.categoryName = "Legs";
-        CategoryItem item07 = new CategoryItem();
-        item07.categoryName = "Shoulders";
-
-        mCategories.add(item01);
-        mCategories.add(item02);
-        mCategories.add(item03);
-        mCategories.add(item04);
-        mCategories.add(item05);
-        mCategories.add(item06);
-        mCategories.add(item07);
-
-    }
 
 }

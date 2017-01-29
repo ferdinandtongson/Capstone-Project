@@ -4,6 +4,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.MenuItem;
 
 import me.makeachoice.gymratpta.R;
@@ -47,8 +48,7 @@ public class ExerciseNav extends MyBottomNav implements BottomNavigationView.OnN
         //get navigation bar
         mNav = (BottomNavigationView)activity.findViewById(DEFAULT_BOTTOMNAV_ID);
 
-        //inflate menu
-        mNav.inflateMenu(DEFAULT_MENU_ID);
+        initializeNavigation(DEFAULT_MENU_ID);
     }
 
     public ExerciseNav(MyActivity activity, int bottomId, int menuId){
@@ -58,8 +58,15 @@ public class ExerciseNav extends MyBottomNav implements BottomNavigationView.OnN
         //get navigation bar
         mNav = (BottomNavigationView)activity.findViewById(bottomId);
 
+        initializeNavigation(menuId);
+    }
+
+    private void initializeNavigation(int menuId){
         //inflate menu
         mNav.inflateMenu(menuId);
+
+        mNav.setOnNavigationItemSelectedListener(this);
+        onNavigationItemSelected(mNav.getMenu().getItem(0));
     }
 
 /**************************************************************************************************/
@@ -74,6 +81,7 @@ public class ExerciseNav extends MyBottomNav implements BottomNavigationView.OnN
 /**************************************************************************************************/
 
     public boolean onNavigationItemSelected(MenuItem item){
+        Log.d("Choice", "ExerciseNav.onNavigationItemSelected: " + item.getItemId());
         int itemId = item.getItemId();
 
         MyMaid maid;
@@ -85,8 +93,7 @@ public class ExerciseNav extends MyBottomNav implements BottomNavigationView.OnN
                 maid = maidRegistry.requestMaid(MaidRegistry.MAID_EXERCISE);
                 break;
             case bottom_nav_item2: // 1 - list of exercise routines
-
-                maid = maidRegistry.requestMaid(MaidRegistry.MAID_EXERCISE);
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_ROUTINE);
                 break;
             default:
                 maid = null;
@@ -102,6 +109,7 @@ public class ExerciseNav extends MyBottomNav implements BottomNavigationView.OnN
      * void loadFragment(MyMaid) - load appropriate fragment requested by user
      */
     private void loadFragment(MyMaid maid){
+        Log.d("Choice", "     load Fragment: " + maid.toString());
         //get fragment manger
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
 
