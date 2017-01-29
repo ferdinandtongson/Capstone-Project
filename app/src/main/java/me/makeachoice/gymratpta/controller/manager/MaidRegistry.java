@@ -8,7 +8,6 @@ import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayPageMaid
 import me.makeachoice.gymratpta.controller.viewside.maid.appointment.WeekPageMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
-import me.makeachoice.library.android.base.controller.manager.MyMaidRegistry;
 
 /**************************************************************************************************/
 /*

@@ -55,7 +55,6 @@ package me.makeachoice.gymratpta.controller.manager;
 
 import android.util.Log;
 
-import me.makeachoice.library.android.base.controller.viewside.MaidRegistry;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 
 /**************************************************************************************************/

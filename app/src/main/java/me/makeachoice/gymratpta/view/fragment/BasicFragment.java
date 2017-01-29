@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
-import me.makeachoice.library.android.base.view.fragment.MyFragment;
 
 /**************************************************************************************************/
 /*

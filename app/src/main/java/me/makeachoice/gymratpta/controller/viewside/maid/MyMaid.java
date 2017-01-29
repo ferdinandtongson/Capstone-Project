@@ -1,15 +1,16 @@
 package me.makeachoice.gymratpta.controller.viewside.maid;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
+import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.gymratpta.view.fragment.MyFragment;
 
 /**************************************************************************************************/
 /*
  * MyMaid abstract class manages MyFragment classes and is typically instantiated by MyHouseKeeper
  */
-
 /**************************************************************************************************/
 
 public abstract class MyMaid {
@@ -45,7 +46,7 @@ public abstract class MyMaid {
  *      void detach() - called when fragment is being disassociated from Activity
  *      void saveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
  *      String getKey() - get maid key value
- *      MyFragment getFragment() - get fragment maintained by maid
+ *      Fragment getFragment() - get new instance fragment
  */
 /**************************************************************************************************/
     /*
@@ -83,6 +84,13 @@ public abstract class MyMaid {
         return mMaidKey;
     }
 
+    /*
+     * Fragment getFragment() - get new instance fragment
+     */
+    public Fragment getFragment(){
+        mFragment = BasicFragment.newInstance(mMaidKey);
+        return mFragment;
+    }
 /**************************************************************************************************/
 
 

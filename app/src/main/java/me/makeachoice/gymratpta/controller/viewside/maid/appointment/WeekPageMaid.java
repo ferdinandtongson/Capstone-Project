@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
-import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -26,7 +26,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      void detach() - called when fragment is being disassociated from Activity
  *      void saveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
  *      String getKey() - get maid key value
- *      MyFragment getFragment() - get fragment maintained by maid
+ *      Fragment getFragment() - get new instance fragment
  */
 
 /**************************************************************************************************/
@@ -44,11 +44,11 @@ public class WeekPageMaid extends MyMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
- * ExerciseMaid - constructor
+ * WeekPageMaid - constructor
  */
 /**************************************************************************************************/
     /*
-     * ExerciseMaid(...) - constructor
+     * WeekPageMaid(...) - constructor
      */
     public WeekPageMaid(String maidKey, int layoutId){
         //get maidKey
@@ -56,9 +56,6 @@ public class WeekPageMaid extends MyMaid implements BasicFragment.Bridge{
 
         //fragment layout id number
         mLayoutId = layoutId;
-
-        //create fragment
-        mFragment = BasicFragment.newInstance(maidKey);
     }
 
 /**************************************************************************************************/

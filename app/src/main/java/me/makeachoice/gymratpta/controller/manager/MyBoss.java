@@ -7,10 +7,8 @@ import android.os.AsyncTask;
 
 import java.util.concurrent.Executor;
 
-import me.makeachoice.library.android.base.controller.manager.MyHouseKeeperRegistry;
-import me.makeachoice.library.android.base.controller.viewside.MaidRegistry;
+import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
-import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
 
 
 /**************************************************************************************************/
@@ -150,44 +148,8 @@ public abstract class MyBoss extends Application{
 /**************************************************************************************************/
 /*
  * HouseKeeper and Maid Methods:
- *      MyHouseKeeper requestHouseKeeper(int) - get HouseKeeper requested
- *      void registerMaid(int,MyMaid) - register Maid
- *      MyMaid requestMaid(int) - get requested Maid
- *      void unregisterMaid(int) - remove Maid from registry
  */
 /**************************************************************************************************/
-    /*
-     * MyHouseKeeper requestHouseKeeper(int) - get requested HouseKeeper
-     * @param id - id number of HouseKeeper
-     * @return - HouseKeeper object
-     */
-    /*
-     * void registerMaid(int,MyMaid) - register Maid
-     * @param id - Maid id number
-     * @param maid - MyMaid class
-     */
-    public void registerMaid(int id, MyMaid maid){
-        //register Maid
-        mMaidRegistry.registerMaid(id, maid);
-    }
-
-    /*
-     * MyMaid requestMaid(int) - get requested Maid
-     * @param id - id number of Maid
-     * @return - Maid object
-     */
-    public MyMaid requestMaid(int id){
-        return mMaidRegistry.requestMaid(id);
-    }
-
-    /*
-     * void unregisterMaid(int) - remove Maid from registry
-     * @param id - id number of Maid
-     */
-    public void unregisterMaid(int id){
-        //remove maid from registry
-        mMaidRegistry.unregisterMaid(id);
-    }
 
 
 /**************************************************************************************************/

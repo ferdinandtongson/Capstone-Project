@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
-import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.R.id.bottom_nav_item1;
