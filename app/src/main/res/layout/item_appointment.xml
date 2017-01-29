@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/choiceItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:paddingTop="10dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="10dp"
+    android:clickable="true"
+    >
+
+    <TextView
+        android:id="@+id/txtTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentEnd="true"
+        android:textSize="12sp"
+        android:text="09:00 - 10:00"
+        />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgProfile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/gym_rat_black_48dp"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        />
+
+    <TextView
+        android:id="@+id/txtContactName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/imgProfile"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        />
+
+
+    <ImageButton
+        android:id="@+id/imgInfo"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_toEndOf="@id/imgProfile"
+        android:layout_below="@id/txtContactName"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/ic_client_info_black_36dp"
+        android:clickable="true"
+        />
+
+    <ImageButton
+        android:id="@+id/imgEmail"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_toEndOf="@id/imgInfo"
+        android:layout_below="@id/txtContactName"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/ic_mail_outline_black_36dp"
+        android:clickable="true"
+        />
+
+    <ImageButton
+        android:id="@+id/imgPhone"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_toEndOf="@id/imgEmail"
+        android:layout_below="@id/txtContactName"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/ic_phone_black_36dp"
+        android:clickable="true"
+        />
+
+
+</RelativeLayout>
