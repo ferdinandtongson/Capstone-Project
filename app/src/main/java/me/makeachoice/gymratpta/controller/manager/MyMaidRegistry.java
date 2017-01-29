@@ -1,8 +1,8 @@
-package me.makeachoice.library.android.base.controller.manager;
+package me.makeachoice.gymratpta.controller.manager;
 
 import java.util.HashMap;
 
-import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 
 
 /**************************************************************************************************/

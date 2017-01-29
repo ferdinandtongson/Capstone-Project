@@ -8,9 +8,7 @@ import android.os.AsyncTask;
 import java.util.concurrent.Executor;
 
 import me.makeachoice.library.android.base.controller.viewside.HouseKeeperRegistry;
-import me.makeachoice.library.android.base.controller.viewside.MaidRegistry;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
-import me.makeachoice.library.android.base.controller.viewside.maid.MyMaid;
 
 /**************************************************************************************************/
 /*
@@ -45,9 +43,6 @@ public abstract class MyBoss extends Application{
 
     //mKeeperRegistry - MyHouseKeeper registry
     protected HouseKeeperRegistry mKeeperRegistry;
-
-    //mMaidRegistry - MyMaid registry
-    protected MaidRegistry mMaidRegistry;
 
 /**************************************************************************************************/
 
@@ -169,34 +164,6 @@ public abstract class MyBoss extends Application{
     public MyHouseKeeper requestHouseKeeper(int id){
         //get requested HouseKeeper from buffer
         return mKeeperRegistry.requestHouseKeeper(id);
-    }
-
-    /*
-     * void registerMaid(int,MyMaid) - register Maid
-     * @param id - Maid id number
-     * @param maid - MyMaid class
-     */
-    public void registerMaid(int id, MyMaid maid){
-        //register Maid
-        mMaidRegistry.registerMaid(id, maid);
-    }
-
-    /*
-     * MyMaid requestMaid(int) - get requested Maid
-     * @param id - id number of Maid
-     * @return - Maid object
-     */
-    public MyMaid requestMaid(int id){
-        return mMaidRegistry.requestMaid(id);
-    }
-
-    /*
-     * void unregisterMaid(int) - remove Maid from registry
-     * @param id - id number of Maid
-     */
-    public void unregisterMaid(int id){
-        //remove maid from registry
-        mMaidRegistry.unregisterMaid(id);
     }
 
 

@@ -111,7 +111,7 @@ public class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
  *      void setPageTitle(ArrayList<String>) - set title list used by adapter
  *      void setPageTitle(String[]) - set title array used by adapter
  */
-    /**************************************************************************************************/
+/**************************************************************************************************/
     /*
      * void setPageTitle(ArrayList<String>) - set title list used by adapter
      */

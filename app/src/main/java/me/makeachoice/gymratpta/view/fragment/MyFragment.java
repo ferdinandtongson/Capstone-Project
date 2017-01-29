@@ -1,4 +1,4 @@
-package me.makeachoice.library.android.base.view.fragment;
+package me.makeachoice.gymratpta.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 /*
  * MyFragment abstract class extends Fragments
  */
+
 /**************************************************************************************************/
 
 public abstract class MyFragment extends Fragment {
@@ -110,14 +111,6 @@ public abstract class MyFragment extends Fragment {
         super.onSaveInstanceState(bundle);
         mBridge.saveInstanceState(bundle);
     }
-
-    /*
-     * void setMaidKey(String) - sets the key string of the Maid taking care of the fragment
-     */
-    public void setMaidKey(String maidKey){
-        mMaidKey = maidKey;
-    }
-
 
 /**************************************************************************************************/
 

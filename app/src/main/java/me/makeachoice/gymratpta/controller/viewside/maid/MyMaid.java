@@ -1,14 +1,15 @@
-package me.makeachoice.library.android.base.controller.viewside.maid;
+package me.makeachoice.gymratpta.controller.viewside.maid;
 
 import android.os.Bundle;
 import android.view.View;
 
-import me.makeachoice.library.android.base.view.fragment.MyFragment;
+import me.makeachoice.gymratpta.view.fragment.MyFragment;
 
 /**************************************************************************************************/
 /*
  * MyMaid abstract class manages MyFragment classes and is typically instantiated by MyHouseKeeper
  */
+
 /**************************************************************************************************/
 
 public abstract class MyMaid {
@@ -80,13 +81,6 @@ public abstract class MyMaid {
      */
     public String getKey(){
         return mMaidKey;
-    }
-
-    /*
-     * MyFragment getFragment() - get fragment maintained by maid
-     */
-    public MyFragment getFragment(){
-        return mFragment;
     }
 
 /**************************************************************************************************/
