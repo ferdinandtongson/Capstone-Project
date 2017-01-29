@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.SessionRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.ContactsItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
@@ -65,6 +66,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
  */
 /**************************************************************************************************/
 
+    private SessionRecyclerAdapter mAdapter;
 
 /**************************************************************************************************/
 
@@ -134,30 +136,26 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      * void initializeLayout() - initialize ui for mobile device
      */
     private void initializeLayout(){
-        Log.d("Choice", "ClientKeeper.initializeLayout");
+        Log.d("Choice", "SessionKeeper.initializeLayout");
         String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_noSessions);
         setEmptyMessage(emptyMsg);
 
         initializeAdapter();
     }
 
-    private ClientRecyclerAdapter mAdapter;
     private void initializeAdapter() {
-        Log.d("Choice", "     initialize adapter");
         //layout resource file id used by recyclerView adapter
-        int adapterLayoutId = R.layout.item_client;
+        int adapterLayoutId = R.layout.item_appointment;
 
-        ArrayList<ContactsItem> mContactsList = new ArrayList();
+        mData = createDataStub();
 
         //create adapter consumed by the recyclerView
-        mAdapter = new ClientRecyclerAdapter(mActivity, adapterLayoutId);
-        mAdapter.swapData(mContactsList);
-        Log.d("Choice", "          adapter: " + mAdapter.toString());
-        Log.d("Choice", "          recycler: " + mBasicRecycler.toString());
+        mAdapter = new SessionRecyclerAdapter(mActivity, adapterLayoutId);
+        mAdapter.setStubData(mData);
 
         mBasicRecycler.setAdapter(mAdapter);
 
-        checkForEmptyRecycler(mContactsList.isEmpty());
+        checkForEmptyRecycler(mData.isEmpty());
 
     }
 
@@ -180,6 +178,78 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 /**************************************************************************************************/
 
 
+/**************************************************************************************************/
+/*
+ * StubItem - used for debugging purposes
+ */
+/**************************************************************************************************/
 
+
+    private ArrayList<SessionRecyclerAdapter.StubItem> mData;
+    private ArrayList<SessionRecyclerAdapter.StubItem> createDataStub(){
+        ArrayList<SessionRecyclerAdapter.StubItem> stubData = new ArrayList();
+
+        SessionRecyclerAdapter.StubItem item01 = new SessionRecyclerAdapter.StubItem();
+        item01.clientName = "Quess Starbringer";
+        item01.clientPhoneNumber = "Monday";
+        item01.clientSMS = "appointments";
+        item01.clientWorkout = "workout01";
+        item01.appointmentTime = "09:00 - 10:00";
+
+        SessionRecyclerAdapter.StubItem item02 = new SessionRecyclerAdapter.StubItem();
+        item02.clientName = "Quess Starbringer";
+        item02.clientPhoneNumber = "Monday";
+        item02.clientSMS = "appointments";
+        item02.clientWorkout = "workout01";
+        item02.appointmentTime = "10:00 - 10:00";
+
+        SessionRecyclerAdapter.StubItem item03 = new SessionRecyclerAdapter.StubItem();
+        item03.clientName = "Quess Starbringer";
+        item03.clientPhoneNumber = "Monday";
+        item03.clientSMS = "appointments";
+        item03.clientWorkout = "workout01";
+        item03.appointmentTime = "11:00 - 12:00";
+
+        SessionRecyclerAdapter.StubItem item04 = new SessionRecyclerAdapter.StubItem();
+        item04.clientName = "Quess Starbringer";
+        item04.clientPhoneNumber = "Monday";
+        item04.clientSMS = "appointments";
+        item04.clientWorkout = "workout01";
+        item04.appointmentTime = "12:00 - 13:00";
+
+        SessionRecyclerAdapter.StubItem item05 = new SessionRecyclerAdapter.StubItem();
+        item05.clientName = "Quess Starbringer";
+        item05.clientPhoneNumber = "Monday";
+        item05.clientSMS = "appointments";
+        item05.clientWorkout = "workout01";
+        item05.appointmentTime = "13:00 - 14:00";
+
+        SessionRecyclerAdapter.StubItem item06 = new SessionRecyclerAdapter.StubItem();
+        item06.clientName = "Quess Starbringer";
+        item06.clientPhoneNumber = "Monday";
+        item06.clientSMS = "appointments";
+        item06.clientWorkout = "workout01";
+        item06.appointmentTime = "14:00 - 15:00";
+
+        SessionRecyclerAdapter.StubItem item07 = new SessionRecyclerAdapter.StubItem();
+        item07.clientName = "Quess Starbringer";
+        item07.clientPhoneNumber = "Monday";
+        item07.clientSMS = "appointments";
+        item07.clientWorkout = "workout01";
+        item07.appointmentTime = "15:00 - 16:00";
+
+        //TODO - create actual data for adapter to consume
+        stubData.add(item01);
+        stubData.add(item02);
+        stubData.add(item03);
+        stubData.add(item04);
+        stubData.add(item05);
+        stubData.add(item06);
+        stubData.add(item07);
+
+        return stubData;
+    }
+
+/**************************************************************************************************/
 
 }

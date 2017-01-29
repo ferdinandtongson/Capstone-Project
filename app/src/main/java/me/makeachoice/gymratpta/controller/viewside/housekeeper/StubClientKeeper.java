@@ -1,16 +1,10 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.ContactsItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
@@ -66,10 +60,11 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      mBoss - Boss application
  */
 /**************************************************************************************************/
 
+    ArrayList<ContactsItem> mData;
+    private ClientRecyclerAdapter mAdapter;
 
 /**************************************************************************************************/
 
@@ -139,16 +134,13 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      * void initializeLayout() - initialize ui for mobile device
      */
     private void initializeLayout(){
-        Log.d("Choice", "ClientKeeper.initializeLayout");
         String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_addClients);
         setEmptyMessage(emptyMsg);
 
         initializeAdapter();
     }
 
-    private ClientRecyclerAdapter mAdapter;
     private void initializeAdapter() {
-        Log.d("Choice", "     initialize adapter");
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.item_client;
 
@@ -157,8 +149,6 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //create adapter consumed by the recyclerView
         mAdapter = new ClientRecyclerAdapter(mActivity, adapterLayoutId);
         mAdapter.swapData(mData);
-        Log.d("Choice", "          adapter: " + mAdapter.toString());
-        Log.d("Choice", "          recycler: " + mBasicRecycler.toString());
 
         mBasicRecycler.setAdapter(mAdapter);
 
@@ -166,7 +156,26 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
     }
 
-    ArrayList<ContactsItem> mData;
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Class Methods
+ *      void backPressed() - called when Activity.onBackPressed is called
+ */
+/**************************************************************************************************/
+    /*
+     * void backPressed() - called when Activity.onBackPressed is called
+     */
+    @Override
+    public void backPressed(){
+    }
+
+
+/**************************************************************************************************/
+
+
+
     private ArrayList<ContactsItem> createContactsStub(){
         ArrayList<ContactsItem> contactList = new ArrayList();
 
@@ -223,27 +232,5 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
         return contactList;
     }
-
-
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * Class Methods
- *      void backPressed() - called when Activity.onBackPressed is called
- */
-/**************************************************************************************************/
-    /*
-     * void backPressed() - called when Activity.onBackPressed is called
-     */
-    @Override
-    public void backPressed(){
-    }
-
-
-/**************************************************************************************************/
-
-
-
 
 }

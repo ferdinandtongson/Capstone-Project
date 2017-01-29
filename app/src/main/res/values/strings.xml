@@ -34,6 +34,8 @@
     <string name="add_clients" translatable="true">Add Clients</string>
     <string name="appointments" translatable="true">Appointments</string>
     <string name="clients" translatable="true">Clients</string>
+    <string name="delete" translatable="true">Delete</string>
+    <string name="edit" translatable="true">Edit</string>
     <string name="exercises" translatable="true">Exercises</string>
     <string name="for_the_day" translatable="true">For the Day</string>
     <string name="for_the_week" translatable="true">For the Week</string>
