@@ -4,6 +4,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.MenuItem;
 
 import me.makeachoice.gymratpta.R;
@@ -48,8 +49,7 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
         //get navigation bar
         mNav = (BottomNavigationView)activity.findViewById(DEFAULT_BOTTOMNAV_ID);
 
-        //inflate menu
-        mNav.inflateMenu(DEFAULT_MENU_ID);
+        initializeNavigation(DEFAULT_MENU_ID);
     }
 
     public AppointmentNav(MyActivity activity, int bottomId, int menuId){
@@ -59,9 +59,17 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
         //get navigation bar
         mNav = (BottomNavigationView)activity.findViewById(bottomId);
 
+        initializeNavigation(menuId);
+    }
+
+    private void initializeNavigation(int menuId){
         //inflate menu
         mNav.inflateMenu(menuId);
+
+        mNav.setOnNavigationItemSelectedListener(this);
+        onNavigationItemSelected(mNav.getMenu().getItem(0));
     }
+
 
 /**************************************************************************************************/
 
@@ -77,17 +85,18 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
     public boolean onNavigationItemSelected(MenuItem item){
         int itemId = item.getItemId();
 
+        Log.d("Choice", "AppNav.onNavigationItemSelected: " + itemId);
         MyMaid maid;
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         switch (itemId) {
             case bottom_nav_item1: // 0 - viewPage of lists of exercises
-
-                maid = maidRegistry.requestMaid(MaidRegistry.MAID_EXERCISE);
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_DAY_PAGE);
+                Log.d("Choice", "     item0: " + maid.toString());
                 break;
             case bottom_nav_item2: // 1 - list of exercise routines
-
-                maid = maidRegistry.requestMaid(MaidRegistry.MAID_EXERCISE);
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_WEEK_PAGE);
+                Log.d("Choice", "     item1: " + maid.toString());
                 break;
             default:
                 maid = null;

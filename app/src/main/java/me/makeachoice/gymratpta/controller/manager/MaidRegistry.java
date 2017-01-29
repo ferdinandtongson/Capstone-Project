@@ -2,6 +2,8 @@ package me.makeachoice.gymratpta.controller.manager;
 
 import android.util.Log;
 
+import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayPageMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.appointment.WeekPageMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
 import me.makeachoice.library.android.base.controller.manager.MyMaidRegistry;
@@ -26,6 +28,9 @@ public class MaidRegistry extends MyMaidRegistry {
     public static final String MAID_EXERCISE = "Exercise Maid";
     public static final String MAID_ROUTINE = "Routine Maid";
     public static final String MAID_EXERCISE_LIST = "Exercise List Maid";
+
+    public static final String MAID_DAY_PAGE = "Day Page Maid";
+    public static final String MAID_WEEK_PAGE = "Week Page Maid";
 
 /**************************************************************************************************/
 
@@ -87,6 +92,30 @@ public class MaidRegistry extends MyMaidRegistry {
         Log.d("Choice", "MaidRegistry - size " + count);
 
 
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Exercise Maids:
+ */
+/**************************************************************************************************/
+
+    public void initializeDayPageMaid(String maidKey, int layoutId){
+        //create maid
+        DayPageMaid maid = new DayPageMaid(maidKey, layoutId);
+
+        //register maid
+        registerMaid(maidKey, maid);
+    }
+
+    public void initializeWeekPageMaid(String maidKey, int layoutId){
+        //create maid
+        WeekPageMaid maid = new WeekPageMaid(maidKey, layoutId);
+
+        //register maid
+        registerMaid(maidKey, maid);
     }
 
 /**************************************************************************************************/

@@ -60,6 +60,9 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
      * ExerciseMaid(...) - constructor
      */
     public ExerciseMaid(String maidKey, int layoutId){
+        //get maidKey
+        mMaidKey = maidKey;
+
         //fragment layout id number
         mLayoutId = layoutId;
 
@@ -133,7 +136,7 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         MyActivity activity = (MyActivity)mFragment.getActivity();
 
         TextView txtTitle = (TextView)activity.findViewById(R.id.stub_txtTitle);
-        txtTitle.setText("ExerciseMaid");
+        txtTitle.setText(mMaidKey);
 
         //load category and exercise data
         //loadData();

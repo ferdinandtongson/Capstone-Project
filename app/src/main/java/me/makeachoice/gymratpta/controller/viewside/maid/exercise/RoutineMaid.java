@@ -51,6 +51,9 @@ public class RoutineMaid extends MyMaid implements BasicFragment.Bridge{
      * ExerciseMaid(...) - constructor
      */
     public RoutineMaid(String maidKey, int layoutId){
+        //get maidKey
+        mMaidKey = maidKey;
+
         //fragment layout id number
         mLayoutId = layoutId;
 
@@ -123,7 +126,7 @@ public class RoutineMaid extends MyMaid implements BasicFragment.Bridge{
         MyActivity activity = (MyActivity)mFragment.getActivity();
 
         TextView txtTitle = (TextView)activity.findViewById(R.id.stub_txtTitle);
-        txtTitle.setText("RoutineMaid");
+        txtTitle.setText(mMaidKey);
 
     }
 
