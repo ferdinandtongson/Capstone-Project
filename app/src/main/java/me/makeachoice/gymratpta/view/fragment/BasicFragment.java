@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.library.android.base.view.fragment.MyFragment;
 
@@ -97,13 +96,17 @@ public class BasicFragment extends MyFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        Log.d("Choice", "BasicFragment.onCreateView");
         //check if bundle has been sent/saved
         if(savedInstanceState != null){
             //get id number of maid maintaining this fragment
             mMaidKey = savedInstanceState.getString(TAG_MAID_KEY);
         }
+        else{
+            mMaidKey = getArguments().getString(TAG_MAID_KEY);
+        }
 
+        Log.d("Choice", "     key: " + mMaidKey);
         //get application context, the Boss
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
@@ -114,6 +117,7 @@ public class BasicFragment extends MyFragment {
             throw new ClassCastException("Maid must implement Bridge interface");
         }
 
+        Log.d("Choice", "     bridge: " + mBridge.toString());
         //create and return fragment layout view from file found in res/layout/xxx.xml,
         if(mLayout == null){
             //mLayout = inflater.inflate(mLayoutId, container, false);

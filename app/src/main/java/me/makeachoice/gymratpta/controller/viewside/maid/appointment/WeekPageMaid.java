@@ -58,10 +58,7 @@ public class WeekPageMaid extends MyMaid implements BasicFragment.Bridge{
         mLayoutId = layoutId;
 
         //create fragment
-        mFragment = new BasicFragment();
-
-        //attach maid key to fragment
-        mFragment.setMaidKey(maidKey);
+        mFragment = BasicFragment.newInstance(maidKey);
     }
 
 /**************************************************************************************************/

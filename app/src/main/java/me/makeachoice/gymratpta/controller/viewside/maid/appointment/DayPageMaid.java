@@ -58,10 +58,10 @@ public class DayPageMaid extends MyMaid implements BasicFragment.Bridge{
         mLayoutId = layoutId;
 
         //create fragment
-        mFragment = new BasicFragment();
+        mFragment = BasicFragment.newInstance(maidKey);
 
         //attach maid key to fragment
-        mFragment.setMaidKey(maidKey);
+        //mFragment.setMaidKey(maidKey);
     }
 
 /**************************************************************************************************/
