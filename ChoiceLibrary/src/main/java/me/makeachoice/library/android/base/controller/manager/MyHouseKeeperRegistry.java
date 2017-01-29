@@ -21,7 +21,7 @@ public abstract class MyHouseKeeperRegistry {
 /**************************************************************************************************/
 
     //mRegistry - buffer holding MyHouseKeeper classes
-    private HashMap<String, MyHouseKeeper> mRegistry = new HashMap<>();
+    protected HashMap<String, MyHouseKeeper> mRegistry = new HashMap<>();
 
 /**************************************************************************************************/
 

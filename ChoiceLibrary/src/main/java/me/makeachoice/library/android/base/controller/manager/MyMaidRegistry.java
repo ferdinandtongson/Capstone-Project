@@ -21,7 +21,7 @@ public abstract class MyMaidRegistry {
 /**************************************************************************************************/
 
     //mRegistry - buffer holding MyMaid classes
-    private HashMap<String, MyMaid> mRegistry = new HashMap<>();
+    protected HashMap<String, MyMaid> mRegistry = new HashMap<>();
 
 /**************************************************************************************************/
 
