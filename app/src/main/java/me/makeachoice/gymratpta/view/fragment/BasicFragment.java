@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.view.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +40,7 @@ public class BasicFragment extends MyFragment {
  */
 /**************************************************************************************************/
 
-    //mTagKey - tag used to get maid key from bundle
-    private String mTagKey;
+    public final static String TAG_MAID_KEY = "tag_maid_key";
 
 /**************************************************************************************************/
 
@@ -61,10 +61,8 @@ public class BasicFragment extends MyFragment {
         // Supply num input as an argument.
         Bundle args = new Bundle();
 
-        String tagKey = f.getString(R.string.tag_maid_key);
-
         //add maid key to bundle
-        args.putString(tagKey, maidKey);
+        args.putString(TAG_MAID_KEY, maidKey);
 
         //set bundle in arguments
         f.setArguments(args);
@@ -99,13 +97,11 @@ public class BasicFragment extends MyFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //get tag used to store maid key
-        mTagKey = getString(R.string.tag_maid_key);
 
         //check if bundle has been sent/saved
         if(savedInstanceState != null){
             //get id number of maid maintaining this fragment
-            mMaidKey = savedInstanceState.getString(mTagKey);
+            mMaidKey = savedInstanceState.getString(TAG_MAID_KEY);
         }
 
         //get application context, the Boss
@@ -133,7 +129,7 @@ public class BasicFragment extends MyFragment {
      */
     @Override
     public void onSaveInstanceState(Bundle bundle){
-        bundle.putString(mTagKey, mMaidKey);
+        bundle.putString(TAG_MAID_KEY, mMaidKey);
         super.onSaveInstanceState(bundle);
     }
 
