@@ -2,6 +2,7 @@ package me.makeachoice.gymratpta.controller.viewside.maid;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;

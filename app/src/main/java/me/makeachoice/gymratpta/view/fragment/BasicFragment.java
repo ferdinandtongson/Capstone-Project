@@ -55,6 +55,7 @@ public class BasicFragment extends MyFragment {
 /**************************************************************************************************/
 
     public static BasicFragment newInstance(String maidKey){
+        Log.d("Choice", "BasicFragment: " + maidKey);
         BasicFragment f = new BasicFragment();
         // Supply num input as an argument.
         Bundle args = new Bundle();
@@ -123,6 +124,7 @@ public class BasicFragment extends MyFragment {
             mLayout = mBridge.createView(inflater, container, savedInstanceState);
         }
 
+        Log.d("Choice", "     layout: " + mLayout.toString());
         return mLayout;
     }
 

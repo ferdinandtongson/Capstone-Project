@@ -150,11 +150,14 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         //viewPager layout used by exercise maid
-        int layoutId = R.layout.stub_text;
+        int layoutId = R.layout.viewpager;
 
         //initialize exercise maid
         maidRegistry.initializeExerciseMaid(MaidRegistry.MAID_EXERCISE, layoutId);
-        maidRegistry.initializeRoutineMaid(MaidRegistry.MAID_ROUTINE, layoutId);
+
+        //layout used by routine maid
+        int routineId = R.layout.stub_text;
+        maidRegistry.initializeRoutineMaid(MaidRegistry.MAID_ROUTINE, routineId);
     }
 
     /*

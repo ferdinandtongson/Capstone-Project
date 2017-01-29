@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
+import me.makeachoice.gymratpta.controller.viewside.viewpager.ExerciseViewPager;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static me.makeachoice.gymratpta.R.id.txtTitle;
 
 /**************************************************************************************************/
 /*
@@ -126,9 +129,8 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
      */
     private void prepareFragment() {
         MyActivity activity = (MyActivity)mFragment.getActivity();
-
-        TextView txtTitle = (TextView)activity.findViewById(R.id.stub_txtTitle);
-        txtTitle.setText(mMaidKey);
+        //TextView txtTitle = (TextView)activity.findViewById(R.id.stub_txtTitle);
+        //txtTitle.setText(mMaidKey);
 
         //load category and exercise data
         //loadData();
@@ -137,7 +139,7 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         //initializeViewPagerMaids(mCategories.size());
 
         //initialize view pager
-        //ExerciseViewPager pager = new ExerciseViewPager(mFragment);
+        ExerciseViewPager pager = new ExerciseViewPager(mFragment);
 
     }
 

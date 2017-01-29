@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,6 @@ import android.widget.TextView;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
-import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
@@ -18,7 +18,6 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
  *      View mLayout - fragment layout view holding the child views
- *      MyFragment mFragment - fragment being maintained by the Maid
  *
  * Methods from MyMaid:
  *      void activityCreated() - called when Activity.onCreate() completed
@@ -116,13 +115,14 @@ public class RoutineMaid extends MyMaid implements BasicFragment.Bridge{
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment(){
-        MyActivity activity = (MyActivity)mFragment.getActivity();
+        Log.d("Choice", "RoutineMaid.prepareFragment");
+        //Log.d("Choice", "     mFragment: " + mFragment.toString());
+        //MyActivity activity = (MyActivity)mFragment.getActivity();
 
-        TextView txtTitle = (TextView)activity.findViewById(R.id.stub_txtTitle);
+        TextView txtTitle = (TextView)mLayout.findViewById(R.id.stub_txtTitle);
         txtTitle.setText(mMaidKey);
 
     }
-
 
 /**************************************************************************************************/
 
