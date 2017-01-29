@@ -30,23 +30,51 @@
     <string name="recycler_tagPosition" translatable="false">tag_position</string>
     <string name="recycler_tagItem" translatable="false">tag_item</string>
 
+    <!-- default exercise categories -->
+    <string name="exerciseCategory_arms" translatable="false">@string/arms</string>
+    <string name="exerciseCategory_back" translatable="false">@string/back</string>
+    <string name="exerciseCategory_cardio" translatable="false">@string/cardio</string>
+    <string name="exerciseCategory_chest" translatable="false">@string/chest</string>
+    <string name="exerciseCategory_core" translatable="false">@string/core</string>
+    <string name="exerciseCategory_legs" translatable="false">@string/legs</string>
+    <string name="exerciseCategory_shoulders" translatable="false">@string/shoulders</string>
+
+    <!-- exercise data -->
+    <string name="exerciseData_reps" translatable="false">@string/reps</string>
+    <string name="exerciseData_weight" translatable="false">@string/weight</string>
+    <string name="exerciseData_distance" translatable="false">@string/distance</string>
+    <string name="exerciseData_time" translatable="false">@string/time</string>
+    <string name="exerciseData_none" translatable="false">@string/none</string>
+
     <!-- dictionary -->
     <string name="add_clients" translatable="true">Add Clients</string>
     <string name="appointments" translatable="true">Appointments</string>
+    <string name="arms" translatable="true">Arms</string>
+    <string name="back" translatable="true">Back</string>
+    <string name="cardio" translatable="true">Cardio</string>
+    <string name="chest" translatable="true">Chest</string>
     <string name="clients" translatable="true">Clients</string>
+    <string name="core" translatable="true">Core</string>
     <string name="delete" translatable="true">Delete</string>
+    <string name="distance" translatable="true">Distance</string>
     <string name="edit" translatable="true">Edit</string>
     <string name="exercises" translatable="true">Exercises</string>
     <string name="for_the_day" translatable="true">For the Day</string>
     <string name="for_the_week" translatable="true">For the Week</string>
     <string name="help" translatable="true">Help</string>
     <string name="gym_rat" translatable="true">Gym Rat</string>
+    <string name="legs" translatable="true">Legs</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
+    <string name="none" translatable="true">None</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="quick_help" translatable="true">Quick Help</string>
+    <string name="reps" translatable="true">Reps</string>
     <string name="routines" translatable="true">Routines</string>
     <string name="sessions" translatable="true">Sessions</string>
     <string name="settings" translatable="true">Settings</string>
     <string name="sign_out" translatable="true">Sign Out</string>
+    <string name="shoulders" translatable="true">Shoulders</string>
+    <string name="time" translatable="true">Time</string>
+    <string name="weight" translatable="true">Weight</string>
 
 </resources>
