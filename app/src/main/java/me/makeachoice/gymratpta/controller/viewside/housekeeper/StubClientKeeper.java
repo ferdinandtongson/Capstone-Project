@@ -134,7 +134,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      * void initializeLayout() - initialize ui for mobile device
      */
     private void initializeLayout(){
-        String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_addClients);
+        String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_addClient);
         setEmptyMessage(emptyMsg);
 
         initializeAdapter();

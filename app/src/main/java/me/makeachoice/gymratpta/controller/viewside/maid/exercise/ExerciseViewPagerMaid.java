@@ -1,34 +1,30 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
-import me.makeachoice.gymratpta.controller.viewside.viewpager.ExerciseViewPager;
-import me.makeachoice.gymratpta.model.item.ContactsItem;
-import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
+import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ExerciseRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
-import me.makeachoice.gymratpta.model.stubData.CategoryStubData;
-import me.makeachoice.gymratpta.model.stubData.ExerciseStubData;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
-import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * ExerciseMaid initializes and takes care of the viewPager fragment that show different lists of
- * exercises separated by category
- *
+ * TODO - add description
  * Variables from MyMaid:
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
  *      View mLayout - fragment layout view holding the child views
- *      MyFragment mFragment - fragment being maintained by the Maid
  *
  * Methods from MyMaid:
  *      void activityCreated() - called when Activity.onCreate() completed
@@ -38,9 +34,10 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      String getKey() - get maid key value
  *      Fragment getFragment() - get new instance fragment
  */
+
 /**************************************************************************************************/
 
-public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
+public class ExerciseViewPagerMaid extends MyMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -48,26 +45,37 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
  */
 /**************************************************************************************************/
 
-    //mCategories - list of category items used by viewPager tabLayout
-    ArrayList<String> mPageTitles;
+    private ArrayList<ExerciseItem> mData;
+
+    //mTxtEmpty - textView component displayed when recycler is empty
+    protected TextView mTxtEmpty;
+
+    //mBasicRecycler - recycler component
+    protected BasicRecycler mBasicRecycler;
+
+    //mFAB - floating action button component
+    protected FloatingActionButton mFAB;
 
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * ExerciseMaid - constructor
+ * ExerciseViewPagerMaid - constructor
  */
 /**************************************************************************************************/
     /*
-     * ExerciseMaid(...) - constructor
+     * ExerciseViewPagerMaid(...) - constructor
      */
-    public ExerciseMaid(String maidKey, int layoutId){
+    public ExerciseViewPagerMaid(String maidKey, int layoutId, ArrayList<ExerciseItem> exercises){
         //get maidKey
         mMaidKey = maidKey;
 
         //fragment layout id number
         mLayoutId = layoutId;
+
+        //get exercise list
+        mData = exercises;
     }
 
 /**************************************************************************************************/
@@ -128,59 +136,43 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
     /*
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
-    private void prepareFragment() {
-        //load category and exercise data
-        loadData();
+    private void prepareFragment(){
+        Log.d("Choice", "ExerciseViewPagerMaid.prepareFragment");
 
-        //initialize maids used by viewPager
-        initializeVPMaids();
-
-        //initialize view pager
-        ExerciseViewPager pager = new ExerciseViewPager(mFragment, mPageTitles);
-
+        initializeRecyclerComponents();
+        initializeAdapter();
     }
 
     /*
-     * void loadData() - load category and exercise data
+     * void initializeRecyclerComponents() - initialize recycler and related components
      */
-    private void loadData(){
-        //create exercise stub data
-        ExerciseStubData.createDefaultExercises(mFragment.getContext());
+    private void initializeRecyclerComponents(){
+        //initialize recycler component
+        mBasicRecycler = new BasicRecycler(mLayout);
 
-        //create category stub data
-        ArrayList<CategoryItem> mCategories = CategoryStubData.createDefaultCategories(mFragment.getContext());
+        //initialize "empty" textView component
+        int emptyViewId = R.id.choiceEmptyView;
+        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addClient);
+        mTxtEmpty = (TextView) mLayout.findViewById(emptyViewId);
+        mTxtEmpty.setVisibility(View.VISIBLE);
+        mTxtEmpty.setText(emptyMsg);
 
-        mPageTitles = new ArrayList();
-        int count = mCategories.size();
-        for(int i = 0; i < count; i++){
-            mPageTitles.add(mCategories.get(i).categoryName);
-        }
-
+        //initialize floating action button component
+        int fabId = R.id.choiceFab;
+        mFAB = (FloatingActionButton) mLayout.findViewById(fabId);
     }
 
-    /*
-     * void initializeMaid(int) - initialize Maids used by the viewPager component
-     */
-    private void initializeVPMaids(){
-        //layout resource id maid will use to create fragment
-        //int layoutId = R.layout.standard_recycler_fab;
-        int layoutId = R.layout.standard_recycler_fab;
+    private ExerciseRecyclerAdapter mAdapter;
+    private void initializeAdapter() {
+        //layout resource file id used by recyclerView adapter
+        int adapterLayoutId = R.layout.item_exercise;
 
-        int count = mPageTitles.size();
+        //create adapter consumed by the recyclerView
+        mAdapter = new ExerciseRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
+        mAdapter.swapData(mData);
 
-        //initialize maids
-        for(int i = 0; i < count; i++){
-            //get exercise list
-            ArrayList<ExerciseItem> exercises = ExerciseStubData.getExercises(i);
+        mBasicRecycler.setAdapter(mAdapter);
 
-            //create unique maid id numbers using a base number
-            String maidKey = MaidRegistry.MAID_EXERCISE_VP + i;
-
-            MaidRegistry maidRegistry = MaidRegistry.getInstance();
-
-            //initialize maid
-            maidRegistry.initializeExerciseViewPagerMaid(maidKey, layoutId, exercises);
-        }
     }
 
 /**************************************************************************************************/

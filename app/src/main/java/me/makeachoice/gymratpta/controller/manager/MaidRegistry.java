@@ -2,12 +2,16 @@ package me.makeachoice.gymratpta.controller.manager;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.StubMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayPageMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.appointment.WeekPageMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPagerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
+import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 
 /**************************************************************************************************/
 /*
@@ -26,14 +30,14 @@ public class MaidRegistry extends MyMaidRegistry {
 
     private static MaidRegistry instance = null;
 
-    public static final String MAID_EXERCISE = "Exercise Maid";
-    public static final String MAID_ROUTINE = "Routine Maid";
-    public static final String MAID_EXERCISE_LIST = "Exercise List Maid";
+    public static final String MAID_EXERCISE = "ExerciseMaid";
+    public static final String MAID_ROUTINE = "RoutineMaid";
+    public static final String MAID_EXERCISE_VP = "ExerciseViewPagerMaid";
 
-    public static final String MAID_DAY_PAGE = "Day Page Maid";
-    public static final String MAID_WEEK_PAGE = "Week Page Maid";
+    public static final String MAID_DAY_PAGE = "DayPageMaid";
+    public static final String MAID_WEEK_PAGE = "WeekPageMaid";
 
-    public static final String MAID_STUB = "Stub Maid";
+    public static final String MAID_STUB = "StubMaid";
 
 /**************************************************************************************************/
 
@@ -82,19 +86,12 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
-    public void initializeExerciseListMaid(String maidKey, int layoutId, int maidIndex){
+    public void initializeExerciseViewPagerMaid(String maidKey, int layoutId, ArrayList<ExerciseItem> exercises){
         //create maid
-        //ExerciseListMaid maid = new ExerciseListMaid(maidKey, layoutId, maidIndex);
+        ExerciseViewPagerMaid maid = new ExerciseViewPagerMaid(maidKey, layoutId, exercises);
 
         //register maid
-        //registerMaid(maidKey, maid);
-    }
-
-    public void showRegistry(){
-        int count = mRegistry.size();
-        Log.d("Choice", "MaidRegistry - size " + count);
-
-
+        registerMaid(maidKey, maid);
     }
 
 /**************************************************************************************************/

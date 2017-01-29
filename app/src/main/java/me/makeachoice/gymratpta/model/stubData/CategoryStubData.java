@@ -16,31 +16,31 @@ public class CategoryStubData {
         ArrayList<CategoryItem> categories = new ArrayList();
 
         CategoryItem item01 = new CategoryItem();
-        item01.categoryName = ctx.getString(R.string.defaultExercise_arms);
+        item01.categoryName = ctx.getString(R.string.exerciseCategory_arms);
         categories.add(item01);
 
         CategoryItem item02 = new CategoryItem();
-        item02.categoryName = ctx.getString(R.string.defaultExercise_back);
+        item02.categoryName = ctx.getString(R.string.exerciseCategory_back);
         categories.add(item02);
 
         CategoryItem item03 = new CategoryItem();
-        item03.categoryName = ctx.getString(R.string.defaultExercise_cardio);
+        item03.categoryName = ctx.getString(R.string.exerciseCategory_cardio);
         categories.add(item03);
 
         CategoryItem item04 = new CategoryItem();
-        item04.categoryName = ctx.getString(R.string.defaultExercise_chest);
+        item04.categoryName = ctx.getString(R.string.exerciseCategory_chest);
         categories.add(item04);
 
         CategoryItem item05 = new CategoryItem();
-        item05.categoryName = ctx.getString(R.string.defaultExercise_core);
+        item05.categoryName = ctx.getString(R.string.exerciseCategory_core);
         categories.add(item05);
 
         CategoryItem item06 = new CategoryItem();
-        item06.categoryName = ctx.getString(R.string.defaultExercise_legs);
+        item06.categoryName = ctx.getString(R.string.exerciseCategory_legs);
         categories.add(item06);
 
         CategoryItem item07 = new CategoryItem();
-        item07.categoryName = ctx.getString(R.string.defaultExercise_shoulders);
+        item07.categoryName = ctx.getString(R.string.exerciseCategory_shoulders);
         categories.add(item07);
 
         return categories;

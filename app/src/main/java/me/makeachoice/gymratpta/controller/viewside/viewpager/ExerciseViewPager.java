@@ -1,15 +1,10 @@
 package me.makeachoice.gymratpta.controller.viewside.viewpager;
 
-/**************************************************************************************************/
-/*
- * ExerciseViewPager displays different list of exercises separated by category.
- */
-
+import android.app.Activity;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -20,8 +15,12 @@ import me.makeachoice.library.android.base.controller.viewside.adapter.MyFragmen
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
+/*
+ * ExerciseViewPager displays different list of exercises separated by category.
+ */
+/**************************************************************************************************/
 
-public class ExerciseViewPager implements MyFragmentPagerAdapter.Bridge{
+public class ExerciseViewPager{
 
 /**************************************************************************************************/
 /*
@@ -42,9 +41,13 @@ public class ExerciseViewPager implements MyFragmentPagerAdapter.Bridge{
 /**************************************************************************************************/
 
     private final static int DEFAULT_VIEWPAGER_ID = R.id.choiceViewPager;
+    private final static int DEFAULT_TABLAYOUT_ID = R.id.choiceTabLayout;
 
     private Fragment mFragment;
     private ViewPager mPager;
+    private TabLayout mTabLayout;
+    private ViewPagerAdapter mAdapter;
+    private ArrayList<String> mTitleList;
 
 /**************************************************************************************************/
 
@@ -56,30 +59,43 @@ public class ExerciseViewPager implements MyFragmentPagerAdapter.Bridge{
     /*
      * ExerciseViewPager - constructor
      */
-    public ExerciseViewPager(Fragment fragment){
+    public ExerciseViewPager(Fragment fragment, ArrayList<String> titles){
         //get fragment
         mFragment = fragment;
 
-        //get viewPager
-        mPager = (ViewPager)mFragment.getActivity().findViewById(DEFAULT_VIEWPAGER_ID);
+        //get list of titles
+        mTitleList = titles;
 
-        prepareFragment();
+        initialize(fragment.getActivity(), DEFAULT_VIEWPAGER_ID, DEFAULT_TABLAYOUT_ID);
     }
 
     private MyActivity mActivity;
-    public ExerciseViewPager(MyActivity activity){
+    public ExerciseViewPager(MyActivity activity, ArrayList<String> titles){
+        //get activity
         mActivity = activity;
 
-        mPager = (ViewPager)mActivity.findViewById(DEFAULT_VIEWPAGER_ID);
-        prepareFragment();
+        //get list of titles
+        mTitleList = titles;
+
+        initialize(mActivity, DEFAULT_VIEWPAGER_ID, DEFAULT_TABLAYOUT_ID);
     }
 
-    public ExerciseViewPager(Fragment fragment, int pagerId){
+    public ExerciseViewPager(Fragment fragment, int pagerId, int tabId, ArrayList<String> titles){
         //get fragment
         mFragment = fragment;
 
+        //get list of titles
+        mTitleList = titles;
+
+        initialize(fragment.getActivity(), pagerId, tabId);
+    }
+
+    private void initialize(Activity activity, int pagerId, int tabId){
         //get viewPager
         mPager = (ViewPager)mFragment.getActivity().findViewById(pagerId);
+
+        //get tabLayout component
+        mTabLayout = (TabLayout)mFragment.getActivity().findViewById(tabId);
 
         prepareFragment();
     }
@@ -96,33 +112,15 @@ public class ExerciseViewPager implements MyFragmentPagerAdapter.Bridge{
 /**************************************************************************************************/
 
     private void prepareFragment(){
-        //initialize list of titles
-        initializeTitleList();
-
         //initialize maids
-        initializeMaid(mTitleList.size());
+        initializeAdapter(mTitleList.size());
 
         //initialize viewPager component
         initializeViewPager();
+   }
 
-        //initialize tabLayout component
-        initializeTabLayout();
-    }
 
-    private ArrayList<String> mTitleList;
-    private void initializeTitleList(){
-        mTitleList = new ArrayList();
-        mTitleList.add("Stub01");
-        mTitleList.add("Stub02");
-        mTitleList.add("Stub03");
-        mTitleList.add("Stub04");
-        mTitleList.add("Stub05");
-        mTitleList.add("Stub06");
-        mTitleList.add("Stub07");
-    }
-
-    private void initializeMaid(int size){
-        Log.d("Choice", "ExerciseViewPager.initializeMaid");
+    private void initializeAdapter(int size){
         FragmentManager fm;
         if(mFragment != null){
             fm = mFragment.getChildFragmentManager();
@@ -134,80 +132,19 @@ public class ExerciseViewPager implements MyFragmentPagerAdapter.Bridge{
         mAdapter = new ViewPagerAdapter(fm);
 
         for(int i = 0; i < size; i++){
-            //get maid registry
-            MaidRegistry maidRegistry = MaidRegistry.getInstance();
-
-            String maidKey = MaidRegistry.MAID_STUB + i;
-            //StubMaid maid = maidRegistry.initializeStubMaid(maidKey);
-            maidRegistry.initializeRoutineMaid(maidKey, R.layout.stub_text);
-            Log.d("Choice", "     add: " + maidKey);
-
             mAdapter.addTitleList(mTitleList.get(i));
         }
     }
 
-    private ViewPagerAdapter mAdapter;
     private void initializeViewPager(){
-
-        //set title pages used by tabLayout and viewPager component
-        //mAdapter.setPageTitle(mTitleList);
-
         //set adapter for viewPager
         mPager.setAdapter(mAdapter);
 
         //set default start page to be displayed
         mPager.setCurrentItem(0);
 
-    }
-
-    /*
-     * void initializeTabLayout(Activity) - initialize tabLayout component
-     */
-    private void initializeTabLayout(){
-        TabLayout tabLayout;
-        if(mFragment != null){
-            //get tabLayout component
-            tabLayout = (TabLayout)mFragment.getActivity().findViewById(R.id.choiceTabLayout);
-        }
-        else{
-            tabLayout = (TabLayout)mActivity.findViewById(R.id.choiceTabLayout);
-        }
         //link tabLayout to viewPager
-        tabLayout.setupWithViewPager(mPager);
-    }
-
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * MyFragmentStatePagerAdapter.Bridge Methods
- *      Fragment requestFragment(int) - get requested fragment maid
- *      int requestFragmentCount() - get number of fragments
- */
-/**************************************************************************************************/
-    /*
-     * Fragment requestFragment(int) - get requested fragment maid
-     */
-    public Fragment requestFragment(int position){
-        //get maid registry
-        MaidRegistry maidRegistry = MaidRegistry.getInstance();
-
-        String maidKey = MaidRegistry.MAID_STUB + position;
-
-        //get maid in charge of fragment
-        StubMaid maid = (StubMaid)maidRegistry.requestMaid(maidKey);
-        //BasicFragment fragment = BasicFragment.newInstance(maidKey);
-
-        //return fragment held by maid
-        return maid.getFragment();
-    }
-
-    /*
-     * int requestFragmentCount() - get number of fragments
-     */
-    public int requestFragmentCount(){
-        //get number of fragments held by viewPager
-        return mTitleList.size();
+        mTabLayout.setupWithViewPager(mPager);
     }
 
 /**************************************************************************************************/

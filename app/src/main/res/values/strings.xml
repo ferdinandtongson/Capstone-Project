@@ -23,7 +23,8 @@
     <string name="bottom_nav_appointment_week" translatable="true">@string/for_the_week</string>
 
     <!-- empty recycler -->
-    <string name="emptyRecycler_addClients" translatable="false">@string/add_clients</string>
+    <string name="emptyRecycler_addClient" translatable="false">@string/add_client</string>
+    <string name="emptyRecycler_addExercise" translatable="false">@string/add_exercise</string>
     <string name="emptyRecycler_noSessions" translatable="false">@string/no_sessions</string>
 
     <!-- recycler tags -->
@@ -47,7 +48,8 @@
     <string name="exerciseData_none" translatable="false">@string/none</string>
 
     <!-- dictionary -->
-    <string name="add_clients" translatable="true">Add Clients</string>
+    <string name="add_client" translatable="true">Add Client</string>
+    <string name="add_exercise" translatable="true">Add Exercise</string>
     <string name="appointments" translatable="true">Appointments</string>
     <string name="arms" translatable="true">Arms</string>
     <string name="back" translatable="true">Back</string>
