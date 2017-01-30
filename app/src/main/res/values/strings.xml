@@ -31,6 +31,7 @@
     <!-- recycler tags -->
     <string name="recycler_tagPosition" translatable="false">tag_position</string>
     <string name="recycler_tagItem" translatable="false">tag_item</string>
+    <string name="recycler_tagId" translatable="false">tag_id</string>
 
     <!-- default exercise categories -->
     <string name="exerciseCategory_arms" translatable="false">@string/arms</string>
