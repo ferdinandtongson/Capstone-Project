@@ -1,24 +1,29 @@
 package me.makeachoice.gymratpta.controller.viewside.recycler.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.item.ContactsItem;
+import me.makeachoice.gymratpta.model.item.ClientCardItem;
+import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
 /**************************************************************************************************/
 /*
- * ExerciseRecyclerAdapter extends RecyclerView.Adapter. It is used to display exercises defined by
- * the user.
+ * ClientRecyclerAdapter extends RecyclerView.Adapter. It displays a list of client card items with
+ * each card displaying the profile image of the client, client name and one additional info item
+ * (found at the top right corner of the card). It also has an info icon, email icon, and a phone
+ * icon.
  *
  * Methods from RecyclerView.Adapter:
  *      int getItemCount()
@@ -33,46 +38,74 @@ import me.makeachoice.gymratpta.model.item.ContactsItem;
 public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAdapter.MyViewHolder> {
 
 /**************************************************************************************************/
-/**
+/*
  * Class Variables
- *      ArrayList<ContactsItem> mData - an array list of item data consumed by the adapter
- *      mItemLayoutId - item layout resource id
- *      mColorWhite - color white defined in resource colors
- *      mColorPrimary - color primary defined in resource colors
- *      Bridge mBridge - class implementing Bridge interface, typically a Maid class
+ *      int ICON_INFO - identifier tag used by info icon
+ *      int ICON_EMAIL - identifier tag used by email icon
+ *      int ICON_PHONE - identifier tag used by phone icon
  *
- * Interface:
- *      Bridge
+ *      Context mContext - activity context
+ *      int mItemLayoutId - item/card layout resource id
+ *      int mCardDefaultColor - default background card color
+ *      int mCardRetiredColor - background card color used when client is retired
+ *      String mStrRetired - "Retired" string value
+ *
+ *      ArrayList<ClientCardItem> mData - an array list of item data consumed by the adapter
+ *      OnCreateContextMenuListener mCreateContextMenuListener - "create context menu" event listener
+ *      OnClickListener mIconClickListener - icon event click listener
  */
 /**************************************************************************************************/
 
-    //mData - an array list of item data consumed by the adapter
-    private ArrayList<ContactsItem> mData;
+    //ICON_INFO - identifier tag used by info icon
+    public final static int ICON_INFO = 0;
 
-    //mItemLayoutId - item layout resource id
-    private int mItemLayoutId;
+    //ICON_EMAIL - identifier tag used by email icon
+    public final static int ICON_EMAIL = 1;
 
+    //ICON_PHONE - identifier tag used by phone icon
+    public final static int ICON_PHONE = 2;
+
+    //mContext - activity context
     private Context mContext;
 
-    //mBridge - class implementing Bridge, typically a Maid class
-    private Bridge mBridge;
+    //mItemLayoutId - item/card layout resource id
+    private int mItemLayoutId;
 
-    //Implemented communication line to a class
-    public interface Bridge{
-        void itemClicked(View view);
-    }
+    //mCardDefaultColor - default background card color
+    private int mCardDefaultColor;
+
+    //mCardRetiredColor - background card color used when client is retired
+    private int mCardRetiredColor;
+
+    //mStrRetired - "Retired" string value
+    private String mStrRetired;
+
+    //mData - an array list of item data consumed by the adapter
+    private ArrayList<ClientCardItem> mData;
+
+    //mCreateContextMenuListener - "create context menu" event listener
+    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
+
+    //mIconClickListener - icon event click listener
+    private static View.OnClickListener mIconClickListener;
+
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
     /*
-     * ExerciseRecyclerAdapter - constructor
+     * ClientRecyclerAdapter - constructor
      */
     public ClientRecyclerAdapter(Context ctx, int itemLayoutId){
+        //get context
         mContext = ctx;
 
-        //set bridge communication
-        //mBridge = bridge;
+        //get colors used as card background color
+        mCardDefaultColor = DeprecatedUtility.getColor(mContext, R.color.card_active);
+        mCardRetiredColor = DeprecatedUtility.getColor(mContext, R.color.card_retired);
+
+        //get "retired" status string value
+        mStrRetired = mContext.getString(R.string.retired);
 
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
@@ -85,18 +118,14 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
 
 /**************************************************************************************************/
 /*
- * Public Methods:
+ * Getter Methods:
  *      int getItemCount() - get number of items in adapter
- *      ContactsItem getItem(int) - get item at given position
- *      void addItem(ContactsItem) - dynamically add items to adapter
- *      void removeItemAt(int) - remove item from adapter then refresh adapter
- *      void swapData(ArrayList<ContactsItem>) - remove all data from adapter and replace with new data
- *      void clearData() - remove all data from adapter
+ *      ClientCardItem getItem(int) - get item at given position
+ *      ArrayList<ClientCardItem> getData() - get array data used by recycler
  */
 /**************************************************************************************************/
     /*
      * int getItemCount() - get number of items in adapter
-     * @return int - number of items in adapter
      */
     @Override
     public int getItemCount(){
@@ -108,40 +137,68 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
     }
 
     /*
-     * ContactsItem getItem(int) - get item at given position
-     * @param - position;
+     * ClientCardItem getItem(int) - get item at given position
      */
-    public ContactsItem getItem(int position){
+    public ClientCardItem getItem(int position){
         return mData.get(position);
     }
 
-    public ArrayList<ContactsItem> getData(){ return mData; }
+    /*
+     * ArrayList<ClientCardItem> getData() - get array data used by recycler
+     */
+    public ArrayList<ClientCardItem> getData(){ return mData; }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Set Listener Methods:
+ *      void setOnIconClickListener(View.OnClickListener) - set listener for image icon click events
+ *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+ */
+/**************************************************************************************************/
+    /*
+     * void setOnIconClickListener(View.OnClickListener) - set listener for image icon click events
+     */
+    public void setOnIconClickListener(View.OnClickListener listener){
+        mIconClickListener = listener;
+    }
 
     /*
-     * void addItem(ContactsItem) - dynamically add items to adapter
-     * @param item - exercise item data object
+     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
      */
-    public void addItem(ContactsItem item) {
+    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
+        mCreateContextMenuListener = listener;
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Public Methods:
+ *      void addItem(ClientCardItem) - dynamically add items to adapter
+ *      void adItemAt(ClientCardItem,int) - add item to adapter at specific position
+ *      void removeItemAt(int) - remove item from adapter then refresh adapter
+ *      void swapData(ArrayList<ClientCardItem>) - swap old data with new data
+ *      void clearData() - remove all data from adapter
+ */
+/**************************************************************************************************/
+    /*
+     * void addItem(ClientCardItem) - dynamically add items to adapter
+     */
+    public void addItem(ClientCardItem item) {
         //add item object to data array
         mData.add(item);
-        Log.d("Choice", "ClientRecyclerAdapter: " + mData.size());
-        Log.d("Choice", "     " + item.contactName);
-
         //notify adapter of data change
         this.notifyDataSetChanged();
     }
 
-    public void addItemAt(ContactsItem item, int position){
+    /*
+     * void adItemAt(ClientCardItem,int) - add item to adapter at specific position
+     */
+    public void addItemAt(ClientCardItem item, int position){
         //add item object to data array at position
         mData.add(position, item);
-
-        //notify adapter of data change
-        this.notifyDataSetChanged();
-    }
-
-    public void modifyItemAt(String exerciseName, int position){
-        //ContactsItem dataItem = mData.get(position);
-        //dataItem.exerciseName = exerciseName;
 
         //notify adapter of data change
         this.notifyDataSetChanged();
@@ -151,17 +208,26 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
      * void removeItemAt(int) - remove item from adapter then refresh adapter
      */
     public void removeItemAt(int position){
+        //remove item at given position
         mData.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeRemoved(position, mData.size());
+
+        //notify item was removed
+        this.notifyItemRemoved(position);
+        //notify data range has changed
+        this.notifyItemRangeRemoved(position, mData.size());
+        //notify adapter of data change
+        this.notifyDataSetChanged();
     }
 
     /*
-     * void swapData(ArrayList<ContactsItem>) - remove all data from adapter and replace with new data
+     * void swapData(ArrayList<ClientCardItem>) - swap old data with new data
      */
-    public void swapData(ArrayList<ContactsItem> data){
+    public void swapData(ArrayList<ClientCardItem> data){
+        //clear old data
         mData.clear();
+        //add new data
         mData.addAll(data);
+        //notify adapter of data change
         notifyDataSetChanged();
     }
 
@@ -169,7 +235,9 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
      * void clearData() - remove all data from adapter
      */
     public void clearData(){
+        //clear data
         mData.clear();
+        //notify adapter of data change
         notifyDataSetChanged();
     }
 
@@ -186,9 +254,6 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
      * ViewHolder onCreateViewHolder(ViewGroup, int) - inflates the layout and creates an instance
      * of the ViewHolder (PosterHolder) class. This instance is used to access the views in the
      * inflated layout and is only called when a new view must be created.
-     * @param viewGroup - parent view that will hold the itemView, RecyclerView
-     * @param i - position of the itemView
-     * @return - ViewHolder class; ReviewHolder
      */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i){
@@ -203,18 +268,32 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
 
     /*
      * void onBindViewHolder(ViewHolder, int) - where we bind our data to the views
-     * @param holder - ViewHolder class; ReviewHolder
-     * @param position - position of the itemView being bound
      */
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         if(mData.size() > 0){
             // Extract info from cursor
-            ContactsItem item = mData.get(position);
-            holder.bind(position, item);
-        }
+            ClientCardItem item = mData.get(position);
 
+            //get client status, if any
+            String status = item.clientInfo;
+
+            //set default card color background
+            int cardColor = mCardDefaultColor;
+
+            //check client status, if retired
+            if(status.equals(mStrRetired)){
+                //change card color background
+                cardColor = mCardRetiredColor;
+            }
+
+            //bind viewHolder components
+            holder.bindCardView(item, position, cardColor);
+            holder.bindTextView(item);
+            holder.bindProfileImage(item);
+            holder.bindIconImages(item);
+        }
     }
 
 /**************************************************************************************************/
@@ -226,59 +305,120 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
  */
 /**************************************************************************************************/
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+public static class MyViewHolder extends RecyclerView.ViewHolder{
 
 /**************************************************************************************************/
 /*
- * Child Views of the used by the ReviewRecycler
+ * Child Views used by the ReviewRecycler
  */
 /**************************************************************************************************/
 
-        //mItemView - view that hold child views found below
-        private RelativeLayout mItemView;
+    //mCardView - view that hold child views found below
+    private CardView mCardView;
 
-        private CircleImageView mImgProfile;
-        private TextView mTxtName;
-        private TextView mTxtStatus;
+    private CircleImageView mImgProfile;
+    private TextView mTxtName;
+    private TextView mTxtInfo;
+
+    private ImageView mImgInfo;
+    private ImageView mImgEmail;
+    private ImageView mImgPhone;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * MyViewHolder - constructor
- * @param recycleView - item layout containing the child views
  */
 /**************************************************************************************************/
+    /*
+     * MyViewHolder - constructor
+     */
+    public MyViewHolder(View recycleView){
+        super(recycleView);
+        //get view components held by ViewHolder
+        mCardView = (CardView)recycleView.findViewById(R.id.choiceCardView);
+        mImgProfile = (CircleImageView)recycleView.findViewById(R.id.cardClient_imgProfile);
+        mTxtName = (TextView)recycleView.findViewById(R.id.cardClient_txtName);
+        mTxtInfo = (TextView)recycleView.findViewById(R.id.cardClient_txtInfo);
 
-        public MyViewHolder(View recycleView){
-            super(recycleView);
-            mItemView = (RelativeLayout)recycleView.findViewById(R.id.choiceItem);
-            mImgProfile = (CircleImageView)recycleView.findViewById(R.id.imgProfile);
-            mTxtName = (TextView)recycleView.findViewById(R.id.txtContactName);
-            mTxtStatus = (TextView)recycleView.findViewById(R.id.txtClientStatus);
-
-        }
-
-        public void bind(int position, ContactsItem item) {
-
-            mItemView.setTag(R.string.recycler_tagPosition, position);
-            mItemView.setTag(R.string.recycler_tagItem, item);
-            mItemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //mBridge.itemClicked(view);
-                }
-            });
-
-            mTxtName.setText(item.contactName);
-            /*mTxtStatus.setText(contact.getClientStatus());
-            Picasso.with(itemView.getContext())
-                    .load(contact.profilePic)
-                    .placeholder(R.drawable.gym_rat_48dp)
-                    .error(R.drawable.gym_rat_48dp)
-                    .into(mImgProfile);*/
-        }
+        mImgInfo = (ImageView)recycleView.findViewById(R.id.cardClient_imgInfo);
+        mImgEmail = (ImageView)recycleView.findViewById(R.id.cardClient_imgEmail);
+        mImgPhone = (ImageView)recycleView.findViewById(R.id.cardClient_imgPhone);
     }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Binding Methods
+ *      void bindCardView(ClientCardItem,int,int) - bind data to cardView
+ *      void bindTextView(ClientCardItem) - bind data to textView components
+ *      void bindProfileImage(ClientCardItem) - bind data to circleImageView
+ *      void bindIconImages(ClientCardItem) - bind data to imageView icons
+ */
+/**************************************************************************************************/
+    /*
+     * void bindCardView(ClientCardItem,int,int) - bind data to cardView. Set tag values, bg color,
+     * and contextMenu listener, if not null
+     */
+    private void bindCardView(ClientCardItem item, int position, int cardColor) {
+
+        mCardView.setTag(R.string.recycler_tagPosition, position);
+        mCardView.setTag(R.string.recycler_tagItem, item);
+        mCardView.setCardBackgroundColor(cardColor);
+
+        if(mCreateContextMenuListener != null){
+            mCardView.setOnCreateContextMenuListener(mCreateContextMenuListener);
+        }
+
+    }
+
+    /*
+     * void bindTextView(ClientCardItem) - bind data to textView components. Set text and context
+     * description values.
+     */
+    private void bindTextView(ClientCardItem item){
+        mTxtName.setText(item.clientName);
+        mTxtName.setContentDescription(item.clientName);
+
+        mTxtInfo.setText(item.clientInfo);
+        mTxtInfo.setContentDescription(item.clientInfo);
+    }
+
+    /*
+     * void bindProfileImage(ClientCardItem) - bind data to circleImageView. Using Picasso, load the
+     * image profile of client
+     */
+    private void bindProfileImage(ClientCardItem item){
+        Picasso.with(itemView.getContext())
+                .load(item.profilePic)
+                .placeholder(R.drawable.gym_rat_black_48dp)
+                .error(R.drawable.gym_rat_black_48dp)
+                .into(mImgProfile);
+    }
+
+    /*
+     * void bindIconImages(ClientCardItem) - bind data to imageView icons. Set tag values and
+     * onClickListener if mIconClickListener is NOT null.
+     */
+    private void bindIconImages(ClientCardItem item){
+        if(mIconClickListener != null){
+            mImgInfo.setTag(R.string.recycler_tagItem, item);
+            mImgInfo.setTag(R.string.recycler_tagId, ICON_INFO);
+            mImgInfo.setOnClickListener(mIconClickListener);
+
+            mImgPhone.setTag(R.string.recycler_tagItem, item);
+            mImgPhone.setTag(R.string.recycler_tagId, ICON_PHONE);
+            mImgPhone.setOnClickListener(mIconClickListener);
+
+            mImgEmail.setTag(R.string.recycler_tagItem, item);
+            mImgEmail.setTag(R.string.recycler_tagId, ICON_EMAIL);
+            mImgEmail.setOnClickListener(mIconClickListener);
+        }
+
+    }
+}
 
 /**************************************************************************************************/
 
