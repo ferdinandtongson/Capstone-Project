@@ -11,13 +11,11 @@ import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.ExerciseViewPager;
-import me.makeachoice.gymratpta.model.item.ContactsItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.model.stubData.CategoryStubData;
 import me.makeachoice.gymratpta.model.stubData.ExerciseStubData;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
-import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
