@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
@@ -37,7 +38,7 @@ import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
 /**************************************************************************************************/
 
-public class ExerciseViewPagerMaid extends MyMaid implements BasicFragment.Bridge{
+public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -46,16 +47,6 @@ public class ExerciseViewPagerMaid extends MyMaid implements BasicFragment.Bridg
 /**************************************************************************************************/
 
     private ArrayList<ExerciseItem> mData;
-
-    //mTxtEmpty - textView component displayed when recycler is empty
-    protected TextView mTxtEmpty;
-
-    //mBasicRecycler - recycler component
-    protected BasicRecycler mBasicRecycler;
-
-    //mFAB - floating action button component
-    protected FloatingActionButton mFAB;
-
 
 /**************************************************************************************************/
 
@@ -137,30 +128,14 @@ public class ExerciseViewPagerMaid extends MyMaid implements BasicFragment.Bridg
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment(){
-        Log.d("Choice", "ExerciseViewPagerMaid.prepareFragment");
+        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addExercise);
+        setEmptyMessage(emptyMsg);
 
-        initializeRecyclerComponents();
+        checkForEmptyRecycler(mData.isEmpty());
+
         initializeAdapter();
     }
 
-    /*
-     * void initializeRecyclerComponents() - initialize recycler and related components
-     */
-    private void initializeRecyclerComponents(){
-        //initialize recycler component
-        mBasicRecycler = new BasicRecycler(mLayout);
-
-        //initialize "empty" textView component
-        int emptyViewId = R.id.choiceEmptyView;
-        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addClient);
-        mTxtEmpty = (TextView) mLayout.findViewById(emptyViewId);
-        mTxtEmpty.setVisibility(View.VISIBLE);
-        mTxtEmpty.setText(emptyMsg);
-
-        //initialize floating action button component
-        int fabId = R.id.choiceFab;
-        mFAB = (FloatingActionButton) mLayout.findViewById(fabId);
-    }
 
     private ExerciseRecyclerAdapter mAdapter;
     private void initializeAdapter() {
@@ -172,7 +147,6 @@ public class ExerciseViewPagerMaid extends MyMaid implements BasicFragment.Bridg
         mAdapter.swapData(mData);
 
         mBasicRecycler.setAdapter(mAdapter);
-
     }
 
 /**************************************************************************************************/
