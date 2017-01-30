@@ -1,35 +1,29 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.View;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
-import me.makeachoice.gymratpta.model.item.ContactsItem;
+import me.makeachoice.gymratpta.model.item.ClientCardItem;
+import me.makeachoice.gymratpta.model.stubData.ClientStubData;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- *  TODO - housekeeper description
- *  TODO - create activity class
- *  TODO - create activity layout
- *  TODO - define housekeeper id in res/values/strings.xml
- *  <!-- HouseKeeper Names -->
- *  <string name="housekeeper_main" translatable="false">Main HouseKeeper</string>
- *  TODO - initialize and register housekeeper in Boss class
- *  TODO - handle saved instance states from bundle
- *  TODO - initialize mobile layout components
- *  TODO - initialize activity components, for example
- *  TODO - initialize tablet layout components
  */
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * TODO - housekeeper description,
- * Each housekeeper is responsible for an activity. It communicates directly with Boss, Activity
- * and Maids maintaining fragments within the Activity, if any.
+ * ClientKeeper is responsible for showing the list of clients the user has in GymRat and accessing
+ * deeper level information about those clients. It extends GymRatRecyclerKeeper which extends
+ * GymRatRecyclerBase so is directly responsible for drawer navigation, toolbar, "empty" textView,
+ * recycler view and FAB components.
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -37,6 +31,18 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      int mActivityLayoutId - Activity resource layout id
  *      boolean mIsTablet - boolean flag used to determine if device is a tablet
  *
+ * Variables from GymRatBaseKeeper:
+ *      Boss mBoss - Boss application
+ *      HomeToolbar mToolbar - toolbar component
+ *      HomeDrawer mHomeDrawer - drawer navigation component
+ *      int mToolbarMenuId - toolbar menu resource id
+ *      int mBottomNavSelectedItemId - used to determine which menu item is selected in the drawer
+ *
+ * Variables from GymRateRecyclerKeeper:
+ *      TextView mTxtEmpty - textView component displayed when recycler is empty
+ *      BasicRecycler mBasicRecycler - recycler component
+ *      FloatingActionButton mFAB - floating action button component
+
  * Methods from MyHouseKeeper
  *      void create(MyActivity,Bundle) - called by onCreate(Bundle) in the activity lifecycle
  *      boolean isTablet() - return device flag if device is tablet or not
@@ -60,28 +66,38 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 /**************************************************************************************************/
 /*
  * Class Variables:
+ *      ArrayList<ClientCardItem> mData - array of data used by ClientRecyclerAdapter
+ *      ClientRecyclerAdapter mAdapter - recycler adapter
  */
 /**************************************************************************************************/
 
-    ArrayList<ContactsItem> mData;
+    //mData - array of data used by ClientRecyclerAdapter
+    private ArrayList<ClientCardItem> mData;
+
+    //mAdapter - recycler adapter
     private ClientRecyclerAdapter mAdapter;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * _templateKeeper - constructor
+ * ClientKeeper - constructor
  */
 /**************************************************************************************************/
     /*
-     * _templateKeeper - constructor
+     * ClientKeeper - constructor
      * @param layoutId - layout resource id used by Keeper
      */
     public StubClientKeeper(int layoutId){
 
-        //get layout id
+        //get layout id from HouseKeeper Registry
         mActivityLayoutId = layoutId;
-        mSelectedNavItemId = R.id.nav_clients;
+
+        //set toolbar menu resource id consumed by HomeToolbar
+        mToolbarMenuId = R.menu.toolbar_menu;
+
+        //flag used to determine which menu items is selected in drawer component
+        mBottomNavSelectedItemId = R.id.nav_clients;
     }
 
 /**************************************************************************************************/
@@ -103,7 +119,6 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      * @param bundle - instant state values
      */
     public void create(MyActivity activity, Bundle bundle){
-        //TODO - uncomment after Boss is defined
         super.create(activity, bundle);
 
         if(bundle != null){
@@ -118,7 +133,6 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      * void openBundle(Bundle) - opens bundle to set saved instance states during create().
      */
     protected void openBundle(Bundle bundle){
-        //TODO - handle saved instance states from bundle
         //set saved instance state data
     }
 
@@ -131,29 +145,64 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
  */
 /**************************************************************************************************/
     /*
-     * void initializeLayout() - initialize ui for mobile device
+     * void initializeLayout() - initialize ui
      */
     private void initializeLayout(){
-        String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_addClient);
-        setEmptyMessage(emptyMsg);
+        //initialize "empty" textView used when recycler is empty
+        initializeEmptyText();
 
+        //initialize adapter used by recycler
         initializeAdapter();
     }
 
+    /*
+     * void initializeEmptyText() - textView used when recycler is empty
+     */
+    private void initializeEmptyText(){
+        //get "empty" textView message
+        String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_addClient);
+
+        //set message to textView
+        setEmptyMessage(emptyMsg);
+    }
+
+    /*
+     * void initializeAdapter() - adapter used by recycler component
+     */
     private void initializeAdapter() {
         //layout resource file id used by recyclerView adapter
-        int adapterLayoutId = R.layout.item_client;
+        int adapterLayoutId = R.layout.card_client;
 
-        mData = createContactsStub();
+        mData = ClientStubData.createClientData(mActivity);
 
         //create adapter consumed by the recyclerView
         mAdapter = new ClientRecyclerAdapter(mActivity, adapterLayoutId);
+
+        //set icon click listener
+        mAdapter.setOnIconClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconClicked(view);
+            }
+        });
+
+        //set create context menu listener
+        mAdapter.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu contextMenu, View view,
+                                            ContextMenu.ContextMenuInfo contextMenuInfo) {
+                createContextMenu(contextMenu, view, contextMenuInfo);
+            }
+        });
+
+        //swap client data into adapter
         mAdapter.swapData(mData);
 
+        //set adapter in recycler
         mBasicRecycler.setAdapter(mAdapter);
 
+        //check if recycler has any data; if not, display "empty" textView
         checkForEmptyRecycler(mData.isEmpty());
-
     }
 
 /**************************************************************************************************/
@@ -171,66 +220,29 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
     public void backPressed(){
     }
 
+    private void iconClicked(View view){
+        Log.d("Choice", "StubClientKeeper.onIconClicked");
+        ClientCardItem item = (ClientCardItem)view.getTag(R.string.recycler_tagItem);
+        int iconId = (int)view.getTag(R.string.recycler_tagId);
+
+        switch(iconId){
+            case ClientRecyclerAdapter.ICON_INFO:
+                Log.d("Choice", "     iconInfo");
+                break;
+            case ClientRecyclerAdapter.ICON_EMAIL:
+                Log.d("Choice", "     iconEmail");
+                break;
+            case ClientRecyclerAdapter.ICON_PHONE:
+                Log.d("Choice", "     iconPhone");
+                break;
+        }
+    }
+
+    private void createContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo){
+
+    }
+
 
 /**************************************************************************************************/
-
-
-
-    private ArrayList<ContactsItem> createContactsStub(){
-        ArrayList<ContactsItem> contactList = new ArrayList();
-
-        ContactsItem item01 = new ContactsItem();
-        item01.contactName = "Quess Starbringer";
-        item01.clientStatus = "Active";
-
-        ContactsItem item02 = new ContactsItem();
-        item02.contactName = "Quess Starbringer";
-        item02.clientStatus = "Active";
-
-        ContactsItem item03 = new ContactsItem();
-        item03.contactName = "Quess Starbringer";
-        item03.clientStatus = "Active";
-
-        ContactsItem item04 = new ContactsItem();
-        item04.contactName = "Quess Starbringer";
-        item04.clientStatus = "Active";
-
-        ContactsItem item05 = new ContactsItem();
-        item05.contactName = "Quess Starbringer";
-        item05.clientStatus = "Active";
-
-        ContactsItem item06 = new ContactsItem();
-        item06.contactName = "Quess Starbringer";
-        item06.clientStatus = "Active";
-
-        ContactsItem item07 = new ContactsItem();
-        item07.contactName = "Quess Starbringer";
-        item07.clientStatus = "Active";
-
-        ContactsItem item08 = new ContactsItem();
-        item08.contactName = "Quess Starbringer";
-        item08.clientStatus = "Active";
-
-        ContactsItem item09 = new ContactsItem();
-        item09.contactName = "Quess Starbringer";
-        item09.clientStatus = "Active";
-
-        ContactsItem item10 = new ContactsItem();
-        item10.contactName = "Quess Starbringer";
-        item10.clientStatus = "Active";
-
-        contactList.add(item01);
-        contactList.add(item02);
-        contactList.add(item03);
-        contactList.add(item04);
-        contactList.add(item05);
-        contactList.add(item06);
-        contactList.add(item07);
-        contactList.add(item08);
-        contactList.add(item09);
-        contactList.add(item10);
-
-        return contactList;
-    }
 
 }
