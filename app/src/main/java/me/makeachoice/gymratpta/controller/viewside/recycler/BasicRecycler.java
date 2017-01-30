@@ -29,6 +29,8 @@ public class BasicRecycler {
     //mRecycler - recycler view component
     RecyclerView mRecycler;
 
+    LinearLayoutManager mLayoutManager;
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -79,17 +81,10 @@ public class BasicRecycler {
      */
     private void initializeRecycler(Context ctx){
         //create LayoutManager for RecyclerView, in this case a linear list type LayoutManager
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ctx);
+        mLayoutManager = new LinearLayoutManager(ctx);
 
         //set layout manager of RecyclerView
-        mRecycler.setLayoutManager(layoutManager);
-
-        //create item decoration, line divider
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(ctx,
-                layoutManager.getOrientation());
-
-        //ad line divider to recycler
-        mRecycler.addItemDecoration(dividerItemDecoration);
+        mRecycler.setLayoutManager(mLayoutManager);
 
         //setHasFixedSize to true if recyclerView size isn't affected by adapter content
         mRecycler.setHasFixedSize(true);
@@ -116,6 +111,15 @@ public class BasicRecycler {
      */
     public void setListener(RecyclerView.OnClickListener listener){
         mRecycler.setOnClickListener(listener);
+    }
+
+    public void showItemDivider(Context ctx){
+        //create item decoration, line divider
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(ctx,
+                mLayoutManager.getOrientation());
+
+        //ad line divider to recycler
+        mRecycler.addItemDecoration(dividerItemDecoration);
     }
 
     public void setVisibility(int visibility){
