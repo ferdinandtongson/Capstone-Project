@@ -15,6 +15,23 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
+ * TODO - Need to add toolbar menu option
+ *          todo - show all clients
+ *          todo - show active only
+ *          todo - show retired only
+ * TODO - need to activate communication icon click events
+ *          todo - display email service icons
+ *                  todo - automatically use client email to send email, if any
+ *          todo - display phone dial-up screen
+ *                  todo - automatically use client phone to call or sms, if any
+ * TODO - need to get client profile picture from Contacts
+ *          todo - load profile uri picture
+ * TODO - need to activate create context menu
+ *          todo - add context menu: Active / Retire option for client cards
+ * TODO - need to create Dialog Contact List
+ * TODO - need to create Permissions Helper class
+ * TODO - need to create SQLite Database
+ * TODO - need to create Firebase project client table
  */
 /**************************************************************************************************/
 
