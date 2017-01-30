@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="description_iconInfo">Client Info</string>
+    <string name="description_iconEmail">Email Client</string>
+    <string name="description_iconPhone">Call Client</string>
+    <string name="description_imgProfile">Client Profile Photo</string>
+
+</resources>

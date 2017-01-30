@@ -49,6 +49,7 @@
     <string name="exerciseData_none" translatable="false">@string/none</string>
 
     <!-- dictionary -->
+    <string name="active" translatable="true">Active</string>
     <string name="add_client" translatable="true">Add Client</string>
     <string name="add_exercise" translatable="true">Add Exercise</string>
     <string name="add_routine" translatable="true">Add Routine</string>
@@ -73,6 +74,7 @@
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="quick_help" translatable="true">Quick Help</string>
     <string name="reps" translatable="true">Reps</string>
+    <string name="retired" translatable="true">Retired</string>
     <string name="routines" translatable="true">Routines</string>
     <string name="sessions" translatable="true">Sessions</string>
     <string name="settings" translatable="true">Settings</string>

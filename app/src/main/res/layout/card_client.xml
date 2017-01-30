@@ -1,0 +1,68 @@
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/choiceCardView"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardBackgroundColor="@color/card_active"
+    style="@style/GymRat.Card">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/cardClient_txtInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/GymRat.Card.TextView.Info"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/cardClient_imgProfile"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/card_profile_outline"
+            android:contentDescription="@string/description_imgProfile"
+            style="@style/GymRat.Card.ImageView.Profile"/>
+
+        <TextView
+            android:id="@+id/cardClient_txtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/cardClient_imgProfile"
+            style="@style/GymRat.Card.TextView.Name"/>
+
+        <ImageButton
+            android:id="@+id/cardClient_imgInfo"
+            android:layout_toEndOf="@id/cardClient_imgProfile"
+            android:layout_below="@id/cardClient_txtName"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/ic_client_info_black_36dp"
+            android:contentDescription="@string/description_iconInfo"
+            style="@style/GymRat.Card.ImageView.Icon"/>
+
+        <ImageButton
+            android:id="@+id/cardClient_imgEmail"
+            android:layout_toEndOf="@id/cardClient_imgInfo"
+            android:layout_below="@id/cardClient_txtName"
+            android:layout_marginStart="40dp"
+            android:background="@drawable/ic_mail_outline_black_36dp"
+            android:contentDescription="@string/description_iconEmail"
+            style="@style/GymRat.Card.ImageView.Icon"/>
+
+        <ImageButton
+            android:id="@+id/cardClient_imgPhone"
+            android:layout_toEndOf="@id/cardClient_imgEmail"
+            android:layout_below="@id/cardClient_txtName"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/ic_phone_black_36dp"
+            android:contentDescription="@string/description_iconPhone"
+            style="@style/GymRat.Card.ImageView.Icon"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

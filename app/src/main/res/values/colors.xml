@@ -13,5 +13,11 @@
     <color name="colorAccent">@color/powderBlueish</color>
 
     <color name="silver">#66F3F3CC</color>
+    <color name="silver_90">#99CCCCCC</color>
     <color name="orange">#FE8034</color>
+
+
+    <color name="card_active">@color/powderBlueish_60</color>
+    <color name="card_retired">@color/silver_90</color>
+    <color name="card_profile_outline">@color/black</color>
 </resources>

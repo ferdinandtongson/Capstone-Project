@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- clipToPadding and scrollbarStyle allows for overscroll shadow at the the top and bottom of
+    the recycler list without the shadow being attached to the padding -->
+    <style name="GymRat.Card" parent="Theme.AppCompat.Light">
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="GymRat.Card.ImageView.Profile" parent="Theme.AppCompat.Light">
+        <item name="android:layout_width">54dp</item>
+        <item name="android:layout_height">54dp</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_marginBottom">7dp</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:src">@drawable/gym_rat_black_48dp</item>
+    </style>
+
+    <style name="GymRat.Card.ImageView.Icon" parent="Theme.AppCompat.Light">
+        <item name="android:layout_width">22dp</item>
+        <item name="android:layout_height">22dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="GymRat.Card.TextView" parent="Theme.AppCompat.Light">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="GymRat.Card.TextView.Info" parent="Theme.AppCompat.Light">
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
+    <style name="GymRat.Card.TextView.Name" parent="Theme.AppCompat.Light">
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginTop">7dp</item>
+    </style>
+
+</resources>
