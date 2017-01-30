@@ -92,6 +92,17 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
         initialize(DEFAULT_TOOLBAR_ID, DEFAULT_NAV_ICON_ID, title, subtitle);
     }
 
+    public HomeToolbar(MyActivity activity, int menuId){
+        //current activity
+        mActivity = activity;
+
+        mMenuId = menuId;
+        String title = mActivity.getResources().getString(DEFAULT_TITLE_ID);
+        String subtitle = mActivity.getResources().getString(DEFAULT_SUBTITLE_ID);
+
+        initialize(DEFAULT_TOOLBAR_ID, DEFAULT_NAV_ICON_ID, title, subtitle);
+    }
+
     public HomeToolbar(MyActivity activity, int toolbarId, int menuId, int iconId){
         //current activity
         mActivity = activity;
