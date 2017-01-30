@@ -1,0 +1,342 @@
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceCardView"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:clickable="true"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardBackgroundColor="@color/colorPrimary"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView android:id="@+id/txtRoutineName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="true"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            />
+
+
+        <RelativeLayout
+            android:id="@+id/relSessionsBrief"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/txtRoutineName"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="#40FFFFFF"
+            >
+
+
+            <!-- Measurement Title -->
+            <TextView
+                android:id="@+id/txtLast"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginStart="240dp"
+                android:text="Set"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:visibility="visible"
+                />
+
+            <!-- Exercise 01 -->
+            <TextView
+                android:id="@+id/txtExercise01"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtLast"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet01"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtLast"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 02 -->
+            <TextView
+                android:id="@+id/txtExercise02"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtExercise01"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet02"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise01"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 03 -->
+            <TextView
+                android:id="@+id/txtExercise03"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtExercise02"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet03"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise02"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 04 -->
+            <TextView
+                android:id="@+id/txtExercise04"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtExercise03"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet04"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise03"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 05 -->
+            <TextView
+                android:id="@+id/txtExercise05"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtExercise04"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet05"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise04"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 06 -->
+            <TextView
+                android:id="@+id/txtExercise06"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtExercise05"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet06"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise05"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 07 -->
+            <TextView
+                android:id="@+id/txtExercise07"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtExercise06"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet07"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise06"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 08 -->
+            <TextView
+                android:id="@+id/txtExercise08"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtExercise07"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet08"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise07"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 09 -->
+            <TextView
+                android:id="@+id/txtExercise09"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_below="@id/txtExercise08"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet09"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise08"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+            <!-- Exercise 10 -->
+            <TextView
+                android:id="@+id/txtExercise10"
+                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/txtExercise09"
+                android:text="This is a long exercise name"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@color/powderBlueish_60"
+                />
+
+            <TextView
+                android:id="@+id/txtSet10"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="240dp"
+                android:layout_below="@id/txtExercise09"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:background="@color/powderBlueish_60"
+                android:text="3"
+                />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

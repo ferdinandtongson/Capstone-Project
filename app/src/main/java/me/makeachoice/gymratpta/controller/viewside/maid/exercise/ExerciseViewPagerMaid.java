@@ -136,7 +136,6 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
         initializeAdapter();
     }
 
-
     private ExerciseRecyclerAdapter mAdapter;
     private void initializeAdapter() {
         //layout resource file id used by recyclerView adapter

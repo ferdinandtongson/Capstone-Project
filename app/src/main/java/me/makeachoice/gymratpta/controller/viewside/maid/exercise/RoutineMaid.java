@@ -1,14 +1,18 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ExerciseRecyclerAdapter;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.RoutineRecyclerAdapter;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineSessionItem;
+import me.makeachoice.gymratpta.model.stubData.RoutineStubData;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
 /**************************************************************************************************/
@@ -29,7 +33,7 @@ import me.makeachoice.gymratpta.view.fragment.BasicFragment;
  */
 /**************************************************************************************************/
 
-public class RoutineMaid extends MyMaid implements BasicFragment.Bridge{
+public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -37,6 +41,7 @@ public class RoutineMaid extends MyMaid implements BasicFragment.Bridge{
  */
 /**************************************************************************************************/
 
+    private ArrayList<RoutineSessionItem> mData;
 
 /**************************************************************************************************/
 
@@ -115,13 +120,25 @@ public class RoutineMaid extends MyMaid implements BasicFragment.Bridge{
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment(){
-        Log.d("Choice", "RoutineMaid.prepareFragment");
-        //Log.d("Choice", "     mFragment: " + mFragment.toString());
-        //MyActivity activity = (MyActivity)mFragment.getActivity();
+        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addRoutine);
+        setEmptyMessage(emptyMsg);
 
-        TextView txtTitle = (TextView)mLayout.findViewById(R.id.stub_txtTitle);
-        txtTitle.setText(mMaidKey);
+        mData = RoutineStubData.createDefaultRoutineSessions(mLayout.getContext());
+        checkForEmptyRecycler(mData.isEmpty());
 
+        initializeAdapter();
+    }
+
+    private RoutineRecyclerAdapter mAdapter;
+    private void initializeAdapter() {
+        //layout resource file id used by recyclerView adapter
+        int adapterLayoutId = R.layout.card_brief_routine;
+
+        //create adapter consumed by the recyclerView
+        mAdapter = new RoutineRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
+        mAdapter.swapData(mData);
+
+        mBasicRecycler.setAdapter(mAdapter);
     }
 
 /**************************************************************************************************/
