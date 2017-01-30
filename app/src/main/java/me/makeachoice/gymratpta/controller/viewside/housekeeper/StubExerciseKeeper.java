@@ -79,8 +79,8 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
         //get layout id
         mActivityLayoutId = layoutId;
 
-        //used to determine which drawer menu item is selected
-        mSelectedNavItemId = R.id.nav_exercises;
+        mToolbarMenuId = R.menu.toolbar_menu;
+        mBottomNavSelectedItemId = R.id.nav_exercises;
     }
 
 /**************************************************************************************************/

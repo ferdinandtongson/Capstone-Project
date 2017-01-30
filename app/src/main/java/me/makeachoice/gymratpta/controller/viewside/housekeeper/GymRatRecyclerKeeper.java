@@ -35,9 +35,11 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      boolean mIsTablet - boolean flag used to determine if device is a tablet
  *
  * Variables from GymRatBaseKeeper:
- *      mBoss - Boss application
- *      mHomeDrawer - drawer navigation component
- *      mSelectedNavItemId - used to determine which menu item is selected in the drawer
+ *      Boss mBoss - Boss application
+ *      HomeToolbar mToolbar - toolbar component
+ *      HomeDrawer mHomeDrawer - drawer navigation component
+ *      int mToolbarMenuId - toolbar menu resource id
+ *      int mBottomNavSelectedItemId - used to determine which menu item is selected in the drawer
  *
  * Methods from MyHouseKeeper
  *      void create(MyActivity,Bundle) - called by onCreate(Bundle) in the activity lifecycle
@@ -66,9 +68,9 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      mTxtEmpty - textView component displayed when recycler is empty
- *      mBasicRecycler - recycler component
- *      mFAB - floating action button component
+ *      TextView mTxtEmpty - textView component displayed when recycler is empty
+ *      BasicRecycler mBasicRecycler - recycler component
+ *      FloatingActionButton mFAB - floating action button component
  */
 /**************************************************************************************************/
 

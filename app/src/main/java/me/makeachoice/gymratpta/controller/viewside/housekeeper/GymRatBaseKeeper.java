@@ -70,20 +70,28 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      mBoss - Boss application
- *      mHomeDrawer - drawer navigation component
- *      mSelectedNavItemId - used to determine which menu item is selected in the drawer
+ *      Boss mBoss - Boss application
+ *      HomeToolbar mToolbar - toolbar component
+ *      HomeDrawer mHomeDrawer - drawer navigation component
+ *      int mToolbarMenuId - toolbar menu resource id
+ *      int mBottomNavSelectedItemId - used to determine which menu item is selected in the drawer
  */
 /**************************************************************************************************/
 
     //mBoss - Boss application
     protected Boss mBoss;
 
+    //mToolbar - toolbar component
+    protected HomeToolbar mHomeToolbar;
+
     //mHomeDrawer - drawer navigation component
     protected HomeDrawer mHomeDrawer;
 
-    //mSelectedNavItemId - used to determine which menu item is selected in the drawer
-    protected int mSelectedNavItemId;
+    //mToolbarMenuId - toolbar menu resource id
+    protected int mToolbarMenuId = -1;
+
+    //mBottomNavSelectedItemId - used to determine which menu item is selected in the drawer
+    protected int mBottomNavSelectedItemId;
 
 /**************************************************************************************************/
 
@@ -140,8 +148,14 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
     private void initializeToolbar() {
 
         //create toolbar component
-        HomeToolbar toolbar = new HomeToolbar(mActivity);
-        toolbar.setOnNavigationClickListener(new View.OnClickListener() {
+        if(mToolbarMenuId == -1){
+            mHomeToolbar = new HomeToolbar(mActivity);
+        }
+        else{
+            mHomeToolbar = new HomeToolbar(mActivity, mToolbarMenuId);
+        }
+
+        mHomeToolbar.setOnNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //react to click
@@ -150,7 +164,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
             }
         });
 
-        toolbar.setOnMenuItemClick(new MyBartender.OnMenuItemClick() {
+        mHomeToolbar.setOnMenuItemClick(new MyBartender.OnMenuItemClick() {
             @Override
             public void onMenuItemClick(MenuItem menuItem) {
                 Log.d("Choice", "StudAppointmentKeeper.onMenuItemClick");
@@ -158,7 +172,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
             }
         });
 
-        View navigationIcon = toolbar.getToolbarNavigationIcon();
+        View navigationIcon = mHomeToolbar.getToolbarNavigationIcon();
 
         //check api level is 21 or greater
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -168,7 +182,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
         }
 
         //set bartender as options menu bridge
-        mActivity.setOptionsMenuBridge(toolbar);
+        mActivity.setOptionsMenuBridge(mHomeToolbar);
 
     }
 
@@ -180,7 +194,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
         mHomeDrawer = new HomeDrawer(mActivity);
 
         //selected menu item in navigation drawer
-        mHomeDrawer.setNavigationItemChecked(mSelectedNavItemId);
+        mHomeDrawer.setNavigationItemChecked(mBottomNavSelectedItemId);
     }
 
 /**************************************************************************************************/

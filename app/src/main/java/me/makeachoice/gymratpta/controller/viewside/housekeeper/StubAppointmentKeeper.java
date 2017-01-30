@@ -80,8 +80,9 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
         //get layout id
         mActivityLayoutId = layoutId;
 
-        //used to determine which drawer menu item is selected
-        mSelectedNavItemId = R.id.nav_appointments;
+        mToolbarMenuId = R.menu.toolbar_menu;
+        mBottomNavSelectedItemId = R.id.nav_appointments;
+
     }
 
 /**************************************************************************************************/

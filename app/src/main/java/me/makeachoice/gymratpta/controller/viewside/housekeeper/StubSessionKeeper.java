@@ -6,9 +6,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.SessionRecyclerAdapter;
-import me.makeachoice.gymratpta.model.item.ContactsItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -83,7 +81,8 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 
         //get layout id
         mActivityLayoutId = layoutId;
-        mSelectedNavItemId = R.id.nav_sessions;
+        mToolbarMenuId = R.menu.toolbar_menu;
+        mBottomNavSelectedItemId = R.id.nav_sessions;
     }
 
 /**************************************************************************************************/
