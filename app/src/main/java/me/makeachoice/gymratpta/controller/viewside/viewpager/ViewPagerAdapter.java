@@ -16,15 +16,18 @@ import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 class ViewPagerAdapter extends FragmentPagerAdapter {
     private final ArrayList<String> mFragmentTitleList = new ArrayList<>();
 
-    public ViewPagerAdapter(FragmentManager manager) {
+    private String mBaseMaidKey;
+    public ViewPagerAdapter(FragmentManager manager, String baseMaidKey) {
         super(manager);
+
+        mBaseMaidKey = baseMaidKey;
     }
 
     @Override
     public Fragment getItem(int position) {
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
-        String maidKey = MaidRegistry.MAID_EXERCISE_VP + position;
+        String maidKey = mBaseMaidKey + position;
 
         MyMaid maid = maidRegistry.requestMaid(maidKey);
         return maid.getFragment();
