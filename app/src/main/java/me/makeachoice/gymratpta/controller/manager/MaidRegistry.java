@@ -8,6 +8,7 @@ import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayViewPagerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.appointment.WeekMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientInfoMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientScheduleMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPagerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
@@ -129,10 +130,10 @@ public class MaidRegistry extends MyMaidRegistry {
 
     public void initializeClientScheduleMaid(String maidKey, int layoutId){
         //create maid
-        //ClientInfoMaid maid = new ClientInfoMaid(maidKey, layoutId);
+        ClientScheduleMaid maid = new ClientScheduleMaid(maidKey, layoutId);
 
         //register maid
-        //registerMaid(maidKey, maid);
+        registerMaid(maidKey, maid);
     }
 
     public void initializeClientHistoryMaid(String maidKey, int layoutId){
