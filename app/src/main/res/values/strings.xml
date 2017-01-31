@@ -86,6 +86,7 @@
     <string name="no_email_client" translatable="true">No email clients installed</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="none" translatable="true">None</string>
+    <string name="permission_request" translatable="true">Permission Request</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="quick_help" translatable="true">Quick Help</string>
     <string name="reps" translatable="true">Reps</string>

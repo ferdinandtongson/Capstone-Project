@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="msg_permissionRequest_readContacts">Gym Rat is requesting READ access to your Contacts so your Client list can be synced with your Contacts info.</string>
+    <string name="msg_permissionRequest_readContacts_granted">Read Contacts permission granted</string>
+    <string name="msg_permissionRequest_readContacts_denied">Read Contacts permission denied</string>
+
+</resources>
