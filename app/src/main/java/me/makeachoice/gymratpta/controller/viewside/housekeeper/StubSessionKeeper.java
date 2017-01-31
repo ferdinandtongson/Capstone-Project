@@ -1,5 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,8 @@ import me.makeachoice.gymratpta.controller.viewside.Helper.CommunicationHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.stubData.SessionStubData;
+import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
+import me.makeachoice.gymratpta.view.activity.SessionDetailActivity;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -244,6 +247,9 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 
         switch(iconId){
             case ClientRecyclerAdapter.ICON_INFO:
+                //TODO - need to change!!!!!
+                Intent intent = new Intent(mActivity, SessionDetailActivity.class);
+                mActivity.startActivity(intent);
                 break;
             case ClientRecyclerAdapter.ICON_EMAIL:
                 //TODO - need to put actual client email

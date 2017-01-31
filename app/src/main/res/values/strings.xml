@@ -19,6 +19,9 @@
     <string name="drawer_menu_settings" translatable="false">@string/settings</string>
     <string name="drawer_menu_help" translatable="false">@string/help</string>
 
+    <!-- bottom nav: Appointment -->
+    <string name="bottom_nav_appointment_day" translatable="true">@string/for_the_day</string>
+    <string name="bottom_nav_appointment_week" translatable="true">@string/for_the_week</string>
     <!-- bottom nav: client detail -->
     <string name="bottom_nav_menu_client_info" translatable="false">@string/info</string>
     <string name="bottom_nav_menu_client_schedule" translatable="false">@string/schedule</string>
@@ -26,9 +29,11 @@
     <!-- bottom nav: exercise -->
     <string name="bottom_nav_menu_exercises" translatable="false">@string/exercises</string>
     <string name="bottom_nav_menu_routines" translatable="false">@string/routines</string>
-    <!-- bottom nav: Appointment -->
-    <string name="bottom_nav_appointment_day" translatable="true">@string/for_the_day</string>
-    <string name="bottom_nav_appointment_week" translatable="true">@string/for_the_week</string>
+    <!-- bottom nav: session detail -->
+    <string name="bottom_nav_menu_session_routine" translatable="false">@string/routine</string>
+    <string name="bottom_nav_menu_session_stats" translatable="false">@string/stats</string>
+    <string name="bottom_nav_menu_session_notes" translatable="false">@string/notes</string>
+
 
     <!-- context menu: client -->
     <string name="context_menu_activate" translatable="false">@string/activate</string>
@@ -92,6 +97,7 @@
     <string name="no_email_client" translatable="true">No email clients installed</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="none" translatable="true">None</string>
+    <string name="notes" translatable="true">Notes</string>
     <string name="permission_request" translatable="true">Permission Request</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="quick_help" translatable="true">Quick Help</string>
@@ -99,6 +105,7 @@
     <string name="reschedule" translatable="true">Reschedule</string>
     <string name="retire" translatable="true">Retire</string>
     <string name="retired" translatable="true">Retired</string>
+    <string name="routine" translatable="true">Routine</string>
     <string name="routines" translatable="true">Routines</string>
     <string name="schedule" translatable="true">Schedule</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
@@ -106,6 +113,7 @@
     <string name="settings" translatable="true">Settings</string>
     <string name="sign_out" translatable="true">Sign Out</string>
     <string name="shoulders" translatable="true">Shoulders</string>
+    <string name="stats" translatable="true">Stats</string>
     <string name="time" translatable="true">Time</string>
     <string name="weight" translatable="true">Weight</string>
 

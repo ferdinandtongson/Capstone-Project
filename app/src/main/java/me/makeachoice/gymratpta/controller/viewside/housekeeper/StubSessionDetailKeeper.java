@@ -1,12 +1,11 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
-
 import android.os.Bundle;
 import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
-import me.makeachoice.gymratpta.controller.viewside.bottomnav.ClientDetailNav;
+import me.makeachoice.gymratpta.controller.viewside.bottomnav.SessionDetailNav;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -21,9 +20,10 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * ClientDetailKeeper is responsible for maintaining the Client Detail screens. It is directly
+ * SessionDetailKeeper is responsible for maintaining the Session Detail screens. It is directly
  * responsible for handling toolbar and drawer events (see GymRatBaseKeeper), bottom navigation
- * events (see ClientDetailNav) and the creation of ClientInfo, ClientSchedule and ClientHistory maids.
+ * events (see ClientDetailNav) and the creation of SessionRoutine, SessionStats and Session Notes
+ * maids.
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -57,7 +57,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  */
 /**************************************************************************************************/
 
-public class StubClientDetailKeeper extends GymRatBaseKeeper{
+public class StubSessionDetailKeeper extends GymRatBaseKeeper {
 
 /**************************************************************************************************/
 /*
@@ -70,13 +70,13 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
 
 /**************************************************************************************************/
 /*
- * StubClientDetailKeeper - constructor
+ * StubSessionDetailKeeper - constructor
  */
 /**************************************************************************************************/
     /*
-     * StubClientDetailKeeper - constructor
+     * StubSessionDetailKeeper - constructor
      */
-    public StubClientDetailKeeper(int layoutId){
+    public StubSessionDetailKeeper(int layoutId){
         //get layout id from HouseKeeper Registry
         mActivityLayoutId = layoutId;
 
@@ -146,14 +146,14 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
      * void initializeMaid() - initialize DayMaid and WeekMaid
      */
     private void initializeMaid(){
-        Log.d("Choice", "ClientDetail.initializeMaid");
+        Log.d("Choice", "SessionDetail.initializeMaid");
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         //viewPager layout used by exercise maid
         int pagerId = R.layout.viewpager;
-        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Info");
-        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Schedule");
-        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " History");
+        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Routine");
+        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Stats");
+        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Notes");
     }
 
     /*
@@ -162,7 +162,7 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
     private void initializeBottomNavigation(){
 
         //create bottom navigator
-        new ClientDetailNav(mActivity);
+        new SessionDetailNav(mActivity);
     }
 
 /**************************************************************************************************/
@@ -181,5 +181,6 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
     }
 
 /**************************************************************************************************/
+
 
 }

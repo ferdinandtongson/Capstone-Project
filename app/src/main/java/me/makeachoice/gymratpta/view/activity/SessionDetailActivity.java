@@ -8,8 +8,8 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * ClientDetailActivity displays the clients detailed information; client information, client history
- * and currently scheduled sessions.
+ * SessionDetailActivity displays session input screens to record session data; session routine,
+ * session stats, and session notes.
  *
  * MyActivity Class Variables
  *      Bridge mBridge - class implementing Bridge interface
@@ -34,7 +34,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  */
 /**************************************************************************************************/
 
-public class ClientDetailActivity extends MyActivity {
+public class SessionDetailActivity extends MyActivity {
 
 /**************************************************************************************************/
 /*
@@ -58,7 +58,7 @@ public class ClientDetailActivity extends MyActivity {
 
         try {
             //check if HouseKeeper is implementing interface
-            mBridge = (MyActivity.Bridge) mBoss.requestHouseKeeper(HouseKeeperRegistry.KEEPER_CLIENT_DETAIL);
+            mBridge = (MyActivity.Bridge) mBoss.requestHouseKeeper(HouseKeeperRegistry.KEEPER_SESSION_DETAIL);
         } catch (ClassCastException e) {
             throw new ClassCastException("HouseKeeper must implement Bridge interface");
         }
@@ -68,5 +68,6 @@ public class ClientDetailActivity extends MyActivity {
     }
 
 /**************************************************************************************************/
+
 
 }

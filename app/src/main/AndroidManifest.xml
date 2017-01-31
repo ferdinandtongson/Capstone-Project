@@ -32,6 +32,10 @@
             android:launchMode="singleTask"
             android:parentActivityName=".view.activity.AppointmentActivity"/>
 
+        <activity android:name=".view.activity.SessionDetailActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".view.activity.SessionActivity"/>
+
         <activity android:name=".view.activity.ExerciseActivity"
             android:launchMode="singleTask"
             android:parentActivityName=".view.activity.AppointmentActivity"/>
