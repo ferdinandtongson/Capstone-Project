@@ -154,9 +154,7 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
         //viewPager layout used by exercise maid
         int pagerId = R.layout.viewpager;
         maidRegistry.initializeDayMaid(MaidRegistry.MAID_DAY, pagerId);
-
-        int stubId = R.layout.stub_text;
-        maidRegistry.initializeWeekMaid(MaidRegistry.MAID_WEEK, stubId);
+        maidRegistry.initializeWeekMaid(MaidRegistry.MAID_WEEK, pagerId);
     }
 
     /*
