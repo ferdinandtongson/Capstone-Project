@@ -26,6 +26,9 @@
     <string name="bottom_nav_appointment_day" translatable="true">@string/for_the_day</string>
     <string name="bottom_nav_appointment_week" translatable="true">@string/for_the_week</string>
 
+    <!-- context menu: client -->
+    <string name="context_menu_activate" translatable="false">@string/activate</string>
+    <string name="context_menu_retire" translatable="false">@string/retire</string>
     <!-- context menu: session -->
     <string name="context_menu_reschedule" translatable="false">@string/reschedule</string>
     <string name="context_menu_cancel_session" translatable="false">@string/cancel_session</string>
@@ -58,6 +61,7 @@
     <string name="exerciseData_none" translatable="false">@string/none</string>
 
     <!-- dictionary -->
+    <string name="activate" translatable="true">Activate</string>
     <string name="active" translatable="true">Active</string>
     <string name="add_client" translatable="true">Add Client</string>
     <string name="add_exercise" translatable="true">Add Exercise</string>
@@ -86,6 +90,7 @@
     <string name="quick_help" translatable="true">Quick Help</string>
     <string name="reps" translatable="true">Reps</string>
     <string name="reschedule" translatable="true">Reschedule</string>
+    <string name="retire" translatable="true">Retire</string>
     <string name="retired" translatable="true">Retired</string>
     <string name="routines" translatable="true">Routines</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
