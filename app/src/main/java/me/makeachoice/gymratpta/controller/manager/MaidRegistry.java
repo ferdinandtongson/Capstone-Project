@@ -6,7 +6,7 @@ import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.StubMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayViewPagerMaid;
-import me.makeachoice.gymratpta.controller.viewside.maid.appointment.WeekPageMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.appointment.WeekMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPagerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
@@ -35,7 +35,7 @@ public class MaidRegistry extends MyMaidRegistry {
     public static final String MAID_EXERCISE_VP = "ExerciseViewPagerMaid";
 
     public static final String MAID_DAY = "DayMaid";
-    public static final String MAID_WEEK = "WeekPageMaid";
+    public static final String MAID_WEEK = "WeekMaid";
     public static final String MAID_DAY_VP = "DayViewPagerMaid";
 
     public static final String MAID_STUB = "StubMaid";
@@ -121,7 +121,7 @@ public class MaidRegistry extends MyMaidRegistry {
 
     public void initializeWeekMaid(String maidKey, int layoutId){
         //create maid
-        WeekPageMaid maid = new WeekPageMaid(maidKey, layoutId);
+        WeekMaid maid = new WeekMaid(maidKey, layoutId);
 
         //register maid
         registerMaid(maidKey, maid);

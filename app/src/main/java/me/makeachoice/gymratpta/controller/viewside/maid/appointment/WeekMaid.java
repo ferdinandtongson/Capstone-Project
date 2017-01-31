@@ -31,7 +31,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class WeekPageMaid extends MyMaid implements BasicFragment.Bridge{
+public class WeekMaid extends MyMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -44,13 +44,13 @@ public class WeekPageMaid extends MyMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
- * WeekPageMaid - constructor
+ * WeekMaid - constructor
  */
 /**************************************************************************************************/
     /*
-     * WeekPageMaid(...) - constructor
+     * WeekMaid(...) - constructor
      */
-    public WeekPageMaid(String maidKey, int layoutId){
+    public WeekMaid(String maidKey, int layoutId){
         //get maidKey
         mMaidKey = maidKey;
 
