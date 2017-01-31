@@ -1,6 +1,9 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -11,6 +14,7 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.Helper.CommunicationHelper;
+import me.makeachoice.gymratpta.controller.viewside.Helper.PermissionHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.stubData.ClientStubData;
@@ -26,7 +30,6 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  * TODO - Add divider lines in Context Menu
  * TODO - Use client data for email and phone icon events
  * TODO - need to create Dialog Contact List
- * TODO - need to create Permissions Helper class
  * TODO - need to create SQLite Database
  * TODO - need to create Firebase project client table
  */
@@ -85,6 +88,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
  *      int CONTEXT_MENU_RETIRE = "retire client" context menu id number
  *      ArrayList<ClientCardItem> mData - array of data used by ClientRecyclerAdapter
  *      ClientRecyclerAdapter mAdapter - recycler adapter
+ *      mPermissionHelper - helps making permission requests
  */
 /**************************************************************************************************/
 
@@ -99,6 +103,9 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
     //mAdapter - recycler adapter
     private ClientRecyclerAdapter mAdapter;
+
+    //mPermissionHelper - helps making permission requests
+    private PermissionHelper mPermissionHelper;
 
 /**************************************************************************************************/
 
@@ -149,6 +156,10 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
             openBundle(bundle);
         }
 
+        //check if "read contacts" permission has been granted
+        mPermissionHelper = new PermissionHelper(activity);
+        mPermissionHelper.requestPermission(PermissionHelper.READ_CONTACTS_REQUEST);
+
         initializeLayout();
     }
 
@@ -176,6 +187,9 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //initialize "empty" textView used when recycler is empty
         initializeEmptyText();
 
+        //initialize FAB
+        initializeFAB();
+
         //initialize adapter used by recycler
         initializeAdapter();
     }
@@ -189,6 +203,18 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
         //set message to textView
         setEmptyMessage(emptyMsg);
+    }
+
+    private void initializeFAB(){
+        String description = mActivity.getString(R.string.description_fab_client);
+        mFAB.setContentDescription(description);
+
+        setOnClickFABListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fabClicked(view);
+            }
+        });
     }
 
     /*
@@ -255,6 +281,19 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
                 //TODO - need to put actual client phone number
                 CommunicationHelper.makeCall(mActivity, "5104782282");
                 break;
+        }
+    }
+
+    private void fabClicked(View view){
+        Log.d("Choice", "StubClientKeeper.fabClicked");
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED){
+            //request Read Contacts permission
+            mPermissionHelper.requestPermission(PermissionHelper.READ_CONTACTS_REQUEST);
+        }
+        else{
+            //show dialog
+
         }
     }
 
