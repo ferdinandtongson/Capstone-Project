@@ -22,6 +22,10 @@
     <string name="bottom_nav_appointment_day" translatable="true">@string/for_the_day</string>
     <string name="bottom_nav_appointment_week" translatable="true">@string/for_the_week</string>
 
+    <!-- context menu: session -->
+    <string name="context_menu_reschedule" translatable="false">@string/reschedule</string>
+    <string name="context_menu_cancel_session" translatable="false">@string/cancel_session</string>
+
     <!-- empty recycler -->
     <string name="emptyRecycler_addClient" translatable="false">@string/add_client</string>
     <string name="emptyRecycler_addExercise" translatable="false">@string/add_exercise</string>
@@ -57,6 +61,7 @@
     <string name="appointments" translatable="true">Appointments</string>
     <string name="arms" translatable="true">Arms</string>
     <string name="back" translatable="true">Back</string>
+    <string name="cancel_session" translatable="true">Cancel Session</string>
     <string name="cardio" translatable="true">Cardio</string>
     <string name="chest" translatable="true">Chest</string>
     <string name="clients" translatable="true">Clients</string>
@@ -75,6 +80,7 @@
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="quick_help" translatable="true">Quick Help</string>
     <string name="reps" translatable="true">Reps</string>
+    <string name="reschedule" translatable="true">Reschedule</string>
     <string name="retired" translatable="true">Retired</string>
     <string name="routines" translatable="true">Routines</string>
     <string name="sessions" translatable="true">Sessions</string>
