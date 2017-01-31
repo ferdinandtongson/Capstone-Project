@@ -1,35 +1,36 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.SessionRecyclerAdapter;
+import me.makeachoice.gymratpta.controller.viewside.Helper.CommunicationHelper;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
+import me.makeachoice.gymratpta.model.item.ClientCardItem;
+import me.makeachoice.gymratpta.model.stubData.SessionStubData;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- *  TODO - housekeeper description
- *  TODO - create activity class
- *  TODO - create activity layout
- *  TODO - define housekeeper id in res/values/strings.xml
- *  <!-- HouseKeeper Names -->
- *  <string name="housekeeper_main" translatable="false">Main HouseKeeper</string>
- *  TODO - initialize and register housekeeper in Boss class
- *  TODO - handle saved instance states from bundle
- *  TODO - initialize mobile layout components
- *  TODO - initialize activity components, for example
- *  TODO - initialize tablet layout components
+ *  TODO - Enable Context Menu
+ *          todo - reschedule session
+ *          todo - cancel session
+ *  TODO - Add divider lines in Context Menu
+ *  TODO - Use client data for email and phone icon events
  */
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * TODO - housekeeper description,
- * Each housekeeper is responsible for an activity. It communicates directly with Boss, Activity
- * and Maids maintaining fragments within the Activity, if any.
+ * SessionKeeper is responsible for showing the list of clients scheduled to have a session for that
+ * day. It extends GymRatRecyclerKeeper which extends GymRatRecyclerBase so is directly responsible
+ * for drawer navigation, toolbar, "empty" textView, recycler view and FAB components.
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -37,6 +38,18 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      int mActivityLayoutId - Activity resource layout id
  *      boolean mIsTablet - boolean flag used to determine if device is a tablet
  *
+ * Variables from GymRatBaseKeeper:
+ *      Boss mBoss - Boss application
+ *      HomeToolbar mToolbar - toolbar component
+ *      HomeDrawer mHomeDrawer - drawer navigation component
+ *      int mToolbarMenuId - toolbar menu resource id
+ *      int mBottomNavSelectedItemId - used to determine which menu item is selected in the drawer
+ *
+ * Variables from GymRateRecyclerKeeper:
+ *      TextView mTxtEmpty - textView component displayed when recycler is empty
+ *      BasicRecycler mBasicRecycler - recycler component
+ *      FloatingActionButton mFAB - floating action button component
+
  * Methods from MyHouseKeeper
  *      void create(MyActivity,Bundle) - called by onCreate(Bundle) in the activity lifecycle
  *      boolean isTablet() - return device flag if device is tablet or not
@@ -55,34 +68,52 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge{
+public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge,
+        RecyclerView.OnCreateContextMenuListener, MyActivity.OnContextItemSelectedListener{
 
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      mBoss - Boss application
+ *      CONTEXT_MENU_RESCHEDULE - "reschedule" context menu id number
+ *      CONTEXT_MENU_CANCEL = "cancel session" context menu id number
+ *      ArrayList<ClientCardItem> mData - array of data used by ClientRecyclerAdapter
+ *      ClientRecyclerAdapter mAdapter - recycler adapter
  */
 /**************************************************************************************************/
 
-    private SessionRecyclerAdapter mAdapter;
+    //CONTEXT_MENU_RESCHEDULE - "reschedule" context menu id number
+    private final static int CONTEXT_MENU_RESCHEDULE = 0;
+
+    //CONTEXT_MENU_CANCEL = "cancel session" context menu id number
+    private final static int CONTEXT_MENU_CANCEL = 1;
+
+    //mData - array of data used by ClientRecyclerAdapter
+    private ArrayList<ClientCardItem> mData;
+
+    //mAdapter - recycler adapter
+    private ClientRecyclerAdapter mAdapter;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * _templateKeeper - constructor
+ * StubSessionKeeper - constructor
  */
 /**************************************************************************************************/
     /*
-     * _templateKeeper - constructor
-     * @param layoutId - layout resource id used by Keeper
+     * StubSessionKeeper - constructor
      */
     public StubSessionKeeper(int layoutId){
 
-        //get layout id
+        //get layout id from HouseKeeper Registry
         mActivityLayoutId = layoutId;
+
+        //set toolbar menu resource id consumed by HomeToolbar
         mToolbarMenuId = R.menu.toolbar_menu;
+
+        //flag used to determine which menu items is selected in drawer component
         mBottomNavSelectedItemId = R.id.nav_sessions;
+
     }
 
 /**************************************************************************************************/
@@ -104,7 +135,6 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      * @param bundle - instant state values
      */
     public void create(MyActivity activity, Bundle bundle){
-        //TODO - uncomment after Boss is defined
         super.create(activity, bundle);
 
         if(bundle != null){
@@ -112,6 +142,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
             openBundle(bundle);
         }
 
+        mActivity.setOnContextItemSelectedListener(this);
         initializeLayout();
     }
 
@@ -119,7 +150,6 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      * void openBundle(Bundle) - opens bundle to set saved instance states during create().
      */
     protected void openBundle(Bundle bundle){
-        //TODO - handle saved instance states from bundle
         //set saved instance state data
     }
 
@@ -129,33 +159,67 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 /*
  * Layout Initialization Methods:
  *      void initializeLayout() - initialize ui
+ *      void initializeEmptyText() - textView used when recycler is empty
+ *      void initializeAdapter() - adapter used by recycler component
  */
 /**************************************************************************************************/
     /*
-     * void initializeLayout() - initialize ui for mobile device
+     * void initializeLayout() - initialize ui
      */
     private void initializeLayout(){
-        Log.d("Choice", "SessionKeeper.initializeLayout");
-        String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_noSessions);
-        setEmptyMessage(emptyMsg);
+        //initialize "empty" textView used when recycler is empty
+        initializeEmptyText();
 
+        //initialize adapter used by recycler
         initializeAdapter();
     }
 
+    /*
+     * void initializeEmptyText() - textView used when recycler is empty
+     */
+    private void initializeEmptyText(){
+        //get "empty" textView message
+        String emptyMsg = mActivity.getResources().getString(R.string.emptyRecycler_noSessions);
+
+        //set message to textView
+        setEmptyMessage(emptyMsg);
+    }
+
+    /*
+     * void initializeAdapter() - adapter used by recycler component
+     */
     private void initializeAdapter() {
         //layout resource file id used by recyclerView adapter
-        int adapterLayoutId = R.layout.item_appointment;
+        int adapterLayoutId = R.layout.card_client;
 
-        mData = createDataStub();
+        mData = SessionStubData.createData(mActivity);
 
         //create adapter consumed by the recyclerView
-        mAdapter = new SessionRecyclerAdapter(mActivity, adapterLayoutId);
-        mAdapter.setStubData(mData);
+        mAdapter = new ClientRecyclerAdapter(mActivity, adapterLayoutId);
 
+        //set icon click listener
+        mAdapter.setOnIconClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iconClicked(view);
+            }
+        });
+
+        //set create context menu listener
+        mAdapter.setOnCreateContextMenuListener(this);
+
+        //swap client data into adapter
+        mAdapter.swapData(mData);
+
+        //set adapter in recycler
         mBasicRecycler.setAdapter(mAdapter);
 
+        //check if recycler has any data; if not, display "empty" textView
         checkForEmptyRecycler(mData.isEmpty());
+    }
 
+    private void initializeRecycler(){
+        //mActivity.registerForContextMenu((View)mBasicRecycler);
     }
 
 /**************************************************************************************************/
@@ -173,82 +237,58 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     public void backPressed(){
     }
 
+    private void iconClicked(View view){
+        Log.d("Choice", "StubSessionKeeper.onIconClicked");
+        ClientCardItem item = (ClientCardItem)view.getTag(R.string.recycler_tagItem);
+        int iconId = (int)view.getTag(R.string.recycler_tagId);
 
-/**************************************************************************************************/
-
-
-/**************************************************************************************************/
-/*
- * StubItem - used for debugging purposes
- */
-/**************************************************************************************************/
-
-
-    private ArrayList<SessionRecyclerAdapter.StubItem> mData;
-    private ArrayList<SessionRecyclerAdapter.StubItem> createDataStub(){
-        ArrayList<SessionRecyclerAdapter.StubItem> stubData = new ArrayList();
-
-        SessionRecyclerAdapter.StubItem item01 = new SessionRecyclerAdapter.StubItem();
-        item01.clientName = "Quess Starbringer";
-        item01.clientPhoneNumber = "Monday";
-        item01.clientSMS = "appointments";
-        item01.clientWorkout = "workout01";
-        item01.appointmentTime = "09:00 - 10:00";
-
-        SessionRecyclerAdapter.StubItem item02 = new SessionRecyclerAdapter.StubItem();
-        item02.clientName = "Quess Starbringer";
-        item02.clientPhoneNumber = "Monday";
-        item02.clientSMS = "appointments";
-        item02.clientWorkout = "workout01";
-        item02.appointmentTime = "10:00 - 10:00";
-
-        SessionRecyclerAdapter.StubItem item03 = new SessionRecyclerAdapter.StubItem();
-        item03.clientName = "Quess Starbringer";
-        item03.clientPhoneNumber = "Monday";
-        item03.clientSMS = "appointments";
-        item03.clientWorkout = "workout01";
-        item03.appointmentTime = "11:00 - 12:00";
-
-        SessionRecyclerAdapter.StubItem item04 = new SessionRecyclerAdapter.StubItem();
-        item04.clientName = "Quess Starbringer";
-        item04.clientPhoneNumber = "Monday";
-        item04.clientSMS = "appointments";
-        item04.clientWorkout = "workout01";
-        item04.appointmentTime = "12:00 - 13:00";
-
-        SessionRecyclerAdapter.StubItem item05 = new SessionRecyclerAdapter.StubItem();
-        item05.clientName = "Quess Starbringer";
-        item05.clientPhoneNumber = "Monday";
-        item05.clientSMS = "appointments";
-        item05.clientWorkout = "workout01";
-        item05.appointmentTime = "13:00 - 14:00";
-
-        SessionRecyclerAdapter.StubItem item06 = new SessionRecyclerAdapter.StubItem();
-        item06.clientName = "Quess Starbringer";
-        item06.clientPhoneNumber = "Monday";
-        item06.clientSMS = "appointments";
-        item06.clientWorkout = "workout01";
-        item06.appointmentTime = "14:00 - 15:00";
-
-        SessionRecyclerAdapter.StubItem item07 = new SessionRecyclerAdapter.StubItem();
-        item07.clientName = "Quess Starbringer";
-        item07.clientPhoneNumber = "Monday";
-        item07.clientSMS = "appointments";
-        item07.clientWorkout = "workout01";
-        item07.appointmentTime = "15:00 - 16:00";
-
-        //TODO - create actual data for adapter to consume
-        stubData.add(item01);
-        stubData.add(item02);
-        stubData.add(item03);
-        stubData.add(item04);
-        stubData.add(item05);
-        stubData.add(item06);
-        stubData.add(item07);
-
-        return stubData;
+        switch(iconId){
+            case ClientRecyclerAdapter.ICON_INFO:
+                break;
+            case ClientRecyclerAdapter.ICON_EMAIL:
+                //TODO - need to put actual client email
+                CommunicationHelper.sendEmail(mActivity, "stubemail@gmail.com");
+                break;
+            case ClientRecyclerAdapter.ICON_PHONE:
+                //TODO - need to put actual client phone number
+                CommunicationHelper.makeCall(mActivity, "5104782282");
+                break;
+        }
     }
 
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        //get clientCardItem
+        ClientCardItem item = (ClientCardItem)v.getTag(R.string.recycler_tagItem);
+
+        //get client name
+        String clientName = (item.clientName);
+
+        //get context menu strings
+        String strReschedule = mActivity.getString(R.string.context_menu_reschedule);
+        String strCancel = mActivity.getString(R.string.context_menu_cancel_session);
+
+        //create context menu
+        menu.setHeaderTitle(clientName);
+        menu.add(0, CONTEXT_MENU_RESCHEDULE, 0, strReschedule);
+        menu.add(0, CONTEXT_MENU_CANCEL, 0, strCancel);
+    }
+
+    /*
+     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+     */
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case CONTEXT_MENU_RESCHEDULE:
+                Log.d("Choice", "     reschedule");
+                //TODO - need to reschedule session
+                return true;
+            case CONTEXT_MENU_CANCEL:
+                //TODO - need to cancel session
+                return true;
+        }
+        return false;
+    }
 /**************************************************************************************************/
 
 }
