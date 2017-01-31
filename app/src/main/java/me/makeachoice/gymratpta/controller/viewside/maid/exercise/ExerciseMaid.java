@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
-import me.makeachoice.gymratpta.controller.viewside.viewpager.ExerciseViewPager;
+import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardViewPager;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.model.stubData.CategoryStubData;
@@ -134,7 +134,7 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         initializeVPMaids();
 
         //initialize view pager
-        ExerciseViewPager pager = new ExerciseViewPager(mFragment, mPageTitles, MaidRegistry.MAID_EXERCISE_VP);
+        StandardViewPager pager = new StandardViewPager(mFragment, mPageTitles, MaidRegistry.MAID_EXERCISE_VP);
 
     }
 

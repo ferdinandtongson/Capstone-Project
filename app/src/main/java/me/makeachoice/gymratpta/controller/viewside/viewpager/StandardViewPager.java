@@ -16,11 +16,11 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * ExerciseViewPager displays different list of exercises separated by category.
+ * StandardViewPager displays different list of exercises separated by category.
  */
 /**************************************************************************************************/
 
-public class ExerciseViewPager{
+public class StandardViewPager {
 
 /**************************************************************************************************/
 /*
@@ -54,13 +54,13 @@ public class ExerciseViewPager{
 
 /**************************************************************************************************/
 /*
- *  ExerciseViewPager - constructor
+ *  StandardViewPager - constructor
  */
 /**************************************************************************************************/
     /*
-     * ExerciseViewPager - constructor
+     * StandardViewPager - constructor
      */
-    public ExerciseViewPager(Fragment fragment, ArrayList<String> titles, String baseMaidKey){
+    public StandardViewPager(Fragment fragment, ArrayList<String> titles, String baseMaidKey){
         //get fragment
         mFragment = fragment;
 
@@ -73,7 +73,7 @@ public class ExerciseViewPager{
     }
 
     private MyActivity mActivity;
-    public ExerciseViewPager(MyActivity activity, ArrayList<String> titles, String baseMaidKey){
+    public StandardViewPager(MyActivity activity, ArrayList<String> titles, String baseMaidKey){
         //get activity
         mActivity = activity;
 

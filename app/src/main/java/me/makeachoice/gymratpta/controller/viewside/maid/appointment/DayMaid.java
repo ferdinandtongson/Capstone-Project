@@ -12,7 +12,6 @@ import java.util.Calendar;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
-import me.makeachoice.gymratpta.controller.viewside.viewpager.ExerciseViewPager;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardStateViewPager;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.stubData.SessionStubData;

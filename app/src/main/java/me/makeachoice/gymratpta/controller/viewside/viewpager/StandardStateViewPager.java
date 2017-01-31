@@ -52,11 +52,11 @@ public class StandardStateViewPager {
 
 /**************************************************************************************************/
 /*
- *  ExerciseViewPager - constructor
+ *  StandardViewPager - constructor
  */
 /**************************************************************************************************/
     /*
-     * ExerciseViewPager - constructor
+     * StandardViewPager - constructor
      */
     public StandardStateViewPager(Fragment fragment, ArrayList<String> titles, String baseMaidKey){
         //get fragment
