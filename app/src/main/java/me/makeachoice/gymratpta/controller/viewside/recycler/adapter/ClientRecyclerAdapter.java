@@ -276,14 +276,11 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
             // Extract info from cursor
             ClientCardItem item = mData.get(position);
 
-            //get client status, if any
-            String status = item.clientInfo;
-
             //set default card color background
             int cardColor = mCardDefaultColor;
 
-            //check client status, if retired
-            if(status.equals(mStrRetired)){
+            //check client status, if false
+            if(!item.isActive){
                 //change card color background
                 cardColor = mCardRetiredColor;
             }

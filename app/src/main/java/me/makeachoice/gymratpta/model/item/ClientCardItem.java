@@ -8,13 +8,12 @@ import android.net.Uri;
 
 public class ClientCardItem {
 
-    public long contactId;
-    public String clientKey;
     public String clientName;
     public String clientInfo;
     public Uri profilePic;
     public String clientEmail;
     public String clientPhone;
+    public boolean isActive;
 
     public ClientCardItem(){}
 
