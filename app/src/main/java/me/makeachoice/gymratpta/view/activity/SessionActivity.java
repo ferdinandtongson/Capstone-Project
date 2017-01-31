@@ -43,7 +43,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class SessionActivity extends MyActivity {
+public class SessionActivity extends MyActivity{
 
 /**************************************************************************************************/
 /*

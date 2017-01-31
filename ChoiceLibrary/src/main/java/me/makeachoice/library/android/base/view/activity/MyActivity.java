@@ -61,6 +61,8 @@ public abstract class MyActivity extends AppCompatActivity {
     //mOptionsMenuBridge - class implementing OptionsMenuBridge interface
     protected OptionsMenuBridge mOptionsMenuBridge;
 
+    //mContextItemSelectedListener - listener for context menu item selected event
+    protected OnContextItemSelectedListener mContextItemSelectedListener;
 
     //Implemented communication line, usually implemented by a HouseKeeper class
     public interface Bridge{
@@ -99,6 +101,11 @@ public abstract class MyActivity extends AppCompatActivity {
 
         //called by onOptionsItemSelected(MenuItem) when a menu item is clicked
         boolean optionsItemSelected(MenuItem item);
+    }
+
+    public interface OnContextItemSelectedListener{
+        //event called when a context menu item is clicked on
+        boolean onContextItemSelected(MenuItem item);
     }
 
 
@@ -243,6 +250,23 @@ public abstract class MyActivity extends AppCompatActivity {
     public void setOptionsMenuBridge(OptionsMenuBridge menuBridge){
         mOptionsMenuBridge = menuBridge;
     }
+
+    /*
+     * void setOnContextItemSelectedListener(...) - add listener to context item selected event
+     */
+    public void setOnContextItemSelectedListener(OnContextItemSelectedListener listener){
+        mContextItemSelectedListener = listener;
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        super.onContextItemSelected(item);
+        if(mContextItemSelectedListener != null){
+            mContextItemSelectedListener.onContextItemSelected(item);
+        }
+        return false;
+    }
+
 
 /**************************************************************************************************/
 
