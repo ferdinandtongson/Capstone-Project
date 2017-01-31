@@ -150,10 +150,13 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
     private void initializeMaid(){
         Log.d("Choice", "Appointment.initializeMaid");
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
-        int layoutId = R.layout.stub_text;
 
-        maidRegistry.initializeDayPageMaid(MaidRegistry.MAID_DAY_PAGE, layoutId);
-        maidRegistry.initializeWeekPageMaid(MaidRegistry.MAID_WEEK_PAGE, layoutId);
+        //viewPager layout used by exercise maid
+        int pagerId = R.layout.viewpager;
+        maidRegistry.initializeDayMaid(MaidRegistry.MAID_DAY, pagerId);
+
+        int stubId = R.layout.stub_text;
+        maidRegistry.initializeWeekMaid(MaidRegistry.MAID_WEEK, stubId);
     }
 
     /*
