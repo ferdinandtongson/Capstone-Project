@@ -1,13 +1,16 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.viewside.Helper.CommunicationHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.stubData.ClientStubData;
@@ -15,19 +18,13 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * TODO - Need to add toolbar menu option
- *          todo - show all clients
- *          todo - show active only
- *          todo - show retired only
- * TODO - need to activate communication icon click events
- *          todo - display email service icons
- *                  todo - automatically use client email to send email, if any
- *          todo - display phone dial-up screen
- *                  todo - automatically use client phone to call or sms, if any
  * TODO - need to get client profile picture from Contacts
  *          todo - load profile uri picture
- * TODO - need to activate create context menu
- *          todo - add context menu: Active / Retire option for client cards
+ * TODO - Enable Context Menu
+ *          todo - activate client
+ *          todo - retire client
+ * TODO - Add divider lines in Context Menu
+ * TODO - Use client data for email and phone icon events
  * TODO - need to create Dialog Contact List
  * TODO - need to create Permissions Helper class
  * TODO - need to create SQLite Database
@@ -78,15 +75,24 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge{
+public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge,
+        RecyclerView.OnCreateContextMenuListener, MyActivity.OnContextItemSelectedListener{
 
 /**************************************************************************************************/
 /*
  * Class Variables:
+ *      int CONTEXT_MENU_ACTIVATE - "activate client" context menu id number
+ *      int CONTEXT_MENU_RETIRE = "retire client" context menu id number
  *      ArrayList<ClientCardItem> mData - array of data used by ClientRecyclerAdapter
  *      ClientRecyclerAdapter mAdapter - recycler adapter
  */
 /**************************************************************************************************/
+
+    //CONTEXT_MENU_ACTIVATE - "activate client" context menu id number
+    private final static int CONTEXT_MENU_ACTIVATE = 0;
+
+    //CONTEXT_MENU_RETIRE = "retire client" context menu id number
+    private final static int CONTEXT_MENU_RETIRE = 1;
 
     //mData - array of data used by ClientRecyclerAdapter
     private ArrayList<ClientCardItem> mData;
@@ -159,6 +165,8 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 /*
  * Layout Initialization Methods:
  *      void initializeLayout() - initialize ui
+ *      void initializeEmptyText() - textView used when recycler is empty
+ *      void initializeAdapter() - adapter used by recycler component
  */
 /**************************************************************************************************/
     /*
@@ -204,13 +212,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         });
 
         //set create context menu listener
-        mAdapter.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu contextMenu, View view,
-                                            ContextMenu.ContextMenuInfo contextMenuInfo) {
-                createContextMenu(contextMenu, view, contextMenuInfo);
-            }
-        });
+        mAdapter.setOnCreateContextMenuListener(this);
 
         //swap client data into adapter
         mAdapter.swapData(mData);
@@ -244,19 +246,56 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
         switch(iconId){
             case ClientRecyclerAdapter.ICON_INFO:
-                Log.d("Choice", "     iconInfo");
                 break;
             case ClientRecyclerAdapter.ICON_EMAIL:
-                Log.d("Choice", "     iconEmail");
+                //TODO - need to put actual client email
+                CommunicationHelper.sendEmail(mActivity, "stubemail@gmail.com");
                 break;
             case ClientRecyclerAdapter.ICON_PHONE:
-                Log.d("Choice", "     iconPhone");
+                //TODO - need to put actual client phone number
+                CommunicationHelper.makeCall(mActivity, "5104782282");
                 break;
         }
     }
 
-    private void createContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo){
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
+        //get clientCardItem
+        ClientCardItem item = (ClientCardItem)v.getTag(R.string.recycler_tagItem);
+
+        //get client name
+        String clientName = (item.clientName);
+
+        //get context menu strings
+        String strActivate = mActivity.getString(R.string.context_menu_activate);
+        String strRetire = mActivity.getString(R.string.context_menu_retire);
+
+        //create context menu
+        menu.setHeaderTitle(clientName);
+
+        if(item.isActive){
+            menu.add(0, CONTEXT_MENU_RETIRE, 0, strRetire);
+        }
+        else{
+            menu.add(0, CONTEXT_MENU_ACTIVATE, 0, strActivate);
+        }
+    }
+
+    /*
+     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+     */
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case CONTEXT_MENU_ACTIVATE:
+                Log.d("Choice", "     activate");
+                //TODO - need to reschedule session
+                return true;
+            case CONTEXT_MENU_RETIRE:
+                Log.d("Choice", "     retire");
+                //TODO - need to cancel session
+                return true;
+        }
+        return false;
     }
 
 
