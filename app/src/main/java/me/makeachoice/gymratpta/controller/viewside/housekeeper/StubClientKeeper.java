@@ -3,6 +3,7 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,9 +16,11 @@ import java.util.ArrayList;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.Helper.CommunicationHelper;
 import me.makeachoice.gymratpta.controller.viewside.Helper.PermissionHelper;
+import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.stubData.ClientStubData;
+import me.makeachoice.gymratpta.view.dialog.ContactListDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -250,6 +253,24 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         checkForEmptyRecycler(mData.isEmpty());
     }
 
+    /*
+     * EditAddDialog initializeDialog(...) - create exercise edit/add dialog
+     */
+    private ContactListDialog initializeDialog() {
+        //get fragment manager
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+
+        //create dialog
+        ContactListDialog dia = new ContactListDialog();
+        //dia.initDialog(mBoss.getUser().getUid(), this);
+        BasicRecycler diaRecycler = new BasicRecycler(mActivity);
+        dia.setRecycler(diaRecycler);
+
+        dia.show(fm, "diaExercise");
+
+        return dia;
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -293,7 +314,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         }
         else{
             //show dialog
-
+            initializeDialog();
         }
     }
 
