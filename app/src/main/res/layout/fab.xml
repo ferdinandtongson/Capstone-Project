@@ -8,12 +8,10 @@
     android:layout_height="wrap_content"
     android:src="@drawable/ic_add_white_36dp"
     android:visibility="invisible"
-    android:tint="@color/colorPrimaryDark"
-    app:rippleColor="@color/colorPrimary"
     app:elevation="6dp"
     app:borderWidth="0dp"
     app:pressedTranslationZ="12dp"
     app:layout_behavior="me.makeachoice.gymratpta.utilities.FabRecyclerScrollBehavior"
-    style="@style/ChoiceTheme.FAB"
+    style="@style/GymRat.FAB"
     />
 

@@ -1,0 +1,11 @@
+<resources xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <style name="GymRat.FAB" parent="Base.ThemeOverlay.AppCompat.Light">
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:layout_gravity">bottom|right|end</item>
+        <item name="android:backgroundTint">@color/fab_backgroundTint</item>
+        <item name="android:tint">@color/fab_tint</item>
+    </style>
+
+</resources>
