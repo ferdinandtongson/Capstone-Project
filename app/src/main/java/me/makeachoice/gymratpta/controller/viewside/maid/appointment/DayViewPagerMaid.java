@@ -4,12 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ExerciseRecyclerAdapter;
+import me.makeachoice.gymratpta.model.item.ClientCardItem;
+import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
-import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
@@ -18,7 +22,6 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
  *      View mLayout - fragment layout view holding the child views
- *      MyFragment mFragment - fragment being maintained by the Maid
  *
  * Methods from MyMaid:
  *      void activityCreated() - called when Activity.onCreate() completed
@@ -28,9 +31,10 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      String getKey() - get maid key value
  *      Fragment getFragment() - get new instance fragment
  */
+
 /**************************************************************************************************/
 
-public class DayPageMaid extends MyMaid implements BasicFragment.Bridge{
+public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -38,23 +42,27 @@ public class DayPageMaid extends MyMaid implements BasicFragment.Bridge{
  */
 /**************************************************************************************************/
 
+    private ArrayList<ClientCardItem> mData;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * DayPageMaid - constructor
+ * DayViewPagerMaid - constructor
  */
 /**************************************************************************************************/
     /*
-     * DayPageMaid(...) - constructor
+     * DayViewPagerMaid(...) - constructor
      */
-    public DayPageMaid(String maidKey, int layoutId){
+    public DayViewPagerMaid(String maidKey, int layoutId, ArrayList<ClientCardItem> clients){
         //get maidKey
         mMaidKey = maidKey;
 
         //fragment layout id number
         mLayoutId = layoutId;
+
+        //get exercise list
+        mData = clients;
     }
 
 /**************************************************************************************************/
@@ -116,13 +124,25 @@ public class DayPageMaid extends MyMaid implements BasicFragment.Bridge{
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment(){
-        MyActivity activity = (MyActivity)mFragment.getActivity();
+        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addExercise);
+        setEmptyMessage(emptyMsg);
 
-        TextView txtTitle = (TextView)activity.findViewById(R.id.stub_txtTitle);
-        txtTitle.setText(mMaidKey);
+        checkForEmptyRecycler(mData.isEmpty());
 
+        initializeAdapter();
     }
 
+    private ClientRecyclerAdapter mAdapter;
+    private void initializeAdapter() {
+        //layout resource file id used by recyclerView adapter
+        int adapterLayoutId = R.layout.card_client;
+
+        //create adapter consumed by the recyclerView
+        mAdapter = new ClientRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
+        mAdapter.swapData(mData);
+
+        mBasicRecycler.setAdapter(mAdapter);
+    }
 
 /**************************************************************************************************/
 
