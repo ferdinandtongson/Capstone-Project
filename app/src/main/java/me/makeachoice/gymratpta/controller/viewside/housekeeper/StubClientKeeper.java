@@ -257,16 +257,19 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      * EditAddDialog initializeDialog(...) - create exercise edit/add dialog
      */
     private ContactListDialog initializeDialog() {
+        Log.d("Choice", "ClientKeeper.initializeDialog");
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
         //create dialog
         ContactListDialog dia = new ContactListDialog();
+        Log.d("Choice", "     dia: " + dia.toString());
+        Log.d("Choice", "     fm: " + fm.toString());
         //dia.initDialog(mBoss.getUser().getUid(), this);
         BasicRecycler diaRecycler = new BasicRecycler(mActivity);
         dia.setRecycler(diaRecycler);
 
-        dia.show(fm, "diaExercise");
+        dia.show(fm, "diaContactList");
 
         return dia;
     }
@@ -313,10 +316,18 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
             mPermissionHelper.requestPermission(PermissionHelper.READ_CONTACTS_REQUEST);
         }
         else{
-            //show dialog
             initializeDialog();
+            /*ContactsHelper contactsHelper = new ContactsHelper(mActivity);
+            contactsHelper.requestContacts(new ContactsHelper.OnContactsLoadedListener() {
+                @Override
+                public void onContactsLoaded(Cursor c) {
+                    initializeDialog();
+                }
+            });*/
         }
     }
+
+
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 

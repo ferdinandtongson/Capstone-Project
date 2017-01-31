@@ -20,6 +20,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.viewside.Helper.ContactsHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
 import me.makeachoice.gymratpta.model.item.ClientItem;
 
@@ -37,26 +38,6 @@ public class ContactListDialog extends DialogFragment{
  * Class Variables
  */
 /**************************************************************************************************/
-
-    private static final int LOADER_CONTACTS = 0;
-    private static final int LOADER_PHONE = 1;
-    private static final int LOADER_EMAIL = 2;
-    private static final int LOADER_MESSENGER = 3;
-
-    private static final String[] PROJECTION = {
-            ContactsContract.Contacts._ID,
-            ContactsContract.Contacts.LOOKUP_KEY,
-            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
-    };
-
-    private static final String[] PROJECTION_PHONE = {
-            ContactsContract.CommonDataKinds.Phone.NUMBER
-    };
-
-    private static final String[] PROJECTION_EMAIL = {
-            ContactsContract.CommonDataKinds.Email.DATA,
-            ContactsContract.CommonDataKinds.Email.TYPE
-    };
 
     private TextView mTxtTitle;
     private TextView mTxtEmpty;
@@ -134,43 +115,8 @@ public class ContactListDialog extends DialogFragment{
         //create Basic recycler class
         //mBasicRecycler = new BasicRecycler(rootView, R.id.choiceRecycler);
 
-
         initializeTitleView(rootView);
         initializeEmptyView(rootView);
-
-        // Initializes a loader for loading the contacts
-        /*getLoaderManager().initLoader(LOADER_CONTACTS, null, new LoaderManager.LoaderCallbacks<Cursor>() {
-            @Override
-            public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-                /*
-                 * Makes search string into pattern and
-                 * stores it in the selection array
-                 */
-                /*String sort = "upper("+ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + ") ASC";
-                // Starts the query
-                return new CursorLoader(
-                        getActivity(),
-                        ContactsContract.Contacts.CONTENT_URI,
-                        null,
-                        null,
-                        null,
-                        sort);
-
-            }
-
-            @Override
-            public void onLoadFinished(Loader<Cursor> objectLoader, Cursor c) {
-                updateAdapter(c);
-            }
-
-            @Override
-            public void onLoaderReset(Loader<Cursor> cursorLoader) {
-                if(mAdapter != null){
-                    //TODO - swap cursor
-                    //mAdapter.swapCursor(null);
-                }
-            }
-        });*/
 
         return rootView;
     }
@@ -201,7 +147,7 @@ public class ContactListDialog extends DialogFragment{
     public void onDetach(){
         super.onDetach();
         //mAdapter.closeCursor();
-        getLoaderManager().destroyLoader(LOADER_CONTACTS);
+        //getLoaderManager().destroyLoader(LOADER_CONTACTS);
     }
 
     /*

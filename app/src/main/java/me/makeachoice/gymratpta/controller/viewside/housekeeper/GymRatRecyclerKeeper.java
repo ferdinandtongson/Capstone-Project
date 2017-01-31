@@ -14,7 +14,6 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  * TODO - need to style components
  *          todo - recyler
  *          todo - "empty" textView
- *          todo - fab
  * TODO - need to add accessibility values to fab and "empty" textView
  *          todo - add content description to "empty" textView
  *          todo - add content description to FAB
