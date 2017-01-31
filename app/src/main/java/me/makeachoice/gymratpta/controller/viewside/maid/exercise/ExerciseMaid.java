@@ -134,7 +134,7 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         initializeVPMaids();
 
         //initialize view pager
-        ExerciseViewPager pager = new ExerciseViewPager(mFragment, mPageTitles);
+        ExerciseViewPager pager = new ExerciseViewPager(mFragment, mPageTitles, MaidRegistry.MAID_EXERCISE_VP);
 
     }
 

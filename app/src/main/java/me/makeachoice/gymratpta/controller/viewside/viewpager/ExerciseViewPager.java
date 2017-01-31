@@ -48,6 +48,7 @@ public class ExerciseViewPager{
     private TabLayout mTabLayout;
     private ViewPagerAdapter mAdapter;
     private ArrayList<String> mTitleList;
+    private String mBaseMaidKey;
 
 /**************************************************************************************************/
 
@@ -59,35 +60,29 @@ public class ExerciseViewPager{
     /*
      * ExerciseViewPager - constructor
      */
-    public ExerciseViewPager(Fragment fragment, ArrayList<String> titles){
+    public ExerciseViewPager(Fragment fragment, ArrayList<String> titles, String baseMaidKey){
         //get fragment
         mFragment = fragment;
 
         //get list of titles
         mTitleList = titles;
 
+        mBaseMaidKey = baseMaidKey;
+
         initialize(fragment.getActivity(), DEFAULT_VIEWPAGER_ID, DEFAULT_TABLAYOUT_ID);
     }
 
     private MyActivity mActivity;
-    public ExerciseViewPager(MyActivity activity, ArrayList<String> titles){
+    public ExerciseViewPager(MyActivity activity, ArrayList<String> titles, String baseMaidKey){
         //get activity
         mActivity = activity;
 
         //get list of titles
         mTitleList = titles;
 
+        mBaseMaidKey = baseMaidKey;
+
         initialize(mActivity, DEFAULT_VIEWPAGER_ID, DEFAULT_TABLAYOUT_ID);
-    }
-
-    public ExerciseViewPager(Fragment fragment, int pagerId, int tabId, ArrayList<String> titles){
-        //get fragment
-        mFragment = fragment;
-
-        //get list of titles
-        mTitleList = titles;
-
-        initialize(fragment.getActivity(), pagerId, tabId);
     }
 
     private void initialize(Activity activity, int pagerId, int tabId){
@@ -129,7 +124,7 @@ public class ExerciseViewPager{
             fm = mActivity.getSupportFragmentManager();
         }
 
-        mAdapter = new ViewPagerAdapter(fm);
+        mAdapter = new ViewPagerAdapter(fm, mBaseMaidKey);
 
         for(int i = 0; i < size; i++){
             mAdapter.addTitleList(mTitleList.get(i));
