@@ -149,10 +149,13 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
         Log.d("Choice", "ClientDetail.initializeMaid");
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
+        int infoId = R.layout.fragment_client_info;
+        maidRegistry.initializeClientInfoMaid(MaidRegistry.MAID_CLIENT_INFO, infoId);
+
+        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Schedule");
+
         //viewPager layout used by exercise maid
         int pagerId = R.layout.viewpager;
-        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Info");
-        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Schedule");
         maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " History");
     }
 

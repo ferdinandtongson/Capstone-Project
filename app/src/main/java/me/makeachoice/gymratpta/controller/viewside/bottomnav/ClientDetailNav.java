@@ -89,14 +89,14 @@ public class ClientDetailNav extends MyBottomNav implements BottomNavigationView
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         switch (itemId) {
-            case bottom_nav_item1: // 0 - viewPage of lists of exercises
+            case bottom_nav_item1: // 0 - client info
 
-                maid = maidRegistry.requestMaid(MaidRegistry.MAID_STUB + " Info");
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_CLIENT_INFO);
                 break;
-            case bottom_nav_item2: // 1 - list of exercise routines
+            case bottom_nav_item2: // 1 - list of scheduled client sessions
                 maid = maidRegistry.requestMaid(MaidRegistry.MAID_STUB + " Schedule");
                 break;
-            case bottom_nav_item3: // 1 - list of exercise routines
+            case bottom_nav_item3: // 1 - client history records on routines, stats and notes
                 maid = maidRegistry.requestMaid(MaidRegistry.MAID_STUB + " History");
                 break;
             default:

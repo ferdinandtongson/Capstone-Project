@@ -1,0 +1,194 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    style="@style/ChoiceTheme.Activity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/colorPrimary"
+        >
+
+        <TextView android:id="@+id/txtContactInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/contact_info"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            />
+
+        <RelativeLayout
+            android:id="@+id/relContactInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/txtContactInfo"
+            android:paddingTop="3dp"
+            android:background="#40FFFFFF"
+            >
+
+            <include
+                android:id="@+id/item_client"
+                layout="@layout/item_client"
+                />
+
+            <TextView android:id="@+id/txtClientPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="2dp"
+                android:layout_below="@id/item_client"
+                android:textSize="14sp"
+                />
+
+            <TextView android:id="@+id/txtClientEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/txtClientPhone"
+                android:textSize="14sp"
+                />
+
+            <ImageButton
+                android:id="@+id/imgPhone"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/txtClientEmail"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/ic_phone_black_36dp"
+                android:clickable="true"
+                />
+
+            <ImageButton
+                android:id="@+id/imgEmail"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_below="@id/txtClientEmail"
+                android:layout_toStartOf="@id/imgPhone"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/ic_mail_outline_black_36dp"
+                android:clickable="true"
+                />
+
+        </RelativeLayout>
+
+        <TextView android:id="@+id/txtTrainingInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/relContactInfo"
+            android:text="@string/training_info"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            />
+
+        <RelativeLayout
+            android:id="@+id/relTrainingInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/txtTrainingInfo"
+            android:paddingTop="3dp"
+            android:background="#40FFFFFF"
+            >
+
+            <TextView android:id="@+id/txtStartDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="14sp"
+                />
+
+            <TextView android:id="@+id/txtTotalSessions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/txtStartDate"
+                android:textSize="14sp"
+                />
+
+            <TextView android:id="@+id/txtFutureSessions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="2dp"
+                android:layout_below="@id/txtTotalSessions"
+                android:textSize="14sp"
+                />
+
+
+            <RelativeLayout
+                android:id="@+id/relTrainingGoal"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/txtFutureSessions"
+                android:paddingTop="3dp"
+                android:background="#40FFFFFF"
+                >
+
+                <ScrollView
+                    android:id="@+id/scrGoal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical"
+                    android:fillViewport="true">
+
+                    <TextView android:id="@+id/txtGoal"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+                </ScrollView>
+
+                <TextView android:id="@+id/txtEmptyGoal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:hint="@string/msgClientInfo_empty_goal"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:textSize="14sp"
+                    />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

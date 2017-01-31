@@ -6,6 +6,9 @@
     <!-- message: email -->
     <string name="msgEmail_send_using" translatable="false">@string/send_email_using</string>
     <string name="msgEmail_no_client" translatable="false">@string/no_email_client</string>
+    <!-- message: client info -->
+    <string name="msgClientInfo_empty_goal" translatable="true">@string/client_goals</string>
+
 
     <!-- toolbar -->
     <string name="toolbar_menu_quick_help" translatable="false">@string/quick_help</string>
@@ -81,7 +84,9 @@
     <string name="cancel_session" translatable="true">Cancel Session</string>
     <string name="cardio" translatable="true">Cardio</string>
     <string name="chest" translatable="true">Chest</string>
+    <string name="client_goals" translatable="true">Client Goals</string>
     <string name="clients" translatable="true">Clients</string>
+    <string name="contact_info" translatable="true">Contact Info</string>
     <string name="core" translatable="true">Core</string>
     <string name="delete" translatable="true">Delete</string>
     <string name="distance" translatable="true">Distance</string>
@@ -115,6 +120,7 @@
     <string name="shoulders" translatable="true">Shoulders</string>
     <string name="stats" translatable="true">Stats</string>
     <string name="time" translatable="true">Time</string>
+    <string name="training_info" translatable="true">Training Info</string>
     <string name="weight" translatable="true">Weight</string>
 
 </resources>
