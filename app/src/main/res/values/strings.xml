@@ -3,6 +3,10 @@
     <string name="app_title" translatable="false">@string/gym_rat</string>
     <string name="app_subtitle" translatable="false">@string/personal_trainer_assistant</string>
 
+    <!-- message: email -->
+    <string name="msgEmail_send_using" translatable="false">@string/send_email_using</string>
+    <string name="msgEmail_no_client" translatable="false">@string/no_email_client</string>
+
     <!-- toolbar -->
     <string name="toolbar_menu_quick_help" translatable="false">@string/quick_help</string>
     <string name="toolbar_menu_sign_out" translatable="false">@string/sign_out</string>
@@ -75,6 +79,7 @@
     <string name="help" translatable="true">Help</string>
     <string name="gym_rat" translatable="true">Gym Rat</string>
     <string name="legs" translatable="true">Legs</string>
+    <string name="no_email_client" translatable="true">No email clients installed</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="none" translatable="true">None</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
@@ -83,6 +88,7 @@
     <string name="reschedule" translatable="true">Reschedule</string>
     <string name="retired" translatable="true">Retired</string>
     <string name="routines" translatable="true">Routines</string>
+    <string name="send_email_using" translatable="true">Send email using...</string>
     <string name="sessions" translatable="true">Sessions</string>
     <string name="settings" translatable="true">Settings</string>
     <string name="sign_out" translatable="true">Sign Out</string>
