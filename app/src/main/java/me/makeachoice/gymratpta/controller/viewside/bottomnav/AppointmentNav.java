@@ -91,11 +91,11 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
 
         switch (itemId) {
             case bottom_nav_item1: // 0 - viewPage of lists of exercises
-                maid = maidRegistry.requestMaid(MaidRegistry.MAID_DAY_PAGE);
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_DAY);
                 Log.d("Choice", "     item0: " + maid.toString());
                 break;
             case bottom_nav_item2: // 1 - list of exercise routines
-                maid = maidRegistry.requestMaid(MaidRegistry.MAID_WEEK_PAGE);
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_WEEK);
                 Log.d("Choice", "     item1: " + maid.toString());
                 break;
             default:
