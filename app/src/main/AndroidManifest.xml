@@ -7,7 +7,7 @@
     <application
         android:name=".controller.manager.Boss"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/gym_rat_white_right_48dp"
         android:label="@string/app_title"
         android:supportsRtl="true"
         android:theme="@style/ChoiceTheme.Activity">
@@ -23,6 +23,10 @@
         <activity android:name=".view.activity.ClientActivity"
             android:launchMode="singleTask"
             android:parentActivityName=".view.activity.AppointmentActivity"/>
+
+        <activity android:name=".view.activity.ClientDetailActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".view.activity.ClientActivity"/>
 
         <activity android:name=".view.activity.SessionActivity"
             android:launchMode="singleTask"

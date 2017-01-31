@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +21,7 @@ import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.stubData.ClientStubData;
+import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
 import me.makeachoice.gymratpta.view.dialog.ContactListDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
@@ -296,6 +298,11 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
         switch(iconId){
             case ClientRecyclerAdapter.ICON_INFO:
+                //ContactsItem item = (ContactsItem)view.getTag(R.string.tag_item);
+                //mBoss.setCurrentClient(item);
+
+                Intent intent = new Intent(mActivity, ClientDetailActivity.class);
+                mActivity.startActivity(intent);
                 break;
             case ClientRecyclerAdapter.ICON_EMAIL:
                 //TODO - need to put actual client email

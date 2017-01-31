@@ -21,6 +21,7 @@ import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubAppointmentKeeper;
+import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubClientDetailKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubClientKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubExerciseKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubSessionKeeper;
@@ -39,6 +40,7 @@ public class HouseKeeperRegistry extends MyHouseKeeperRegistry {
     private static HouseKeeperRegistry instance = null;
 
     public static String KEEPER_CLIENT = "Keeper Client";
+    public static String KEEPER_CLIENT_DETAIL = "Keeper Client Detail";
     public static String KEEPER_APPOINTMENT = "Keeper Appointment";
     public static String KEEPER_SESSION = "Keeper Session";
     public static String KEEPER_EXERCISE = "Keeper Exercise";
@@ -79,9 +81,11 @@ public class HouseKeeperRegistry extends MyHouseKeeperRegistry {
      * void initializeHouseKeepers() - initialize and register HouseKeepers
      */
     public void initializeHouseKeepers(){
-        Log.d("Choice", "HouseKeeperRegistry.initializeHouseKeepers");
         StubClientKeeper clientKeeper = new StubClientKeeper(R.layout.activity_recycler);
         registerHouseKeeper(KEEPER_CLIENT, clientKeeper);
+
+        StubClientDetailKeeper clientDetailKeeper = new StubClientDetailKeeper(R.layout.activity_bottom_nav);
+        registerHouseKeeper(KEEPER_CLIENT_DETAIL, clientDetailKeeper);
 
         StubAppointmentKeeper appointmentKeeper = new StubAppointmentKeeper(R.layout.activity_bottom_nav);
         registerHouseKeeper(KEEPER_APPOINTMENT, appointmentKeeper);

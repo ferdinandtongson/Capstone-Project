@@ -19,6 +19,10 @@
     <string name="drawer_menu_settings" translatable="false">@string/settings</string>
     <string name="drawer_menu_help" translatable="false">@string/help</string>
 
+    <!-- bottom nav: client detail -->
+    <string name="bottom_nav_menu_client_info" translatable="false">@string/info</string>
+    <string name="bottom_nav_menu_client_schedule" translatable="false">@string/schedule</string>
+    <string name="bottom_nav_menu_client_history" translatable="false">@string/history</string>
     <!-- bottom nav: exercise -->
     <string name="bottom_nav_menu_exercises" translatable="false">@string/exercises</string>
     <string name="bottom_nav_menu_routines" translatable="false">@string/routines</string>
@@ -81,6 +85,8 @@
     <string name="for_the_day" translatable="true">For the Day</string>
     <string name="for_the_week" translatable="true">For the Week</string>
     <string name="help" translatable="true">Help</string>
+    <string name="history" translatable="true">History</string>
+    <string name="info" translatable="true">Info</string>
     <string name="gym_rat" translatable="true">Gym Rat</string>
     <string name="legs" translatable="true">Legs</string>
     <string name="no_email_client" translatable="true">No email clients installed</string>
@@ -94,6 +100,7 @@
     <string name="retire" translatable="true">Retire</string>
     <string name="retired" translatable="true">Retired</string>
     <string name="routines" translatable="true">Routines</string>
+    <string name="schedule" translatable="true">Schedule</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
     <string name="sessions" translatable="true">Sessions</string>
     <string name="settings" translatable="true">Settings</string>
