@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="GymRat.ViewPager.TabLayout" parent="Base.ThemeOverlay.AppCompat.Light">
+        <item name="android:gravity">top</item>
+        <item name="tabPaddingStart">@dimen/viewpager_paddingStart</item>
+        <item name="tabPaddingEnd">@dimen/viewpager_paddingEnd</item>
+        <item name="tabBackground">@color/viewpager_tabBackground</item>
+        <item name="tabSelectedTextColor">@color/viewPager_tabTextColor</item>
+        <item name="tabTextColor">@color/viewPager_tabSelectedTextColor</item>
+    </style>
+
+</resources>

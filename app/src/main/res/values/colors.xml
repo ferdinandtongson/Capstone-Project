@@ -16,11 +16,17 @@
     <color name="silver_90">#99CCCCCC</color>
     <color name="orange">#FE8034</color>
 
-
+    <!-- card_client layout -->
     <color name="card_active">@color/colorAccent</color>
     <color name="card_retired">@color/silver_90</color>
     <color name="card_profile_outline">@color/black</color>
 
+    <!-- fab layout -->
     <color name="fab_backgroundTint">@color/orange</color>
     <color name="fab_tint">@color/white</color>
+
+    <!-- viewpager layout -->
+    <color name="viewpager_tabBackground">@color/powderOrangeish_90</color>
+    <color name="viewPager_tabTextColor">@color/white</color>
+    <color name="viewPager_tabSelectedTextColor">@color/black</color>
 </resources>
