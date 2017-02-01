@@ -14,11 +14,11 @@ import me.makeachoice.gymratpta.model.contract.user.UserColumns;
 
 /**************************************************************************************************/
 /*
- *  GymRatPTAContract defines table and column names for the gym rat PTA database.
+ *  Contractor defines table and column names for the gym rat PTA database.
  */
 /**************************************************************************************************/
 
-public class GymRatPTAContract {
+public class Contractor {
 
     // The "Content authority" is a name for the entire content provider, similar to the
     // relationship between a domain name and its website.  A convenient string to use for the
@@ -75,11 +75,33 @@ public class GymRatPTAContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
 
-
+        //"content://CONTENT_AUTHORITY/user/[id]
         public static Uri buildUserUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-    }
+
+        //"content://CONTENT_AUTHORITY/user/[firebaseKey]/user_name=[userName]
+        public static Uri buildUserByFirebaseKeyWithUserName(String firebaseKey, String userName) {
+            return CONTENT_URI.buildUpon().appendPath(firebaseKey)
+                    .appendQueryParameter(COLUMN_USER_NAME, userName).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/user/[firebaseKey]
+        public static String getFirebaseKeyFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+    //"content://CONTENT_AUTHORITY/user/[firebaseKey]/user_name=[userName],firebase_key=[firebaseKey],.....
+        public static String getUserNameFromUri(Uri uri) {
+            //get userName from uri
+            String userName = uri.getQueryParameter(COLUMN_USER_NAME);
+            if (null != userName && !userName.isEmpty())
+                return userName;
+            else
+                return "";
+        }
+
+}
 
 /**************************************************************************************************/
 
@@ -104,10 +126,18 @@ public class GymRatPTAContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CATEGORY;
 
-
+        //used for inserting category data at id location
         public static Uri buildCategoryUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static Uri buildCategoryWithName(String categoryName) {
+
+            //"content://AUTHORITY/category/name=?
+            return CONTENT_URI.buildUpon()
+                    .appendQueryParameter(COLUMN_CATEGORY_NAME, categoryName).build();
+        }
+
     }
 
     /*
