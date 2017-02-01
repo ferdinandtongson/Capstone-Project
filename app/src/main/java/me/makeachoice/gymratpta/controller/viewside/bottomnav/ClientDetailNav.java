@@ -97,7 +97,7 @@ public class ClientDetailNav extends MyBottomNav implements BottomNavigationView
                 maid = maidRegistry.requestMaid(MaidRegistry.MAID_CLIENT_SCHEDULE);
                 break;
             case bottom_nav_item3: // 1 - client history records on routines, stats and notes
-                maid = maidRegistry.requestMaid(MaidRegistry.MAID_STUB + " History");
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_CLIENT_HISTORY);
                 break;
             default:
                 maid = null;
