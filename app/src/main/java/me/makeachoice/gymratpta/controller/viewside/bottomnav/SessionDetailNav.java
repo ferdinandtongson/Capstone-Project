@@ -91,7 +91,7 @@ public class SessionDetailNav extends MyBottomNav implements BottomNavigationVie
         switch (itemId) {
             case bottom_nav_item1: // 0 - viewPage of lists of exercises
 
-                maid = maidRegistry.requestMaid(MaidRegistry.MAID_STUB + " Routine");
+                maid = maidRegistry.requestMaid(MaidRegistry.MAID_SESSION_ROUTINE);
                 break;
             case bottom_nav_item2: // 1 - list of exercise routines
                 maid = maidRegistry.requestMaid(MaidRegistry.MAID_STUB + " Stats");

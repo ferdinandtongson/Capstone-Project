@@ -13,6 +13,7 @@ import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientScheduleMa
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPagerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionRoutineMaid;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 
@@ -195,7 +196,7 @@ public class MaidRegistry extends MyMaidRegistry {
 
     public void initializeSessionRoutineMaid(String maidKey, int layoutId){
         //create maid
-        ClientInfoMaid maid = new ClientInfoMaid(maidKey, layoutId);
+        SessionRoutineMaid maid = new SessionRoutineMaid(maidKey, layoutId);
 
         //register maid
         registerMaid(maidKey, maid);
