@@ -1,11 +1,21 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ui.ResultCodes;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Arrays;
+
+import me.makeachoice.gymratpta.BuildConfig;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.viewside.drawer.HomeDrawer;
@@ -13,6 +23,9 @@ import me.makeachoice.gymratpta.controller.viewside.toolbar.HomeToolbar;
 import me.makeachoice.library.android.base.controller.viewside.bartender.MyBartender;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 /**************************************************************************************************/
 /*
@@ -26,21 +39,19 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *          todo - add d-pad navigation
  *                  todo - toolbar
  *                  todo - drawer
- * TODO - need to add menu item click function for toolbar options menu
- *          todo - quick help functionality
- *          todo - user sign out functionality
  * TODO - need to style components
  *          todo - toolbar
  *          todo - drawer
  *          todo - navigation header
+ * TODO - need "no sign in" dialog
  */
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * GymRatBaseKeeper is the base HouseKeeper for all HouseKeeper classes used in the GymRat project.
- * It's main function is to handle the initialization and event handling of the toolbar and drawer
- * components
+ * It's main function is to handle the initialization and event handling of the toolbar, drawer
+ * components and firebase login
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -73,8 +84,14 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
  *      Boss mBoss - Boss application
  *      HomeToolbar mToolbar - toolbar component
  *      HomeDrawer mHomeDrawer - drawer navigation component
+ *
  *      int mToolbarMenuId - toolbar menu resource id
  *      int mBottomNavSelectedItemId - used to determine which menu item is selected in the drawer
+ *
+ *      FirebaseAuth mFirebaseAuth - firebase authentication instance
+ *      FirebaseAuth.AuthStateListener mAuthStateListener - firebase authentication listener
+ *      int mFirebaseDebugCount - used to counter firebase bug calling sign in multiple times
+ *      OnQuickHelpRequestListener mQuickHelpListener - listens for toolbar menu item "Quick Help" request
  */
 /**************************************************************************************************/
 
@@ -93,13 +110,33 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
     //mBottomNavSelectedItemId - used to determine which menu item is selected in the drawer
     protected int mBottomNavSelectedItemId;
 
+    //mFirebaseAuth - firebase authentication instance
+    private FirebaseAuth mFirebaseAuth;
+
+    //mAuthStateListener - firebase authentication listener
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+
+    //REQUEST_CODE_SIGN_IN - request code used by firebaseUI
+    private static final int REQUEST_CODE_SIGN_IN = 200;
+
+    //mFirebaseDebugCount - used to counter firebase bug calling sign in multiple times
+    private int mFirebaseDebugCount;
+
+    //mQuickHelpListener - listens for toolbar menu item "Quick Help" request
+    private OnQuickHelpRequestListener mQuickHelpListener;
+    public interface OnQuickHelpRequestListener{
+        void onQuickHelpRequested();
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * Activity Lifecycle Methods
  *      void create(MyActivity,Bundle) - called when Activity.onCreate is called
- *      void openBundle(Bundle) - opens bundle to set saved instance states during create()
+ *      void start() - called when onStart is called in the Activity
+ *      void stop() - called when onStop is called in the Activity
+ *      void activityResult(int,int,Intent) - authentication results returned from firebase authUI
  */
 /**************************************************************************************************/
     /*
@@ -117,8 +154,57 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
         //get Boss application
         mBoss = (Boss)mActivity.getApplication();
 
-        //initialize navigation components
-        initializeNavigation();
+        //initialize firebase authentication
+        initializeFirebaseAuth();
+    }
+
+    /*
+     * void start() - called when onStart is called in the Activity. Sets the authentication state
+     * listener to the firebase authentication instance
+     */
+    public void start(){
+        super.start();
+        //set authentication listener
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    /*
+     * void stop() - called when onStop is called in the Activity. Removes authentication state
+     * listener from firebase authentication instance
+     */
+    public void stop(){
+        super.stop();
+        if(mAuthStateListener != null){
+            //remove authentication listener
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+    }
+
+    /*
+     * void activityResult(int,int,Intent) - authentication results returned from firebase authUI
+     */
+    @Override
+    public void activityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == REQUEST_CODE_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                //user is signed in, initialize navigation components
+                initializeNavigation();
+                return;
+            }
+
+            // Sign in canceled
+            if (resultCode == RESULT_CANCELED) {
+                //TODO - need to show dialog
+                mActivity.finish();
+                return;
+            }
+
+            // No network
+            if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+                //TODO - need to show dialog
+                return;
+            }
+        }
     }
 
 /**************************************************************************************************/
@@ -126,11 +212,40 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
 /**************************************************************************************************/
 /*
  * Layout Initialization Methods:
+ *      void initializeFirebaseAuth() - initialize Firebase authentication
  *      void initializeNavigation() - initialize navigation ui
  *      void initializeToolbar() - initialize toolbar component
  *      void initializeDrawer() - initialize drawer navigation component
  */
 /**************************************************************************************************/
+    /*
+     * void initializeFirebaseAuth() - initialize Firebase authentication
+     */
+    private void initializeFirebaseAuth(){
+        Log.d("Choice", "GymRatBaseKeeper.initializeFirebaseAuth");
+        mFirebaseDebugCount = 0;
+        //get authentication instance
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        //create firebase authentication listener
+        mAuthStateListener = new FirebaseAuth.AuthStateListener(){
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if(user != null){
+                    //user signed in, initialize navigation layout
+                    initializeNavigation();
+                }else{
+                    //debug count used to prevent multiple userSignIn calls, known bug
+                    if(mFirebaseDebugCount == 0){
+                        userSignIn();
+                        mFirebaseDebugCount++;
+                    }
+                }
+            }
+        };
+    }
+
     /*
      * void initializeNavigation() - initialize navigation ui
      */
@@ -167,8 +282,18 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
         mHomeToolbar.setOnMenuItemClick(new MyBartender.OnMenuItemClick() {
             @Override
             public void onMenuItemClick(MenuItem menuItem) {
-                Log.d("Choice", "StudAppointmentKeeper.onMenuItemClick");
-                //TODO - handle toolbar options menu item click
+                int itemId = menuItem.getItemId();
+                switch(itemId){
+                    case R.id.toolbar_sign_out:
+                        mFirebaseAuth.signOut();
+                        break;
+                    case R.id.toolbar_quick_help:
+                        if(mQuickHelpListener != null){
+                            //notify listener, "quick help" requested
+                            mQuickHelpListener.onQuickHelpRequested();
+                        }
+                        break;
+                }
             }
         });
 
@@ -204,6 +329,32 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
  * Class Methods
  */
 /**************************************************************************************************/
+
+    private void userSignIn(){
+        mActivity.startActivityForResult(AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setProviders(Arrays.asList(
+                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
+                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                .build(), REQUEST_CODE_SIGN_IN);
+    }
+
+    public void setOnQuickHelpRequestListener(OnQuickHelpRequestListener listener){
+        mQuickHelpListener = listener;
+    }
+
+    /*private void updateUserProfile(FirebaseUser user){
+        if(mBoss.getUser() == null || !mBoss.getUser().getUid().equals(user.getUid())){
+            mBoss.setUser(user);
+
+            FirebaseDatabase fireDB = FirebaseDatabase.getInstance();
+            mBoss.initializeUser(fireDB);
+        }
+
+    }*/
 
 
 /**************************************************************************************************/

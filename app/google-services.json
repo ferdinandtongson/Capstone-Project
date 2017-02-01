@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "311577592104",
+    "firebase_url": "https://gymratpta.firebaseio.com",
+    "project_id": "gymratpta",
+    "storage_bucket": "gymratpta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311577592104:android:885533b22c72f211",
+        "android_client_info": {
+          "package_name": "me.makeachoice.gymratpta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311577592104-lcvl4q8a5lsbem2qre3dlsqrmpisov4d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvNLcrenDevtzQxNRmkClJXOj4_6ilo4M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "311577592104-lcvl4q8a5lsbem2qre3dlsqrmpisov4d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
