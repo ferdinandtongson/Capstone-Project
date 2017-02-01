@@ -2,16 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/choiceItem"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/powderBlueish_60"
+    android:clickable="true">
 
-    <TextView android:id="@+id/item_txtExerciseName"
+    <TextView android:id="@+id/itemSimple_txtName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:textSize="16sp"
         android:textColor="@color/black"
         android:padding="10dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"/>
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        />
 
 </RelativeLayout>

@@ -1,11 +1,8 @@
-package me.makeachoice.gymratpta.controller.viewside.recycler.adapter;
+package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -18,7 +15,7 @@ import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 
 /**************************************************************************************************/
 /*
- * ExerciseRecyclerAdapter extends RecyclerView.Adapter. It is used to display exercises defined by
+ * ExerciseRecyclerAdapter extends RecyclerView.Adapter. It displays a list of exercises defined by
  * the user.
  *
  * Methods from RecyclerView.Adapter:
@@ -29,53 +26,46 @@ import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
  * Inner Class:
  *      ReviewHolder extends RecyclerView.ViewHolder
  */
-
 /**************************************************************************************************/
 
-public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecyclerAdapter.MyViewHolder>
-    implements RecyclerView.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener{
+public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecyclerAdapter.MyViewHolder>{
 
 /**************************************************************************************************/
-/**
+/*
  * Class Variables
- *      ArrayList<ExerciseItem> mData - an array list of item data consumed by the adapter
- *      mItemLayoutId - item layout resource id
- *      mColorWhite - color white defined in resource colors
- *      mColorPrimary - color primary defined in resource colors
- *      Bridge mBridge - class implementing Bridge interface, typically a Maid class
+ *      Context mContext - activity context
+ *      int mItemLayoutId - item/card layout resource id
  *
- * Interface:
- *      Bridge
+ *      ArrayList<ExerciseItem> mData - an array list of item data consumed by the adapter
+ *      OnCreateContextMenuListener mCreateContextMenuListener - "create context menu" event listener
  */
 /**************************************************************************************************/
 
-    //mData - an array list of item data consumed by the adapter
-    private ArrayList<ExerciseItem> mData;
+    //mContext - activity context
+    private Context mContext;
 
     //mItemLayoutId - item layout resource id
     private int mItemLayoutId;
 
-    private Context mContext;
-    //mBridge - class implementing Bridge, typically a Maid class
-    //private Bridge mBridge;
+    //mData - an array list of item data consumed by the adapter
+    private ArrayList<ExerciseItem> mData;
 
-    //Implemented communication line to a class
-    public interface Bridge{
-        void contextMenuCreated(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo);
-        void contextMenuItemSelected(MenuItem item);
-    }
+    //mCreateContextMenuListener - "create context menu" event listener
+    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
 
 /**************************************************************************************************/
 
+/**************************************************************************************************/
+/*
+ * ExerciseRecyclerAdapter - constructor
+ */
 /**************************************************************************************************/
     /*
      * ExerciseRecyclerAdapter - constructor
      */
     public ExerciseRecyclerAdapter(Context ctx, int itemLayoutId){
+        //get context
         mContext = ctx;
-
-        //set bridge communication
-        //mBridge = bridge;
 
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
@@ -96,18 +86,14 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
 /**************************************************************************************************/
 /*
- * Public Methods:
+ * Getter Methods:
  *      int getItemCount() - get number of items in adapter
  *      ExerciseItem getItem(int) - get item at given position
- *      void addItem(ExerciseItem) - dynamically add items to adapter
- *      void removeItemAt(int) - remove item from adapter then refresh adapter
- *      void swapData(ArrayList<ExerciseItem>) - remove all data from adapter and replace with new data
- *      void clearData() - remove all data from adapter
+ *      ArrayList<ExerciseItem> getData() - get array data used by recycler
  */
 /**************************************************************************************************/
     /*
      * int getItemCount() - get number of items in adapter
-     * @return int - number of items in adapter
      */
     @Override
     public int getItemCount(){
@@ -120,39 +106,61 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
     /*
      * ExerciseItem getItem(int) - get item at given position
-     * @param - position;
      */
     public ExerciseItem getItem(int position){
         return mData.get(position);
     }
 
+    /*
+     * ArrayList<ExerciseItem> getData() - get array data used by recycler
+     */
     public ArrayList<ExerciseItem> getData(){ return mData; }
 
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Set Listener Methods:
+ *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+ */
+/**************************************************************************************************/
+    /*
+     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+     */
+    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
+        mCreateContextMenuListener = listener;
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Public Methods:
+ *      void addItem(ExerciseItem) - dynamically add items to adapter
+ *      void adItemAt(ExerciseItem,int) - add item to adapter at specific position
+ *      void removeItemAt(int) - remove item from adapter then refresh adapter
+ *      void swapData(ArrayList<ExerciseItem>) - swap old data with new data
+ *      void clearData() - remove all data from adapter
+ */
+/**************************************************************************************************/
     /*
      * void addItem(ExerciseItem) - dynamically add items to adapter
-     * @param item - exercise item data object
      */
     public void addItem(ExerciseItem item) {
         //add item object to data array
         mData.add(item);
-        Log.d("Choice", "ExerciseRecyclerAdapter: " + mData.size());
-        Log.d("Choice", "     " + item.exerciseName);
 
         //notify adapter of data change
         this.notifyDataSetChanged();
     }
 
+    /*
+     * void adItemAt(ExerciseItem,int) - add item to adapter at specific position
+     */
     public void addItemAt(ExerciseItem item, int position){
         //add item object to data array at position
         mData.add(position, item);
-
-        //notify adapter of data change
-        this.notifyDataSetChanged();
-    }
-
-    public void modifyItemAt(String exerciseName, int position){
-        ExerciseItem dataItem = mData.get(position);
-        dataItem.exerciseName = exerciseName;
 
         //notify adapter of data change
         this.notifyDataSetChanged();
@@ -187,7 +195,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 /**************************************************************************************************/
 
 /**************************************************************************************************/
-/**
+/*
  * Implemented Methods from RecyclerView.Adapter:
  *      ViewHolder onCreateViewHolder(ViewGroup, int)
  *      void onBindViewHolder(ViewHolder, int)
@@ -197,9 +205,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
      * ViewHolder onCreateViewHolder(ViewGroup, int) - inflates the layout and creates an instance
      * of the ViewHolder (PosterHolder) class. This instance is used to access the views in the
      * inflated layout and is only called when a new view must be created.
-     * @param viewGroup - parent view that will hold the itemView, RecyclerView
-     * @param i - position of the itemView
-     * @return - ViewHolder class; ReviewHolder
      */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i){
@@ -214,62 +219,18 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
     /*
      * void onBindViewHolder(ViewHolder, int) - where we bind our data to the views
-     * @param holder - ViewHolder class; ReviewHolder
-     * @param position - position of the itemView being bound
      */
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         if(mData.size() > 0){
-            ExerciseItem exerciseItem = mData.get(position);
+            // Extract info from cursor
+            ExerciseItem item = mData.get(position);
 
-            holder.mTxtExerciseName.setText(exerciseItem.exerciseName);
-
-            holder.mTxtExerciseName.setTag(R.string.recycler_tagPosition, position);
-            holder.mTxtExerciseName.setTag(R.string.recycler_tagItem, exerciseItem);
-            holder.mTxtExerciseName.setOnCreateContextMenuListener(this);
+            //bind viewHolder components
+            holder.bindItemView(item, position);
+            holder.bindTextView(item);
         }
-
-    }
-
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * Context Menu Methods:
- *      void onCreateContextMenu(...) - create context menu
- *      boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
- */
-/**************************************************************************************************/
-    /*
-     * void onCreateContextMenu(...) - create context menu
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-        //create string values for menu
-        String strEdit = mContext.getString(R.string.edit);
-        String strDelete = mContext.getString(R.string.delete);
-
-        //add menu and set menu item click listener
-        menu.add(strEdit).setOnMenuItemClickListener(this);
-        menu.add(strDelete).setOnMenuItemClickListener(this);
-
-        /*if(mBridge != null){
-            //notify bridge that context menu has been created
-            mBridge.contextMenuCreated(menu, v, menuInfo);
-        }*/
-    }
-
-    /*
-     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
-     */
-    public boolean onMenuItemClick(MenuItem item){
-        /*if(mBridge != null){
-            //notify bridge that a context menu item has been clicked
-            mBridge.contextMenuItemSelected(item);
-        }*/
-        return true;
     }
 
 /**************************************************************************************************/
@@ -281,7 +242,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
  */
 /**************************************************************************************************/
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+public static class MyViewHolder extends RecyclerView.ViewHolder{
 
 /**************************************************************************************************/
 /*
@@ -289,11 +250,11 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
  */
 /**************************************************************************************************/
 
-        //mItemView - view that hold child views found below
-        private RelativeLayout mItemView;
+    //mItemView - view that hold child views found below
+    private RelativeLayout mItemView;
 
-        //mTxtExerciseName - textView component displaying exercise name
-        private TextView mTxtExerciseName;
+    //mTxtName - textView component displaying exercise name
+    private TextView mTxtName;
 
 /**************************************************************************************************/
 
@@ -304,15 +265,51 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
  */
 /**************************************************************************************************/
 
-        public MyViewHolder(View recycleView){
-            super(recycleView);
-            //set CardView object
-            mItemView = (RelativeLayout)recycleView.findViewById(R.id.choiceItem);
+    public MyViewHolder(View recycleView){
+        super(recycleView);
+        //set CardView object
+        mItemView = (RelativeLayout)recycleView.findViewById(R.id.choiceItem);
 
-            //textView object used to display exercise
-            mTxtExerciseName = (TextView)recycleView.findViewById(R.id.item_txtExerciseName);
-        }
+        //textView object used to display exercise
+        mTxtName = (TextView)recycleView.findViewById(R.id.itemSimple_txtName);
     }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Binding Methods
+ *      void bindItemView(ClientCardItem,int,int) - bind data to cardView
+ *      void bindTextView(ClientCardItem) - bind data to textView components
+ *      void bindProfileImage(ClientCardItem) - bind data to circleImageView
+ *      void bindIconImages(ClientCardItem) - bind data to imageView icons
+ */
+/**************************************************************************************************/
+    /*
+     * void bindItemView(ExerciseItem,int,int) - bind data to itemView. Set tag values and contextMenu
+     * listener, if not null
+     */
+    private void bindItemView(ExerciseItem item, int position) {
+
+        mItemView.setTag(R.string.recycler_tagPosition, position);
+        mItemView.setTag(R.string.recycler_tagItem, item);
+
+        if(mCreateContextMenuListener != null){
+            mItemView.setOnCreateContextMenuListener(mCreateContextMenuListener);
+        }
+
+    }
+
+    /*
+     * void bindTextView(ClientCardItem) - bind data to textView components. Set text and context
+     * description values.
+     */
+    private void bindTextView(ExerciseItem item){
+        mTxtName.setText(item.exerciseName);
+        mTxtName.setContentDescription(item.exerciseName);
+    }
+
+}
 
 /**************************************************************************************************/
 
