@@ -1,7 +1,6 @@
 package me.makeachoice.gymratpta.view.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +54,6 @@ public class BasicFragment extends MyFragment {
 /**************************************************************************************************/
 
     public static BasicFragment newInstance(String maidKey){
-        Log.d("Choice", "BasicFragment: " + maidKey);
         BasicFragment f = new BasicFragment();
         // Supply num input as an argument.
         Bundle args = new Bundle();
@@ -93,10 +91,8 @@ public class BasicFragment extends MyFragment {
      * Remember setRetainInstance(true) if you want to retain fragment values during an orientation
      * change event.
      */
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("Choice", "BasicFragment.onCreateView");
         //check if bundle has been sent/saved
         if(savedInstanceState != null){
             //get id number of maid maintaining this fragment
@@ -106,7 +102,6 @@ public class BasicFragment extends MyFragment {
             mMaidKey = getArguments().getString(TAG_MAID_KEY);
         }
 
-        Log.d("Choice", "     key: " + mMaidKey);
         //get application context, the Boss
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
@@ -117,20 +112,17 @@ public class BasicFragment extends MyFragment {
             throw new ClassCastException("Maid must implement Bridge interface");
         }
 
-        Log.d("Choice", "     bridge: " + mBridge.toString());
         //create and return fragment layout view from file found in res/layout/xxx.xml,
         if(mLayout == null){
             //mLayout = inflater.inflate(mLayoutId, container, false);
             mLayout = mBridge.createView(inflater, container, savedInstanceState);
         }
 
-        Log.d("Choice", "     layout: " + mLayout.toString());
         return mLayout;
     }
 
     /*
      * void onSaveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
-     * @param bundle - bundle object used to save any instance states
      */
     @Override
     public void onSaveInstanceState(Bundle bundle){
