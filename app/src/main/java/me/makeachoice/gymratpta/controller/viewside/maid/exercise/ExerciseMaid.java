@@ -49,7 +49,6 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
     //mCategories - list of category items used by viewPager tabLayout
     ArrayList<String> mPageTitles;
 
-
 /**************************************************************************************************/
 
 /**************************************************************************************************/

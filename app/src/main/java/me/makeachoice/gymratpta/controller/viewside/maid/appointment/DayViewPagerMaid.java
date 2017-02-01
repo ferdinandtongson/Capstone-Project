@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
-import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ExerciseRecyclerAdapter;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
-import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
 /**************************************************************************************************/
