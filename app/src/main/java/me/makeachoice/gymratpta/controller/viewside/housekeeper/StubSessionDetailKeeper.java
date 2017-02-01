@@ -154,7 +154,7 @@ public class StubSessionDetailKeeper extends GymRatBaseKeeper {
         maidRegistry.initializeSessionRoutineMaid(MaidRegistry.MAID_SESSION_ROUTINE, recyclerId);
 
         int pagerId = R.layout.viewpager;
-        maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Stats");
+        maidRegistry.initializeSessionStatsMaid(MaidRegistry.MAID_SESSION_STATS, pagerId);
         maidRegistry.initializeStubMaid(MaidRegistry.MAID_STUB + " Notes");
     }
 

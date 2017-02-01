@@ -1,0 +1,207 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="375dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingTop="3dp"
+        android:background="@color/colorPrimary"
+        >
+
+        <RelativeLayout
+            android:id="@+id/relCurrent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:paddingTop="3dp"
+            android:background="#40FFFFFF"
+            >
+
+            <TextView android:id="@+id/txtCurrentLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+            <EditText android:id="@+id/edtCurrentMeasurement"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:gravity="end"
+                android:text="1000"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:background="#FFFFFF"
+
+                />
+
+            <TextView android:id="@+id/txtCurrentChangePrevious"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtCurrentLabel"
+                android:text="@string/frag_statDetail_changePrevious"
+                style="@style/GymRatTheme.Measure.Details.Text.Info.Sub"/>
+
+            <TextView android:id="@+id/txtCurrentChangePreviousMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/txtCurrentChangePrevious"
+                android:layout_toEndOf="@id/txtCurrentChangePrevious"
+                android:gravity="end"
+                android:text="1000 (0%)"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+            <TextView android:id="@+id/txtCurrentChangeStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtCurrentChangePrevious"
+                android:text="@string/frag_statDetail_changeStart"
+                style="@style/GymRatTheme.Measure.Details.Text.Info.Sub"/>
+
+            <TextView android:id="@+id/txtCurrentChangeStartMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/txtCurrentChangeStart"
+                android:layout_toEndOf="@id/txtCurrentChangeStart"
+                android:gravity="end"
+                android:text="1000 (0%)"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtCurrentChangeStartMeasurement"
+                android:layout_alignEnd="@id/txtCurrentChangeStartMeasurement"
+                android:text="@string/frag_statDetail_save"/>
+
+        </RelativeLayout>
+
+
+        <TextView android:id="@+id/txtLast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relCurrent"
+            android:text="@string/frag_statDetail_last"
+            style="@style/GymRatTheme.Measure.Details.Text.Info.Title"/>
+
+        <TextView android:id="@+id/txtLastDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/txtLast"
+            android:layout_below="@id/relCurrent"
+            style="@style/GymRatTheme.Measure.Details.Text.Info.Date"/>
+
+        <RelativeLayout
+            android:id="@+id/relLast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/txtLast"
+            android:paddingTop="3dp"
+            android:background="#40FFFFFF"
+            >
+
+            <TextView android:id="@+id/txtLastLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+            <TextView android:id="@+id/txtLastMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/txtLastLabel"
+                android:gravity="end"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+            <TextView android:id="@+id/txtLastChangePrevious"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtLastLabel"
+                android:text="@string/frag_statDetail_changePrevious"
+                style="@style/GymRatTheme.Measure.Details.Text.Info.Sub"/>
+
+            <TextView android:id="@+id/txtLastChangePreviousMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/txtLastChangePrevious"
+                android:layout_toEndOf="@id/txtLastChangePrevious"
+                android:gravity="end"
+                android:text="1000 (0%)"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+            <TextView android:id="@+id/txtLastChangeStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtLastChangePrevious"
+                android:text="@string/frag_statDetail_changeStart"
+                style="@style/GymRatTheme.Measure.Details.Text.Info.Sub"/>
+
+            <TextView android:id="@+id/txtLastChangeStartMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/txtLastChangeStart"
+                android:layout_toEndOf="@id/txtLastChangeStart"
+                android:gravity="end"
+                android:text="1000 (0%)"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+        </RelativeLayout>
+
+        <TextView android:id="@+id/txtStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relLast"
+            android:text="@string/frag_statDetail_start"
+            style="@style/GymRatTheme.Measure.Details.Text.Info.Title"/>
+
+        <TextView android:id="@+id/txtStartDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/txtStart"
+            android:layout_below="@id/relLast"
+            style="@style/GymRatTheme.Measure.Details.Text.Info.Date"/>
+
+        <RelativeLayout
+            android:id="@+id/relStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/txtStart"
+            android:paddingTop="3dp"
+            android:background="#40FFFFFF"
+            >
+
+            <TextView android:id="@+id/txtStartLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+            <TextView android:id="@+id/txtStartMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/txtStartLabel"
+                android:gravity="end"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.Details.Text.Info"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

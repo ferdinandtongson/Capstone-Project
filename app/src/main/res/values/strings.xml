@@ -37,6 +37,12 @@
     <string name="bottom_nav_menu_session_stats" translatable="false">@string/stats</string>
     <string name="bottom_nav_menu_session_notes" translatable="false">@string/notes</string>
 
+    <!-- fragment: stats detail -->
+    <string name="frag_statDetail_changePrevious" translatable="false">@string/change_previous</string>
+    <string name="frag_statDetail_changeStart" translatable="false">@string/change_start</string>
+    <string name="frag_statDetail_last" translatable="false">@string/last</string>
+    <string name="frag_statDetail_save" translatable="false">@string/save</string>
+    <string name="frag_statDetail_start" translatable="false">@string/start</string>
 
     <!-- context menu: client -->
     <string name="context_menu_activate" translatable="false">@string/activate</string>
@@ -83,6 +89,8 @@
     <string name="back" translatable="true">Back</string>
     <string name="cancel_session" translatable="true">Cancel Session</string>
     <string name="cardio" translatable="true">Cardio</string>
+    <string name="change_previous" translatable="true">Change from Previous</string>
+    <string name="change_start" translatable="true">Change from Start</string>
     <string name="chest" translatable="true">Chest</string>
     <string name="client_goals" translatable="true">Client Goals</string>
     <string name="clients" translatable="true">Clients</string>
@@ -98,6 +106,7 @@
     <string name="history" translatable="true">History</string>
     <string name="info" translatable="true">Info</string>
     <string name="gym_rat" translatable="true">Gym Rat</string>
+    <string name="last" translatable="true">Last</string>
     <string name="legs" translatable="true">Legs</string>
     <string name="no_email_client" translatable="true">No email clients installed</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
@@ -112,12 +121,14 @@
     <string name="retired" translatable="true">Retired</string>
     <string name="routine" translatable="true">Routine</string>
     <string name="routines" translatable="true">Routines</string>
+    <string name="save" translatable="true">Save</string>
     <string name="schedule" translatable="true">Schedule</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
     <string name="sessions" translatable="true">Sessions</string>
     <string name="settings" translatable="true">Settings</string>
     <string name="sign_out" translatable="true">Sign Out</string>
     <string name="shoulders" translatable="true">Shoulders</string>
+    <string name="start" translatable="true">Start</string>
     <string name="stats" translatable="true">Stats</string>
     <string name="time" translatable="true">Time</string>
     <string name="training_info" translatable="true">Training Info</string>

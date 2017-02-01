@@ -14,6 +14,8 @@ import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPagerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionRoutineMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsViewPagerMaid;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 
@@ -204,10 +206,10 @@ public class MaidRegistry extends MyMaidRegistry {
 
     public void initializeSessionStatsMaid(String maidKey, int layoutId){
         //create maid
-        //ClientInfoMaid maid = new ClientInfoMaid(maidKey, layoutId);
+        SessionStatsMaid maid = new SessionStatsMaid(maidKey, layoutId);
 
         //register maid
-        //registerMaid(maidKey, maid);
+        registerMaid(maidKey, maid);
     }
 
     public void initializeSessionNotesMaid(String maidKey, int layoutId){
@@ -218,12 +220,12 @@ public class MaidRegistry extends MyMaidRegistry {
         //registerMaid(maidKey, maid);
     }
 
-    public void initializeSessionStatsViewPagerMaid(String maidKey, int layoutId, ArrayList<ExerciseItem> exercises){
+    public void initializeSessionStatsViewPagerMaid(String maidKey, int layoutId){
         //create maid
-        //ExerciseViewPagerMaid maid = new ExerciseViewPagerMaid(maidKey, layoutId, exercises);
+        SessionStatsViewPagerMaid maid = new SessionStatsViewPagerMaid(maidKey, layoutId);
 
         //register maid
-        //registerMaid(maidKey, maid);
+        registerMaid(maidKey, maid);
     }
 
     public void initializeSessionNotesViewPagerMaid(String maidKey, int layoutId, ArrayList<ExerciseItem> exercises){
