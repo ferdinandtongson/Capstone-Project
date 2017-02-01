@@ -43,6 +43,8 @@
     <string name="frag_statDetail_last" translatable="false">@string/last</string>
     <string name="frag_statDetail_save" translatable="false">@string/save</string>
     <string name="frag_statDetail_start" translatable="false">@string/start</string>
+    <!-- fragment: notes detail -->
+    <string name="frag_noteDetail_save" translatable="false">@string/save</string>
 
     <!-- context menu: client -->
     <string name="context_menu_activate" translatable="false">@string/activate</string>
