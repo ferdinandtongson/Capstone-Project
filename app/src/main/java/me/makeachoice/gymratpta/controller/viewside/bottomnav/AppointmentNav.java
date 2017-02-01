@@ -84,19 +84,18 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
 
     public boolean onNavigationItemSelected(MenuItem item){
         int itemId = item.getItemId();
+        uncheckAll();
+        item.setChecked(true);
 
-        Log.d("Choice", "AppNav.onNavigationItemSelected: " + itemId);
         MyMaid maid;
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         switch (itemId) {
             case bottom_nav_item1: // 0 - viewPage of lists of exercises
                 maid = maidRegistry.requestMaid(MaidRegistry.MAID_DAY);
-                Log.d("Choice", "     item0: " + maid.toString());
                 break;
             case bottom_nav_item2: // 1 - list of exercise routines
                 maid = maidRegistry.requestMaid(MaidRegistry.MAID_WEEK);
-                Log.d("Choice", "     item1: " + maid.toString());
                 break;
             default:
                 maid = null;

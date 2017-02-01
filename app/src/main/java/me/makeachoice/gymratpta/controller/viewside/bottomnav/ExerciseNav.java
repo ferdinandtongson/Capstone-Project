@@ -81,8 +81,9 @@ public class ExerciseNav extends MyBottomNav implements BottomNavigationView.OnN
 /**************************************************************************************************/
 
     public boolean onNavigationItemSelected(MenuItem item){
-        Log.d("Choice", "ExerciseNav.onNavigationItemSelected: " + item.getItemId());
         int itemId = item.getItemId();
+        uncheckAll();
+        item.setChecked(true);
 
         MyMaid maid;
         MaidRegistry maidRegistry = MaidRegistry.getInstance();

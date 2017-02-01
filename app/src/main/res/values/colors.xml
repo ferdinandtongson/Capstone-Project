@@ -16,6 +16,10 @@
     <color name="silver_90">#99CCCCCC</color>
     <color name="orange">#FE8034</color>
 
+    <!-- bottom navigation layout -->
+    <color name="bottomNav_item_checked">@color/white</color>
+    <color name="bottomNav_item">@color/black</color>
+
     <!-- card_client layout -->
     <color name="card_active">@color/colorAccent</color>
     <color name="card_retired">@color/silver_90</color>

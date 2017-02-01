@@ -22,9 +22,6 @@
         android:id="@+id/choiceBottomNavigation"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/orange"
-        app:itemIconTint="@color/powderBlueish"
-        app:itemTextColor="@color/powderBlueish"/>
+        style="@style/GymRat.BottomNavigation"/>
 
 </android.support.design.widget.CoordinatorLayout>

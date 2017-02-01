@@ -82,8 +82,9 @@ public class SessionDetailNav extends MyBottomNav implements BottomNavigationVie
 /**************************************************************************************************/
 
     public boolean onNavigationItemSelected(MenuItem item) {
-        Log.d("Choice", "ClientDetailNav.onNavigationItemSelected: " + item.getItemId());
         int itemId = item.getItemId();
+        uncheckAll();
+        item.setChecked(true);
 
         MyMaid maid;
         MaidRegistry maidRegistry = MaidRegistry.getInstance();

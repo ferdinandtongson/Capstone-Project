@@ -1,4 +1,4 @@
-<resources xmlns:card_view="http://schemas.android.com/apk/res-auto">
+<resources>
 
     <style name="GymRat.FAB" parent="Base.ThemeOverlay.AppCompat.Light">
         <item name="android:layout_margin">16dp</item>
