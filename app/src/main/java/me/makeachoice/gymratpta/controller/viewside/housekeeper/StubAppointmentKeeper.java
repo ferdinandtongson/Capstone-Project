@@ -1,7 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
@@ -10,11 +9,10 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * TODO - need to add accessibility values to bottom navigation menu items
- *          todo - add content descriptions to menu items
- *          todo - add d-pad navigation
- * TODO - need to style components
- *          todo - bottom navigation
+ * TODO - Need to handle "Quick Help" request event from toolbar menu option
+ *      todo - get bottom navigation status to know which screen is being displayed (day or week)
+ *      todo - set "quick help" listener here (keeper) or at maid level???
+ *      todo - create "quick help" dialog
  */
 /**************************************************************************************************/
 
@@ -111,8 +109,8 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
             openBundle(bundle);
         }
 
+        //initialize layout
         initializeLayout();
-
     }
 
     /*
@@ -148,7 +146,6 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
      * void initializeMaid() - initialize DayMaid and WeekMaid
      */
     private void initializeMaid(){
-        Log.d("Choice", "Appointment.initializeMaid");
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         //viewPager layout used by exercise maid
