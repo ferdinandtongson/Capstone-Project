@@ -3,7 +3,14 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- fab -->
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="fab_borderWidth">0dp</dimen>
+    <dimen name="fab_pressedTranslationZ">12dp</dimen>
+
+
     <!-- viewpager -->
     <dimen name="viewpager_paddingStart">20dp</dimen>
     <dimen name="viewpager_paddingEnd">20dp</dimen>
+
 </resources>

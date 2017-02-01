@@ -8,10 +8,6 @@
     android:layout_height="wrap_content"
     android:src="@drawable/ic_add_white_36dp"
     android:visibility="invisible"
-    app:elevation="6dp"
-    app:borderWidth="0dp"
-    app:pressedTranslationZ="12dp"
     app:layout_behavior="me.makeachoice.gymratpta.utilities.FabRecyclerScrollBehavior"
-    style="@style/GymRat.FAB"
-    />
+    style="@style/GymRat.FAB"/>
 
