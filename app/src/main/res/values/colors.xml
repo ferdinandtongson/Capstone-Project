@@ -24,13 +24,14 @@
     <color name="bottomNav_item">@color/black</color>
 
     <!-- card_client layout -->
-    <color name="card_active">@color/colorAccent</color>
-    <color name="card_retired">@color/silver_90</color>
+    <color name="card_activeBackground">@color/colorAccent</color>
+    <color name="card_retiredBackground">@color/silver_90</color>
     <color name="card_profile_outline">@color/black</color>
+    <color name="card_defaultBackground">@color/colorAccent</color>
 
     <!-- fab layout -->
     <color name="fab_backgroundTint">@color/orange</color>
-    <color name="fab_tint">@color/white</color>
+    <color name="fab_tint">@color/black</color>
 
     <!-- item layout -->
     <color name="item_background">@color/colorAccent</color>

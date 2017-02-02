@@ -18,4 +18,11 @@
     <dimen name="textSize_normal">16sp</dimen>
     <dimen name="textSize_large">20sp</dimen>
 
+    <!-- card -->
+    <dimen name="card_main_layoutMargin">5dp</dimen>
+    <dimen name="card_cornerRadius">4dp</dimen>
+    <dimen name="card_imageProfile">54dp</dimen>
+    <dimen name="card_imageIcon">22dp</dimen>
+    <dimen name="card_layoutTop">7dp</dimen>
+
 </resources>

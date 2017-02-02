@@ -5,8 +5,7 @@
     android:id="@+id/choiceCardView"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardBackgroundColor="@color/card_active"
+    card_view:cardBackgroundColor="@color/card_activeBackground"
     style="@style/GymRat.Card">
 
 

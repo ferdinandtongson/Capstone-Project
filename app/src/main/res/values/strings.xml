@@ -80,6 +80,9 @@
     <string name="exerciseData_time" translatable="false">@string/time</string>
     <string name="exerciseData_none" translatable="false">@string/none</string>
 
+    <!-- routine card -->
+    <string name="routineCard_sets" translatable="false">@string/sets</string>
+
     <!-- dictionary -->
     <string name="activate" translatable="true">Activate</string>
     <string name="active" translatable="true">Active</string>
@@ -127,6 +130,7 @@
     <string name="schedule" translatable="true">Schedule</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
     <string name="sessions" translatable="true">Sessions</string>
+    <string name="sets" translatable="true">Sets</string>
     <string name="settings" translatable="true">Settings</string>
     <string name="sign_out" translatable="true">Sign Out</string>
     <string name="shoulders" translatable="true">Shoulders</string>

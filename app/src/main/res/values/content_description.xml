@@ -7,4 +7,6 @@
 
     <string name="description_fab_client" translatable="true">@string/add_client</string>
 
+    <string name="description_card_txtSets" translatable="true">Number of Sets</string>
+
 </resources>
