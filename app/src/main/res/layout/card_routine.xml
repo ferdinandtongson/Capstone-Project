@@ -12,26 +12,22 @@
         android:layout_height="wrap_content"
         >
 
-        <TextView android:id="@+id/txtRoutineName"
+        <TextView android:id="@+id/cardRoutine_txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_alignParentStart="true"
             style="@style/GymRat.Card.TextView.Name"
             />
-<!--
-            android:textSize="18sp"
-            android:textColor="@color/white"
--->
 
         <RelativeLayout
-            android:id="@+id/relSessionsBrief"
+            android:id="@+id/cardRoutine_relRoutine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-            android:layout_below="@id/txtRoutineName"
+            android:layout_below="@id/cardRoutine_txtName"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:background="#40FFFFFF"
@@ -40,7 +36,7 @@
 
             <!-- Measurement Title -->
             <TextView
-                android:id="@+id/txtLast"
+                android:id="@+id/cardRoutine_txtLabel"
                 android:layout_height="wrap_content"
                 android:text="@string/routineCard_sets"
                 android:contentDescription="@string/description_card_txtSets"
@@ -50,152 +46,152 @@
 
             <!-- Exercise 01 -->
             <TextView
-                android:id="@+id/txtExercise01"
+                android:id="@+id/cardRoutine_txtExercise01"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtLast"
+                android:layout_below="@id/cardRoutine_txtLabel"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet01"
+                android:id="@+id/cardRoutine_txtSet01"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtLast"
+                android:layout_below="@id/cardRoutine_txtLabel"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 02 -->
             <TextView
-                android:id="@+id/txtExercise02"
+                android:id="@+id/cardRoutine_txtExercise02"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise01"
+                android:layout_below="@id/cardRoutine_txtExercise01"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet02"
+                android:id="@+id/cardRoutine_txtSet02"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise01"
+                android:layout_below="@id/cardRoutine_txtExercise01"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 03 -->
             <TextView
-                android:id="@+id/txtExercise03"
+                android:id="@+id/cardRoutine_txtExercise03"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise02"
+                android:layout_below="@id/cardRoutine_txtExercise02"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet03"
+                android:id="@+id/cardRoutine_txtSet03"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise02"
+                android:layout_below="@id/cardRoutine_txtExercise02"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 04 -->
             <TextView
-                android:id="@+id/txtExercise04"
+                android:id="@+id/cardRoutine_txtExercise04"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise03"
+                android:layout_below="@id/cardRoutine_txtExercise03"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet04"
+                android:id="@+id/cardRoutine_txtSet04"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise03"
+                android:layout_below="@id/cardRoutine_txtExercise03"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 05 -->
             <TextView
-                android:id="@+id/txtExercise05"
+                android:id="@+id/cardRoutine_txtExercise05"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise04"
+                android:layout_below="@id/cardRoutine_txtExercise04"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet05"
+                android:id="@+id/cardRoutine_txtSet05"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise04"
+                android:layout_below="@id/cardRoutine_txtExercise04"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 06 -->
             <TextView
-                android:id="@+id/txtExercise06"
+                android:id="@+id/cardRoutine_txtExercise06"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise05"
+                android:layout_below="@id/cardRoutine_txtExercise05"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet06"
+                android:id="@+id/cardRoutine_txtSet06"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise05"
+                android:layout_below="@id/cardRoutine_txtExercise05"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 07 -->
             <TextView
-                android:id="@+id/txtExercise07"
+                android:id="@+id/cardRoutine_txtExercise07"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise06"
+                android:layout_below="@id/cardRoutine_txtExercise06"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet07"
+                android:id="@+id/cardRoutine_txtSet07"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise06"
+                android:layout_below="@id/cardRoutine_txtExercise06"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 08 -->
             <TextView
-                android:id="@+id/txtExercise08"
+                android:id="@+id/cardRoutine_txtExercise08"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise07"
+                android:layout_below="@id/cardRoutine_txtExercise07"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet08"
+                android:id="@+id/cardRoutine_txtSet08"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise07"
+                android:layout_below="@id/cardRoutine_txtExercise07"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 09 -->
             <TextView
-                android:id="@+id/txtExercise09"
+                android:id="@+id/cardRoutine_txtExercise09"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise08"
+                android:layout_below="@id/cardRoutine_txtExercise08"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet09"
+                android:id="@+id/cardRoutine_txtSet09"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise08"
+                android:layout_below="@id/cardRoutine_txtExercise08"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
             <!-- Exercise 10 -->
             <TextView
-                android:id="@+id/txtExercise10"
+                android:id="@+id/cardRoutine_txtExercise10"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:layout_below="@id/txtExercise09"
+                android:layout_below="@id/cardRoutine_txtExercise09"
                 style="@style/GymRat.Card.TextView.Exercise"
                 />
 
             <TextView
-                android:id="@+id/txtSet10"
+                android:id="@+id/cardRoutine_txtSet10"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtExercise09"
+                android:layout_below="@id/cardRoutine_txtExercise09"
                 style="@style/GymRat.Card.TextView.Exercise.Sets"
                 />
 
