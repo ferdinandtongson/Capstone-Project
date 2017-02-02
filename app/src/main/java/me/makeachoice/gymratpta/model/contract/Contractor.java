@@ -1,15 +1,17 @@
 package me.makeachoice.gymratpta.model.contract;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.format.Time;
 
+import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
+
+import static android.content.ContentUris.withAppendedId;
 
 
 /**************************************************************************************************/
@@ -59,7 +61,7 @@ public class Contractor {
 
 /**************************************************************************************************/
 /*
- *  User Inner Classes
+ *  User / Client Inner Classes
  */
 /**************************************************************************************************/
     /*
@@ -67,8 +69,7 @@ public class Contractor {
      */
     public static final class UserEntry extends UserColumns implements BaseColumns {
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER).build();
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER).build();
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
@@ -77,7 +78,7 @@ public class Contractor {
 
         //"content://CONTENT_AUTHORITY/user/[_id]
         public static Uri buildUserUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+            return withAppendedId(CONTENT_URI, id);
         }
 
         //"content://CONTENT_AUTHORITY/user/[uid]
@@ -89,7 +90,57 @@ public class Contractor {
         public static String getUIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
-}
+    }
+
+    /*
+     * ClientEntry - GymRat app client
+     */
+    public static final class ClientEntry extends ClientColumns implements BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLIENT).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT;
+
+        //"content://CONTENT_AUTHORITY/client/[_id]
+        public static Uri buildClientUri(long id) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/client/[uid]
+        public static Uri buildClientByUID(String uid) {
+            return CONTENT_URI.buildUpon().appendPath(uid).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fKey]
+        public static Uri buildClientByFirebaseKey(String uid, String fKey) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_FKEY).appendPath(fKey).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/client/[uid]/client_status/[status]
+        public static Uri buildClientByStatus(String uid, String status) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CLIENT_STATUS).appendPath(status).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/client/[uid]/....
+        public static String getUIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fKey]
+        public static String getFirebaseKeyFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/client/[uid]/client_status/[status]
+        public static String getStatusFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+    }
 
 /**************************************************************************************************/
 
@@ -116,7 +167,7 @@ public class Contractor {
 
         //used for inserting category data at id location
         public static Uri buildCategoryUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+            return withAppendedId(CONTENT_URI, id);
         }
 
         public static Uri buildCategoryWithName(String categoryName) {
@@ -143,7 +194,7 @@ public class Contractor {
 
 
         public static Uri buildExerciseUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+            return withAppendedId(CONTENT_URI, id);
         }
     }
 
@@ -162,7 +213,7 @@ public class Contractor {
 
 
         public static Uri buildRoutineUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+            return withAppendedId(CONTENT_URI, id);
         }
     }
 

@@ -18,15 +18,22 @@ package me.makeachoice.gymratpta.controller.modelside;
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.util.Log;
 
+import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
+
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT_WITH_FKEY;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT_WITH_STATUS;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.USER;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.USER_WITH_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.dbUriMatcher;
 
 /**************************************************************************************************/
 /*
@@ -37,62 +44,33 @@ import me.makeachoice.gymratpta.model.db.DBHelper;
 public class UserProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
     private DBHelper mOpenHelper;
 
-    //uri matcher id numbers
-    static final int USER = 100;
-    static final int USER_WITH_KEY = 101;
-
-    /*
-        Students: Here is where you need to create the UriMatcher. This UriMatcher will
-        match each URI to the WEATHER, WEATHER_WITH_LOCATION, WEATHER_WITH_LOCATION_AND_DATE,
-        and LOCATION integer constants defined above.  You can test this by uncommenting the
-        testUriMatcher test within TestUriMatcher.
-     */
-    static UriMatcher buildUriMatcher() {
-        // I know what you're thinking.  Why create a UriMatcher when you can use regular
-        // expressions instead?  Because you're not crazy, that's why.
-
-        // All paths added to the UriMatcher have a corresponding code to return when a match is
-        // found.  The code passed into the constructor represents the code to return for the root
-        // URI.  It's common to use NO_MATCH as the code for this case.
-        final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = Contractor.CONTENT_AUTHORITY;
-
-        // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, Contractor.PATH_USER, USER);
-        matcher.addURI(authority, Contractor.PATH_USER + "/*", USER_WITH_KEY);
-        return matcher;
-    }
-
-
-    /*
-        Students: We've coded this for you.  We just create a new WeatherDbHelper for later use
-        here.
-     */
     @Override
     public boolean onCreate() {
         mOpenHelper = new DBHelper(getContext());
         return true;
     }
 
-    /*
-        Students: Here's where you'll code the getType function that uses the UriMatcher.  You can
-        test this by uncommenting testGetType in TestProvider.
-
-     */
     @Override
     public String getType(Uri uri) {
 
         // Use the Uri Matcher to determine what kind of URI this is.
-        final int match = sUriMatcher.match(uri);
+        final int match = dbUriMatcher.match(uri);
 
         switch (match) {
-            case USER_WITH_KEY:
-                return Contractor.UserEntry.CONTENT_ITEM_TYPE;
             case USER:
                 return Contractor.UserEntry.CONTENT_TYPE;
+            case USER_WITH_KEY:
+                return Contractor.UserEntry.CONTENT_ITEM_TYPE;
+            case CLIENT:
+                return Contractor.ClientEntry.CONTENT_TYPE;
+            case CLIENT_WITH_UID:
+                return Contractor.ClientEntry.CONTENT_TYPE;
+            case CLIENT_WITH_FKEY:
+                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
+            case CLIENT_WITH_STATUS:
+                return Contractor.ClientEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -104,15 +82,29 @@ public class UserProvider extends ContentProvider {
         // Here's the switch statement that, given a URI, will determine what kind of request it is,
         // and query the database accordingly.
         Cursor retCursor;
-        switch (sUriMatcher.match(uri)) {
-            // "user/*"
+        switch (dbUriMatcher.match(uri)) {
+            case USER: {
+                retCursor = UserQueryHelper.getUsers(mOpenHelper, uri, projection, sortOrder);
+                break;
+            }
             case USER_WITH_KEY: {
                 retCursor = UserQueryHelper.getUserByUId(mOpenHelper, uri, projection, sortOrder);
                 break;
             }
-            // "user"
-            case USER: {
-                retCursor = UserQueryHelper.getUsers(mOpenHelper, uri, projection, sortOrder);
+            case CLIENT: {
+                retCursor = ClientQueryHelper.getClients(mOpenHelper, uri, projection, sortOrder);
+                break;
+            }
+            case CLIENT_WITH_UID: {
+                retCursor = ClientQueryHelper.getClientByUId(mOpenHelper, uri, projection, sortOrder);
+                break;
+            }
+            case CLIENT_WITH_FKEY: {
+                retCursor = ClientQueryHelper.getClientByFKey(mOpenHelper, uri, projection, sortOrder);
+                break;
+            }
+            case CLIENT_WITH_STATUS: {
+                retCursor = ClientQueryHelper.getClientByStatus(mOpenHelper, uri, projection, sortOrder);
                 break;
             }
             default:
@@ -127,19 +119,22 @@ public class UserProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        Log.d("Choice", "UserProvider.insert");
         //open sqlite database
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         //get uri matcher
-        final int match = sUriMatcher.match(uri);
+        final int match = dbUriMatcher.match(uri);
 
         //uri to be returned for validation
         Uri returnUri = null;
 
         switch (match) {
-            case USER_WITH_KEY: {
+            case USER: {
                 returnUri = UserQueryHelper.insertUser(db, values);
+                break;
+            }
+            case CLIENT: {
+                returnUri = ClientQueryHelper.insertClient(db, values);
                 break;
             }
             default:
@@ -152,13 +147,18 @@ public class UserProvider extends ContentProvider {
         return returnUri;
     }
 
+    public void insertFirebase(Uri uri, ContentValues values){
+
+    }
+
+
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         //open database
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         //get uri matcher
-        final int match = sUriMatcher.match(uri);
+        final int match = dbUriMatcher.match(uri);
 
         //number of rows deleted
         int rowsDeleted;
@@ -169,6 +169,10 @@ public class UserProvider extends ContentProvider {
             case USER:
                 rowsDeleted = UserQueryHelper.deleteUser(db, uri, selection, selectionArgs);
                 break;
+            case CLIENT: {
+                rowsDeleted = ClientQueryHelper.deleteClient(db, uri, selection, selectionArgs);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -184,13 +188,17 @@ public class UserProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
+        final int match = dbUriMatcher.match(uri);
         int rowsUpdated;
 
         switch (match) {
             case USER:
                 rowsUpdated = UserQueryHelper.updateUser(db, uri, values, selection, selectionArgs);
                 break;
+            case CLIENT: {
+                rowsUpdated = ClientQueryHelper.updateClient(db, uri, values, selection, selectionArgs);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -204,14 +212,29 @@ public class UserProvider extends ContentProvider {
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
+        final int match = dbUriMatcher.match(uri);
+        int returnCount = 0;
         switch (match) {
             case USER:
                 db.beginTransaction();
-                int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(Contractor.UserEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case CLIENT:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(Contractor.ClientEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }
