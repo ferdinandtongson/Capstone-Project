@@ -46,6 +46,9 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     //mItemLayoutId - item layout resource id
     private int mItemLayoutId;
 
+    //mStrDescriptionSet - content description "number of sets:"
+    private static String mStrDescriptionSet;
+
     //mData - an array list of item data consumed by the adapter
     private ArrayList<RoutineSessionItem> mData;
 
@@ -69,13 +72,8 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
 
-        //initialize data array
-        mData = new ArrayList<>();
-    }
-
-    public RoutineRecyclerAdapter(int itemLayoutId){
-        //set item layout resource id
-        mItemLayoutId = itemLayoutId;
+        //set content description
+        mStrDescriptionSet = mContext.getString(R.string.description_card_txtSets);
 
         //initialize data array
         mData = new ArrayList<>();
@@ -351,6 +349,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      */
     private void bindTextView(RoutineSessionItem item){
         mTxtRoutineName.setText(item.routineName);
+        mTxtRoutineName.setContentDescription(item.routineName);
 
         setExerciseValues(mTxtExercise01, mTxtSet01, item.exercise01, item.set01);
         setExerciseValues(mTxtExercise02, mTxtSet02, item.exercise02, item.set02);
@@ -377,7 +376,10 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
             txtSet.setVisibility(View.VISIBLE);
 
             txtExercise.setText(exercise);
+            txtExercise.setContentDescription(exercise);
+
             txtSet.setText(String.valueOf(set));
+            txtSet.setContentDescription(mStrDescriptionSet + " " + set);
         }
     }
 
