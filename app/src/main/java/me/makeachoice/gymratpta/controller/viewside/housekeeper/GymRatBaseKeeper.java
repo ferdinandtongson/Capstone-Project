@@ -233,6 +233,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
+                    mBoss.updateUser(user);
                     //user signed in, initialize navigation layout
                     initializeNavigation();
                 }else{

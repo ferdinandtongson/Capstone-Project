@@ -53,8 +53,13 @@ package me.makeachoice.gymratpta.controller.manager;
  */
 /**************************************************************************************************/
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseUser;
+
+import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 
 /**************************************************************************************************/
@@ -110,8 +115,9 @@ public class Boss extends MyBoss {
         return mKeeperRegistry.requestHouseKeeper(keeperKey);
     }
 
+    //private DBHelper mDBHelper;
     protected void initDatabase(){
-        //
+        //mDBHelper = new DBHelper(this);
     }
 
     /*
@@ -170,4 +176,19 @@ public class Boss extends MyBoss {
 
 /**************************************************************************************************/
 
+    public void updateUser(FirebaseUser user){
+        Uri uriValue = Contractor.UserEntry.buildUserByUID(user.getUid());
+
+        // Add a new student record
+        ContentValues values = new ContentValues();
+        values.put(Contractor.UserEntry.COLUMN_UID, user.getUid());
+        values.put(Contractor.UserEntry.COLUMN_USER_NAME, user.getDisplayName());
+        values.put(Contractor.UserEntry.COLUMN_USER_EMAIL, user.getEmail());
+        values.put(Contractor.UserEntry.COLUMN_USER_PHOTO, user.getPhotoUrl().toString());
+        values.put(Contractor.UserEntry.COLUMN_USER_STATUS, "Free");
+
+        Uri uri = getContentResolver().insert(uriValue, values);
+
+
+    }
 }
