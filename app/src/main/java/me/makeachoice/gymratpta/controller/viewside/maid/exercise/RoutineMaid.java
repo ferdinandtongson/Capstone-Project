@@ -1,7 +1,11 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -10,13 +14,16 @@ import java.util.ArrayList;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.RoutineRecyclerAdapter;
+import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineSessionItem;
 import me.makeachoice.gymratpta.model.stubData.RoutineStubData;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
+import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * TODO - add description
+ * RoutineMaid displays a list of user-defined exercise routines
+ *
  * Variables from MyMaid:
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
@@ -32,15 +39,30 @@ import me.makeachoice.gymratpta.view.fragment.BasicFragment;
  */
 /**************************************************************************************************/
 
-public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge{
+public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge,
+        RecyclerView.OnCreateContextMenuListener, MyActivity.OnContextItemSelectedListener{
 
 /**************************************************************************************************/
 /*
  * Class Variables
+ *      int CONTEXT_MENU_EDIT - "edit" context menu id number
+ *      int CONTEXT_MENU_DELETE = "delete" context menu id number
+ *      ArrayList<RoutineSessionItem> mData - data list consumed by the adapter
+ *      ExerciseRecyclerAdapter mAdapter - adapter consumed by recycler
  */
 /**************************************************************************************************/
 
+    //CONTEXT_MENU_EDIT - "edit" context menu id number
+    private final static int CONTEXT_MENU_EDIT = 0;
+
+    //CONTEXT_MENU_DELETE - "delete" context menu id number
+    private final static int CONTEXT_MENU_DELETE = 1;
+
+    //mData - data list consumed by the adapter
     private ArrayList<RoutineSessionItem> mData;
+
+    //mAdapter - adapter consumed by recycler
+    private RoutineRecyclerAdapter mAdapter;
 
 /**************************************************************************************************/
 
@@ -119,27 +141,104 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment(){
-        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addRoutine);
-        setEmptyMessage(emptyMsg);
+        //initialize "empty" text, displayed if data is empty
+        initializeEmptyText();
 
-        mData = RoutineStubData.createDefaultRoutineSessions(mLayout.getContext());
+        //initialize adapter
+        initializeAdapter();
+
+        //initialize recycler view
+        initializeRecycler();
+
+        //check if data is empty
         checkForEmptyRecycler(mData.isEmpty());
 
-        initializeAdapter();
     }
 
-    private RoutineRecyclerAdapter mAdapter;
+    /*
+     * void initializeEmptyText() - textView used when recycler is empty
+     */
+    private void initializeEmptyText(){
+        //get "empty" text message
+        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addRoutine);
+
+        //set message
+        setEmptyMessage(emptyMsg);
+    }
+
+
     private void initializeAdapter() {
+        //get data stub
+        mData = RoutineStubData.createDefaultRoutineSessions(mLayout.getContext());
+
         //layout resource file id used by recyclerView adapter
-        int adapterLayoutId = R.layout.card_brief_routine;
+        int adapterLayoutId = R.layout.card_routine;
 
         //create adapter consumed by the recyclerView
         mAdapter = new RoutineRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
-        mAdapter.swapData(mData);
 
+        //swap old data with new data
+        mAdapter.swapData(mData);
+    }
+
+    /*
+     * void initializeRecycler() - initialize recycler to display exercise items
+     */
+    private void initializeRecycler(){
+        //set adapter
         mBasicRecycler.setAdapter(mAdapter);
     }
 
+
 /**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Context Menu Methods:
+ *      void onCreateContextMenu(...) - create context menu
+ *      boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+ */
+/**************************************************************************************************/
+    /*
+     * void onCreateContextMenu(...) - create context menu
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        //get clientCardItem
+        RoutineSessionItem item = (RoutineSessionItem)v.getTag(R.string.recycler_tagItem);
+
+        //get routine name
+        String routineName = (item.routineName);
+
+        //create string values for menu
+        String strEdit = mFragment.getString(R.string.edit);
+        String strDelete = mFragment.getString(R.string.delete);
+
+        //create context menu
+        menu.setHeaderTitle(routineName);
+        menu.add(0, CONTEXT_MENU_EDIT, 0, strEdit);
+        menu.add(0, CONTEXT_MENU_DELETE, 0, strDelete);
+
+    }
+
+    /*
+     * boolean onContextItemSelected(MenuItem) - an item in the context menu has been clicked
+     */
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case CONTEXT_MENU_EDIT:
+                Log.d("Choice", "     edit");
+                //TODO - need to edit exercise routine
+                return true;
+            case CONTEXT_MENU_DELETE:
+                Log.d("Choice", "     delete");
+                //TODO - need to delete exercise routine
+                return true;
+        }
+        return false;
+    }
+
+/**************************************************************************************************/
+
 
 }
