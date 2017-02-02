@@ -75,32 +75,20 @@ public class Contractor {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
 
-        //"content://CONTENT_AUTHORITY/user/[id]
+        //"content://CONTENT_AUTHORITY/user/[_id]
         public static Uri buildUserUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        //"content://CONTENT_AUTHORITY/user/[firebaseKey]/user_name=[userName]
-        public static Uri buildUserByFirebaseKeyWithUserName(String firebaseKey, String userName) {
-            return CONTENT_URI.buildUpon().appendPath(firebaseKey)
-                    .appendQueryParameter(COLUMN_USER_NAME, userName).build();
+        //"content://CONTENT_AUTHORITY/user/[uid]
+        public static Uri buildUserByUID(String uid) {
+            return CONTENT_URI.buildUpon().appendPath(uid).build();
         }
 
-        //"content://CONTENT_AUTHORITY/user/[firebaseKey]
-        public static String getFirebaseKeyFromUri(Uri uri) {
+        //"content://CONTENT_AUTHORITY/user/[uid]
+        public static String getUIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
-
-    //"content://CONTENT_AUTHORITY/user/[firebaseKey]/user_name=[userName],firebase_key=[firebaseKey],.....
-        public static String getUserNameFromUri(Uri uri) {
-            //get userName from uri
-            String userName = uri.getQueryParameter(COLUMN_USER_NAME);
-            if (null != userName && !userName.isEmpty())
-                return userName;
-            else
-                return "";
-        }
-
 }
 
 /**************************************************************************************************/
