@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.db.user.UserTable;
+import me.makeachoice.gymratpta.model.db.table.TableHelper;
 
 
 /*
@@ -39,13 +39,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(UserTable.SQL_CREATE_USER_TABLE);
-
+        sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_USER_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.UserEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
+    }
+
+    public void dropTable(SQLiteDatabase sqLiteDatabase, String table){
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + table);
     }
 }
