@@ -1,16 +1,18 @@
 package me.makeachoice.gymratpta.model.contract.user;
 
-/**
- * Created by Usuario on 2/1/2017.
+/**************************************************************************************************/
+/*
+ *  UserColumns are columns used in user table in the sqlite database
  */
+/**************************************************************************************************/
 
 public class UserColumns {
 
     // Table name
     public static final String TABLE_NAME = "user";
 
-    //Firebase key, used as userId
-    public static final String COLUMN_FIREBASE_KEY = "firebase_key";
+    //user id
+    public static final String COLUMN_UID = "uid";
 
     //user name
     public static final String COLUMN_USER_NAME = "user_name";
