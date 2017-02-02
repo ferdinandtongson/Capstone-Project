@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.makeachoice.gymratpta.controller.modelside.contentprovider;
+package me.makeachoice.gymratpta.controller.modelside;
 
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
@@ -21,9 +21,10 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
+import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
@@ -42,61 +43,6 @@ public class UserProvider extends ContentProvider {
     //uri matcher id numbers
     static final int USER = 100;
     static final int USER_WITH_KEY = 101;
-    static final int USER_WITH_KEY_AND_NAME = 102;
-
-    private static final SQLiteQueryBuilder sUserByUserNameQueryBuilder;
-
-    static{
-        sUserByUserNameQueryBuilder = new SQLiteQueryBuilder();
-        sUserByUserNameQueryBuilder.setTables(Contractor.UserEntry.TABLE_NAME);
-
-    }
-
-        //selection - user.firebase_key = ?
-        private static final String sFirbaseKeySelection =
-                Contractor.UserEntry.TABLE_NAME +
-                        "." + Contractor.UserEntry.COLUMN_FIREBASE_KEY + " = ? ";
-
-        //user.firebase_key = ? AND user_name = ?
-        private static final String sFirebaseKeyAndUserName =
-                Contractor.UserEntry.TABLE_NAME +
-                        "." + Contractor.UserEntry.COLUMN_FIREBASE_KEY + " = ? AND " +
-                        Contractor.UserEntry.COLUMN_USER_NAME + " = ? ";
-
-
-
-    private Cursor getUserByFirebaseKey(Uri uri, String[] projection, String sortOrder) {
-        //"content://CONTENT_AUTHORITY/user/[firebaseKey]/user_name=[userName],firebase_key=[firebaseKey],.....
-        String firebaseKey = Contractor.UserEntry.getFirebaseKeyFromUri(uri);
-
-        //query from User.Table
-        return sUserByUserNameQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                projection,
-                //selection - user.firebase_key = ?
-                sFirbaseKeySelection,
-                new String[]{firebaseKey},
-                null,
-                null,
-                sortOrder
-        );
-    }
-
-    private Cursor getUserByFirebaseKeyAndUserName(Uri uri, String[] projection, String sortOrder) {
-        //"content://CONTENT_AUTHORITY/user/[firebaseKey]/user_name=[userName],firebase_key=[firebaseKey],.....
-        String firebaseKey = Contractor.UserEntry.getFirebaseKeyFromUri(uri);
-        String userName = Contractor.UserEntry.getUserNameFromUri(uri);
-
-        //query from User.Table
-        return sUserByUserNameQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                projection,
-                //user.firebase_key = ? AND user_name = ?
-                sFirebaseKeyAndUserName,
-                new String[]{firebaseKey, userName},
-                null,
-                null,
-                sortOrder
-        );
-    }
 
     /*
         Students: Here is where you need to create the UriMatcher. This UriMatcher will
@@ -117,7 +63,6 @@ public class UserProvider extends ContentProvider {
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, Contractor.PATH_USER, USER);
         matcher.addURI(authority, Contractor.PATH_USER + "/*", USER_WITH_KEY);
-        matcher.addURI(authority, Contractor.PATH_USER + "/*/*", USER_WITH_KEY_AND_NAME);
         return matcher;
     }
 
@@ -144,9 +89,6 @@ public class UserProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            // Student: Uncomment and fill out these two cases
-            case USER_WITH_KEY_AND_NAME:
-                return Contractor.UserEntry.CONTENT_ITEM_TYPE;
             case USER_WITH_KEY:
                 return Contractor.UserEntry.CONTENT_ITEM_TYPE;
             case USER:
@@ -163,28 +105,14 @@ public class UserProvider extends ContentProvider {
         // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            // "user/*/*"
-            case USER_WITH_KEY_AND_NAME:
-            {
-                retCursor = getUserByFirebaseKeyAndUserName(uri, projection, sortOrder);
-                break;
-            }
             // "user/*"
             case USER_WITH_KEY: {
-                retCursor = getUserByFirebaseKey(uri, projection, sortOrder);
+                retCursor = UserQueryHelper.getUserByUId(mOpenHelper, uri, projection, sortOrder);
                 break;
             }
             // "user"
             case USER: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        Contractor.UserEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
+                retCursor = UserQueryHelper.getUsers(mOpenHelper, uri, projection, sortOrder);
                 break;
             }
             default:
@@ -199,62 +127,74 @@ public class UserProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        Log.d("Choice", "UserProvider.insert");
+        //open sqlite database
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        //get uri matcher
         final int match = sUriMatcher.match(uri);
-        Uri returnUri;
+
+        //uri to be returned for validation
+        Uri returnUri = null;
 
         switch (match) {
-            case USER: {
-                long _id = db.insert(Contractor.UserEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = Contractor.UserEntry.buildUserUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+            case USER_WITH_KEY: {
+                returnUri = UserQueryHelper.insertUser(db, values);
                 break;
             }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+
+        if(returnUri != null){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return returnUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        //open database
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        //get uri matcher
         final int match = sUriMatcher.match(uri);
+
+        //number of rows deleted
         int rowsDeleted;
+
         // this makes delete all rows return the number of rows deleted
         if ( null == selection ) selection = "1";
         switch (match) {
             case USER:
-                rowsDeleted = db.delete(Contractor.UserEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = UserQueryHelper.deleteUser(db, uri, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
         // Because a null deletes all rows
         if (rowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
+
         return rowsDeleted;
     }
 
     @Override
-    public int update(
-            Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsUpdated;
 
         switch (match) {
             case USER:
-                rowsUpdated = db.update(Contractor.UserEntry.TABLE_NAME, values, selection,
-                        selectionArgs);
+                rowsUpdated = UserQueryHelper.updateUser(db, uri, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
         if (rowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
