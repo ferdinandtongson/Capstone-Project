@@ -101,8 +101,8 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
         mContext = ctx;
 
         //get colors used as card background color
-        mCardDefaultColor = DeprecatedUtility.getColor(mContext, R.color.card_active);
-        mCardRetiredColor = DeprecatedUtility.getColor(mContext, R.color.card_retired);
+        mCardDefaultColor = DeprecatedUtility.getColor(mContext, R.color.card_activeBackground);
+        mCardRetiredColor = DeprecatedUtility.getColor(mContext, R.color.card_retiredBackground);
 
         //get "retired" status string value
         mStrRetired = mContext.getString(R.string.retired);
