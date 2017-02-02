@@ -3,9 +3,7 @@ package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -27,78 +25,74 @@ import me.makeachoice.gymratpta.model.item.exercise.RoutineSessionItem;
  * Inner Class:
  *      ReviewHolder extends RecyclerView.ViewHolder
  */
-
 /**************************************************************************************************/
 
-public class RoutineRecyclerAdapter extends
-        RecyclerView.Adapter<RoutineRecyclerAdapter.MyViewHolder>
-        implements RecyclerView.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecyclerAdapter.MyViewHolder>{
 
 /**************************************************************************************************/
-/**
+/*
  * Class Variables
- *      ArrayList<RoutineItem> mData - an array list of item data consumed by the adapter
+ *      Context mContext - activity context
  *      mItemLayoutId - item layout resource id
- *      Bridge mBridge - class implementing Bridge interface, typically a Maid class
  *
- * Interface:
- *      Bridge
+ *      ArrayList<RoutineSessionItem> mData - an array list of item data consumed by the adapter
+ *      OnCreateContextMenuListener mCreateContextMenuListener - "create context menu" event listener
  */
 /**************************************************************************************************/
 
-    //mData - an array list of item data consumed by the adapter
-    private ArrayList<RoutineSessionItem> mData;
+    //mContext - activity context
+    private Context mContext;
 
     //mItemLayoutId - item layout resource id
     private int mItemLayoutId;
 
-    private Context mContext;
+    //mData - an array list of item data consumed by the adapter
+    private ArrayList<RoutineSessionItem> mData;
 
-    //mBridge - class implementing Bridge, typically a Maid class
-    private Bridge mBridge;
-
-    //Implemented communication line to a class
-    public interface Bridge{
-        void contextMenuCreated(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo);
-        void contextMenuItemSelected(MenuItem item);
-    }
+    //mCreateContextMenuListener - "create context menu" event listener
+    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
-/**
+/*
  * RoutineRecyclerAdapter - constructor
  */
+/**************************************************************************************************/
+    /*
+     * RoutineRecyclerAdapter - constructor
+     */
     public RoutineRecyclerAdapter(Context ctx, int itemLayoutId){
+        //get context
         mContext = ctx;
-
-        //set bridge communication
-        //mBridge = bridge;
 
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
 
         //initialize data array
         mData = new ArrayList<>();
+    }
 
+    public RoutineRecyclerAdapter(int itemLayoutId){
+        //set item layout resource id
+        mItemLayoutId = itemLayoutId;
+
+        //initialize data array
+        mData = new ArrayList<>();
     }
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * Public Methods:
+ * Getter Methods:
  *      int getItemCount() - get number of items in adapter
- *      RoutineSessionItem getItem(int) - get item at given position
- *      void addItem(RoutineSessionItem) - dynamically add items to adapter
- *      void removeItemAt(int) - remove item from adapter then refresh adapter
- *      void swapData(ArrayList<RoutineSessionItem>) - remove all data from adapter and replace with new data
- *      void clearData() - remove all data from adapter
+ *      ExerciseItem getItem(int) - get item at given position
+ *      ArrayList<ExerciseItem> getData() - get array data used by recycler
  */
 /**************************************************************************************************/
     /*
      * int getItemCount() - get number of items in adapter
-     * @return int - number of items in adapter
      */
     @Override
     public int getItemCount(){
@@ -111,18 +105,46 @@ public class RoutineRecyclerAdapter extends
 
     /*
      * RoutineSessionItem getItem(int) - get item at given position
-     * @param - position;
      */
     public RoutineSessionItem getItem(int position){
         return mData.get(position);
     }
 
+    /*
+     * ArrayList<RoutineSessionItem> getData() - get array data used by recycler
+     */
     public ArrayList<RoutineSessionItem> getData(){ return mData; }
 
 
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Set Listener Methods:
+ *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+ */
+/**************************************************************************************************/
+    /*
+     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+     */
+    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
+        mCreateContextMenuListener = listener;
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Public Methods:
+ *      void addItem(RoutineSessionItem) - dynamically add items to adapter
+ *      void adItemAt(RoutineSessionItem,int) - add item to adapter at specific position
+ *      void removeItemAt(int) - remove item from adapter then refresh adapter
+ *      void swapData(ArrayList<RoutineSessionItem>) - swap old data with new data
+ *      void clearData() - remove all data from adapter
+ */
+/**************************************************************************************************/
     /*
      * void addItem(RoutineSessionItem) - dynamically add items to adapter
-     * @param item - exercise routine item data object
      */
     public void addItem(RoutineSessionItem item) {
         //add item object to data array
@@ -132,20 +154,15 @@ public class RoutineRecyclerAdapter extends
         this.notifyDataSetChanged();
     }
 
+    /*
+     * void adItemAt(RoutineSessionItem,int) - add item to adapter at specific position
+     */
     public void addItemAt(RoutineSessionItem item, int position){
         //add item object to data array at position
         mData.add(position, item);
 
         //notify adapter of data change
         this.notifyDataSetChanged();
-    }
-
-    public void modifyItemAt(String routineName, String description, int position){
-        //RoutineSessionItem dataItem = mData.get(position);
-        //dataItem.routineName = routineName;
-
-        //notify adapter of data change
-        //this.notifyDataSetChanged();
     }
 
     /*
@@ -158,7 +175,7 @@ public class RoutineRecyclerAdapter extends
     }
 
     /*
-     * void swapData(ArrayList<ExerciseItem>) - remove all data from adapter and replace with new data
+     * void swapData(ArrayList<RoutineSessionItem>) - remove all data from adapter and replace with new data
      */
     public void swapData(ArrayList<RoutineSessionItem> data){
         mData.clear();
@@ -188,9 +205,6 @@ public class RoutineRecyclerAdapter extends
      * ViewHolder onCreateViewHolder(ViewGroup, int) - inflates the layout and creates an instance
      * of the ViewHolder (PosterHolder) class. This instance is used to access the views in the
      * inflated layout and is only called when a new view must be created.
-     * @param viewGroup - parent view that will hold the itemView, RecyclerView
-     * @param i - position of the itemView
-     * @return - ViewHolder class; ReviewHolder
      */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i){
@@ -206,34 +220,153 @@ public class RoutineRecyclerAdapter extends
 
     /*
      * void onBindViewHolder(ViewHolder, int) - where we bind our data to the views
-     * @param holder - ViewHolder class; ReviewHolder
-     * @param position - position of the itemView being bound
      */
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         if(mData.size() > 0){
-            RoutineSessionItem item = mData.get(position);
 
-            holder.mTxtRoutineName.setText(item.routineName);
+            if(mData.size() > 0){
+                // Extract info from cursor
+                RoutineSessionItem item = mData.get(position);
 
-            setExerciseValues(holder.mTxtExercise01, holder.mTxtSet01, item.exercise01, item.set01);
-            setExerciseValues(holder.mTxtExercise02, holder.mTxtSet02, item.exercise02, item.set02);
-            setExerciseValues(holder.mTxtExercise03, holder.mTxtSet03, item.exercise03, item.set03);
-            setExerciseValues(holder.mTxtExercise04, holder.mTxtSet04, item.exercise04, item.set04);
-            setExerciseValues(holder.mTxtExercise05, holder.mTxtSet05, item.exercise05, item.set05);
-            setExerciseValues(holder.mTxtExercise06, holder.mTxtSet06, item.exercise06, item.set06);
-            setExerciseValues(holder.mTxtExercise07, holder.mTxtSet07, item.exercise07, item.set07);
-            setExerciseValues(holder.mTxtExercise08, holder.mTxtSet08, item.exercise08, item.set08);
-            setExerciseValues(holder.mTxtExercise09, holder.mTxtSet09, item.exercise09, item.set09);
-            setExerciseValues(holder.mTxtExercise10, holder.mTxtSet10, item.exercise10, item.set10);
+                //bind viewHolder components
+                holder.bindCardView(item, position);
+                holder.bindTextView(item);
+            }
 
-            holder.mCrdView.setTag(position);
-            holder.mCrdView.setOnCreateContextMenuListener(this);
         }
 
     }
 
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * ReviewHolder - extends RecyclerView.ViewHolder, a design pattern to increase performance. It
+ * holds the references to the UI components for each item in a ListView or GridView
+ */
+/**************************************************************************************************/
+
+public static class MyViewHolder extends RecyclerView.ViewHolder{
+
+/**************************************************************************************************/
+/*
+ * Child Views of the used by the ReviewRecycler
+ */
+/**************************************************************************************************/
+    //mCrdReview - cardView that hold child views found below
+    protected CardView mCrdView;
+
+
+    protected TextView mTxtRoutineName;
+
+    protected TextView mTxtExercise01;
+    protected TextView mTxtExercise02;
+    protected TextView mTxtExercise03;
+    protected TextView mTxtExercise04;
+    protected TextView mTxtExercise05;
+    protected TextView mTxtExercise06;
+    protected TextView mTxtExercise07;
+    protected TextView mTxtExercise08;
+    protected TextView mTxtExercise09;
+    protected TextView mTxtExercise10;
+
+    protected TextView mTxtSet01;
+    protected TextView mTxtSet02;
+    protected TextView mTxtSet03;
+    protected TextView mTxtSet04;
+    protected TextView mTxtSet05;
+    protected TextView mTxtSet06;
+    protected TextView mTxtSet07;
+    protected TextView mTxtSet08;
+    protected TextView mTxtSet09;
+    protected TextView mTxtSet10;
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * MyViewHolder - constructor
+ */
+/**************************************************************************************************/
+    public MyViewHolder(View recycleView){
+        super(recycleView);
+        //set CardView object
+        mCrdView = (CardView)recycleView.findViewById(R.id.choiceCardView);
+
+        mTxtRoutineName = (TextView)recycleView.findViewById(R.id.cardRoutine_txtName);
+
+        mTxtExercise01 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise01);
+        mTxtExercise02 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise02);
+        mTxtExercise03 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise03);
+        mTxtExercise04 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise04);
+        mTxtExercise05 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise05);
+        mTxtExercise06 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise06);
+        mTxtExercise07 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise07);
+        mTxtExercise08 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise08);
+        mTxtExercise09 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise09);
+        mTxtExercise10 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtExercise10);
+
+        mTxtSet01 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet01);
+        mTxtSet02 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet02);
+        mTxtSet03 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet03);
+        mTxtSet04 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet04);
+        mTxtSet05 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet05);
+        mTxtSet06 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet06);
+        mTxtSet07 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet07);
+        mTxtSet08 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet08);
+        mTxtSet09 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet09);
+        mTxtSet10 = (TextView)recycleView.findViewById(R.id.cardRoutine_txtSet10);
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Binding Methods
+ *      void bindCardView(RoutineSessionItem,int,int) - bind data to cardView
+ *      void bindTextView(RoutineSessionItem) - bind data to textView components
+ *      void setExerciseValues(...) - set exercise name and sets for routine
+ */
+/**************************************************************************************************/
+    /*
+     * void bindCardView(RoutineSessionItem,int,int) - bind data to itemView. Set tag values and contextMenu
+     * listener, if not null
+     */
+    private void bindCardView(RoutineSessionItem item, int position) {
+
+        mCrdView.setTag(R.string.recycler_tagPosition, position);
+        mCrdView.setTag(R.string.recycler_tagItem, item);
+
+        if(mCreateContextMenuListener != null){
+            mCrdView.setOnCreateContextMenuListener(mCreateContextMenuListener);
+        }
+
+    }
+
+    /*
+     * void bindTextView(RoutineSessionItem) - bind data to textView components. Set text and context
+     * description values.
+     */
+    private void bindTextView(RoutineSessionItem item){
+        mTxtRoutineName.setText(item.routineName);
+
+        setExerciseValues(mTxtExercise01, mTxtSet01, item.exercise01, item.set01);
+        setExerciseValues(mTxtExercise02, mTxtSet02, item.exercise02, item.set02);
+        setExerciseValues(mTxtExercise03, mTxtSet03, item.exercise03, item.set03);
+        setExerciseValues(mTxtExercise04, mTxtSet04, item.exercise04, item.set04);
+        setExerciseValues(mTxtExercise05, mTxtSet05, item.exercise05, item.set05);
+        setExerciseValues(mTxtExercise06, mTxtSet06, item.exercise06, item.set06);
+        setExerciseValues(mTxtExercise07, mTxtSet07, item.exercise07, item.set07);
+        setExerciseValues(mTxtExercise08, mTxtSet08, item.exercise08, item.set08);
+        setExerciseValues(mTxtExercise09, mTxtSet09, item.exercise09, item.set09);
+        setExerciseValues(mTxtExercise10, mTxtSet10, item.exercise10, item.set10);
+    }
+
+    /*
+     * void setExerciseValues(...) - set exercise name and sets for routine
+     */
     private void setExerciseValues(TextView txtExercise, TextView txtSet, String exercise, int set){
         if(exercise == null || exercise.equals("")){
             txtExercise.setVisibility(View.GONE);
@@ -248,130 +381,7 @@ public class RoutineRecyclerAdapter extends
         }
     }
 
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * Context Menu Methods:
- *      void onCreateContextMenu(...) - create context menu
- *      boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
- */
-/**************************************************************************************************/
-    /*
-     * void onCreateContextMenu(...) - create context menu
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-        //create string values for menu
-        String strEdit = mContext.getString(R.string.edit);
-        String strDelete = mContext.getString(R.string.delete);
-
-        //add menu and set menu item click listener
-        menu.add(strEdit).setOnMenuItemClickListener(this);
-        menu.add(strDelete).setOnMenuItemClickListener(this);
-
-        if(mBridge != null){
-            //notify bridge that context menu has been created
-            mBridge.contextMenuCreated(menu, v, menuInfo);
-        }
-    }
-
-    /*
-     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
-     */
-    public boolean onMenuItemClick(MenuItem item){
-        if(mBridge != null){
-            //notify bridge that a context menu item has been clicked
-            mBridge.contextMenuItemSelected(item);
-        }
-        return true;
-    }
-
-/**************************************************************************************************/
-
-
-/**************************************************************************************************/
-/*
- * ReviewHolder - extends RecyclerView.ViewHolder, a design pattern to increase performance. It
- * holds the references to the UI components for each item in a ListView or GridView
- */
-/**************************************************************************************************/
-
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
-
-/**************************************************************************************************/
-/*
- * Child Views of the used by the ReviewRecycler
- */
-/**************************************************************************************************/
-        //mCrdReview - cardView that hold child views found below
-        protected CardView mCrdView;
-
-        protected TextView mTxtRoutineName;
-
-        protected TextView mTxtExercise01;
-        protected TextView mTxtExercise02;
-        protected TextView mTxtExercise03;
-        protected TextView mTxtExercise04;
-        protected TextView mTxtExercise05;
-        protected TextView mTxtExercise06;
-        protected TextView mTxtExercise07;
-        protected TextView mTxtExercise08;
-        protected TextView mTxtExercise09;
-        protected TextView mTxtExercise10;
-
-        protected TextView mTxtSet01;
-        protected TextView mTxtSet02;
-        protected TextView mTxtSet03;
-        protected TextView mTxtSet04;
-        protected TextView mTxtSet05;
-        protected TextView mTxtSet06;
-        protected TextView mTxtSet07;
-        protected TextView mTxtSet08;
-        protected TextView mTxtSet09;
-        protected TextView mTxtSet10;
-
-
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/**
- * MyViewHolder - constructor
- * @param recycleView - item layout containing the child views
- */
-        public MyViewHolder(View recycleView){
-            super(recycleView);
-            //set CardView object
-            mCrdView = (CardView)recycleView.findViewById(R.id.choiceCardView);
-
-            mTxtRoutineName = (TextView)recycleView.findViewById(R.id.txtRoutineName);
-
-            mTxtExercise01 = (TextView)recycleView.findViewById(R.id.txtExercise01);
-            mTxtExercise02 = (TextView)recycleView.findViewById(R.id.txtExercise02);
-            mTxtExercise03 = (TextView)recycleView.findViewById(R.id.txtExercise03);
-            mTxtExercise04 = (TextView)recycleView.findViewById(R.id.txtExercise04);
-            mTxtExercise05 = (TextView)recycleView.findViewById(R.id.txtExercise05);
-            mTxtExercise06 = (TextView)recycleView.findViewById(R.id.txtExercise06);
-            mTxtExercise07 = (TextView)recycleView.findViewById(R.id.txtExercise07);
-            mTxtExercise08 = (TextView)recycleView.findViewById(R.id.txtExercise08);
-            mTxtExercise09 = (TextView)recycleView.findViewById(R.id.txtExercise09);
-            mTxtExercise10 = (TextView)recycleView.findViewById(R.id.txtExercise10);
-
-            mTxtSet01 = (TextView)recycleView.findViewById(R.id.txtSet01);
-            mTxtSet02 = (TextView)recycleView.findViewById(R.id.txtSet02);
-            mTxtSet03 = (TextView)recycleView.findViewById(R.id.txtSet03);
-            mTxtSet04 = (TextView)recycleView.findViewById(R.id.txtSet04);
-            mTxtSet05 = (TextView)recycleView.findViewById(R.id.txtSet05);
-            mTxtSet06 = (TextView)recycleView.findViewById(R.id.txtSet06);
-            mTxtSet07 = (TextView)recycleView.findViewById(R.id.txtSet07);
-            mTxtSet08 = (TextView)recycleView.findViewById(R.id.txtSet08);
-            mTxtSet09 = (TextView)recycleView.findViewById(R.id.txtSet09);
-            mTxtSet10 = (TextView)recycleView.findViewById(R.id.txtSet10);
-
-        }
-    }
+}
 
 /**************************************************************************************************/
 
