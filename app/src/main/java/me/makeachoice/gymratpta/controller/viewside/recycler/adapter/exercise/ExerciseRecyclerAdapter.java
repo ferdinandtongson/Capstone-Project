@@ -279,10 +279,8 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 /**************************************************************************************************/
 /*
  * Binding Methods
- *      void bindItemView(ClientCardItem,int,int) - bind data to cardView
- *      void bindTextView(ClientCardItem) - bind data to textView components
- *      void bindProfileImage(ClientCardItem) - bind data to circleImageView
- *      void bindIconImages(ClientCardItem) - bind data to imageView icons
+ *      void bindItemView(ExerciseItem,int,int) - bind data to itemView
+ *      void bindTextView(ExerciseItem) - bind data to textView components
  */
 /**************************************************************************************************/
     /*
@@ -301,7 +299,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
     }
 
     /*
-     * void bindTextView(ClientCardItem) - bind data to textView components. Set text and context
+     * void bindTextView(ExerciseItem) - bind data to textView components. Set text and context
      * description values.
      */
     private void bindTextView(ExerciseItem item){

@@ -214,7 +214,7 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
         //get clientCardItem
         ExerciseItem item = (ExerciseItem)v.getTag(R.string.recycler_tagItem);
 
-        //get client name
+        //get exercise name
         String exerciseName = (item.exerciseName);
 
         //create string values for menu
@@ -235,11 +235,11 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
         switch (item.getItemId()) {
             case CONTEXT_MENU_EDIT:
                 Log.d("Choice", "     edit");
-                //TODO - need to reschedule session
+                //TODO - need to edit exercise
                 return true;
             case CONTEXT_MENU_DELETE:
                 Log.d("Choice", "     delete");
-                //TODO - need to cancel session
+                //TODO - need to delete exercise
                 return true;
         }
         return false;
