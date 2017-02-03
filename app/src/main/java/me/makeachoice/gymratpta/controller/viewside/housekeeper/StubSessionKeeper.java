@@ -117,6 +117,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         //flag used to determine which menu items is selected in drawer component
         mBottomNavSelectedItemId = R.id.nav_sessions;
 
+        mData = new ArrayList();
     }
 
 /**************************************************************************************************/
@@ -195,7 +196,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.card_client;
 
-        mData = SessionStubData.createData(mActivity);
+        /*mData = SessionStubData.createData(mActivity);
 
         //create adapter consumed by the recyclerView
         mAdapter = new ClientRecyclerAdapter(mActivity, adapterLayoutId);
@@ -215,7 +216,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         mAdapter.swapData(mData);
 
         //set adapter in recycler
-        mBasicRecycler.setAdapter(mAdapter);
+        mBasicRecycler.setAdapter(mAdapter);*/
 
         //check if recycler has any data; if not, display "empty" textView
         checkForEmptyRecycler(mData.isEmpty());

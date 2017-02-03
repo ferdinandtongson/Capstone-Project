@@ -134,10 +134,10 @@ public class SessionRoutineMaid extends GymRatRecyclerMaid implements BasicFragm
         int adapterLayoutId = R.layout.card_client;
 
         //create adapter consumed by the recyclerView
-        mAdapter = new ClientRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
-        mAdapter.swapData(mData);
+        //mAdapter = new ClientRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
+        //mAdapter.swapData(mData);
 
-        mBasicRecycler.setAdapter(mAdapter);
+        //mBasicRecycler.setAdapter(mAdapter);
     }
 
 /**************************************************************************************************/
