@@ -4,6 +4,9 @@ package me.makeachoice.gymratpta.model.contract.client;
 /*
  *  UserColumns are columns used in user table in the sqlite database
  */
+
+import android.provider.ContactsContract;
+
 /**************************************************************************************************/
 
 public class ClientColumns {
@@ -28,5 +31,22 @@ public class ClientColumns {
 
     //default sort order
     public static final String SORT_ORDER_DEFAULT = COLUMN_CLIENT_NAME + " ASC";
+
+
+    // A "projection" defines the columns that will be returned for each row
+    public static final String[] PROJECTION =
+            {
+                    COLUMN_UID,
+                    COLUMN_FKEY,
+                    COLUMN_CONTACTS_ID,
+                    COLUMN_CLIENT_NAME,
+                    COLUMN_CLIENT_STATUS
+            };
+
+    public static final int INDEX_UID = 0;
+    public static final int INDEX_FKEY = 1;
+    public static final int INDEX_CONTACTS_ID = 2;
+    public static final int INDEX_CLIENT_NAME = 3;
+    public static final int INDEX_CLIENT_STATUS = 4;
 
 }
