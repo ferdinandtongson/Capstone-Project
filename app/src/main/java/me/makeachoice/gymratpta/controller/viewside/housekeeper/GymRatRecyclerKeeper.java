@@ -3,6 +3,7 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
@@ -18,6 +19,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *          todo - add content description to "empty" textView
  *          todo - add content description to FAB
  *          todo - how to access FAB with d-pad?
+ * TODO - need to set up progress bar component
  */
 /**************************************************************************************************/
 
@@ -69,6 +71,7 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
  * Class Variables:
  *      TextView mTxtEmpty - textView component displayed when recycler is empty
  *      BasicRecycler mBasicRecycler - recycler component
+ *      mProgressBar - progress bar component
  *      FloatingActionButton mFAB - floating action button component
  */
 /**************************************************************************************************/
@@ -78,6 +81,9 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
 
     //mBasicRecycler - recycler component
     protected BasicRecycler mBasicRecycler;
+
+    //mProgressBar - progress bar component
+    protected ProgressBar mProgressBar;
 
     //mFAB - floating action button component
     protected FloatingActionButton mFAB;
@@ -125,6 +131,10 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
         int emptyViewId = R.id.choiceEmptyView;
         mTxtEmpty = (TextView) mActivity.findViewById(emptyViewId);
 
+        //initialize progressbar component
+        int progressBarId = R.id.choiceProgressBar;
+        mProgressBar = (ProgressBar) mActivity.findViewById(progressBarId);
+
         //initialize floating action button component
         int fabId = R.id.choiceFab;
         mFAB = (FloatingActionButton) mActivity.findViewById(fabId);
@@ -137,7 +147,9 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
  * Class Methods
  *      void setEmptyMessage(String) - set "empty" message to be displayed when recycler is empty
  *      void setOnClickFABListener(View.OnClickListener) - set onClick listener for FAB
+ *      void showProgressBar(boolean) - show or hide progressbar
  *      void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
+ *      void checkForEmptyRecycler(int) - checks whether to display "empty" message or not
  */
 /**************************************************************************************************/
     /*
@@ -155,6 +167,18 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
     }
 
     /*
+     * void showProgressBar(boolean) - show or hide progressbar
+     */
+    protected void showProgressBar(boolean show){
+        if(show){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+        else{
+            mProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    /*
      * void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
      */
     protected void checkForEmptyRecycler(boolean isEmpty){
@@ -166,6 +190,17 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
         }
     }
 
+    /*
+     * void checkForEmptyRecycler(int) - checks whether to display "empty" message or not
+     */
+    protected void checkForEmptyRecycler(int count){
+        if(count <= 0){
+            mTxtEmpty.setVisibility(View.VISIBLE);
+        }
+        else{
+            mTxtEmpty.setVisibility(View.GONE);
+        }
+    }
 
 /**************************************************************************************************/
 
