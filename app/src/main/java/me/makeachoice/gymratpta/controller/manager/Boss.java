@@ -54,12 +54,18 @@ package me.makeachoice.gymratpta.controller.manager;
 /**************************************************************************************************/
 
 import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import me.makeachoice.gymratpta.controller.modelside.firebase.UserFirebaseHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.user.UserColumns;
+import me.makeachoice.gymratpta.model.db.DBHelper;
+import me.makeachoice.gymratpta.model.item.UserItem;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 
 /**************************************************************************************************/
@@ -98,6 +104,8 @@ public class Boss extends MyBoss {
         mKeeperRegistry = HouseKeeperRegistry.getInstance();
         mKeeperRegistry.initializeHouseKeepers();
 
+        dropAllTables();
+
         //initialize database
         initDatabase();
 
@@ -115,9 +123,20 @@ public class Boss extends MyBoss {
         return mKeeperRegistry.requestHouseKeeper(keeperKey);
     }
 
+    private void dropAllTables(){
+        Log.d("Choice", "Boss.dropAllTables");
+        DBHelper dbHelper = new DBHelper(this);
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        dbHelper.dropTable(db, Contractor.UserEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.ClientEntry.TABLE_NAME);
+
+        db.close();
+
+        deleteDatabase(DBHelper.DATABASE_NAME);
+    }
+
     //private DBHelper mDBHelper;
     protected void initDatabase(){
-        //mDBHelper = new DBHelper(this);
     }
 
     /*
@@ -176,8 +195,60 @@ public class Boss extends MyBoss {
 
 /**************************************************************************************************/
 
-    public void updateUser(FirebaseUser user){
+    private UserItem mCurrentUser;
+    public void saveUser(FirebaseUser user){
+        Log.d("Choice", "Boss.saveUser");
+        mCurrentUser = saveUserItem(user);
+
         Uri uriValue = Contractor.UserEntry.buildUserByUID(user.getUid());
+        Cursor cursor = getContentResolver().query(uriValue, UserColumns.PROJECTION, null, null, null);
+
+        if(cursor == null || cursor.getCount() == 0){
+            Log.d("Choice", "     putUserInDatabase");
+            //user not in database, add user to database
+            putUserInDatabase(user);
+        }
+        cursor.close();
+
+        checkUserInFirebase(user);
+    }
+
+    private void checkUserInFirebase(FirebaseUser user){
+        Log.d("Choice", "Boss.checkUserInFirebase: ");
+        final UserFirebaseHelper userFB = UserFirebaseHelper.getInstance(user.getUid());
+
+        userFB.requestUserData(user.getUid(), new UserFirebaseHelper.OnDataLoadedListener() {
+            @Override
+            public void onDataLoaded(UserItem user) {
+                if(user == null){
+                    Log.d("Choice", "     add user to Firebase");
+                    userFB.addUser(mCurrentUser);
+                }
+                else{
+                    Log.d("Choice", "    in Firebase:" + user.userName);
+                }
+            }
+
+            @Override
+            public void onCancelled() {
+                Log.d("Choice", "     user firebase data request canceled");
+            }
+        });
+    }
+
+    private UserItem saveUserItem(FirebaseUser user){
+        UserItem item = new UserItem();
+        item.uid = user.getUid();
+        item.userName = user.getDisplayName();
+        item.email = user.getEmail();
+        item.status = "Free";
+
+        return item;
+    }
+
+    public void putUserInDatabase(FirebaseUser user){
+        Log.d("Choice", "Boss.putUserInDatabase");
+        Uri uriValue = Contractor.UserEntry.CONTENT_URI;
 
         // Add a new student record
         ContentValues values = new ContentValues();
@@ -188,7 +259,7 @@ public class Boss extends MyBoss {
         values.put(Contractor.UserEntry.COLUMN_USER_STATUS, "Free");
 
         Uri uri = getContentResolver().insert(uriValue, values);
-
+        Log.d("Choice", "     uri: " + uri.toString());
 
     }
 }

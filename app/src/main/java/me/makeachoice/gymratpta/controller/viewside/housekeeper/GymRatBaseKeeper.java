@@ -232,16 +232,19 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
-                    mBoss.updateUser(user);
-                    //user signed in, initialize navigation layout
-                    initializeNavigation();
-                }else{
-                    //debug count used to prevent multiple userSignIn calls, known bug
-                    if(mFirebaseDebugCount == 0){
+
+                if(mFirebaseDebugCount == 0){
+                    mFirebaseDebugCount++;
+
+                    if(user != null){
+                        //user signed in, initialize navigation layout
+                        initializeNavigation();
+                    }else{
+                        //debug count used to prevent multiple userSignIn calls, known bug
                         userSignIn();
-                        mFirebaseDebugCount++;
                     }
+
+                    mBoss.saveUser(user);
                 }
             }
         };
