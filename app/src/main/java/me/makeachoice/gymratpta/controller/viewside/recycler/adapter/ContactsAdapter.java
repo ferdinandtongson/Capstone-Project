@@ -6,9 +6,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -37,8 +35,7 @@ import me.makeachoice.gymratpta.model.item.ContactsItem;
 
 /**************************************************************************************************/
 
-public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyViewHolder>
-    implements RecyclerView.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener{
+public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyViewHolder>{
 
 /**************************************************************************************************/
 /*
@@ -167,65 +164,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         holder.bindProfileImage(item);
     }
 
-
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * Context Menu Methods:
- *      void onCreateContextMenu(...) - create context menu
- *      boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
- */
-/**************************************************************************************************/
-    /*
-     * void onCreateContextMenu(...) - create context menu
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-        Log.d("Choice", "ContactsAdapter.onCreateContextMenu");
-        /*Boss boss = (Boss) mContext.getApplicationContext();
-
-        ClientFirebase firebase = ClientFirebase.getInstance(boss.getUser().getUid());
-
-        ContactsItem item = (ContactsItem)v.getTag(R.string.tag_item);
-
-        if(firebase.isClient(item.contactName)){
-            String strAlready = item.contactName + " is already a client";
-            menu.add(strAlready);
-            mIsValidClient = false;
-        }
-        else{
-            Log.d("Choice", "     valid new client");
-            mIsValidClient = true;
-
-            //create string values for menu
-            String strAdd = mContext.getString(R.string.add) + ": " + item.contactName;
-
-            //add menu and set menu item click listener
-            menu.add(strAdd).setOnMenuItemClickListener(this);
-
-            if(mBridge != null){
-                //notify bridge that context menu has been created
-                mBridge.contextMenuCreated(menu, v, menuInfo);
-            }
-        }*/
-
-    }
-
-    /*
-     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
-     */
-    public boolean onMenuItemClick(MenuItem item){
-        /*Log.d("Choice", "ContactsAdapter.onMenuItemClick");
-        if(mBridge != null){
-            if(mIsValidClient){
-                //notify bridge that a context menu item has been clicked
-                mBridge.contextMenuItemSelected(item);
-            }
-        }*/
-        return true;
-    }
 
 /**************************************************************************************************/
 
