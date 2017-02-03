@@ -9,7 +9,7 @@
         android:id="@+id/txtTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/darkgray"
+        android:textColor="@color/black"
         android:textSize="22sp" />
 
     <View
@@ -21,12 +21,19 @@
         android:layout_below="@id/txtTitle"
         android:background="@android:color/darker_gray"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/choiceRecyclerView"
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/line01"
-        android:padding="7dp"
+        android:src="@drawable/sun_background"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/choiceRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/line01"
+        android:padding="2dp"
         android:scrollbars="vertical"
         />
 
@@ -37,5 +44,12 @@
         android:gravity="center"
         android:visibility="gone"
         />
+
+    <ProgressBar
+        android:id="@+id/choiceProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+    />
 
 </RelativeLayout>

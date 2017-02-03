@@ -13,4 +13,12 @@
         <item name="android:textColor">@color/textColor_default</item>
     </style>
 
+
+
+    <style name="GymRat.Item.ImageView.Profile.Small" parent="Theme.AppCompat.Light">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:src">@drawable/gym_rat_black_48dp</item>
+    </style>
+
 </resources>

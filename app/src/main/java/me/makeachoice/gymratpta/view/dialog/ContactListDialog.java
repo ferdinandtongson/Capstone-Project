@@ -8,63 +8,64 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.viewside.Helper.ContactsHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ContactsAdapter;
+import me.makeachoice.gymratpta.model.contract.contacts.ContactsColumns;
+import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.item.ClientItem;
+import me.makeachoice.gymratpta.model.item.ContactsItem;
+import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * ContactListDialog //todo - add description
+ * ContactListDialog display the list of contacts stored on the mobile device
  */
-
 /**************************************************************************************************/
 
-public class ContactListDialog extends DialogFragment{
+public class ContactListDialog extends DialogFragment implements RecyclerView.OnCreateContextMenuListener,
+        MyActivity.OnContextItemSelectedListener{
 
 /**************************************************************************************************/
 /*
  * Class Variables
+ *      mCreateContextMenuListener - "create context menu" event listener
  */
 /**************************************************************************************************/
 
-    private TextView mTxtTitle;
+    private int LOADER_CONTACTS = 100;
     private TextView mTxtEmpty;
+    private ProgressBar mProgressBar;
+    private ContactsAdapter mAdapter;
 
-    private String mUserId;
 
     private BasicRecycler mBasicRecycler;
-    //private ContactsAdapter mAdapter;
 
-    //mBridge - class implementing Bridge, typically a Maid class
-    private Bridge mBridge;
+    private View mRootView;
 
-    //Implemented communication line to a class
-    public interface Bridge{
-        //void addContactFromDialog(ClientInfoItem infoItem);
-    }
-
+    //mCreateContextMenuListener - "create context menu" event listener
+    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * Constructor
+ * ContactListDialog - constructor
  */
 /**************************************************************************************************/
     /*
-     * EditAddRoutineExerciseDialog - constructor
+     * ContactListDialog - constructor
      */
     public ContactListDialog(){
     }
@@ -80,29 +81,21 @@ public class ContactListDialog extends DialogFragment{
  */
 /**************************************************************************************************/
 
-    public void setTitle(String title){
-        mTxtTitle.setText(title);
+    /*
+     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+     */
+    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
+        mCreateContextMenuListener = listener;
     }
 
-    public void setRecycler(BasicRecycler recycler){
-        mBasicRecycler = recycler;
-    }
-
-    public void initDialog(String userId, Bridge bridge){
-        //mUserId = userId;
-        //mBridge = bridge;
-    }
 
 /**************************************************************************************************/
-
 
 /**************************************************************************************************/
 /*
- * Initialize Dialog
- *      View onCreateView(...) - called when dialog show is requested
- *      void initializeTextView(View) - initialize textView component for dialog
- *      void initializeEditText(View) - initialize EditText component for dialog
- *      void initializeButton(View) - initialize button components for dialog
+ * Fragment Lifecycle Methods
+ *      void create(MyActivity,Bundle) - called when Activity.onCreate is called
+ *      void openBundle(Bundle) - opens bundle to set saved instance states during create()
  */
 /**************************************************************************************************/
     /*
@@ -110,15 +103,19 @@ public class ContactListDialog extends DialogFragment{
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.standard_dia_recycler, container, false);
+        //get layout resource id
+        int layoutId = R.layout.standard_dia_recycler;
 
-        //create Basic recycler class
-        //mBasicRecycler = new BasicRecycler(rootView, R.id.choiceRecycler);
+        //create dialog layout
+        mRootView = inflater.inflate(layoutId, container, false);
 
-        initializeTitleView(rootView);
-        initializeEmptyView(rootView);
+        //initialize and show progress bar
+        initializeProgressBar();
 
-        return rootView;
+        //load contact info
+        loadContacts();
+
+        return mRootView;
     }
 
     @Override
@@ -139,84 +136,118 @@ public class ContactListDialog extends DialogFragment{
         int dialogHeight = (int)(displayRectangle.height() * 0.8f); // specify a value here
 
         getDialog().getWindow().setLayout(dialogWidth, dialogHeight);
-
-
-    }
+   }
 
     @Override
     public void onDetach(){
         super.onDetach();
-        //mAdapter.closeCursor();
-        //getLoaderManager().destroyLoader(LOADER_CONTACTS);
+        mAdapter.closeCursor();
+        getLoaderManager().destroyLoader(LOADER_CONTACTS);
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Initialize Dialog
+ *      void initializeProgressBar() - initialize ProgressBar component
+ *      void initializeLayout(Cursor) - initialize dialog layout, after contact data has been loaded
+ *      void initializeTitleView() - initialize textView component for dialog title
+ *      void initializeEmptyView() - initialize textView component shown when adapter is empty
+ *      void initializeAdapter(Cursor) - initialize adapter with contacts cursor
+ *      void initializeRecycler() - initialize recyclerView component with adapter
+ *      void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
+ */
+/**************************************************************************************************/
+    /*
+     * void initializeLayout(Cursor) - initialize dialog layout, after contact data has been loaded
+     */
+    private void initializeLayout(Cursor cursor){
+        initializeTitleView();
+        initializeEmptyView();
+        initializeAdapter(cursor);
+        initializeRecycler();
     }
 
     /*
-     * void initializeTextView(View) - initialize textView component for dialog
+     * void initializeProgressBar() - initialize ProgressBar component. Shown at the beginning as
+     * the contacts info is loaded.
      */
-    private void initializeTitleView(View rootView){
-        //String strContacts = rootView.getResources().getString(R.string.contacts_list);
-        String strContacts = "Contacts List";
+    private void initializeProgressBar(){
+        mProgressBar = (ProgressBar)mRootView.findViewById(R.id.choiceProgressBar);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    /*
+     * void initializeTitleView() - initialize textView component for dialog title
+     */
+    private void initializeTitleView(){
+        //get dialog title
+        String strTitle = mRootView.getResources().getString(R.string.dialogContacts_title);
+
         //get textView component
-        mTxtTitle = (TextView)rootView.findViewById(R.id.txtTitle);
+        TextView txtTitle = (TextView)mRootView.findViewById(R.id.txtTitle);
 
-        mTxtTitle.setText(strContacts);
-
-        //set title string value
-        //mTxtTitle.setText(mTitle);
-
+        //set title
+        txtTitle.setText(strTitle);
     }
 
-    private void initializeEmptyView(View rootView){
+    /*
+     * void initializeEmptyView() - initialize textView component shown when adapter is empty
+     */
+    private void initializeEmptyView(){
+        //get "empty" message
+        String msg = mRootView.getResources().getString(R.string.emptyRecylcer_noContacts);
 
-        String msg = rootView.getResources().getString(R.string.add_client);
+        //get textView component
+        mTxtEmpty = (TextView)mRootView.findViewById(R.id.choiceEmptyView);
 
-
-        mTxtEmpty = (TextView)rootView.findViewById(R.id.choiceEmptyView);
-
+        //set message
         mTxtEmpty.setText(msg);
-        mTxtEmpty.setTextSize(24f);
-
-        //TODO - need to add logic switch
-        mTxtEmpty.setVisibility(View.GONE);
     }
 
-    private void updateAdapter(Cursor cursor){
-        /*if(mAdapter == null){
-            initializeAdapter(cursor);
-        }
-        else{
-            //TODO - swap cursor
-            //mAdapter.setCursor(cursor);
-        }*/
-    }
-
-
+    /*
+     * void initializeAdapter(Cursor) - initialize adapter with contacts cursor
+     */
     private void initializeAdapter(Cursor cursor){
-        // Put the result Cursor in the adapter for the ListView
-        //mAdapter = new ContactsAdapter(this.getContext(), this, cursor, R.layout.item_contact);
-        initializeRecycler();
+        //get item layout
+        int layoutId = R.layout.item_contact;
+
+        //create adapter
+        mAdapter = new ContactsAdapter(this.getContext(), cursor, layoutId);
+        mAdapter.setOnCreateContextMenuListener(this);
     }
 
     /*
      * void initializeRecycler() - initialize recyclerView component with adapter
      */
     private void initializeRecycler(){
+        //create recycler
+        mBasicRecycler = new BasicRecycler(mRootView);
 
-        //create LayoutManager for RecyclerView, in this case a linear list type LayoutManager
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        //set adapter
+        mBasicRecycler.setAdapter(mAdapter);
 
-
-        //create item decoration, line divider
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.getContext(),
-                layoutManager.getOrientation());
-
-        //set manager, adapter and fixState values
-        //mBasicRecycler.initializeRecycler(layoutManager, mAdapter, true);
-        //ad line divider to recycler
-        mBasicRecycler.getRecycler().addItemDecoration(dividerItemDecoration);
-        mBasicRecycler.getRecycler().setItemAnimator(new DefaultItemAnimator());
-
+        if(mAdapter == null || mAdapter.getItemCount() <= 0){
+            checkForEmptyRecycler(true);
+        }
+        else{
+            checkForEmptyRecycler(false);
+        }
     }
+
+    /*
+     * void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
+     */
+    protected void checkForEmptyRecycler(boolean isEmpty){
+        if(isEmpty){
+            mTxtEmpty.setVisibility(View.VISIBLE);
+        }
+        else{
+            mTxtEmpty.setVisibility(View.GONE);
+        }
+    }
+
 
 /**************************************************************************************************/
 
@@ -227,15 +258,45 @@ public class ContactListDialog extends DialogFragment{
  *      void contextMenuItemSelected(MenuItem) - menu item selected from context menu
  */
 /**************************************************************************************************/
-    /*
-     * void contextMenuCreated(...) - context menu created in recycler adapter
-     */
-    public void contextMenuCreated(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
-        //get item position that created context menu
-        //int mItemPosition = (int)v.getTag(R.string.tag_position);
-        //mContactItem = (ContactsItem)v.getTag(R.string.tag_item);
+public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
+    //get clientCardItem
+    ContactsItem item = (ContactsItem)v.getTag(R.string.recycler_tagItem);
+
+    //get client name
+    String clientName = (item.contactName);
+
+    //get context menu strings
+    //String strActivate = mRootView.getString(R.string.context_menu_activate);
+    //String strRetire = mRootView.getString(R.string.context_menu_retire);
+
+    menu.add("Add: " + clientName);
+
+    /*if(item.isActive){
+        menu.add(0, CONTEXT_MENU_RETIRE, 0, strRetire);
     }
+    else{
+        menu.add(0, CONTEXT_MENU_ACTIVATE, 0, strActivate);
+    }*/
+}
+
+    /*
+     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+     */
+    public boolean onContextItemSelected(MenuItem item) {
+        /*switch (item.getItemId()) {
+            case CONTEXT_MENU_ACTIVATE:
+                Log.d("Choice", "     activate");
+                //TODO - need to reschedule session
+                return true;
+            case CONTEXT_MENU_RETIRE:
+                Log.d("Choice", "     retire");
+                //TODO - need to cancel session
+                return true;
+        }*/
+        return false;
+    }
+
 
     private ClientItem mClientItem;
     //private ContactsItem mContactItem;
@@ -255,6 +316,37 @@ public class ContactListDialog extends DialogFragment{
     }
 
 /**************************************************************************************************/
+
+    private void loadContacts(){
+        // Initializes a loader for loading the contacts
+        getLoaderManager().initLoader(LOADER_CONTACTS, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+                //contacts sort order
+                String sort = "upper("+ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + ") ASC";
+
+                //get cursor
+                return new CursorLoader(
+                        getActivity(),
+                        ContactsContract.Contacts.CONTENT_URI,
+                        ContactsColumns.PROJECTION_CONTACTS,
+                        null,
+                        null,
+                        sort);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> objectLoader, Cursor c) {
+                mProgressBar.setVisibility(View.GONE);
+                initializeLayout(c);
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> cursorLoader) {
+            }
+        });
+
+    }
 
     //private ClientInfoItem mInfoItem;
 

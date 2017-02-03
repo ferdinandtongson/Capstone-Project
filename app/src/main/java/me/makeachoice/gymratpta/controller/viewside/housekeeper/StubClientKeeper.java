@@ -268,8 +268,8 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         Log.d("Choice", "     dia: " + dia.toString());
         Log.d("Choice", "     fm: " + fm.toString());
         //dia.initDialog(mBoss.getUser().getUid(), this);
-        BasicRecycler diaRecycler = new BasicRecycler(mActivity);
-        dia.setRecycler(diaRecycler);
+        //BasicRecycler diaRecycler = new BasicRecycler(mActivity);
+        //dia.setRecycler(diaRecycler);
 
         dia.show(fm, "diaContactList");
 

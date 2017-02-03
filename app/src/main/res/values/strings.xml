@@ -5,7 +5,7 @@
 
     <!-- message: email -->
     <string name="msgEmail_send_using" translatable="false">@string/send_email_using</string>
-    <string name="msgEmail_no_client" translatable="false">@string/no_email_client</string>
+    <string name="msgEmail_no_client" translatable="false">@string/msg_no_email_clients</string>
     <!-- message: client info -->
     <string name="msgClientInfo_empty_goal" translatable="true">@string/client_goals</string>
 
@@ -57,6 +57,7 @@
     <string name="emptyRecycler_addClient" translatable="false">@string/add_client</string>
     <string name="emptyRecycler_addExercise" translatable="false">@string/add_exercise</string>
     <string name="emptyRecycler_addRoutine" translatable="false">@string/add_routine</string>
+    <string name="emptyRecylcer_noContacts" translatable="false">@string/msg_no_contacts</string>
     <string name="emptyRecycler_noSessions" translatable="false">@string/no_sessions</string>
 
     <!-- recycler tags -->
@@ -83,6 +84,9 @@
     <!-- routine card -->
     <string name="routineCard_sets" translatable="false">@string/sets</string>
 
+    <!-- dialog -->
+    <string name="dialogContacts_title" translatable="false">@string/contacts_list</string>
+
     <!-- dictionary -->
     <string name="activate" translatable="true">Activate</string>
     <string name="active" translatable="true">Active</string>
@@ -100,6 +104,7 @@
     <string name="client_goals" translatable="true">Client Goals</string>
     <string name="clients" translatable="true">Clients</string>
     <string name="contact_info" translatable="true">Contact Info</string>
+    <string name="contacts_list" translatable="true">Contacts List</string>
     <string name="core" translatable="true">Core</string>
     <string name="delete" translatable="true">Delete</string>
     <string name="distance" translatable="true">Distance</string>
@@ -113,7 +118,6 @@
     <string name="gym_rat" translatable="true">Gym Rat</string>
     <string name="last" translatable="true">Last</string>
     <string name="legs" translatable="true">Legs</string>
-    <string name="no_email_client" translatable="true">No email clients installed</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="none" translatable="true">None</string>
     <string name="notes" translatable="true">Notes</string>
