@@ -128,10 +128,10 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
         loadData();
 
         //initialize maids used by viewPager
-        initializeVPMaids();
+        //initializeVPMaids();
 
         //initialize view pager
-        new StandardStateViewPager(mFragment, mPageTitles, MaidRegistry.MAID_DAY_VP);
+        //new StandardStateViewPager(mFragment, mPageTitles, MaidRegistry.MAID_DAY_VP);
 
     }
 
