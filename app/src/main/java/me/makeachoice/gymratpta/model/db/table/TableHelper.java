@@ -22,9 +22,13 @@ public class TableHelper {
             Contractor.ClientEntry._ID + " INTEGER PRIMARY KEY," +
             Contractor.ClientEntry.COLUMN_UID + " TEXT NOT NULL, " +
             Contractor.ClientEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
-            Contractor.ClientEntry.COLUMN_CONTACTS_ID + " TEXT NOT NULL, " +
-            Contractor.ClientEntry.COLUMN_CLIENT_NAME+ " TEXT NOT NULL, " +
-            Contractor.ClientEntry.COLUMN_CLIENT_STATUS + " TEXT NOT NULL);";
-
+            Contractor.ClientEntry.COLUMN_CONTACTS_ID + " INTEGER NOT NULL, " +
+            Contractor.ClientEntry.COLUMN_CLIENT_NAME + " TEXT NOT NULL, " +
+            Contractor.ClientEntry.COLUMN_CLIENT_EMAIL + " TEXT, " +
+            Contractor.ClientEntry.COLUMN_CLIENT_PHONE + " TEXT, " +
+            Contractor.ClientEntry.COLUMN_FIRST_SESSION + " TEXT, " +
+            Contractor.ClientEntry.COLUMN_CLIENT_GOALS + " TEXT, " +
+            Contractor.ClientEntry.COLUMN_CLIENT_STATUS + " TEXT NOT NULL, " +
+            Contractor.ClientEntry.COLUMN_PROFILE_PIC + " TEXT);";
 
 }
