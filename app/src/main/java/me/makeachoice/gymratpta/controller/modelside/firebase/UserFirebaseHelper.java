@@ -1,7 +1,5 @@
 package me.makeachoice.gymratpta.controller.modelside.firebase;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -12,9 +10,11 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.model.item.UserItem;
 
-/**
- * Created by Usuario on 2/2/2017.
+/**************************************************************************************************/
+/*
+ * UserFirebaseHelper helps to add and pull user data to and from Firebase
  */
+/**************************************************************************************************/
 
 public class UserFirebaseHelper {
 
@@ -24,9 +24,13 @@ public class UserFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    private final static String PARENT = "user";
+    //PARENT - parent director
+    public final static String PARENT = "user";
 
+    //mFireDB - firebase instance
     private FirebaseDatabase mFireDB;
+
+    //mUserId - user id
     private String mUserId;
 
     private OnDataLoadedListener mOnDataLoadedListener;
