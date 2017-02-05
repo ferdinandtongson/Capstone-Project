@@ -29,4 +29,12 @@
     <dimen name="item_margin">1dp</dimen>
     <dimen name="item_marginStart_profileGap">10dp</dimen>
 
+    <!-- profile image -->
+    <dimen name="profileSize_normal">54dp</dimen>
+    <dimen name="profileSize_small">36dp</dimen>
+    <dimen name="profileBorder">2dp</dimen>
+
+    <!-- icon image -->
+    <dimen name="iconSize_normal">22dp</dimen>
+
 </resources>

@@ -8,167 +8,169 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="15dp"
-        android:background="@color/colorPrimary"
+        style="@style/GymRat.Fragment.OutsideFrame"
         >
 
-        <TextView android:id="@+id/txtContactInfo"
+        <TextView android:id="@+id/clientInfo_txtInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
+            android:contentDescription="@string/client_info"
             android:text="@string/contact_info"
-            android:textSize="18sp"
-            android:textColor="@color/white"
+            style="@style/GymRat.Fragment.Text.Title"
             />
 
+        <Spinner android:id="@+id/clientInfo_spnStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            />
+
+
         <RelativeLayout
-            android:id="@+id/relContactInfo"
+            android:id="@+id/clientInfo_relInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_below="@id/txtContactInfo"
-            android:paddingTop="3dp"
-            android:background="#40FFFFFF"
+            android:layout_below="@id/clientInfo_txtInfo"
+            style="@style/GymRat.Fragment.InsideFrame"
             >
 
-            <include
-                android:id="@+id/item_client"
-                layout="@layout/item_client"
-                />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/itemContact_linProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                >
 
-            <TextView android:id="@+id/txtClientPhone"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/clientInfo_imgProfile"
+                    style="@style/GymRat.Fragment.ImageView.Profile"
+                    />
+
+                <TextView
+                    android:id="@+id/clientInfo_txtName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/item_marginStart_profileGap"
+                    android:gravity="center_vertical"
+                    style="@style/GymRat.Fragment.Text.ProfileName"
+                    />
+
+            </LinearLayout>
+
+            <TextView android:id="@+id/clientInfo_txtPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:layout_marginStart="10dp"
                 android:layout_marginBottom="2dp"
-                android:layout_below="@id/item_client"
-                android:textSize="14sp"
+                android:layout_below="@id/itemContact_linProfile"
+                style="@style/GymRat.Fragment.Text.Info"
                 />
 
-            <TextView android:id="@+id/txtClientEmail"
+            <TextView android:id="@+id/clientInfo_txtEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:layout_marginStart="10dp"
                 android:layout_marginBottom="5dp"
-                android:layout_below="@id/txtClientPhone"
-                android:textSize="14sp"
+                android:layout_below="@id/clientInfo_txtPhone"
+                style="@style/GymRat.Fragment.Text.Info"
                 />
 
             <ImageButton
-                android:id="@+id/imgPhone"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:id="@+id/clientInfo_imgPhone"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/txtClientEmail"
-                android:layout_marginTop="5dp"
+                android:layout_below="@id/clientInfo_txtEmail"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
                 android:background="@drawable/ic_phone_black_36dp"
-                android:clickable="true"
+                style="@style/GymRat.Fragment.ImageView.Icon"
                 />
 
             <ImageButton
-                android:id="@+id/imgEmail"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_below="@id/txtClientEmail"
-                android:layout_toStartOf="@id/imgPhone"
-                android:layout_marginTop="5dp"
+                android:id="@+id/clientInfo_imgEmail"
+                android:layout_below="@id/clientInfo_txtEmail"
+                android:layout_toStartOf="@id/clientInfo_imgPhone"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="5dp"
                 android:background="@drawable/ic_mail_outline_black_36dp"
-                android:clickable="true"
+                style="@style/GymRat.Fragment.ImageView.Icon"
                 />
 
         </RelativeLayout>
 
-        <TextView android:id="@+id/txtTrainingInfo"
+        <TextView android:id="@+id/clientInfo_txtTraining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_below="@id/relContactInfo"
+            android:layout_below="@id/clientInfo_relInfo"
+            android:contentDescription="@string/training_info"
             android:text="@string/training_info"
-            android:textSize="18sp"
-            android:textColor="@color/white"
+            style="@style/GymRat.Fragment.Text.Title"
             />
 
         <RelativeLayout
-            android:id="@+id/relTrainingInfo"
+            android:id="@+id/clientInfo_relTraining"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_below="@id/txtTrainingInfo"
-            android:paddingTop="3dp"
-            android:background="#40FFFFFF"
+            android:layout_below="@id/clientInfo_txtTraining"
+            style="@style/GymRat.Fragment.InsideFrame"
             >
 
-            <TextView android:id="@+id/txtStartDate"
+            <TextView android:id="@+id/clientInfo_txtStartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="10dp"
                 android:textSize="14sp"
+                android:textColor="@color/black"
                 />
 
-            <TextView android:id="@+id/txtTotalSessions"
+            <TextView android:id="@+id/clientInfo_txtTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:layout_marginStart="10dp"
-                android:layout_below="@id/txtStartDate"
-                android:textSize="14sp"
+                android:layout_below="@id/clientInfo_txtStartDate"
+                style="@style/GymRat.Fragment.Text.Info"
                 />
 
-            <TextView android:id="@+id/txtFutureSessions"
+            <TextView android:id="@+id/clientInfo_txtScheduled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:layout_marginStart="10dp"
                 android:layout_marginBottom="2dp"
-                android:layout_below="@id/txtTotalSessions"
-                android:textSize="14sp"
+                android:layout_below="@id/clientInfo_txtTotal"
+                style="@style/GymRat.Fragment.Text.Info"
                 />
 
 
             <RelativeLayout
-                android:id="@+id/relTrainingGoal"
+                android:id="@+id/clientInfo_relTrainingGoal"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_below="@id/txtFutureSessions"
+                android:layout_below="@id/clientInfo_txtScheduled"
                 android:paddingTop="3dp"
-                android:background="#40FFFFFF"
+                android:background="@color/colorAccent"
                 >
 
                 <ScrollView
-                    android:id="@+id/scrGoal"
+                    android:id="@+id/clientInfo_scrGoal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical"
                     android:fillViewport="true">
 
-                    <TextView android:id="@+id/txtGoal"
+                    <TextView android:id="@+id/clientInfo_txtGoal"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="10dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:textColor="@color/black"
                         android:clickable="true"
                         style="@style/GymRatTheme.Measure.Details.Text.Info"/>
 
@@ -182,6 +184,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:textSize="14sp"
+                    android:textColor="@color/black"
                     />
 
             </RelativeLayout>

@@ -12,6 +12,7 @@
     <color name="colorPrimaryDark">@color/powderOrangeish_90</color>
     <color name="colorAccent">@color/powderBlueish_60</color>
 
+    <color name="white_90">#99FFFFFF</color>
     <color name="silver">#66F3F3CC</color>
     <color name="silver_90">#99CCCCCC</color>
     <color name="orange">#FE8034</color>
@@ -44,4 +45,10 @@
     <color name="viewpager_tabBackground">@color/colorPrimaryDark</color>
     <color name="viewPager_tabTextColor">@color/white</color>
     <color name="viewPager_tabSelectedTextColor">@color/black</color>
+
+    <!-- fragment layout -->
+    <color name="fragment_outerFrame_background">@color/colorAccent</color>
+    <color name="fragment_innerFrame_background">@color/white_90</color>
+    <color name="fragment_textColor">@color/textColor_default</color>
+    <color name="fragment_profile_outline">@color/profile_outline_default</color>
 </resources>

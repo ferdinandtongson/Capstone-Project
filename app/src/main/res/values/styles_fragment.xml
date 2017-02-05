@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="GymRat.Fragment.OutsideFrame" parent="Theme.AppCompat.Light">
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:background">@color/fragment_outerFrame_background</item>
+    </style>
+
+    <style name="GymRat.Fragment.InsideFrame" parent="Theme.AppCompat.Light">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:background">@color/fragment_innerFrame_background</item>
+    </style>
+
+    <style name="GymRat.Fragment.Text" parent="Theme.AppCompat.Light">
+        <item name="android:textColor">@color/fragment_textColor</item>
+    </style>
+
+    <style name="GymRat.Fragment.Text.Title" parent="GymRat.Fragment.Text">
+        <item name="android:textSize">@dimen/textSize_large</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginStart">10dp</item>
+    </style>
+
+    <style name="GymRat.Fragment.Text.ProfileName" parent="GymRat.Fragment.Text">
+        <item name="android:textSize">@dimen/textSize_large</item>
+        <item name="android:layout_marginStart">10dp</item>
+    </style>
+
+    <style name="GymRat.Fragment.Text.Info" parent="GymRat.Fragment.Text">
+        <item name="android:textSize">@dimen/textSize_normal</item>
+        <item name="android:layout_marginStart">10dp</item>
+    </style>
+
+    <style name="GymRat.Fragment.ImageView.Profile" parent="Theme.AppCompat.Light">
+        <item name="android:layout_width">@dimen/profileSize_normal</item>
+        <item name="android:layout_height">@dimen/profileSize_normal</item>
+        <item name="android:src">@drawable/gym_rat_black_48dp</item>
+        <item name="civ_border_width">@dimen/profileBorder</item>
+        <item name="civ_border_color">@color/fragment_profile_outline</item>
+    </style>
+
+    <style name="GymRat.Fragment.ImageView.Icon" parent="Theme.AppCompat.Light">
+        <item name="android:layout_width">@dimen/iconSize_normal</item>
+        <item name="android:layout_height">@dimen/iconSize_normal</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+</resources>
