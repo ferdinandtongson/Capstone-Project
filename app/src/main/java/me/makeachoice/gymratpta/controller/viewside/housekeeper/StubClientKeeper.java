@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -32,14 +33,22 @@ import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.item.client.ClientFBItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
+import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
 import me.makeachoice.gymratpta.view.dialog.ContactListDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static android.R.id.message;
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**************************************************************************************************/
 /*
  * TODO - Enable Context Menu
- *          todo - activate client
- *          todo - retire client
+ *      todo - activate client
+ *      todo - retire client
+ * TODO - need to be able to display different client status
+ *      todo - display active status only
+ *      todo - display retired status only
+ * TODO - need to display progress bar during loading
  */
 /**************************************************************************************************/
 
@@ -264,6 +273,14 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //set create context menu listener
         mAdapter.setOnCreateContextMenuListener(this);
 
+        //set item click listener event
+        mAdapter.setOnItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClicked(view);
+            }
+        });
+
         //set adapter in recycler
         mBasicRecycler.setAdapter(mAdapter);
 
@@ -303,6 +320,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 /*
  * Class Methods
  *      void backPressed() - called when Activity.onBackPressed is called
+ *      void onItemClicked(View) - called when item is clicked on
  *      void fabClicked(View) - float action button click event
  */
 /**************************************************************************************************/
@@ -311,6 +329,16 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      */
     @Override
     public void backPressed(){
+    }
+
+    /*
+     * void onItemClicked(View) - called when item is clicked on
+     */
+    private void onItemClicked(View view){
+        ClientItem item = (ClientItem)view.getTag(R.string.recycler_tagItem);
+        Intent intent = new Intent(mActivity, ClientDetailActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, item.clientName);
+        mActivity.startActivity(intent);
     }
 
     /*

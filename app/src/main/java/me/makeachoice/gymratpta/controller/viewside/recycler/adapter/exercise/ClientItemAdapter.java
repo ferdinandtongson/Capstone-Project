@@ -52,6 +52,9 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     //mCreateContextMenuListener - "create context menu" event listener
     private static View.OnCreateContextMenuListener mCreateContextMenuListener;
 
+    //mOnClickListener - onClick listener for item click event
+    private static View.OnClickListener mOnItemClickListener;
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -84,6 +87,7 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
  *      int getItemCount() - get number of items in adapter
  *      HashMap<String,ClientItem> getContactIdMap - get contact names map
  *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+ *      void setOnItemClickListener(...) - set listener to listen for item click events
  *      void closeCurosr() - close cursor
  */
 /**************************************************************************************************/
@@ -105,6 +109,13 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
      */
     public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
         mCreateContextMenuListener = listener;
+    }
+
+    /*
+     * void setOnItemClickListener(...) - set listener to listen for item click events
+     */
+    public void setOnItemClickListener(View.OnClickListener listener){
+        mOnItemClickListener = listener;
     }
 
     /*
@@ -223,6 +234,10 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
 
         if(mCreateContextMenuListener != null){
             mItemView.setOnCreateContextMenuListener(mCreateContextMenuListener);
+        }
+
+        if(mOnItemClickListener != null){
+            mItemView.setOnClickListener(mOnItemClickListener);
         }
 
     }
