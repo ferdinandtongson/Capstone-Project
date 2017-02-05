@@ -93,6 +93,12 @@
     <!-- dialog -->
     <string name="dialogContacts_title" translatable="false">@string/contacts_list</string>
 
+    <!-- spinner: client status -->
+    <string-array name="client_status">
+        <item>@string/active</item>
+        <item>@string/retired</item>
+    </string-array>
+
     <!-- dictionary -->
     <string name="activate" translatable="true">Activate</string>
     <string name="active" translatable="true">Active</string>
