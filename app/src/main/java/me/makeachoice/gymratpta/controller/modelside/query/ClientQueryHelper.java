@@ -36,17 +36,17 @@ public class ClientQueryHelper {
     }
 
     //query selection - client.uid = ?
-    private static final String uidSelection =
+    public static final String uidSelection =
             Contractor.ClientEntry.TABLE_NAME + "." + Contractor.ClientEntry.COLUMN_UID + " = ? ";
 
     //query selection - client.uid = ? AND fkey = ?
-    private static final String fkeySelection =
+    public static final String fkeySelection =
             Contractor.ClientEntry.TABLE_NAME+
                     "." + Contractor.ClientEntry.COLUMN_UID + " = ? AND " +
                     Contractor.ClientEntry.COLUMN_FKEY + " = ? ";
 
     //query selection - client.uid = ? AND client_status = ?
-    private static final String statusSelection =
+    public static final String statusSelection =
             Contractor.ClientEntry.TABLE_NAME+
                     "." + Contractor.ClientEntry.COLUMN_UID + " = ? AND " +
                     Contractor.ClientEntry.COLUMN_CLIENT_STATUS + " = ? ";
@@ -200,11 +200,11 @@ public class ClientQueryHelper {
     /*
      * int updateClient(...) - update user in database
      */
-    public static int updateClient(SQLiteDatabase db, Uri uri, ContentValues values, String selection,
-                                 String[] selectionArgs){
+    public static int updateClient(SQLiteDatabase db, Uri uri, ContentValues values, String whereClause,
+                                 String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.ClientEntry.TABLE_NAME, values, selection, selectionArgs);
+            rowsUpdated = db.update(Contractor.ClientEntry.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
