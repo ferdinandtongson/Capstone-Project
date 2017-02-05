@@ -2,6 +2,7 @@
 <resources>
 
     <style name="GymRat.Item" parent="Theme.AppCompat.Light">
+        <item name="android:layout_margin">1dp</item>
         <item name="android:background">@color/item_background</item>
         <item name="android:foreground">?selectableItemBackground</item>
         <item name="android:clickable">true</item>
@@ -20,15 +21,19 @@
 
 
     <style name="GymRat.Item.ImageView.Profile" parent="Theme.AppCompat.Light">
-        <item name="android:layout_width">54dp</item>
-        <item name="android:layout_height">54dp</item>
         <item name="android:src">@drawable/gym_rat_black_48dp</item>
+        <item name="civ_border_width">2dp</item>
+        <item name="civ_border_color">@color/item_profile_outline</item>
     </style>
 
-    <style name="GymRat.Item.ImageView.Profile.Small" parent="Theme.AppCompat.Light">
+    <style name="GymRat.Item.ImageView.Profile.Normal" parent="GymRat.Item.ImageView.Profile">
+        <item name="android:layout_width">54dp</item>
+        <item name="android:layout_height">54dp</item>
+    </style>
+
+    <style name="GymRat.Item.ImageView.Profile.Small" parent="GymRat.Item.ImageView.Profile">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
-        <item name="android:src">@drawable/gym_rat_black_48dp</item>
     </style>
 
 </resources>

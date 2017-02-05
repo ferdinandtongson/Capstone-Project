@@ -4,7 +4,6 @@
     android:id="@+id/choiceItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
     android:orientation="horizontal"
     android:padding="5dp"
     style="@style/GymRat.Item"
@@ -12,8 +11,6 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/itemContact_imgProfile"
-        app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"
         style="@style/GymRat.Item.ImageView.Profile.Small"
         />
 
@@ -21,7 +18,7 @@
         android:id="@+id/itemContact_txtName"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/item_marginStart_profileGap"
         android:gravity="center_vertical"
         style="@style/GymRat.Item.TextView"
         />

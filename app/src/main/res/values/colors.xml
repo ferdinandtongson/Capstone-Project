@@ -19,6 +19,9 @@
     <!-- text color -->
     <color name="textColor_default">@color/black</color>
 
+    <!-- profile image color -->
+    <color name="profile_outline_default">@color/black</color>
+
     <!-- bottom navigation layout -->
     <color name="bottomNav_item_checked">@color/white</color>
     <color name="bottomNav_item">@color/black</color>
@@ -26,7 +29,7 @@
     <!-- card_client layout -->
     <color name="card_activeBackground">@color/colorAccent</color>
     <color name="card_retiredBackground">@color/silver_90</color>
-    <color name="card_profile_outline">@color/black</color>
+    <color name="card_profile_outline">@color/profile_outline_default</color>
     <color name="card_defaultBackground">@color/colorAccent</color>
 
     <!-- fab layout -->
@@ -35,6 +38,7 @@
 
     <!-- item layout -->
     <color name="item_background">@color/colorAccent</color>
+    <color name="item_profile_outline">@color/profile_outline_default</color>
 
     <!-- viewpager layout -->
     <color name="viewpager_tabBackground">@color/colorPrimaryDark</color>

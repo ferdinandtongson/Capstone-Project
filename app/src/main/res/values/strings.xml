@@ -65,6 +65,12 @@
     <string name="recycler_tagItem" translatable="false">tag_item</string>
     <string name="recycler_tagId" translatable="false">tag_id</string>
 
+    <!-- client info -->
+    <string name="clientInfo_client_info" translatable="false">@string/client_info</string>
+    <string name="clientInfo_training_info" translatable="false">@string/training_info</string>
+    <string name="clientInfo_phone" translatable="false">@string/phone</string>
+    <string name="clientInfo_email" translatable="false">@string/email</string>
+
     <!-- default exercise categories -->
     <string name="exerciseCategory_arms" translatable="false">@string/arms</string>
     <string name="exerciseCategory_back" translatable="false">@string/back</string>
@@ -102,6 +108,7 @@
     <string name="change_start" translatable="true">Change from Start</string>
     <string name="chest" translatable="true">Chest</string>
     <string name="client_goals" translatable="true">Client Goals</string>
+    <string name="client_info" translatable="true">Client Info</string>
     <string name="clients" translatable="true">Clients</string>
     <string name="contact_info" translatable="true">Contact Info</string>
     <string name="contacts_list" translatable="true">Contacts List</string>
@@ -109,6 +116,7 @@
     <string name="delete" translatable="true">Delete</string>
     <string name="distance" translatable="true">Distance</string>
     <string name="edit" translatable="true">Edit</string>
+    <string name="email" translatable="true">Email</string>
     <string name="exercises" translatable="true">Exercises</string>
     <string name="for_the_day" translatable="true">For the Day</string>
     <string name="for_the_week" translatable="true">For the Week</string>
@@ -123,6 +131,7 @@
     <string name="notes" translatable="true">Notes</string>
     <string name="permission_request" translatable="true">Permission Request</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
+    <string name="phone" translatable="true">Phone</string>
     <string name="quick_help" translatable="true">Quick Help</string>
     <string name="reps" translatable="true">Reps</string>
     <string name="reschedule" translatable="true">Reschedule</string>
