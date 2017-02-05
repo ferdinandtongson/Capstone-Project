@@ -3,11 +3,9 @@ package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,11 +15,13 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.item.client.NewClientItem;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
 
-/**
- * Created by Usuario on 2/4/2017.
+/**************************************************************************************************/
+/*
+ * ClientItemAdapter is used by Client Screen and displays a list user clients
  */
+/**************************************************************************************************/
 
 public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.MyViewHolder> {
 
@@ -30,6 +30,7 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
  * Class Variables
  *      Context mContext - activity context
  *      int mItemLayoutId - item/card layout resource id
+ *      HashMap<String,ClientItem> mContactIdMap - hashMap used to map contact names
  *
  *      Cursor mCursor - cursor consumed by adapter
  *      OnCreateContextMenuListener mCreateContextMenuListener - "create context menu" event listener
@@ -43,7 +44,7 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     private int mItemLayoutId;
 
     //mContactIdMap - hashMap used to map contact names
-    private HashMap<String,NewClientItem> mClientMap;
+    private HashMap<String,ClientItem> mClientMap;
 
     //mCursor - cursor consumed by adapter
     private Cursor mCursor;
@@ -62,13 +63,13 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
      * ClientItemAdapter - constructor
      */
     public ClientItemAdapter(Context ctx, Cursor cursor, int itemLayoutId) {
-        Log.d("Choice", "ClientItemAdapter - constructor");
         //set context
         mContext = ctx;
 
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
 
+        //initialize hashMap
         mClientMap = new HashMap();
 
         //set cursor
@@ -81,6 +82,8 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
 /*
  * Public Methods:
  *      int getItemCount() - get number of items in adapter
+ *      HashMap<String,ClientItem> getContactIdMap - get contact names map
+ *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
  *      void closeCurosr() - close cursor
  */
 /**************************************************************************************************/
@@ -93,10 +96,16 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     }
 
     /*
-     * HashMap<String,NewClientItem> getContactIdMap - get contact names map
+     * HashMap<String,ClientItem> getContactIdMap - get contact names map
      */
-    public HashMap<String,NewClientItem> getClientMap(){ return mClientMap; }
+    public HashMap<String,ClientItem> getClientMap(){ return mClientMap; }
 
+    /*
+     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+     */
+    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
+        mCreateContextMenuListener = listener;
+    }
 
     /*
      * void closeCurosr() - close cursor
@@ -106,13 +115,6 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
             mCursor.close();
             mCursor = null;
         }
-    }
-
-    /*
-     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
-     */
-    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
-        mCreateContextMenuListener = listener;
     }
 
 /**************************************************************************************************/
@@ -147,8 +149,8 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     public void onBindViewHolder(ClientItemAdapter.MyViewHolder holder, int position) {
         // Extract info from cursor
         mCursor.moveToPosition(position);
-        NewClientItem item = new NewClientItem();
-        item = item.getItem(mCursor);
+        ClientItem item = new ClientItem();
+        item.addData(mCursor);
 
         mClientMap.put(item.clientName, item);
 
@@ -206,16 +208,16 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
 /**************************************************************************************************/
 /*
  * Binding Methods
- *      void bindCardView(NewClientItem,int) - bind data to cardView
- *      void bindTextView(NewClientItem) - bind data to textView component
- *      void bindProfileImage(NewClientItem) - bind data to circleImageView
+ *      void bindCardView(ClientItem,int) - bind data to cardView
+ *      void bindTextView(ClientItem) - bind data to textView component
+ *      void bindProfileImage(ClientItem) - bind data to circleImageView
  */
 /**************************************************************************************************/
     /*
-     * void bindItemView(NewClientItem,int) - bind data to cardView. Set tag values, bg color,
+     * void bindItemView(ClientItem,int) - bind data to cardView. Set tag values, bg color,
      * and contextMenu listener, if not null
      */
-    public void bindItemView(NewClientItem item, int position){
+    public void bindItemView(ClientItem item, int position){
         mItemView.setTag(R.string.recycler_tagPosition, position);
         mItemView.setTag(R.string.recycler_tagItem, item);
 
@@ -226,9 +228,9 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     }
 
     /*
-     * void bindTextView(NewClientItem) - bind data to textView component; display contact name
+     * void bindTextView(ClientItem) - bind data to textView component; display contact name
      */
-    public void bindTextView(NewClientItem item) {
+    public void bindTextView(ClientItem item) {
         mTxtName.setText(item.clientName);
         mTxtName.setContentDescription(item.clientName);
         mTxtStatus.setText(item.status);
@@ -236,10 +238,10 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     }
 
     /*
-     * void bindProfileImage(NewClientItem) - bind data to circleImageView. Using Picasso, load the
+     * void bindProfileImage(ClientItem) - bind data to circleImageView. Using Picasso, load the
      * image profile of client
      */
-    private void bindProfileImage(NewClientItem item){
+    private void bindProfileImage(ClientItem item){
         Picasso.with(itemView.getContext())
                 .load(item.profilePic)
                 .placeholder(R.drawable.gym_rat_black_48dp)
