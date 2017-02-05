@@ -66,6 +66,7 @@ import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 import me.makeachoice.gymratpta.model.item.UserItem;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 
 /**************************************************************************************************/
@@ -266,4 +267,11 @@ public class Boss extends MyBoss {
     public String getUserId(){
         return mCurrentUser.uid;
     }
+
+    private ClientItem mCurrentClient;
+    public void setClient(ClientItem item){
+        mCurrentClient = item;
+    }
+
+    public ClientItem getClient(){ return mCurrentClient; }
 }
