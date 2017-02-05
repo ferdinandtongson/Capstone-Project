@@ -337,7 +337,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
     private void onItemClicked(View view){
         ClientItem item = (ClientItem)view.getTag(R.string.recycler_tagItem);
         Intent intent = new Intent(mActivity, ClientDetailActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, item.clientName);
+        mBoss.setClient(item);
         mActivity.startActivity(intent);
     }
 
