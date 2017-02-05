@@ -1,5 +1,7 @@
 package me.makeachoice.gymratpta.controller.modelside.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,21 +26,25 @@ public class ClientFirebaseHelper {
  */
 /**************************************************************************************************/
 
+    public final static String CHILD_CLIENT_NAME = "clientName";
+    public final static String CHILD_EMAIL = "email";
+    public final static String CHILD_FIRST_SESSION = "firstSession";
+    public final static String CHILD_GOALS = "goals";
+    public final static String CHILD_PHONE = "phone";
+    public final static String CHILD_STATUS = "status";
+
     //PARENT - parent director
-    public final static String PARENT = "client";
+    private final static String PARENT = "client";
 
     //mFireDB - firebase instance
     private FirebaseDatabase mFireDB;
-
-    //mUserId - user id
-    private String mUserId;
 
     private OnDataLoadedListener mOnDataLoadedListener;
 
     //Implemented communication bridge
     public interface OnDataLoadedListener{
         //called when requested data has been loaded
-        void onDataLoaded(ClientFBItem user);
+        void onDataLoaded(DataSnapshot dataSnapshot);
         void onCancelled();
     }
 
@@ -52,19 +58,14 @@ public class ClientFirebaseHelper {
 
     private static ClientFirebaseHelper instance = null;
 
-    protected ClientFirebaseHelper() {
-        // Exists only to defeat instantiation.
-    }
-
-    public static ClientFirebaseHelper getInstance(String userId) {
+    public static ClientFirebaseHelper getInstance() {
         if(instance == null) {
-            instance = new ClientFirebaseHelper(userId);
+            instance = new ClientFirebaseHelper();
         }
         return instance;
     }
 
-    private ClientFirebaseHelper(String userId){
-        mUserId = userId;
+    private ClientFirebaseHelper(){
 
         mFireDB = FirebaseDatabase.getInstance();
     }
@@ -81,10 +82,6 @@ public class ClientFirebaseHelper {
         return mFireDB.getReference().child(PARENT).child(userId);
     }
 
-    public void setUserId(String userId){
-        mUserId = userId;
-    }
-
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -93,16 +90,16 @@ public class ClientFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addClientData(ArrayList<ClientFBItem> users){
+    public void addClientData(String userId, ArrayList<ClientFBItem> users){
         int count = users.size();
         for(int i = 0; i < count; i++){
-            addClient(users.get(i));
+            addClient(userId, users.get(i));
         }
 
     }
 
-    public void addClient(ClientFBItem item){
-        DatabaseReference ref = getClientReference(mUserId);
+    public void addClient(String userId, ClientFBItem item){
+        DatabaseReference ref = getClientReference(userId);
         ref.push().setValue(item);
     }
 
@@ -124,13 +121,33 @@ public class ClientFirebaseHelper {
         ref.addListenerForSingleValueEvent(mEventListener);
     }
 
+    public void requestClientData(String userId, String orderBy, OnDataLoadedListener listener){
+        //get reference
+        DatabaseReference ref = getClientReference(userId);
+
+        mOnDataLoadedListener = listener;
+
+        //add event listener to reference
+        ref.orderByChild(orderBy).addListenerForSingleValueEvent(mEventListener);
+    }
+
+    public void requestClientDataByClientName(String userId, String clientName, OnDataLoadedListener listener){
+        Log.d("Choice", "ClientFBHelper.requestClientDataByClientName: " + clientName);
+        //get reference
+        DatabaseReference ref = getClientReference(userId);
+
+        mOnDataLoadedListener = listener;
+
+        ref.orderByChild("clientName").equalTo(clientName).addListenerForSingleValueEvent(mEventListener);
+
+    }
+
 /**************************************************************************************************/
 
     private ValueEventListener mEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            ClientFBItem item = dataSnapshot.getValue(ClientFBItem.class);
-            mOnDataLoadedListener.onDataLoaded(item);
+            mOnDataLoadedListener.onDataLoaded(dataSnapshot);
         }
 
         @Override
