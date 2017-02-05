@@ -19,6 +19,7 @@ import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionRoutineM
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsViewPagerMaid;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 
 /**************************************************************************************************/
@@ -125,9 +126,9 @@ public class MaidRegistry extends MyMaidRegistry {
  */
 /**************************************************************************************************/
 
-    public void initializeClientInfoMaid(String maidKey, int layoutId){
+    public void initializeClientInfoMaid(String maidKey, int layoutId, ClientItem item){
         //create maid
-        ClientInfoMaid maid = new ClientInfoMaid(maidKey, layoutId);
+        ClientInfoMaid maid = new ClientInfoMaid(maidKey, layoutId, item);
 
         //register maid
         registerMaid(maidKey, maid);
