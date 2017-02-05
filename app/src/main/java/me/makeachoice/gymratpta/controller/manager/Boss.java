@@ -262,4 +262,8 @@ public class Boss extends MyBoss {
         Log.d("Choice", "     uri: " + uri.toString());
 
     }
+
+    public String getUserId(){
+        return mCurrentUser.uid;
+    }
 }
