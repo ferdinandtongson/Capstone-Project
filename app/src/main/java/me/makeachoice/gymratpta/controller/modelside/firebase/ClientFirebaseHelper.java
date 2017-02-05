@@ -82,6 +82,10 @@ public class ClientFirebaseHelper {
         return mFireDB.getReference().child(PARENT).child(userId);
     }
 
+    private DatabaseReference getClientDetailReference(String userId, String clientKey){
+        return getClientReference(userId).child(clientKey);
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -101,6 +105,44 @@ public class ClientFirebaseHelper {
     public void addClient(String userId, ClientFBItem item){
         DatabaseReference ref = getClientReference(userId);
         ref.push().setValue(item);
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Set Data Methods
+ */
+/**************************************************************************************************/
+
+    public void setClientEmail(String userId, String clientKey, String email){
+        DatabaseReference refClient = getClientDetailReference(userId, clientKey);
+
+        refClient.child(CHILD_EMAIL).setValue(email);
+    }
+
+    public void setClientFirstSession(String userId, String clientKey, String firstSession){
+        DatabaseReference refClient = getClientDetailReference(userId, clientKey);
+
+        refClient.child(CHILD_FIRST_SESSION).setValue(firstSession);
+    }
+
+    public void setClientPhone(String userId, String clientKey, String phone){
+        DatabaseReference refClient = getClientDetailReference(userId, clientKey);
+
+        refClient.child(CHILD_PHONE).setValue(phone);
+    }
+
+    public void setClientGoals(String userId, String clientKey, String goals){
+        DatabaseReference refClient = getClientDetailReference(userId, clientKey);
+
+        refClient.child(CHILD_GOALS).setValue(goals);
+    }
+
+    public void setClientStatus(String userId, String clientKey, String status){
+        DatabaseReference refClient = getClientDetailReference(userId, clientKey);
+
+        refClient.child(CHILD_STATUS).setValue(status);
     }
 
 /**************************************************************************************************/
