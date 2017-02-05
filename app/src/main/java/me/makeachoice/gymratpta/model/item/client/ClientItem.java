@@ -49,6 +49,8 @@ public class ClientItem extends ClientFBItem {
 /**************************************************************************************************/
 /*
  * Public Methods
+ *      ContentValues getContentValues() - convert item data to a ContentValues object
+ *      ClientItem addData(Cursor) - add cursor data to item
  */
 /**************************************************************************************************/
     /*
@@ -72,9 +74,9 @@ public class ClientItem extends ClientFBItem {
     }
 
     /*
-     * ClientItem getItem(Cursor) - add cursor data to item
+     * ClientItem addData(Cursor) - add cursor data to item
      */
-    public void getItem(Cursor cursor){
+    public void addData(Cursor cursor){
         ClientItem item = new ClientItem();
         uid = cursor.getString(ClientColumns.INDEX_UID);
         fkey = cursor.getString(ClientColumns.INDEX_FKEY);
