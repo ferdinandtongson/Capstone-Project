@@ -37,4 +37,10 @@ public class TableHelper {
             Contractor.CategoryEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
             Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
 
+    public final static String SQL_CREATE_EXERCISE_TABLE = "CREATE TABLE " + Contractor.ExerciseEntry.TABLE_NAME + " (" +
+            Contractor.CategoryEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.CategoryEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.CategoryEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
+            Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
+
 }
