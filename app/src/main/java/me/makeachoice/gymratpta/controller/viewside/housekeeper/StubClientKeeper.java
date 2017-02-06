@@ -12,10 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +27,6 @@ import me.makeachoice.gymratpta.controller.viewside.Helper.PermissionHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.ClientItemAdapter;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
-import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.item.client.ClientFBItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
@@ -39,13 +35,11 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * TODO - Enable Context Menu
- *      todo - activate client
- *      todo - retire client
  * TODO - need to be able to display different client status
  *      todo - display active status only
  *      todo - display retired status only
  * TODO - need to display progress bar during loading
+ * TODO - clean up code
  */
 /**************************************************************************************************/
 
@@ -91,14 +85,11 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  */
 /**************************************************************************************************/
 
-public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge,
-        RecyclerView.OnCreateContextMenuListener, MyActivity.OnContextItemSelectedListener{
+public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      int CONTEXT_MENU_ACTIVATE - "activate client" context menu id number
- *      int CONTEXT_MENU_RETIRE = "retire client" context menu id number
  *      String mUId - user id number
  *      HashMap<String,ClientItem> mClientMap - client hashMap, created by adapter and used by ContactListDialog
  *      ClientItemAdapter mAdapter - recycler adapter
@@ -110,12 +101,6 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
  *      ArrayList<ClientItem> mClients - client list used in recursion
  */
 /**************************************************************************************************/
-
-    //CONTEXT_MENU_ACTIVATE - "activate client" context menu id number
-    private final static int CONTEXT_MENU_ACTIVATE = 0;
-
-    //CONTEXT_MENU_RETIRE = "retire client" context menu id number
-    private final static int CONTEXT_MENU_RETIRE = 1;
 
     //mUserId - user id number
     private String mUserId;
@@ -288,9 +273,6 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //create adapter consumed by the recyclerView
         mAdapter = new ClientItemAdapter(mActivity, cursor, adapterLayoutId);
 
-        //set create context menu listener
-        mAdapter.setOnCreateContextMenuListener(this);
-
         //set item click listener event
         mAdapter.setOnItemClickListener(new View.OnClickListener() {
             @Override
@@ -378,59 +360,6 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
             //show contacts dialog
             initializeDialog();
         }
-    }
-
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * Class Methods
- *      void onCreateContextMenu(...) - create context menu called from Adapter
- *      void fabClicked(View) - float action button click event
- */
-/**************************************************************************************************/
-    /*
-     * void onCreateContextMenu(...) - create context menu called from Adapter. Depending on the status
-     * of the client, an Activate or Retire menu will appear.
-     */
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
-        //get clientCardItem
-        ClientCardItem item = (ClientCardItem)v.getTag(R.string.recycler_tagItem);
-
-        //get client name
-        String clientName = (item.clientName);
-
-        //get context menu strings
-        String strActivate = mActivity.getString(R.string.context_menu_activate);
-        String strRetire = mActivity.getString(R.string.context_menu_retire);
-
-        //create context menu
-        menu.setHeaderTitle(clientName);
-
-        if(item.isActive){
-            menu.add(0, CONTEXT_MENU_RETIRE, 0, strRetire);
-        }
-        else{
-            menu.add(0, CONTEXT_MENU_ACTIVATE, 0, strActivate);
-        }
-    }
-
-    /*
-     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
-     */
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case CONTEXT_MENU_ACTIVATE:
-                Log.d("Choice", "     activate");
-                //TODO - need to reschedule session
-                return true;
-            case CONTEXT_MENU_RETIRE:
-                Log.d("Choice", "     retire");
-                //TODO - need to cancel session
-                return true;
-        }
-        return false;
     }
 
 /**************************************************************************************************/
