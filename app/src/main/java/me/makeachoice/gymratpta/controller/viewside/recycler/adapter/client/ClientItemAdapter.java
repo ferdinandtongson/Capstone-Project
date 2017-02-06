@@ -1,4 +1,4 @@
-package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise;
+package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client;
 
 import android.content.Context;
 import android.database.Cursor;

@@ -27,7 +27,7 @@ import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.modelside.firebase.ClientFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.loader.ContactsLoader;
 import me.makeachoice.gymratpta.controller.viewside.Helper.PermissionHelper;
-import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.ClientItemAdapter;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.ClientItemAdapter;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
@@ -36,9 +36,6 @@ import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
 import me.makeachoice.gymratpta.view.dialog.ContactListDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
-
-import static android.R.id.message;
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**************************************************************************************************/
 /*
