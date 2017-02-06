@@ -31,4 +31,10 @@ public class TableHelper {
             Contractor.ClientEntry.COLUMN_CLIENT_STATUS + " TEXT NOT NULL, " +
             Contractor.ClientEntry.COLUMN_PROFILE_PIC + " TEXT);";
 
+    public final static String SQL_CREATE_CATEGORY_TABLE = "CREATE TABLE " + Contractor.CategoryEntry.TABLE_NAME + " (" +
+            Contractor.CategoryEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.CategoryEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.CategoryEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
+            Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
+
 }
