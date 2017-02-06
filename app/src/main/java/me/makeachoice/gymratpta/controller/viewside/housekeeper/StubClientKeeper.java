@@ -132,15 +132,15 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
     //mRecursiveCount - recursive counter used to update client data
     private int mRecursiveCount;
 
-    //mLoaderId - base loader id used to identify loader managers
-    private int mLoaderId = 100;
-
     //mClientItem - client item used in recursion
     private ClientItem mClientItem;
 
     //mClients - client list used in recursion
     private ArrayList<ClientItem> mClients;
 
+    private int LOADER_CLIENT = 0;
+    //LOADER_BASE - base loader id used to identify loader managers
+    private int LOADER_BASE = 100;
 
 /**************************************************************************************************/
 
@@ -199,6 +199,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
         //TODO - set up progress bar
         //showProgressBar(true);
+        initializeLayout(null);
         loadClients();
 
     }
@@ -208,6 +209,26 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      */
     protected void openBundle(Bundle bundle){
         //set saved instance state data
+    }
+
+    public void start(){
+        super.start();
+    }
+
+    public void stop(){
+        int count = mClients.size();
+        for(int i = 0; i < count; i++){
+            //destroy loader manager
+            mActivity.getLoaderManager().destroyLoader(LOADER_BASE + i);
+        }
+    }
+
+    public void destroy(){
+        super.destroy();
+
+        mAdapter.closeCursor();
+        mActivity.getSupportLoaderManager().destroyLoader(LOADER_CLIENT);
+
     }
 
 /**************************************************************************************************/
@@ -284,13 +305,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //get client hashMap
         mClientMap = mAdapter.getClientMap();
 
-        if(cursor != null){
-            //check if recycler has any data; if not, display "empty" textView
-            checkForEmptyRecycler(cursor.getCount());
-        }
-        else{
-            checkForEmptyRecycler(true);
-        }
+        checkCursorCount(cursor);
     }
 
     /*
@@ -310,6 +325,16 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         return dia;
     }
 
+    private void checkCursorCount(Cursor cursor){
+        if(cursor != null){
+            //check if recycler has any data; if not, display "empty" textView
+            checkForEmptyRecycler(cursor.getCount());
+        }
+        else{
+            checkForEmptyRecycler(true);
+        }
+
+    }
 
 /**************************************************************************************************/
 
@@ -425,7 +450,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      */
     private void loadClients(){
         // Initializes a loader for loading clients
-        mActivity.getSupportLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+        mActivity.getSupportLoaderManager().initLoader(LOADER_CLIENT, null, new LoaderManager.LoaderCallbacks<Cursor>() {
             @Override
             public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
@@ -445,9 +470,13 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
             }
 
             @Override
-            public void onLoadFinished(Loader<Cursor> objectLoader, Cursor c) {
+            public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                Log.d("Choice", "ClientKeeper.onLoadFinished: " + cursor.getCount());
+                checkCursorCount(cursor);
+
                 //client cursor loaded, initialize layout
-                initializeLayout(c);
+                mAdapter.setCursor(cursor);
+
             }
 
             @Override
@@ -461,6 +490,10 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      * void loadFirebaseClients() - gets client data from Firebase
      */
     private void loadFirebaseClients(){
+        //initialize client list array
+        mClients = new ArrayList();
+        mDoublesMap = new HashMap();
+
         //get client firebase instance
         final ClientFirebaseHelper clientFB = ClientFirebaseHelper.getInstance();
 
@@ -471,8 +504,6 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         clientFB.requestClientData(mUserId, orderBy, new ClientFirebaseHelper.OnDataLoadedListener() {
             @Override
             public void onDataLoaded(DataSnapshot dataSnapshot) {
-                //initialize client list array
-                mClients = new ArrayList();
 
                 //loop through client data
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
@@ -498,8 +529,9 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
             }
         });
-
     }
+
+    private HashMap<String,String> mDoublesMap;
 
     /*
      * void requestContactInfo() - request device contact id and profile picture
@@ -512,7 +544,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
             mClientItem = mClients.get(mRecursiveCount);
 
             //create loader Id
-            int loaderId = mLoaderId + mRecursiveCount;
+            int loaderId = LOADER_BASE + mRecursiveCount;
 
             //request client's contact id and profile from device
             ContactsLoader.requestContactIdAndProfile(mActivity, loaderId, mClientItem,
@@ -534,14 +566,11 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //get uri value for client
         Uri uriValue = Contractor.ClientEntry.CONTENT_URI;
 
-        //add client to sqlite database
-        mActivity.getContentResolver().insert(uriValue, item.getContentValues());
-
-        //update client data in list
-        mClients.set(mRecursiveCount, item);
-
-        //destroy loader manager
-        mActivity.getLoaderManager().destroyLoader(mLoaderId + (mRecursiveCount));
+        if(!mDoublesMap.containsKey(item.clientName)){
+            mDoublesMap.put(item.clientName, item.clientName);
+            //add client to sqlite database
+            mActivity.getContentResolver().insert(uriValue, item.getContentValues());
+        }
 
         //increase recursive count
         mRecursiveCount++;
