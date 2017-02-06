@@ -169,9 +169,8 @@ public class ClientQueryHelper {
             }else if(mSQLException instanceof SQLiteDatatypeMismatchException) {
                 //some toast message to user.
                 Log.d("Choice", "     mismatch exception");
-            }else{
-                throw mSQLException;
             }
+            throw mSQLException;
         }
 
         return Contractor.ClientEntry.buildClientUri(_id);
