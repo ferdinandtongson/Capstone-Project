@@ -19,13 +19,16 @@ import java.util.HashMap;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.modelside.firebase.CategoryFirebaseHelper;
+import me.makeachoice.gymratpta.controller.modelside.firebase.ExerciseFirebaseHelper;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardViewPager;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
+import me.makeachoice.gymratpta.model.item.exercise.ExerciseFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
+import me.makeachoice.gymratpta.model.stubData.CategoryStubData;
 import me.makeachoice.gymratpta.model.stubData.ExerciseStubData;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
@@ -186,7 +189,8 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         //initialize maids
         for(int i = 0; i < count; i++){
             //get exercise list
-            ArrayList<ExerciseItem> exercises = ExerciseStubData.getExercises(i);
+            //ArrayList<ExerciseItem> exercises = ExerciseStubData.getExercises(i);
+            ArrayList<ExerciseItem> exercises = new ArrayList();
 
             //create unique maid id numbers using a base number
             String maidKey = MaidRegistry.MAID_EXERCISE_VP + i;
@@ -290,7 +294,10 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         });
     }
 
+    ArrayList<CategoryItem> mCategories;
+
     private void processFirebaseData(DataSnapshot dataSnapshot){
+        mCategories = new ArrayList();
         //loop through client data
         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
             //get the data from snapshot
@@ -306,6 +313,63 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         }
     }
 
+    private void initializeCategoryData(){
+        Log.d("Choice", "ExerciseMaid.initializeCategoryData");
+        ExerciseStubData.createDefaultExercises(mFragment.getContext());
+        ArrayList<CategoryFBItem> categories = CategoryStubData.createDefaultCategories(mFragment.getContext());
+
+        CategoryFirebaseHelper categoryFB = CategoryFirebaseHelper.getInstance();
+
+        int count = categories.size();
+        for(int i = 0; i < count; i++){
+            CategoryFBItem item = categories.get(i);
+
+            categoryFB.addCategory(mUserId, item);
+        }
+
+        loadInitCategoryData();
+    }
+
+    private void initializeExerciseData(){
+        ExerciseFirebaseHelper exerciseFB = ExerciseFirebaseHelper.getInstance();
+
+        int count = mCategories.size();
+        for(int i = 0; i < count; i++){
+            CategoryItem category = mCategories.get(i);
+            ArrayList<ExerciseFBItem> exercises = ExerciseStubData.getExercises(i);
+
+            exerciseFB.addExerciseDataToCategory(mUserId, category.fkey, exercises);
+        }
+    }
+
+    private void loadInitCategoryData(){
+        Log.d("Choice", "ExerciseMaid.loadInitCategoryData");
+        //initialize category list array
+        mDoublesMap = new HashMap();
+
+        //get client firebase instance
+        final CategoryFirebaseHelper categoryFB = CategoryFirebaseHelper.getInstance();
+
+        //get orderBy string value
+        String orderBy = CategoryFirebaseHelper.CHILD_CATEGORY_NAME;
+
+        //request client data ordered by client name
+        categoryFB.requestCategoryData(mUserId, orderBy, new CategoryFirebaseHelper.OnDataLoadedListener() {
+            @Override
+            public void onDataLoaded(DataSnapshot dataSnapshot) {
+
+                processFirebaseData(dataSnapshot);
+                initializeExerciseData();
+            }
+
+            @Override
+            public void onCancelled() {
+
+            }
+        });
+    }
+
+
     private void updateDatabase(CategoryItem item){
         Log.d("Choice", "ExerciseMaid.updateDatabase: " + item.categoryName);
         //get uri value for client
@@ -314,14 +378,10 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
 
         if(!mDoublesMap.containsKey(item.categoryName)){
             mDoublesMap.put(item.categoryName, item.categoryName);
+            mCategories.add(item);
             //add category to sqlite database
             mFragment.getActivity().getContentResolver().insert(uriValue, item.getContentValues());
         }
-
-    }
-
-
-    private void initializeCategoryData(){
 
     }
 
