@@ -38,9 +38,13 @@ public class TableHelper {
             Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
 
     public final static String SQL_CREATE_EXERCISE_TABLE = "CREATE TABLE " + Contractor.ExerciseEntry.TABLE_NAME + " (" +
-            Contractor.CategoryEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.CategoryEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.CategoryEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
-            Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
+            Contractor.ExerciseEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.ExerciseEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.ExerciseEntry.COLUMN_CATEGORY_KEY + " TEXT NOT NULL, " +
+            Contractor.ExerciseEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
+            Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + " TEXT NOT NULL, " +
+            Contractor.ExerciseEntry.COLUMN_EXERCISE_CATEGORY + " TEXT NOT NULL, " +
+            Contractor.ExerciseEntry.COLUMN_RECORD_PRIMARY + " TEXT, " +
+            Contractor.ExerciseEntry.COLUMN_RECORD_SECONDARY + " TEXT);";
 
 }

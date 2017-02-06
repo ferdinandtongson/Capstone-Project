@@ -9,11 +9,14 @@ public class ExerciseColumns {
     // Table name
     public static final String TABLE_NAME = "exercise";
 
-    //Firebase key
-    public static final String COLUMN_FIREBASE_KEY = "firebase_key";
+    //user id
+    public static final String COLUMN_UID = "uid";
 
-    //user key
-    public static final String COLUMN_USER_KEY = "user_key";
+    //category key
+    public static final String COLUMN_CATEGORY_KEY = "category_key";
+
+    //firebase key
+    public static final String COLUMN_FKEY = "fkey";
 
     //exercise name
     public static final String COLUMN_EXERCISE_NAME = "exercise_name";
@@ -22,10 +25,10 @@ public class ExerciseColumns {
     public static final String COLUMN_EXERCISE_CATEGORY = "exercise_category";
 
     //primary record data
-    public static final String COLUMN_PRIMARY_DATA = "primary_data";
+    public static final String COLUMN_RECORD_PRIMARY = "record_primary";
 
     //secondary record data
-    public static final String COLUMN_SECONDARY_DATA = "secondary_data";
+    public static final String COLUMN_RECORD_SECONDARY = "record_primary";
 
     //default sort order
     public static final String SORT_ORDER_DEFAULT = COLUMN_EXERCISE_NAME + " ASC";
