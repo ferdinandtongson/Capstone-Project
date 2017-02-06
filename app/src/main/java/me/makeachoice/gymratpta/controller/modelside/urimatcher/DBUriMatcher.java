@@ -24,6 +24,12 @@ public class DBUriMatcher {
     public static final int CATEGORY_WITH_FKEY = 302;
     public static final int CATEGORY_WITH_NAME = 303;
 
+    public static final int EXERCISE = 400;
+    public static final int EXERCISE_WITH_UID = 401;
+    public static final int EXERCISE_WITH_CATEGORY_KEY = 402;
+    public static final int EXERCISE_WITH_FKEY = 403;
+    public static final int EXERCISE_WITH_NAME = 404;
+
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
     static UriMatcher buildUriMatcher() {
@@ -57,7 +63,7 @@ public class DBUriMatcher {
         matcher.addURI(authority, statusPath, CLIENT_WITH_STATUS);
 
         addUriCategory(matcher, authority);
-
+        addUriExercise(matcher, authority);
 
         return matcher;
     }
@@ -79,5 +85,28 @@ public class DBUriMatcher {
         matcher.addURI(authority, namePath, CATEGORY_WITH_NAME);
 
     }
+
+    private static void addUriExercise(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/exercise/
+        matcher.addURI(authority, Contractor.PATH_EXERCISE, EXERCISE);
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]
+        String uidPath = Contractor.PATH_EXERCISE + "/*";
+        matcher.addURI(authority, uidPath, EXERCISE_WITH_UID);
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/category_key/[categoryKey]
+        String categoryKeyPath = Contractor.PATH_EXERCISE + "/*" + Contractor.ExerciseEntry.COLUMN_CATEGORY_KEY + "/*";
+        matcher.addURI(authority, categoryKeyPath, EXERCISE_WITH_CATEGORY_KEY);
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/fkey/[fkey]
+        String fkeyPath = Contractor.PATH_EXERCISE + "/*" + Contractor.ExerciseEntry.COLUMN_FKEY + "/*";
+        matcher.addURI(authority, fkeyPath, EXERCISE_WITH_FKEY);
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/[categoryKey]/exercise_name/[exerciseName]
+        String namePath = Contractor.PATH_EXERCISE + "/*/*" + Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + "/*";
+        matcher.addURI(authority, namePath, EXERCISE_WITH_NAME);
+
+    }
+
 
 }
