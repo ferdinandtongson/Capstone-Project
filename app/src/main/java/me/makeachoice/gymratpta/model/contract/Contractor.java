@@ -165,16 +165,40 @@ public class Contractor {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CATEGORY;
 
-        //used for inserting category data at id location
+
+        //"content://CONTENT_AUTHORITY/category/[_id]
         public static Uri buildCategoryUri(long id) {
-            return withAppendedId(CONTENT_URI, id);
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
         }
 
-        public static Uri buildCategoryWithName(String categoryName) {
+        //"content://CONTENT_AUTHORITY/category/[uid]
+        public static Uri buildCategoryByUID(String uid) {
+            return CONTENT_URI.buildUpon().appendPath(uid).build();
+        }
 
-            //"content://AUTHORITY/category/name=?
-            return CONTENT_URI.buildUpon()
-                    .appendQueryParameter(COLUMN_CATEGORY_NAME, categoryName).build();
+        //"content://CONTENT_AUTHORITY/category/[uid]/fkey/[fKey]
+        public static Uri buildCategoryByFirebaseKey(String uid, String fKey) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_FKEY).appendPath(fKey).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/category/[uid]/category_name/[name]
+        public static Uri buildCategoryByName(String uid, String name) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CATEGORY_NAME).appendPath(name).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/category/[uid]/....
+        public static String getUIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        //"content://CONTENT_AUTHORITY/category/[uid]/fkey/[fKey]
+        public static String getFirebaseKeyFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/category/[uid]/category_name/[name]
+        public static String getCategoryNameFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
         }
 
     }
