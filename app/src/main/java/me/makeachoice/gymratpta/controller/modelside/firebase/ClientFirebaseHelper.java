@@ -14,7 +14,7 @@ import me.makeachoice.gymratpta.model.item.client.ClientFBItem;
 
 /**************************************************************************************************/
 /*
- * ClientFirebaseHelper helps in adding and requesting client data to and from firedatabase
+ * ClientFirebaseHelper helps in adding and requesting client data to and from firebase
  */
 /**************************************************************************************************/
 
@@ -186,6 +186,12 @@ public class ClientFirebaseHelper {
 
 /**************************************************************************************************/
 
+/**************************************************************************************************/
+/*
+ * EventListeners
+ */
+/**************************************************************************************************/
+
     private ValueEventListener mEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -198,5 +204,6 @@ public class ClientFirebaseHelper {
         }
     };
 
+/**************************************************************************************************/
 
 }
