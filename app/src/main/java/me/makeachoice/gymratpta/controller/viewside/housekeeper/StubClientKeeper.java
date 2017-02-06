@@ -196,10 +196,6 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //set saved instance state data
     }
 
-    public void start(){
-        super.start();
-    }
-
     public void stop(){
         int count = mClients.size();
         for(int i = 0; i < count; i++){
