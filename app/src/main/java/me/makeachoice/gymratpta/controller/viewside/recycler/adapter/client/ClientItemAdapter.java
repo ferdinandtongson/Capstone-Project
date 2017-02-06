@@ -16,6 +16,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
+import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
 /**************************************************************************************************/
 /*
@@ -30,6 +31,8 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
  * Class Variables
  *      Context mContext - activity context
  *      int mItemLayoutId - item/card layout resource id
+ *      mCardDefaultColor - default background card color
+ *      mCardRetiredColor - background card color used when client is retired
  *      HashMap<String,ClientItem> mContactIdMap - hashMap used to map contact names
  *
  *      Cursor mCursor - cursor consumed by adapter
@@ -42,6 +45,12 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
 
     //mItemLayoutId - item/card layout resource id
     private int mItemLayoutId;
+
+    //mCardDefaultColor - default background card color
+    private int mCardDefaultColor;
+
+    //mCardRetiredColor - background card color used when client is retired
+    private int mCardRetiredColor;
 
     //mContactIdMap - hashMap used to map contact names
     private HashMap<String,ClientItem> mClientMap;
@@ -72,6 +81,10 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
 
+        //get colors used as card background color
+        mCardDefaultColor = DeprecatedUtility.getColor(mContext, R.color.card_activeBackground);
+        mCardRetiredColor = DeprecatedUtility.getColor(mContext, R.color.card_retiredBackground);
+
         //initialize hashMap
         mClientMap = new HashMap();
 
@@ -96,7 +109,11 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
      */
     @Override
     public int getItemCount(){
-        return mCursor.getCount();
+        if(mCursor != null){
+            return mCursor.getCount();
+        }
+
+        return 0;
     }
 
     /*
@@ -116,6 +133,11 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
      */
     public void setOnItemClickListener(View.OnClickListener listener){
         mOnItemClickListener = listener;
+    }
+
+    public void setCursor(Cursor cursor){
+        mCursor = cursor;
+        notifyDataSetChanged();
     }
 
     /*
@@ -165,8 +187,19 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
 
         mClientMap.put(item.clientName, item);
 
+        //set default card color background
+        int bgColor = mCardDefaultColor;
+
+        String strRetired = mContext.getString(R.string.retired);
+        //check client status, if false
+        if(item.status.equals(strRetired)){
+            //change card color background
+            bgColor = mCardRetiredColor;
+        }
+
+
         //bind to viewHolder
-        holder.bindItemView(item, position);
+        holder.bindItemView(item, position, bgColor);
         holder.bindTextView(item);
         holder.bindProfileImage(item);
     }
@@ -228,9 +261,10 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
      * void bindItemView(ClientItem,int) - bind data to cardView. Set tag values, bg color,
      * and contextMenu listener, if not null
      */
-    public void bindItemView(ClientItem item, int position){
+    public void bindItemView(ClientItem item, int position, int bgColor){
         mItemView.setTag(R.string.recycler_tagPosition, position);
         mItemView.setTag(R.string.recycler_tagItem, item);
+        mItemView.setBackgroundColor(bgColor);
 
         if(mCreateContextMenuListener != null){
             mItemView.setOnCreateContextMenuListener(mCreateContextMenuListener);
