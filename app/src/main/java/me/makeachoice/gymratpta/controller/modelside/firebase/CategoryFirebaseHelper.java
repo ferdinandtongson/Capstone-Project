@@ -87,15 +87,15 @@ public class CategoryFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addCategoryData(String userId, ArrayList<CategoryFBItem> users){
-        int count = users.size();
+    public void addCategoryData(String userId, ArrayList<CategoryFBItem> categories){
+        int count = categories.size();
         for(int i = 0; i < count; i++){
-            addClient(userId, users.get(i));
+            addCategory(userId, categories.get(i));
         }
 
     }
 
-    public void addClient(String userId, CategoryFBItem item){
+    public void addCategory(String userId, CategoryFBItem item){
         DatabaseReference ref = getCategoryReference(userId);
         ref.push().setValue(item);
     }
