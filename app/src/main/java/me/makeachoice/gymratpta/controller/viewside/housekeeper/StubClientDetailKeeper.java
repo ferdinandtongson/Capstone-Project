@@ -7,6 +7,7 @@ import android.util.Log;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.ClientDetailNav;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -65,6 +66,7 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
  */
 /**************************************************************************************************/
 
+    private ClientItem mClientItem;
 
 /**************************************************************************************************/
 
@@ -111,6 +113,8 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
             openBundle(bundle);
         }
 
+        mClientItem = mBoss.getClient();
+
         initializeLayout();
     }
 
@@ -150,7 +154,7 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         int infoId = R.layout.fragment_client_info;
-        maidRegistry.initializeClientInfoMaid(MaidRegistry.MAID_CLIENT_INFO, infoId);
+        maidRegistry.initializeClientInfoMaid(MaidRegistry.MAID_CLIENT_INFO, infoId, mClientItem);
 
         int scheduleId = R.layout.standard_recycler_fab;
         maidRegistry.initializeClientScheduleMaid(MaidRegistry.MAID_CLIENT_SCHEDULE, scheduleId);
