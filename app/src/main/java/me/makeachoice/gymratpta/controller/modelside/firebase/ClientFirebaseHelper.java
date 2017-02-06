@@ -1,7 +1,5 @@
 package me.makeachoice.gymratpta.controller.modelside.firebase;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -174,13 +172,12 @@ public class ClientFirebaseHelper {
     }
 
     public void requestClientDataByClientName(String userId, String clientName, OnDataLoadedListener listener){
-        Log.d("Choice", "ClientFBHelper.requestClientDataByClientName: " + clientName);
         //get reference
         DatabaseReference ref = getClientReference(userId);
 
         mOnDataLoadedListener = listener;
 
-        ref.orderByChild("clientName").equalTo(clientName).addListenerForSingleValueEvent(mEventListener);
+        ref.orderByChild(CHILD_CLIENT_NAME).equalTo(clientName).addListenerForSingleValueEvent(mEventListener);
 
     }
 
