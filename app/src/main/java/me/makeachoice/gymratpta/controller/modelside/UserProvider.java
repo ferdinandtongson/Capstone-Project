@@ -22,11 +22,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import me.makeachoice.gymratpta.controller.modelside.query.CategoryQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CATEGORY;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CATEGORY_WITH_FKEY;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CATEGORY_WITH_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CATEGORY_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT;
 import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT_WITH_STATUS;
@@ -71,6 +76,14 @@ public class UserProvider extends ContentProvider {
                 return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
             case CLIENT_WITH_STATUS:
                 return Contractor.ClientEntry.CONTENT_TYPE;
+            case CATEGORY:
+                return Contractor.ClientEntry.CONTENT_TYPE;
+            case CATEGORY_WITH_UID:
+                return Contractor.ClientEntry.CONTENT_TYPE;
+            case CATEGORY_WITH_FKEY:
+                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
+            case CATEGORY_WITH_NAME:
+                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -83,30 +96,36 @@ public class UserProvider extends ContentProvider {
         // and query the database accordingly.
         Cursor retCursor;
         switch (dbUriMatcher.match(uri)) {
-            case USER: {
+            case USER:
                 retCursor = UserQueryHelper.getUsers(mOpenHelper, uri, projection, sortOrder);
                 break;
-            }
-            case USER_WITH_KEY: {
+            case USER_WITH_KEY:
                 retCursor = UserQueryHelper.getUserByUId(mOpenHelper, uri, projection, sortOrder);
                 break;
-            }
-            case CLIENT: {
+            case CLIENT:
                 retCursor = ClientQueryHelper.getClients(mOpenHelper, uri, projection, sortOrder);
                 break;
-            }
-            case CLIENT_WITH_UID: {
+            case CLIENT_WITH_UID:
                 retCursor = ClientQueryHelper.getClientByUId(mOpenHelper, uri, projection, sortOrder);
                 break;
-            }
-            case CLIENT_WITH_FKEY: {
+            case CLIENT_WITH_FKEY:
                 retCursor = ClientQueryHelper.getClientByFKey(mOpenHelper, uri, projection, sortOrder);
                 break;
-            }
-            case CLIENT_WITH_STATUS: {
+            case CLIENT_WITH_STATUS:
                 retCursor = ClientQueryHelper.getClientByStatus(mOpenHelper, uri, projection, sortOrder);
                 break;
-            }
+            case CATEGORY:
+                retCursor = CategoryQueryHelper.getCategories(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case CATEGORY_WITH_UID:
+                retCursor = CategoryQueryHelper.getCategoryByUId(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case CATEGORY_WITH_FKEY:
+                retCursor = CategoryQueryHelper.getCategoryByFKey(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case CATEGORY_WITH_NAME:
+                retCursor = CategoryQueryHelper.getCategoryByName(mOpenHelper, uri, projection, sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -129,14 +148,15 @@ public class UserProvider extends ContentProvider {
         Uri returnUri = null;
 
         switch (match) {
-            case USER: {
+            case USER:
                 returnUri = UserQueryHelper.insertUser(db, values);
                 break;
-            }
-            case CLIENT: {
+            case CLIENT:
                 returnUri = ClientQueryHelper.insertClient(db, values);
                 break;
-            }
+            case CATEGORY:
+                returnUri = CategoryQueryHelper.insertCategory(db, values);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -169,10 +189,12 @@ public class UserProvider extends ContentProvider {
             case USER:
                 rowsDeleted = UserQueryHelper.deleteUser(db, uri, selection, selectionArgs);
                 break;
-            case CLIENT: {
+            case CLIENT:
                 rowsDeleted = ClientQueryHelper.deleteClient(db, uri, selection, selectionArgs);
                 break;
-            }
+            case CATEGORY:
+                rowsDeleted = CategoryQueryHelper.deleteCategory(db, uri, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -195,10 +217,12 @@ public class UserProvider extends ContentProvider {
             case USER:
                 rowsUpdated = UserQueryHelper.updateUser(db, uri, values, selection, selectionArgs);
                 break;
-            case CLIENT: {
+            case CLIENT:
                 rowsUpdated = ClientQueryHelper.updateClient(db, uri, values, selection, selectionArgs);
                 break;
-            }
+            case CATEGORY:
+                rowsUpdated = CategoryQueryHelper.updateCategory(db, uri, values, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -235,6 +259,21 @@ public class UserProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(Contractor.ClientEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case CATEGORY:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(Contractor.CategoryEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }

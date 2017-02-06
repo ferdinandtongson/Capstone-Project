@@ -243,8 +243,8 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
                         //debug count used to prevent multiple userSignIn calls, known bug
                         userSignIn();
                     }
-
                     mBoss.saveUser(user);
+
                 }
             }
         };

@@ -63,6 +63,9 @@ public class DBUriMatcher {
     }
 
     private static void addUriCategory(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/category/
+        matcher.addURI(authority, Contractor.PATH_CATEGORY, CATEGORY);
+
         //"content://CONTENT_AUTHORITY/category/[uid]
         String uidPath = Contractor.PATH_CATEGORY + "/*";
         matcher.addURI(authority, uidPath, CATEGORY_WITH_UID);

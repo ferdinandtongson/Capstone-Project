@@ -1,19 +1,31 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
+import me.makeachoice.gymratpta.controller.modelside.firebase.CategoryFirebaseHelper;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardViewPager;
+import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
+import me.makeachoice.gymratpta.model.item.exercise.CategoryFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
-import me.makeachoice.gymratpta.model.stubData.CategoryStubData;
 import me.makeachoice.gymratpta.model.stubData.ExerciseStubData;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
@@ -46,6 +58,8 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
  */
 /**************************************************************************************************/
 
+    private String mUserId;
+
     //mCategories - list of category items used by viewPager tabLayout
     ArrayList<String> mPageTitles;
 
@@ -59,12 +73,14 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
     /*
      * ExerciseMaid(...) - constructor
      */
-    public ExerciseMaid(String maidKey, int layoutId){
+    public ExerciseMaid(String maidKey, int layoutId, String userId){
         //get maidKey
         mMaidKey = maidKey;
 
         //fragment layout id number
         mLayoutId = layoutId;
+
+        mUserId = userId;
     }
 
 /**************************************************************************************************/
@@ -100,7 +116,9 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         super.activityCreated(bundle);
 
         //prepare fragment components
-        prepareFragment();
+        //prepareFragment();
+        //initializeLayout(null);
+        loadCategories();
     }
 
     /*
@@ -127,7 +145,7 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
      */
     private void prepareFragment() {
         //load category and exercise data
-        loadData();
+        //loadData();
 
         //initialize maids used by viewPager
         initializeVPMaids();
@@ -140,9 +158,9 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
     /*
      * void loadData() - load category and exercise data
      */
-    private void loadData(){
+    /*private void loadData(){
         //create exercise stub data
-        ExerciseStubData.createDefaultExercises(mFragment.getContext());
+        //ExerciseStubData.createDefaultExercises(mFragment.getContext());
 
         //create category stub data
         ArrayList<CategoryItem> mCategories = CategoryStubData.createDefaultCategories(mFragment.getContext());
@@ -153,7 +171,7 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
             mPageTitles.add(mCategories.get(i).categoryName);
         }
 
-    }
+    }*/
 
     /*
      * void initializeMaid(int) - initialize Maids used by the viewPager component
@@ -180,6 +198,131 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         }
     }
 
+    private int LOADER_CATEGORY = 100;
+
 /**************************************************************************************************/
+    /*
+     * void loadCategories() - loads categories onto cursor used by Adapter. First gets load categories
+     * from Firebase, loads categories data to sqlite local database and then retrieves and delivers
+     * that data as a cursor. If there is no categories, load from flat file to firebase first
+     */
+    private void loadCategories(){
+        Log.d("Choice", "ExerciseMaid.loadCategories");
+        // Initializes a loader for loading clients
+        mFragment.getActivity().getSupportLoaderManager().initLoader(LOADER_CATEGORY, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                //load categories from firebase, insert into local database
+                loadFirebaseCategories();
+
+                //request client cursor from local database
+                Uri uri = Contractor.CategoryEntry.buildCategoryByUID(mUserId);
+                //get cursor
+                return new CursorLoader(
+                        mFragment.getActivity(),
+                        uri,
+                        CategoryColumns.PROJECTION,
+                        null,
+                        null,
+                        Contractor.CategoryEntry.SORT_ORDER_DEFAULT);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                Log.d("Choice", "ClientKeeper.onLoadFinished: " + cursor.getCount());
+                mPageTitles = new ArrayList();
+
+                int count = cursor.getCount();
+                for(int i = 0; i < count; i++){
+                    cursor.moveToPosition(i);
+                    mPageTitles.add(cursor.getString(Contractor.CategoryEntry.INDEX_CATEGORY_NAME));
+                    Log.d("Choice", "     category: " + cursor.getString(Contractor.CategoryEntry.INDEX_CATEGORY_NAME));
+                }
+                //category cursor loaded, initialize layout
+                //mAdapter.setCursor(cursor);
+                prepareFragment();
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> cursorLoader) {
+            }
+        });
+    }
+
+    private HashMap<String,String> mDoublesMap;
+
+    /*
+     * void loadFirebaseCategories() - gets category data from Firebase
+     */
+    private void loadFirebaseCategories(){
+        Log.d("Choice", "ExerciseMaid.loadFirebaseCategories");
+        //initialize category list array
+        mDoublesMap = new HashMap();
+
+        //get client firebase instance
+        final CategoryFirebaseHelper categoryFB = CategoryFirebaseHelper.getInstance();
+
+        //get orderBy string value
+        String orderBy = CategoryFirebaseHelper.CHILD_CATEGORY_NAME;
+
+        //request client data ordered by client name
+        categoryFB.requestCategoryData(mUserId, orderBy, new CategoryFirebaseHelper.OnDataLoadedListener() {
+            @Override
+            public void onDataLoaded(DataSnapshot dataSnapshot) {
+
+                long childrenCount = dataSnapshot.getChildrenCount();
+                Log.d("Choice", "     count: " + childrenCount);
+
+                if(childrenCount > 0){
+                    processFirebaseData(dataSnapshot);
+                }
+                else{
+                    initializeCategoryData();
+                }
+            }
+
+            @Override
+            public void onCancelled() {
+
+            }
+        });
+    }
+
+    private void processFirebaseData(DataSnapshot dataSnapshot){
+        //loop through client data
+        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+            //get the data from snapshot
+            CategoryFBItem category = postSnapshot.getValue(CategoryFBItem.class);
+
+            //create client item, used for local database
+            CategoryItem item = new CategoryItem(category);
+            item.uid = mUserId;
+            item.fkey = postSnapshot.getKey();
+
+            //add item to client list
+            updateDatabase(item);
+        }
+    }
+
+    private void updateDatabase(CategoryItem item){
+        Log.d("Choice", "ExerciseMaid.updateDatabase: " + item.categoryName);
+        //get uri value for client
+        Uri uriValue = Contractor.CategoryEntry.CONTENT_URI;
+        Log.d("Choice", "     uri: " + uriValue);
+
+        if(!mDoublesMap.containsKey(item.categoryName)){
+            mDoublesMap.put(item.categoryName, item.categoryName);
+            //add category to sqlite database
+            mFragment.getActivity().getContentResolver().insert(uriValue, item.getContentValues());
+        }
+
+    }
+
+
+    private void initializeCategoryData(){
+
+    }
 
 }
