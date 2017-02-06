@@ -19,6 +19,11 @@ public class DBUriMatcher {
     public static final int CLIENT_WITH_FKEY = 202;
     public static final int CLIENT_WITH_STATUS = 203;
 
+    public static final int CATEGORY = 300;
+    public static final int CATEGORY_WITH_UID = 301;
+    public static final int CATEGORY_WITH_FKEY = 302;
+    public static final int CATEGORY_WITH_NAME = 303;
+
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
     static UriMatcher buildUriMatcher() {
@@ -49,9 +54,27 @@ public class DBUriMatcher {
 
         //"content://CONTENT_AUTHORITY/client/[uid]/client_status/[status]
         String statusPath = Contractor.PATH_CLIENT + "/*" + Contractor.ClientEntry.COLUMN_CLIENT_STATUS + "/*";
-        matcher.addURI(authority, fkeyPath, CLIENT_WITH_STATUS);
+        matcher.addURI(authority, statusPath, CLIENT_WITH_STATUS);
+
+        addUriCategory(matcher, authority);
+
 
         return matcher;
+    }
+
+    private static void addUriCategory(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/category/[uid]
+        String uidPath = Contractor.PATH_CATEGORY + "/*";
+        matcher.addURI(authority, uidPath, CATEGORY_WITH_UID);
+
+        //"content://CONTENT_AUTHORITY/category/[uid]/fkey/[fkey]
+        String fkeyPath = Contractor.PATH_CATEGORY + "/*" + Contractor.CategoryEntry.COLUMN_FKEY + "/*";
+        matcher.addURI(authority, fkeyPath, CATEGORY_WITH_FKEY);
+
+        //"content://CONTENT_AUTHORITY/category/[uid]/category_name/[name]
+        String namePath = Contractor.PATH_CATEGORY + "/*" + Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + "/*";
+        matcher.addURI(authority, namePath, CATEGORY_WITH_NAME);
+
     }
 
 }
