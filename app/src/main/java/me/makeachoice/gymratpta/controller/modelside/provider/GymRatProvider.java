@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.makeachoice.gymratpta.controller.modelside;
+package me.makeachoice.gymratpta.controller.modelside.provider;
 
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
@@ -28,25 +28,25 @@ import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CATEGORY;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CATEGORY_WITH_FKEY;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CATEGORY_WITH_NAME;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CATEGORY_WITH_UID;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT_WITH_FKEY;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT_WITH_STATUS;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.CLIENT_WITH_UID;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.USER;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.USER_WITH_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.urimatcher.DBUriMatcher.dbUriMatcher;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_FKEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_FKEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_STATUS;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.dbUriMatcher;
 
 /**************************************************************************************************/
 /*
- *  UserProvider content provider for user info
+ *  GymRatProvider content provider for user info
  */
 /**************************************************************************************************/
 
-public class UserProvider extends ContentProvider {
+public class GymRatProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
     private DBHelper mOpenHelper;
@@ -59,34 +59,7 @@ public class UserProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-
-        // Use the Uri Matcher to determine what kind of URI this is.
-        final int match = dbUriMatcher.match(uri);
-
-        switch (match) {
-            case USER:
-                return Contractor.UserEntry.CONTENT_TYPE;
-            case USER_WITH_KEY:
-                return Contractor.UserEntry.CONTENT_ITEM_TYPE;
-            case CLIENT:
-                return Contractor.ClientEntry.CONTENT_TYPE;
-            case CLIENT_WITH_UID:
-                return Contractor.ClientEntry.CONTENT_TYPE;
-            case CLIENT_WITH_FKEY:
-                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
-            case CLIENT_WITH_STATUS:
-                return Contractor.ClientEntry.CONTENT_TYPE;
-            case CATEGORY:
-                return Contractor.ClientEntry.CONTENT_TYPE;
-            case CATEGORY_WITH_UID:
-                return Contractor.ClientEntry.CONTENT_TYPE;
-            case CATEGORY_WITH_FKEY:
-                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
-            case CATEGORY_WITH_NAME:
-                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
+        return UriTypeHelper.getType(uri);
     }
 
     @Override

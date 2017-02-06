@@ -40,7 +40,7 @@
             android:launchMode="singleTask"
             android:parentActivityName=".view.activity.AppointmentActivity"/>
 
-        <provider android:name=".controller.modelside.UserProvider"
+        <provider android:name=".controller.modelside.provider.GymRatProvider"
             android:authorities="me.makeachoice.gymratpta.app"/>
 
     </application>
