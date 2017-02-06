@@ -44,6 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_USER_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CLIENT_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CATEGORY_TABLE);
+        sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_EXERCISE_TABLE);
 
     }
 
@@ -52,6 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.UserEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ClientEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.CategoryEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ExerciseEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 
