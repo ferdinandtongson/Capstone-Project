@@ -6,40 +6,40 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
+import me.makeachoice.gymratpta.model.item.exercise.CategoryFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 
 public class CategoryStubData {
 
 
-    public static ArrayList<CategoryItem> createDefaultCategories(Context ctx){
-        ArrayList<CategoryItem> categories = new ArrayList();
+    public static ArrayList<CategoryFBItem> createDefaultCategories(Context ctx){
+        ArrayList<CategoryFBItem> categories = new ArrayList();
 
-        CategoryItem item01 = new CategoryItem();
+        CategoryFBItem item01 = new CategoryFBItem();
         item01.categoryName = ctx.getString(R.string.exerciseCategory_arms);
         categories.add(item01);
 
-        CategoryItem item02 = new CategoryItem();
+        CategoryFBItem item02 = new CategoryFBItem();
         item02.categoryName = ctx.getString(R.string.exerciseCategory_back);
         categories.add(item02);
 
-        CategoryItem item03 = new CategoryItem();
+        CategoryFBItem item03 = new CategoryFBItem();
         item03.categoryName = ctx.getString(R.string.exerciseCategory_cardio);
         categories.add(item03);
 
-        CategoryItem item04 = new CategoryItem();
+        CategoryFBItem item04 = new CategoryFBItem();
         item04.categoryName = ctx.getString(R.string.exerciseCategory_chest);
         categories.add(item04);
 
-        CategoryItem item05 = new CategoryItem();
+        CategoryFBItem item05 = new CategoryFBItem();
         item05.categoryName = ctx.getString(R.string.exerciseCategory_core);
         categories.add(item05);
 
-        CategoryItem item06 = new CategoryItem();
+        CategoryFBItem item06 = new CategoryFBItem();
         item06.categoryName = ctx.getString(R.string.exerciseCategory_legs);
         categories.add(item06);
 
-        CategoryItem item07 = new CategoryItem();
+        CategoryFBItem item07 = new CategoryFBItem();
         item07.categoryName = ctx.getString(R.string.exerciseCategory_shoulders);
         categories.add(item07);
 
