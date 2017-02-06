@@ -166,9 +166,9 @@ public class MaidRegistry extends MyMaidRegistry {
  */
 /**************************************************************************************************/
 
-    public void initializeExerciseMaid(String maidKey, int layoutId){
+    public void initializeExerciseMaid(String maidKey, int layoutId, String userId){
         //create maid
-        ExerciseMaid maid = new ExerciseMaid(maidKey, layoutId);
+        ExerciseMaid maid = new ExerciseMaid(maidKey, layoutId, userId);
 
         //register maid
         registerMaid(maidKey, maid);

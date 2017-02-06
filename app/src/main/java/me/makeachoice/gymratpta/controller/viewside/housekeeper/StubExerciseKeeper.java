@@ -153,7 +153,7 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
         int layoutId = R.layout.viewpager;
 
         //initialize exercise maid
-        maidRegistry.initializeExerciseMaid(MaidRegistry.MAID_EXERCISE, layoutId);
+        maidRegistry.initializeExerciseMaid(MaidRegistry.MAID_EXERCISE, layoutId, mBoss.getUserId());
 
         //layout used by routine maid
         int routineId = R.layout.standard_recycler_fab;
