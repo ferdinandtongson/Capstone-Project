@@ -130,6 +130,7 @@ public class Boss extends MyBoss {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         dbHelper.dropTable(db, Contractor.UserEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.ClientEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.CategoryEntry.TABLE_NAME);
 
         db.close();
 

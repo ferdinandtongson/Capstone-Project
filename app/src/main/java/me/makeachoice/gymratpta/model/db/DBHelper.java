@@ -43,12 +43,15 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("Choice", "DBHelper.onCreate");
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_USER_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CLIENT_TABLE);
+        sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CATEGORY_TABLE);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.UserEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ClientEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.CategoryEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 
