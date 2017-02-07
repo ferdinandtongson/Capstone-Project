@@ -69,11 +69,11 @@ public class Contractor {
      */
     public static final class UserEntry extends UserColumns implements BaseColumns {
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER).build();
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER).build();
 
-        public static final String CONTENT_TYPE =
+        public static String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
-        public static final String CONTENT_ITEM_TYPE =
+        public static String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
 
         //"content://CONTENT_AUTHORITY/user/[_id]
@@ -95,14 +95,14 @@ public class Contractor {
     /*
      * ClientEntry - GymRat app client
      */
-    public static final class ClientEntry extends ClientColumns implements BaseColumns {
+    public static class ClientEntry extends ClientColumns implements BaseColumns {
 
-        public static final Uri CONTENT_URI =
+        public static Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLIENT).build();
 
-        public static final String CONTENT_TYPE =
+        public static String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT;
-        public static final String CONTENT_ITEM_TYPE =
+        public static String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT;
 
         //"content://CONTENT_AUTHORITY/client/[_id]
@@ -155,14 +155,14 @@ public class Contractor {
     /*
      * CategoryEntry - user defined exercise categories
      */
-    public static final class CategoryEntry extends CategoryColumns implements BaseColumns {
+    public static class CategoryEntry extends CategoryColumns implements BaseColumns {
 
-        public static final Uri CONTENT_URI =
+        public static Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_CATEGORY).build();
 
-        public static final String CONTENT_TYPE =
+        public static String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CATEGORY;
-        public static final String CONTENT_ITEM_TYPE =
+        public static String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CATEGORY;
 
 
@@ -206,14 +206,14 @@ public class Contractor {
     /*
      * ExerciseEntry - user defined exercises
      */
-    public static final class ExerciseEntry extends ExerciseColumns implements BaseColumns {
+    public static class ExerciseEntry extends ExerciseColumns implements BaseColumns {
 
-        public static final Uri CONTENT_URI =
+        public static Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_EXERCISE).build();
 
-        public static final String CONTENT_TYPE =
+        public static String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EXERCISE;
-        public static final String CONTENT_ITEM_TYPE =
+        public static String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EXERCISE;
 
 
@@ -271,14 +271,14 @@ public class Contractor {
     /*
      * RoutineEntry - user defined exercise routines
      */
-    public static final class RoutineEntry extends RoutineColumns implements BaseColumns {
+    public static class RoutineEntry extends RoutineColumns implements BaseColumns {
 
-        public static final Uri CONTENT_URI =
+        public static Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_ROUTINE).build();
 
-        public static final String CONTENT_TYPE =
+        public static String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ROUTINE;
-        public static final String CONTENT_ITEM_TYPE =
+        public static String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ROUTINE;
 
 
