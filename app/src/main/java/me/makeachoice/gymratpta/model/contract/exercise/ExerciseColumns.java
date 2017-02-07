@@ -30,7 +30,7 @@ public class ExerciseColumns {
     public static final String COLUMN_RECORD_PRIMARY = "record_primary";
 
     //secondary record data
-    public static final String COLUMN_RECORD_SECONDARY = "record_primary";
+    public static final String COLUMN_RECORD_SECONDARY = "record_secondary";
 
     //default sort order
     public static final String SORT_ORDER_DEFAULT = COLUMN_EXERCISE_NAME + " ASC";
