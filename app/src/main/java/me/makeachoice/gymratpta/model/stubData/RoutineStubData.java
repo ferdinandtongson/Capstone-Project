@@ -5,127 +5,252 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineFBItem;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineFBItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 
 public class RoutineStubData {
 
-    public static ArrayList<RoutineFBItem> createDefaultRoutines(Context ctx){
-        ArrayList<RoutineFBItem> routines = new ArrayList();
+    public static ArrayList<RoutineItem> createDefaultRoutines(Context ctx){
+        ArrayList<RoutineItem> routines = new ArrayList();
 
-        RoutineFBItem item01 = new RoutineFBItem();
+        RoutineItem item01 = new RoutineItem();
         item01.routineName = "Arm Routine";
-        item01.exercise01 = "Jump Rope";
-        item01.category01 = ctx.getString(R.string.exerciseCategory_cardio);
-        item01.set01 = 1;
-        item01.exercise02 = "EZ-Bar Curl";
-        item01.category02 = ctx.getString(R.string.exerciseCategory_arms);
-        item01.set02 = 4;
-        item01.exercise03 = "Close-Grip Barbell Bench Press";
-        item01.category03 = ctx.getString(R.string.exerciseCategory_arms);
-        item01.set03 = 4;
-        item01.exercise04 = "Cable Rope Overhead Triceps Extension";
-        item01.category04 = ctx.getString(R.string.exerciseCategory_arms);
-        item01.set04 = 4;
-        item01.exercise05 = "Cable Hammer Curls - Rope Attachment";
-        item01.category05 = ctx.getString(R.string.exerciseCategory_arms);
-        item01.set05 = 4;
+        item01.orderNumber = 1;
+        item01.exercise = "Jump Rope";
+        item01.category = ctx.getString(R.string.exerciseCategory_cardio);
+        item01.numOfSets = 1;
         routines.add(item01);
 
-        RoutineFBItem item02 = new RoutineFBItem();
-        item02.routineName = "Back Routine";
-        item02.exercise01 = "Rowing Machine";
-        item02.category01 = ctx.getString(R.string.exerciseCategory_cardio);
-        item02.set01 = 1;
-        item02.exercise02 = "Wide-Grip Lat Pulldown";
-        item02.category02 = ctx.getString(R.string.exerciseCategory_back);
-        item02.set02 = 4;
-        item02.exercise03 = "V-Bar Pulldown";
-        item02.category03 = ctx.getString(R.string.exerciseCategory_back);
-        item02.set03 = 4;
-        item02.exercise04 = "Seated Cable Rows";
-        item02.category04 = ctx.getString(R.string.exerciseCategory_back);
-        item02.set04 = 4;
-        item02.exercise05 = "Barbell Shrug";
-        item02.category05 = ctx.getString(R.string.exerciseCategory_back);
-        item02.set05 = 4;
+        RoutineItem item02 = new RoutineItem();
+        item02.routineName = "Arm Routine";
+        item02.orderNumber = 2;
+        item02.exercise = "EZ-Bar Curl";
+        item02.category = ctx.getString(R.string.exerciseCategory_arms);
+        item02.numOfSets = 4;
         routines.add(item02);
 
-        RoutineFBItem item03 = new RoutineFBItem();
-        item03.routineName = "Core Routine";
-        item03.exercise01 = "Jumping Jacks";
-        item03.category01 = ctx.getString(R.string.exerciseCategory_cardio);
-        item03.set01 = 3;
-        item03.exercise02 = "Air Bike";
-        item03.category02 = ctx.getString(R.string.exerciseCategory_core);
-        item03.set02 = 3;
-        item03.exercise03 = "Stair-Climber";
-        item03.category03 = ctx.getString(R.string.exerciseCategory_cardio);
-        item03.set03 = 1;
-        item03.exercise04 = "Crunches";
-        item03.category04 = ctx.getString(R.string.exerciseCategory_core);
-        item03.set04 = 3;
-        item03.exercise05 = "Jump Rope";
-        item03.category05 = ctx.getString(R.string.exerciseCategory_cardio);
-        item03.set05 = 1;
+        RoutineItem item03 = new RoutineItem();
+        item03.routineName = "Arm Routine";
+        item03.orderNumber = 3;
+        item03.exercise = "Close-Grip Barbell Bench Press";
+        item03.category = ctx.getString(R.string.exerciseCategory_arms);
+        item03.numOfSets = 4;
         routines.add(item03);
 
-        RoutineFBItem item04 = new RoutineFBItem();
-        item04.routineName = "Chest Routine";
-        item04.exercise01 = "Treadmill";
-        item04.category01 = ctx.getString(R.string.exerciseCategory_cardio);
-        item04.set01 = 1;
-        item04.exercise02 = "Pushups";
-        item04.category02 = ctx.getString(R.string.exerciseCategory_chest);
-        item04.set02 = 4;
-        item04.exercise03 = "Barbell Bench Press";
-        item04.category03 = ctx.getString(R.string.exerciseCategory_chest);
-        item04.set03 = 4;
-        item04.exercise04 = "Decline Barbell Bench Press";
-        item04.category04 = ctx.getString(R.string.exerciseCategory_chest);
-        item04.set04 = 4;
-        item04.exercise05 = "Incline Bench Dumbbell Fly";
-        item04.category05 = ctx.getString(R.string.exerciseCategory_chest);
-        item04.set05 = 4;
+        RoutineItem item04 = new RoutineItem();
+        item04.routineName = "Arm Routine";
+        item04.orderNumber = 4;
+        item04.exercise = "Cable Rope Overhead Triceps Extension";
+        item04.category = ctx.getString(R.string.exerciseCategory_arms);
+        item04.numOfSets = 4;
         routines.add(item04);
 
-        RoutineFBItem item05 = new RoutineFBItem();
-        item05.routineName = "Legs Routine";
-        item05.exercise01 = "Elliptical Trainer";
-        item05.category01 = ctx.getString(R.string.exerciseCategory_cardio);
-        item05.set01 = 1;
-        item05.exercise02 = "Barbell Squat";
-        item05.category02 = ctx.getString(R.string.exerciseCategory_legs);
-        item05.set02 = 4;
-        item05.exercise03 = "Lying Leg Curls";
-        item05.category03 = ctx.getString(R.string.exerciseCategory_legs);
-        item05.set03 = 4;
-        item05.exercise04 = "Leg Press";
-        item05.category04 = ctx.getString(R.string.exerciseCategory_legs);
-        item05.set04 = 4;
-        item05.exercise05 = "Standing Calf Raises";
-        item05.category05 = ctx.getString(R.string.exerciseCategory_legs);
-        item05.set05 = 4;
+        RoutineItem item05 = new RoutineItem();
+        item05.routineName = "Arm Routine";
+        item05.orderNumber = 5;
+        item05.exercise = "Cable Hammer Curls - Rope Attachment";
+        item05.category = ctx.getString(R.string.exerciseCategory_arms);
+        item05.numOfSets = 4;
         routines.add(item05);
 
-        RoutineFBItem item06 = new RoutineFBItem();
-        item06.routineName = "Shoulder Routine";
-        item06.exercise01 = "Jumping Jacks";
-        item06.category01 = ctx.getString(R.string.exerciseCategory_cardio);
-        item06.set01 = 3;
-        item06.exercise02 = "Barbell Shoulder Press";
-        item06.category02 = ctx.getString(R.string.exerciseCategory_shoulders);
-        item06.set02 = 4;
-        item06.exercise03 = "Reverse Fly";
-        item06.category03 = ctx.getString(R.string.exerciseCategory_shoulders);
-        item06.set03 = 4;
-        item06.exercise04 = "Dumbbell Shoulder Press";
-        item06.category04 = ctx.getString(R.string.exerciseCategory_shoulders);
-        item06.set04 = 4;
-        item06.exercise05 = "One-Arm Side Laterals";
-        item06.category05 = ctx.getString(R.string.exerciseCategory_shoulders);
-        item06.set05 = 4;
+        RoutineItem item06 = new RoutineItem();
+        item06.routineName = "Back Routine";
+        item06.orderNumber = 1;
+        item06.exercise = "Rowing Machine";
+        item06.category = ctx.getString(R.string.exerciseCategory_cardio);
+        item06.numOfSets = 1;
         routines.add(item06);
+
+        RoutineItem item07 = new RoutineItem();
+        item07.routineName = "Back Routine";
+        item07.orderNumber = 2;
+        item07.exercise = "Wide-Grip Lat Pulldown";
+        item07.category = ctx.getString(R.string.exerciseCategory_back);
+        item07.numOfSets = 4;
+        routines.add(item07);
+
+        RoutineItem item08 = new RoutineItem();
+        item08.routineName = "Back Routine";
+        item08.orderNumber = 3;
+        item08.exercise = "V-Bar Pulldown";
+        item08.category = ctx.getString(R.string.exerciseCategory_back);
+        item08.numOfSets = 4;
+        routines.add(item08);
+
+        RoutineItem item09 = new RoutineItem();
+        item09.routineName = "Back Routine";
+        item09.orderNumber = 4;
+        item09.exercise = "Seated Cable Rows";
+        item09.category = ctx.getString(R.string.exerciseCategory_back);
+        item09.numOfSets = 4;
+        routines.add(item09);
+
+        RoutineItem item10 = new RoutineItem();
+        item10.routineName = "Back Routine";
+        item10.orderNumber = 5;
+        item10.exercise = "Barbell Shrug";
+        item10.category = ctx.getString(R.string.exerciseCategory_back);
+        item10.numOfSets = 4;
+        routines.add(item10);
+
+        RoutineItem item11 = new RoutineItem();
+        item11.routineName = "Core Routine";
+        item11.orderNumber = 1;
+        item11.exercise = "Jumping Jacks";
+        item11.category = ctx.getString(R.string.exerciseCategory_cardio);
+        item11.numOfSets = 3;
+        routines.add(item11);
+
+        RoutineItem item12 = new RoutineItem();
+        item12.routineName = "Core Routine";
+        item12.orderNumber = 2;
+        item12.exercise = "Air Bike";
+        item12.category = ctx.getString(R.string.exerciseCategory_core);
+        item12.numOfSets = 3;
+        routines.add(item12);
+
+        RoutineItem item13 = new RoutineItem();
+        item13.routineName = "Core Routine";
+        item13.orderNumber = 3;
+        item13.exercise = "Stair-Climber";
+        item13.category = ctx.getString(R.string.exerciseCategory_cardio);
+        item13.numOfSets = 1;
+        routines.add(item13);
+
+        RoutineItem item14 = new RoutineItem();
+        item14.routineName = "Core Routine";
+        item14.orderNumber = 4;
+        item14.exercise = "Crunches";
+        item14.category = ctx.getString(R.string.exerciseCategory_core);
+        item14.numOfSets = 3;
+        routines.add(item14);
+
+        RoutineItem item15 = new RoutineItem();
+        item15.routineName = "Core Routine";
+        item15.orderNumber = 5;
+        item15.exercise = "Jump Rope";
+        item15.category = ctx.getString(R.string.exerciseCategory_cardio);
+        item15.numOfSets = 1;
+        routines.add(item15);
+
+        RoutineItem item16 = new RoutineItem();
+        item16.routineName = "Chest Routine";
+        item16.orderNumber = 1;
+        item16.exercise = "Treadmill";
+        item16.category = ctx.getString(R.string.exerciseCategory_cardio);
+        item16.numOfSets = 1;
+        routines.add(item16);
+
+        RoutineItem item17 = new RoutineItem();
+        item17.routineName = "Chest Routine";
+        item17.orderNumber = 2;
+        item17.exercise = "Pushups";
+        item17.category = ctx.getString(R.string.exerciseCategory_chest);
+        item17.numOfSets = 4;
+        routines.add(item17);
+
+        RoutineItem item18 = new RoutineItem();
+        item18.routineName = "Chest Routine";
+        item18.orderNumber = 3;
+        item18.exercise = "Barbell Bench Press";
+        item18.category = ctx.getString(R.string.exerciseCategory_chest);
+        item18.numOfSets = 4;
+        routines.add(item18);
+
+        RoutineItem item19 = new RoutineItem();
+        item19.routineName = "Chest Routine";
+        item19.orderNumber = 4;
+        item19.exercise = "Decline Barbell Bench Press";
+        item19.category = ctx.getString(R.string.exerciseCategory_chest);
+        item19.numOfSets = 4;
+        routines.add(item19);
+
+        RoutineItem item20 = new RoutineItem();
+        item20.routineName = "Chest Routine";
+        item20.orderNumber = 5;
+        item20.exercise = "Incline Bench Dumbbell Fly";
+        item20.category = ctx.getString(R.string.exerciseCategory_chest);
+        item20.numOfSets = 4;
+        routines.add(item20);
+
+        RoutineItem item21 = new RoutineItem();
+        item21.routineName = "Legs Routine";
+        item21.orderNumber = 1;
+        item21.exercise = "Elliptical Trainer";
+        item21.category = ctx.getString(R.string.exerciseCategory_cardio);
+        item21.numOfSets = 1;
+        routines.add(item21);
+
+        RoutineItem item22 = new RoutineItem();
+        item22.routineName = "Legs Routine";
+        item22.orderNumber = 2;
+        item22.exercise = "Barbell Squat";
+        item22.category = ctx.getString(R.string.exerciseCategory_legs);
+        item22.numOfSets = 4;
+        routines.add(item22);
+
+        RoutineItem item23 = new RoutineItem();
+        item23.routineName = "Legs Routine";
+        item23.orderNumber = 3;
+        item23.exercise = "Lying Leg Curls";
+        item23.category = ctx.getString(R.string.exerciseCategory_legs);
+        item23.numOfSets = 4;
+        routines.add(item23);
+
+        RoutineItem item24 = new RoutineItem();
+        item24.routineName = "Legs Routine";
+        item24.orderNumber = 4;
+        item24.exercise = "Leg Press";
+        item24.category = ctx.getString(R.string.exerciseCategory_legs);
+        item24.numOfSets = 4;
+        routines.add(item24);
+
+        RoutineItem item25 = new RoutineItem();
+        item25.routineName = "Legs Routine";
+        item25.orderNumber = 5;
+        item25.exercise = "Standing Calf Raises";
+        item25.category = ctx.getString(R.string.exerciseCategory_legs);
+        item25.numOfSets = 4;
+        routines.add(item25);
+
+        RoutineItem item26 = new RoutineItem();
+        item26.routineName = "Shoulder Routine";
+        item26.orderNumber = 1;
+        item26.exercise = "Jumping Jacks";
+        item26.category = ctx.getString(R.string.exerciseCategory_cardio);
+        item26.numOfSets = 3;
+        routines.add(item26);
+
+        RoutineItem item27 = new RoutineItem();
+        item27.routineName = "Shoulder Routine";
+        item27.orderNumber = 2;
+        item27.exercise = "Barbell Shoulder Press";
+        item27.category = ctx.getString(R.string.exerciseCategory_shoulders);
+        item27.numOfSets = 4;
+        routines.add(item27);
+
+        RoutineItem item28 = new RoutineItem();
+        item28.routineName = "Shoulder Routine";
+        item28.orderNumber = 3;
+        item28.exercise = "Reverse Fly";
+        item28.category = ctx.getString(R.string.exerciseCategory_shoulders);
+        item28.numOfSets = 4;
+        routines.add(item28);
+
+        RoutineItem item29 = new RoutineItem();
+        item29.routineName = "Shoulder Routine";
+        item29.orderNumber = 4;
+        item29.exercise = "Dumbbell Shoulder Press";
+        item29.category = ctx.getString(R.string.exerciseCategory_shoulders);
+        item29.numOfSets = 4;
+        routines.add(item29);
+
+        RoutineItem item30 = new RoutineItem();
+        item30.routineName = "Shoulder Routine";
+        item30.orderNumber = 5;
+        item30.exercise = "One-Arm Side Laterals";
+        item30.category = ctx.getString(R.string.exerciseCategory_shoulders);
+        item30.numOfSets = 4;
+        routines.add(item30);
 
         return routines;
     }
