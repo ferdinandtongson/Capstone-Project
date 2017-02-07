@@ -5,14 +5,15 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineSessionItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineFBItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineFBItem;
 
 public class RoutineStubData {
 
-    public static ArrayList<RoutineSessionItem> createDefaultRoutineSessions(Context ctx){
-        ArrayList<RoutineSessionItem> routines = new ArrayList();
+    public static ArrayList<RoutineFBItem> createDefaultRoutines(Context ctx){
+        ArrayList<RoutineFBItem> routines = new ArrayList();
 
-        RoutineSessionItem item01 = new RoutineSessionItem();
+        RoutineFBItem item01 = new RoutineFBItem();
         item01.routineName = "Arm Routine";
         item01.exercise01 = "Jump Rope";
         item01.category01 = ctx.getString(R.string.exerciseCategory_cardio);
@@ -31,7 +32,7 @@ public class RoutineStubData {
         item01.set05 = 4;
         routines.add(item01);
 
-        RoutineSessionItem item02 = new RoutineSessionItem();
+        RoutineFBItem item02 = new RoutineFBItem();
         item02.routineName = "Back Routine";
         item02.exercise01 = "Rowing Machine";
         item02.category01 = ctx.getString(R.string.exerciseCategory_cardio);
@@ -50,7 +51,7 @@ public class RoutineStubData {
         item02.set05 = 4;
         routines.add(item02);
 
-        RoutineSessionItem item03 = new RoutineSessionItem();
+        RoutineFBItem item03 = new RoutineFBItem();
         item03.routineName = "Core Routine";
         item03.exercise01 = "Jumping Jacks";
         item03.category01 = ctx.getString(R.string.exerciseCategory_cardio);
@@ -69,7 +70,7 @@ public class RoutineStubData {
         item03.set05 = 1;
         routines.add(item03);
 
-        RoutineSessionItem item04 = new RoutineSessionItem();
+        RoutineFBItem item04 = new RoutineFBItem();
         item04.routineName = "Chest Routine";
         item04.exercise01 = "Treadmill";
         item04.category01 = ctx.getString(R.string.exerciseCategory_cardio);
@@ -88,7 +89,7 @@ public class RoutineStubData {
         item04.set05 = 4;
         routines.add(item04);
 
-        RoutineSessionItem item05 = new RoutineSessionItem();
+        RoutineFBItem item05 = new RoutineFBItem();
         item05.routineName = "Legs Routine";
         item05.exercise01 = "Elliptical Trainer";
         item05.category01 = ctx.getString(R.string.exerciseCategory_cardio);
@@ -107,7 +108,7 @@ public class RoutineStubData {
         item05.set05 = 4;
         routines.add(item05);
 
-        RoutineSessionItem item06 = new RoutineSessionItem();
+        RoutineFBItem item06 = new RoutineFBItem();
         item06.routineName = "Shoulder Routine";
         item06.exercise01 = "Jumping Jacks";
         item06.category01 = ctx.getString(R.string.exerciseCategory_cardio);
