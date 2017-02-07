@@ -1,6 +1,11 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -14,9 +19,14 @@ import java.util.ArrayList;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.ExerciseRecyclerAdapter;
+import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
+import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_EXERCISE_BASE;
 
 /**************************************************************************************************/
 /*
@@ -64,6 +74,11 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     //mAdapter - adapter consumed by recycler
     private ExerciseRecyclerAdapter mAdapter;
 
+    private String mUserId;
+    private String mCategoryKey;
+    private int mLoaderId;
+
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -74,15 +89,18 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     /*
      * ExerciseViewPagerMaid(...) - constructor
      */
-    public ExerciseViewPagerMaid(String maidKey, int layoutId, ArrayList<ExerciseItem> exercises){
+    public ExerciseViewPagerMaid(String maidKey, int layoutId, int index, CategoryItem item){
         //get maidKey
         mMaidKey = maidKey;
 
         //fragment layout id number
         mLayoutId = layoutId;
 
-        //get exercise list
-        mData = exercises;
+        mUserId = item.uid;
+        mCategoryKey = item.fkey;
+
+        mLoaderId = LOADER_EXERCISE_BASE + index;
+
     }
 
 /**************************************************************************************************/
@@ -117,8 +135,8 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
-        //prepare fragment components
-        prepareFragment();
+        //load exercises
+        loadExercises();
     }
 
     /*
@@ -128,6 +146,7 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     public void detach(){
         //fragment is being disassociated from Activity
         super.detach();
+        mFragment.getActivity().getSupportLoaderManager().destroyLoader(mLoaderId);
     }
 
 /**************************************************************************************************/
@@ -144,18 +163,24 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     /*
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
-    private void prepareFragment(){
+    private void prepareFragment(Cursor cursor){
+
         //initialize "empty" text, displayed if data is empty
         initializeEmptyText();
 
         //initialize adapter
-        initializeAdapter();
+        initializeAdapter(cursor);
 
         //initialize recycler view
         initializeRecycler();
 
-        //check if data is empty
-        checkForEmptyRecycler(mData.isEmpty());
+        if(cursor != null && cursor.getCount() > 0){
+            //check if data is empty
+            checkForEmptyRecycler(false);
+        }
+        else{
+            checkForEmptyRecycler(true);
+        }
     }
 
     /*
@@ -172,18 +197,16 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     /*
      * void initializeAdapter() - adapter used by recycler component
      */
-    private void initializeAdapter() {
+    private void initializeAdapter(Cursor cursor) {
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.item_simple;
 
         //create adapter consumed by the recyclerView
-        mAdapter = new ExerciseRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
+        mAdapter = new ExerciseRecyclerAdapter(mLayout.getContext(), cursor, adapterLayoutId);
 
         //set context menu create listener
         mAdapter.setOnCreateContextMenuListener(this);
 
-        //swap old data with new data
-        mAdapter.swapData(mData);
     }
 
     /*
@@ -191,7 +214,7 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
      */
     private void initializeRecycler(){
         //add dividers between items
-        mBasicRecycler.showItemDivider(mFragment.getContext());
+        //mBasicRecycler.showItemDivider(mFragment.getContext());
 
         //set adapter
         mBasicRecycler.setAdapter(mAdapter);
@@ -245,6 +268,42 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
         return false;
     }
 
+
 /**************************************************************************************************/
+    /*
+     * void loadExercises() - loads exercises onto cursor used by Adapter.
+     */
+    private void loadExercises(){
+        // Initializes a loader for loading clients
+        mFragment.getActivity().getSupportLoaderManager().initLoader(mLoaderId, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request client cursor from local database
+                        Uri uri = Contractor.ExerciseEntry.buildExerciseByCategoryKey(mUserId, mCategoryKey);
+
+                        //get cursor
+                        return new CursorLoader(
+                                mFragment.getActivity(),
+                                uri,
+                                ExerciseColumns.PROJECTION_EXERCISE,
+                                null,
+                                null,
+                                Contractor.ExerciseEntry.SORT_ORDER_DEFAULT);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //category cursor loaded, initialize layout
+                        prepareFragment(cursor);
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                    }
+                });
+    }
+
 
 }
