@@ -188,7 +188,7 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
                 return new CursorLoader(
                         mFragment.getActivity(),
                         uri,
-                        CategoryColumns.PROJECTION,
+                        CategoryColumns.PROJECTION_CATEGORY,
                         null,
                         null,
                         Contractor.CategoryEntry.SORT_ORDER_DEFAULT);
