@@ -108,6 +108,8 @@ public class Boss extends MyBoss {
     //mAuthStateListener - firebase authentication listener
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    public static int LOADER_EXERCISE_BASE = 700;
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -120,6 +122,7 @@ public class Boss extends MyBoss {
  *      void initButlers() - initialize Butler classes, handles calls to APIs
  */
 /**************************************************************************************************/
+    private boolean mInitializeUser;
     /*
      * void onCreate() - called when application is first created. Initialize support classes
      */
@@ -130,7 +133,8 @@ public class Boss extends MyBoss {
         mKeeperRegistry = HouseKeeperRegistry.getInstance();
         mKeeperRegistry.initializeHouseKeepers();
 
-        dropAllTables();
+        mInitializeUser = false;
+        //dropAllTables();
 
         initializeFirebaseAuth();
 
@@ -309,7 +313,10 @@ public class Boss extends MyBoss {
                 else{
                     Log.d("Choice", "    in Firebase:" + user.userName);
                 }
-                initializeNewUser();
+
+                if(mInitializeUser){
+                    initializeNewUser();
+                }
             }
 
             @Override
@@ -480,7 +487,7 @@ public class Boss extends MyBoss {
         //get orderBy string value
         String orderBy = ExerciseFirebaseHelper.CHILD_EXERCISE_NAME;
 
-        //request client data ordered by client name
+        //request exercise data ordered by name
         exerciseFB.requestExerciseData(mCurrentUser.uid, categoryKey, orderBy, 
                 new ExerciseFirebaseHelper.OnDataLoadedListener() {
             @Override
@@ -498,7 +505,7 @@ public class Boss extends MyBoss {
 
     private void processExerciseFirebaseData(DataSnapshot dataSnapshot){
         CategoryItem categoryItem = mCategories.get(mExerciseCounter);
-        
+
         //loop through client data
         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
             //get the data from snapshot
