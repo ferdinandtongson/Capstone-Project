@@ -10,32 +10,32 @@ package me.makeachoice.gymratpta.model.contract.exercise;
 public class CategoryColumns {
 
     // Table name
-    public static final String TABLE_NAME = "category";
+    public static String TABLE_NAME = "category";
 
     //user id
-    public static final String COLUMN_UID = "uid";
+    public static String COLUMN_UID = "uid";
 
     //firebase key
-    public static final String COLUMN_FKEY = "fkey";
+    public static String COLUMN_FKEY = "fkey";
 
     //contacts id
-    public static final String COLUMN_CATEGORY_NAME = "category_name";
+    public static String COLUMN_CATEGORY_NAME = "category_name";
 
     //default sort order
-    public static final String SORT_ORDER_DEFAULT = COLUMN_CATEGORY_NAME + " ASC";
+    public static String SORT_ORDER_DEFAULT = COLUMN_CATEGORY_NAME + " ASC";
 
 
     // A "projection" defines the columns that will be returned for each row
-    public static final String[] PROJECTION =
+    public static String[] PROJECTION_CATEGORY =
             {
                     COLUMN_UID,
                     COLUMN_FKEY,
                     COLUMN_CATEGORY_NAME
             };
 
-    public static final int INDEX_UID = 0;
-    public static final int INDEX_FKEY = 1;
-    public static final int INDEX_CATEGORY_NAME = 2;
+    public static int INDEX_UID = 0;
+    public static int INDEX_FKEY = 1;
+    public static int INDEX_CATEGORY_NAME = 2;
 
 
 }
