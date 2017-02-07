@@ -174,9 +174,9 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
-    public void initializeRoutineMaid(String maidKey, int layoutId){
+    public void initializeRoutineMaid(String maidKey, int layoutId, String userId){
         //create maid
-        RoutineMaid maid = new RoutineMaid(maidKey, layoutId);
+        RoutineMaid maid = new RoutineMaid(maidKey, layoutId, userId);
 
         //register maid
         registerMaid(maidKey, maid);

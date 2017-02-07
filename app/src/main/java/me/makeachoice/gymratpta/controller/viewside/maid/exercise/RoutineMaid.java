@@ -1,6 +1,11 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -14,11 +19,14 @@ import java.util.ArrayList;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.RoutineRecyclerAdapter;
-import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineSessionItem;
-import me.makeachoice.gymratpta.model.stubData.RoutineStubData;
+import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
 
 /**************************************************************************************************/
 /*
@@ -47,7 +55,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
  * Class Variables
  *      int CONTEXT_MENU_EDIT - "edit" context menu id number
  *      int CONTEXT_MENU_DELETE = "delete" context menu id number
- *      ArrayList<RoutineSessionItem> mData - data list consumed by the adapter
+ *      ArrayList<RoutineItem> mData - data list consumed by the adapter
  *      ExerciseRecyclerAdapter mAdapter - adapter consumed by recycler
  */
 /**************************************************************************************************/
@@ -59,10 +67,12 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     private final static int CONTEXT_MENU_DELETE = 1;
 
     //mData - data list consumed by the adapter
-    private ArrayList<RoutineSessionItem> mData;
+    private ArrayList<RoutineItem> mData;
 
     //mAdapter - adapter consumed by recycler
     private RoutineRecyclerAdapter mAdapter;
+
+    private String mUserId;
 
 /**************************************************************************************************/
 
@@ -74,9 +84,11 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     /*
      * RoutineMaid(...) - constructor
      */
-    public RoutineMaid(String maidKey, int layoutId){
+    public RoutineMaid(String maidKey, int layoutId, String userId){
         //get maidKey
         mMaidKey = maidKey;
+
+        mUserId = userId;
 
         //fragment layout id number
         mLayoutId = layoutId;
@@ -114,8 +126,8 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
-        //prepare fragment components
-        prepareFragment();
+        //load routines
+        loadRoutines();
     }
 
     /*
@@ -140,16 +152,18 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     /*
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
-    private void prepareFragment(){
+    private void prepareFragment(Cursor cursor){
+        Log.d("Choice", "RoutineMaid.prepareFragment: " + cursor.getCount());
         //initialize "empty" text, displayed if data is empty
         initializeEmptyText();
 
         //initialize adapter
-        initializeAdapter();
+        //initializeAdapter();
 
         //initialize recycler view
-        initializeRecycler();
+        //initializeRecycler();
 
+        mData = new ArrayList();
         //check if data is empty
         checkForEmptyRecycler(mData.isEmpty());
 
@@ -169,7 +183,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
     private void initializeAdapter() {
         //get data stub
-        mData = RoutineStubData.createDefaultRoutineSessions(mLayout.getContext());
+        //mData = RoutineStubData.createDefaultRoutines(mLayout.getContext());
 
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.card_routine;
@@ -205,7 +219,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         //get clientCardItem
-        RoutineSessionItem item = (RoutineSessionItem)v.getTag(R.string.recycler_tagItem);
+        RoutineItem item = (RoutineItem)v.getTag(R.string.recycler_tagItem);
 
         //get routine name
         String routineName = (item.routineName);
@@ -240,5 +254,41 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
 /**************************************************************************************************/
 
+    /*
+     * void loadRoutines() - loads routines onto cursor used by Adapter.
+     */
+    private void loadRoutines(){
+        // Initializes a loader for loading clients
+        mFragment.getActivity().getSupportLoaderManager().initLoader(LOADER_ROUTINE, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request client cursor from local database
+                        Uri uri = Contractor.RoutineEntry.buildRoutineByUID(mUserId);
+                        Log.d("Choice", "RoutineMaid.loadRoutines");
+                        Log.d("Choice", "     uri: " + uri);
+
+                        //get cursor
+                        return new CursorLoader(
+                                mFragment.getActivity(),
+                                uri,
+                                RoutineColumns.PROJECTION_ROUTINE,
+                                null,
+                                null,
+                                Contractor.RoutineEntry.SORT_ORDER_DEFAULT);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //category cursor loaded, initialize layout
+                        prepareFragment(cursor);
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                    }
+                });
+    }
 
 }
