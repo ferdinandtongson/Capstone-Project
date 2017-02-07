@@ -6,8 +6,39 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineNameFBItem;
 
 public class RoutineStubData {
+
+    public static ArrayList<RoutineNameFBItem> createDefaultRoutineNames(Context ctx){
+        ArrayList<RoutineNameFBItem> routineNames = new ArrayList();
+
+        RoutineNameFBItem item01 = new RoutineNameFBItem();
+        item01.routineName = "Arm Routine";
+        routineNames.add(item01);
+
+        RoutineNameFBItem item02 = new RoutineNameFBItem();
+        item02.routineName = "Back Routine";
+        routineNames.add(item02);
+
+        RoutineNameFBItem item03 = new RoutineNameFBItem();
+        item03.routineName = "Core Routine";
+        routineNames.add(item03);
+
+        RoutineNameFBItem item04 = new RoutineNameFBItem();
+        item04.routineName = "Chest Routine";
+        routineNames.add(item04);
+
+        RoutineNameFBItem item05 = new RoutineNameFBItem();
+        item05.routineName = "Legs Routine";
+        routineNames.add(item05);
+
+        RoutineNameFBItem item06 = new RoutineNameFBItem();
+        item06.routineName = "Shoulders Routine";
+        routineNames.add(item06);
+
+        return routineNames;
+    }
 
     public static ArrayList<RoutineItem> createDefaultRoutines(Context ctx){
         ArrayList<RoutineItem> routines = new ArrayList();
