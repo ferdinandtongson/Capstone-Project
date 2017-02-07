@@ -217,8 +217,54 @@ public class Contractor {
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EXERCISE;
 
 
+        //"content://CONTENT_AUTHORITY/exercise/[_id]
         public static Uri buildExerciseUri(long id) {
-            return withAppendedId(CONTENT_URI, id);
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]
+        public static Uri buildExerciseByUID(String uid) {
+            return CONTENT_URI.buildUpon().appendPath(uid).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/category_key/[categoryKey]
+        public static Uri buildExerciseByCategoryKey(String uid, String categoryKey) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CATEGORY_KEY).appendPath(categoryKey).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/fkey/[fKey]
+        public static Uri buildExerciseByFirebaseKey(String uid, String fKey) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_FKEY).appendPath(fKey).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/[categoryKey]/exercise_name/[exerciseName]
+        public static Uri buildExerciseByName(String uid, String categoryKey, String name) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(categoryKey).
+                    appendPath(COLUMN_EXERCISE_NAME).appendPath(name).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/....
+        public static String getUIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/category_key/[categoryKey]
+        public static String getCategoryKeyFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/fkey/[fKey]
+        public static String getFirebaseKeyFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/[categoryKey]/exercise_name/[exerciseName]
+        public static String getCategoryKeyFromExerciseNameUri(Uri uri) {
+            return uri.getPathSegments().get(2);
+        }
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/[categoryKey]/exercise_name/[exerciseName]
+        public static String getNameFromExerciseNameUri(Uri uri) {
+            return uri.getPathSegments().get(4);
         }
     }
 
