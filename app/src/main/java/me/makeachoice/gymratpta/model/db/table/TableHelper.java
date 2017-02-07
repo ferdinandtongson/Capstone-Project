@@ -50,36 +50,9 @@ public class TableHelper {
     public final static String SQL_CREATE_ROUTINE_TABLE = "CREATE TABLE " + Contractor.RoutineEntry.TABLE_NAME + " (" +
             Contractor.RoutineEntry._ID + " INTEGER PRIMARY KEY," +
             Contractor.RoutineEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
             Contractor.RoutineEntry.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE01 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE02 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE03 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE04 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE05 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE06 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE07 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE08 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE09 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE10 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY01 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY02 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY03 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY04 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY05 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY06 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY07 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY08 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY09 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY10 + " TEXT, " +
-            Contractor.RoutineEntry.COLUMN_SET01 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET02 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET03 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET04 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET05 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET06 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET07 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET08 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET09 + " INTEGER, " +
-            Contractor.RoutineEntry.COLUMN_SET10 + " INTEGER);";
+            Contractor.RoutineEntry.COLUMN_ORDER_NUMBER + " INTEGER NOT NULL, " +
+            Contractor.RoutineEntry.COLUMN_EXERCISE + " TEXT NOT NULL, " +
+            Contractor.RoutineEntry.COLUMN_CATEGORY + " TEXT NOT NULL, " +
+            Contractor.RoutineEntry.COLUMN_NUM_SETS + " INTEGER NOT NULL);";
 }
