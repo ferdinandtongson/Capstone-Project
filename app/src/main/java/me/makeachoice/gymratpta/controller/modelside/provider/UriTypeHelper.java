@@ -53,15 +53,15 @@ public class UriTypeHelper {
             case CATEGORY_WITH_NAME:
                 return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
             case EXERCISE:
-                return Contractor.ClientEntry.CONTENT_TYPE;
+                return Contractor.ExerciseEntry.CONTENT_TYPE;
             case EXERCISE_WITH_UID:
-                return Contractor.ClientEntry.CONTENT_TYPE;
+                return Contractor.ExerciseEntry.CONTENT_TYPE;
             case EXERCISE_WITH_CATEGORY_KEY:
-                return Contractor.ClientEntry.CONTENT_TYPE;
+                return Contractor.ExerciseEntry.CONTENT_TYPE;
             case EXERCISE_WITH_FKEY:
-                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
+                return Contractor.ExerciseEntry.CONTENT_ITEM_TYPE;
             case EXERCISE_WITH_NAME:
-                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
+                return Contractor.ExerciseEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
