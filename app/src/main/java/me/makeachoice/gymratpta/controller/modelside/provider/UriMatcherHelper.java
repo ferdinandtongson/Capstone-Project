@@ -55,11 +55,11 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, CLIENT_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fkey]
-        String fkeyPath = Contractor.PATH_CLIENT + "/*" + Contractor.ClientEntry.COLUMN_FKEY + "/*";
+        String fkeyPath = Contractor.PATH_CLIENT + "/*/" + Contractor.ClientEntry.COLUMN_FKEY + "/*";
         matcher.addURI(authority, fkeyPath, CLIENT_WITH_FKEY);
 
         //"content://CONTENT_AUTHORITY/client/[uid]/client_status/[status]
-        String statusPath = Contractor.PATH_CLIENT + "/*" + Contractor.ClientEntry.COLUMN_CLIENT_STATUS + "/*";
+        String statusPath = Contractor.PATH_CLIENT + "/*/" + Contractor.ClientEntry.COLUMN_CLIENT_STATUS + "/*";
         matcher.addURI(authority, statusPath, CLIENT_WITH_STATUS);
 
         addUriCategory(matcher, authority);
@@ -77,11 +77,11 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, CATEGORY_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/category/[uid]/fkey/[fkey]
-        String fkeyPath = Contractor.PATH_CATEGORY + "/*" + Contractor.CategoryEntry.COLUMN_FKEY + "/*";
+        String fkeyPath = Contractor.PATH_CATEGORY + "/*/" + Contractor.CategoryEntry.COLUMN_FKEY + "/*";
         matcher.addURI(authority, fkeyPath, CATEGORY_WITH_FKEY);
 
         //"content://CONTENT_AUTHORITY/category/[uid]/category_name/[name]
-        String namePath = Contractor.PATH_CATEGORY + "/*" + Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + "/*";
+        String namePath = Contractor.PATH_CATEGORY + "/*/" + Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + "/*";
         matcher.addURI(authority, namePath, CATEGORY_WITH_NAME);
 
     }
@@ -95,15 +95,15 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, EXERCISE_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/exercise/[uid]/category_key/[categoryKey]
-        String categoryKeyPath = Contractor.PATH_EXERCISE + "/*" + Contractor.ExerciseEntry.COLUMN_CATEGORY_KEY + "/*";
-        matcher.addURI(authority, categoryKeyPath, EXERCISE_WITH_CATEGORY_KEY);
+        String exerciseKeyPath = Contractor.PATH_EXERCISE + "/*/" + Contractor.ExerciseEntry.COLUMN_CATEGORY_KEY + "/*";
+        matcher.addURI(authority, exerciseKeyPath, EXERCISE_WITH_CATEGORY_KEY);
 
         //"content://CONTENT_AUTHORITY/exercise/[uid]/fkey/[fkey]
-        String fkeyPath = Contractor.PATH_EXERCISE + "/*" + Contractor.ExerciseEntry.COLUMN_FKEY + "/*";
+        String fkeyPath = Contractor.PATH_EXERCISE + "/*/" + Contractor.ExerciseEntry.COLUMN_FKEY + "/*";
         matcher.addURI(authority, fkeyPath, EXERCISE_WITH_FKEY);
 
         //"content://CONTENT_AUTHORITY/exercise/[uid]/[categoryKey]/exercise_name/[exerciseName]
-        String namePath = Contractor.PATH_EXERCISE + "/*/*" + Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + "/*";
+        String namePath = Contractor.PATH_EXERCISE + "/*/*/" + Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + "/*";
         matcher.addURI(authority, namePath, EXERCISE_WITH_NAME);
 
     }
