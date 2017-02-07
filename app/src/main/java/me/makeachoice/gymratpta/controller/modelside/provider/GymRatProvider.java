@@ -24,6 +24,7 @@ import android.net.Uri;
 
 import me.makeachoice.gymratpta.controller.modelside.query.CategoryQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.query.ExerciseQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
@@ -36,6 +37,11 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_STATUS;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_CATEGORY_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_FKEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.dbUriMatcher;
@@ -99,11 +105,27 @@ public class GymRatProvider extends ContentProvider {
             case CATEGORY_WITH_NAME:
                 retCursor = CategoryQueryHelper.getCategoryByName(mOpenHelper, uri, projection, sortOrder);
                 break;
+            case EXERCISE:
+                retCursor = ExerciseQueryHelper.getExercises(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case EXERCISE_WITH_UID:
+                retCursor = ExerciseQueryHelper.getExerciseByUId(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case EXERCISE_WITH_CATEGORY_KEY:
+                retCursor = ExerciseQueryHelper.getExerciseByCategory(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case EXERCISE_WITH_FKEY:
+                retCursor = ExerciseQueryHelper.getExerciseByFKey(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case EXERCISE_WITH_NAME:
+                retCursor = ExerciseQueryHelper.getExerciseByName(mOpenHelper, uri, projection, sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
+
     }
 
     /*
@@ -129,6 +151,9 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case CATEGORY:
                 returnUri = CategoryQueryHelper.insertCategory(db, values);
+                break;
+            case EXERCISE:
+                returnUri = ExerciseQueryHelper.insertExercise(db, values);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -168,6 +193,9 @@ public class GymRatProvider extends ContentProvider {
             case CATEGORY:
                 rowsDeleted = CategoryQueryHelper.deleteCategory(db, uri, selection, selectionArgs);
                 break;
+            case EXERCISE:
+                rowsDeleted = ExerciseQueryHelper.deleteExercise(db, uri, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -195,6 +223,9 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case CATEGORY:
                 rowsUpdated = CategoryQueryHelper.updateCategory(db, uri, values, selection, selectionArgs);
+                break;
+            case EXERCISE:
+                rowsUpdated = ExerciseQueryHelper.updateExercise(db, uri, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -247,6 +278,21 @@ public class GymRatProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(Contractor.CategoryEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case EXERCISE:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(Contractor.ExerciseEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }
