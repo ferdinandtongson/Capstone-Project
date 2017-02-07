@@ -112,9 +112,9 @@ public class ExerciseQueryHelper {
     }
 
     /*
-     * Cursor getExerciseByUCategory(...) - get exercise by user id
+     * Cursor getExerciseByCategory(...) - get exercise by user id
      */
-    public static Cursor getExerciseByUCategory(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
+    public static Cursor getExerciseByCategory(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/exercise/[uid]/category_key/[categoryKey]
         String uid = Contractor.ExerciseEntry.getUIdFromUri(uri);
         String categoryKey = Contractor.ExerciseEntry.getCategoryKeyFromUri(uri);
