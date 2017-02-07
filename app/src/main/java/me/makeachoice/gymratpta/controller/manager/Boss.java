@@ -57,17 +57,36 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
+import me.makeachoice.gymratpta.BuildConfig;
+import me.makeachoice.gymratpta.controller.modelside.firebase.CategoryFirebaseHelper;
+import me.makeachoice.gymratpta.controller.modelside.firebase.ExerciseFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.firebase.UserFirebaseHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 import me.makeachoice.gymratpta.model.item.UserItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
+import me.makeachoice.gymratpta.model.item.exercise.CategoryFBItem;
+import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
+import me.makeachoice.gymratpta.model.item.exercise.ExerciseFBItem;
+import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
+import me.makeachoice.gymratpta.model.stubData.CategoryStubData;
+import me.makeachoice.gymratpta.model.stubData.ExerciseStubData;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
+
+import static android.R.attr.category;
 
 /**************************************************************************************************/
 
@@ -82,6 +101,12 @@ public class Boss extends MyBoss {
 
     //mKeeperRegistry - house keeper registry
     private HouseKeeperRegistry mKeeperRegistry;
+
+    //mFirebaseAuth - firebase authentication instance
+    private FirebaseAuth mFirebaseAuth;
+
+    //mAuthStateListener - firebase authentication listener
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
 /**************************************************************************************************/
 
@@ -107,6 +132,8 @@ public class Boss extends MyBoss {
 
         dropAllTables();
 
+        initializeFirebaseAuth();
+
         //initialize database
         initDatabase();
 
@@ -131,6 +158,7 @@ public class Boss extends MyBoss {
         dbHelper.dropTable(db, Contractor.UserEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.ClientEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.CategoryEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.ExerciseEntry.TABLE_NAME);
 
         db.close();
 
@@ -197,8 +225,60 @@ public class Boss extends MyBoss {
 
 /**************************************************************************************************/
 
+    /*
+     * void initializeFirebaseAuth() - initialize Firebase authentication
+     */
+    private void initializeFirebaseAuth(){
+        Log.d("Choice", "Boss.initializeFirebaseAuth");
+        mAuthCounter = 0;
+        //get authentication instance
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        //create firebase authentication listener
+        mAuthStateListener = new FirebaseAuth.AuthStateListener(){
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if(mAuthCounter == 0){
+                    mAuthCounter++;
+
+                    if(user == null){
+                        //debug count used to prevent multiple userSignIn calls, known bug
+                        userSignIn();
+                    }
+                    Log.d("Choice", "     user: " + user.getDisplayName());
+                    saveUser(user);
+
+                }
+            }
+        };
+
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
+    }
+
+    private int mAuthCounter;
+    //REQUEST_CODE_SIGN_IN - request code used by firebaseUI
+    private static final int REQUEST_CODE_SIGN_IN = 200;
+
+
+    private void userSignIn(){
+        mActivity.startActivityForResult(AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setProviders(Arrays.asList(
+                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
+                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                .build(), REQUEST_CODE_SIGN_IN);
+    }
+
+
+
     private UserItem mCurrentUser;
-    public void saveUser(FirebaseUser user){
+    private void saveUser(FirebaseUser user){
         Log.d("Choice", "Boss.saveUser");
         mCurrentUser = saveUserItem(user);
 
@@ -229,6 +309,7 @@ public class Boss extends MyBoss {
                 else{
                     Log.d("Choice", "    in Firebase:" + user.userName);
                 }
+                initializeNewUser();
             }
 
             @Override
@@ -275,4 +356,184 @@ public class Boss extends MyBoss {
     }
 
     public ClientItem getClient(){ return mCurrentClient; }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private void initializeNewUser(){
+        Log.d("Choice", "Boss.initializeNewUser");
+        initializeCategoryData();
+    }
+
+    private void initializeCategoryData(){
+        Log.d("Choice", "Boss.initializeCategoryData");
+        ExerciseStubData.createDefaultExercises(this);
+        ArrayList<CategoryFBItem> categories = CategoryStubData.createDefaultCategories(this);
+
+        CategoryFirebaseHelper categoryFB = CategoryFirebaseHelper.getInstance();
+
+        int count = categories.size();
+        for(int i = 0; i < count; i++){
+            CategoryFBItem item = categories.get(i);
+
+            categoryFB.addCategory(mCurrentUser.uid, item);
+        }
+
+        loadInitCategoryData();
+    }
+
+    private HashMap<String,String> mDoublesMap;
+    private void loadInitCategoryData(){
+        Log.d("Choice", "Boss.loadInitCategoryData");
+        //initialize category list array
+        mDoublesMap = new HashMap();
+
+        //get client firebase instance
+        final CategoryFirebaseHelper categoryFB = CategoryFirebaseHelper.getInstance();
+
+        //get orderBy string value
+        String orderBy = CategoryFirebaseHelper.CHILD_CATEGORY_NAME;
+
+        //request client data ordered by client name
+        categoryFB.requestCategoryData(mCurrentUser.uid, orderBy, new CategoryFirebaseHelper.OnDataLoadedListener() {
+            @Override
+            public void onDataLoaded(DataSnapshot dataSnapshot) {
+
+                processCategoryFirebaseData(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled() {
+
+            }
+        });
+    }
+
+    private ArrayList<CategoryItem> mCategories;
+    private void processCategoryFirebaseData(DataSnapshot dataSnapshot){
+        mCategories = new ArrayList();
+        //loop through client data
+        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+            //get the data from snapshot
+            CategoryFBItem fbItem = postSnapshot.getValue(CategoryFBItem.class);
+
+            //create client item, used for local database
+            CategoryItem category = new CategoryItem(fbItem);
+            category.uid = mCurrentUser.uid;
+            category.fkey = postSnapshot.getKey();
+
+            //add item to client list
+            updateCategoryDatabase(category);
+        }
+
+        initializeExerciseData();
+    }
+
+    private void updateCategoryDatabase(CategoryItem item){
+        Log.d("Choice", "Boss.updateDatabase: " + item.categoryName);
+        //get uri value for client
+        Uri uriValue = Contractor.CategoryEntry.CONTENT_URI;
+        Log.d("Choice", "     uri: " + uriValue);
+
+        if(!mDoublesMap.containsKey(item.categoryName)){
+            mDoublesMap.put(item.categoryName, item.categoryName);
+            mCategories.add(item);
+            //add category to sqlite database
+            getContentResolver().insert(uriValue, item.getContentValues());
+        }
+
+    }
+
+    private void initializeExerciseData(){
+        Log.d("Choice", "Boss.initializeCategoryData");
+        ExerciseStubData.createDefaultExercises(this);
+
+        ExerciseFirebaseHelper exerciseFB = ExerciseFirebaseHelper.getInstance();
+
+        int count = mCategories.size();
+        for(int i = 0; i < count; i++){
+            CategoryItem item = mCategories.get(i);
+            
+            ArrayList<ExerciseFBItem> exercises = ExerciseStubData.getExercises(i);
+            
+            exerciseFB.addExerciseDataToCategory(mCurrentUser.uid, item.fkey, exercises);
+        }
+
+        mExerciseCounter = 0;
+        loadInitExerciseData(mCategories.get(mExerciseCounter).fkey);
+    }
+    
+    private int mExerciseCounter;
+    private void loadInitExerciseData(String categoryKey){
+        Log.d("Choice", "Boss.loadInitCategoryData");
+        //initialize category list array
+        mDoublesMap.clear();
+
+        //get client firebase instance
+        final ExerciseFirebaseHelper exerciseFB = ExerciseFirebaseHelper.getInstance();
+
+        //get orderBy string value
+        String orderBy = ExerciseFirebaseHelper.CHILD_EXERCISE_NAME;
+
+        //request client data ordered by client name
+        exerciseFB.requestExerciseData(mCurrentUser.uid, categoryKey, orderBy, 
+                new ExerciseFirebaseHelper.OnDataLoadedListener() {
+            @Override
+            public void onDataLoaded(DataSnapshot dataSnapshot) {
+
+                processExerciseFirebaseData(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled() {
+
+            }
+        });
+    }
+
+    private void processExerciseFirebaseData(DataSnapshot dataSnapshot){
+        CategoryItem categoryItem = mCategories.get(mExerciseCounter);
+        
+        //loop through client data
+        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+            //get the data from snapshot
+            ExerciseFBItem fbItem = postSnapshot.getValue(ExerciseFBItem.class);
+
+            //create client item, used for local database
+            ExerciseItem exercise = new ExerciseItem(fbItem);
+            exercise.uid = mCurrentUser.uid;
+            exercise.categoryKey = categoryItem.fkey;
+            exercise.fkey = postSnapshot.getKey();
+
+            //add item to client list
+            updateExerciseDatabase(exercise);
+        }
+
+        mExerciseCounter++;
+        
+        if(mExerciseCounter < mCategories.size()){
+            loadInitExerciseData(mCategories.get(mExerciseCounter).fkey);
+
+        }
+    }
+
+    private void updateExerciseDatabase(ExerciseItem item){
+        Log.d("Choice", "Boss.updateDatabase: " + item.exerciseName);
+        //get uri value for client
+        Uri uriValue = Contractor.ExerciseEntry.CONTENT_URI;
+        Log.d("Choice", "     uri: " + uriValue);
+
+        if(!mDoublesMap.containsKey(item.exerciseName)){
+            mDoublesMap.put(item.exerciseName, item.exerciseName);
+            //add category to sqlite database
+            getContentResolver().insert(uriValue, item.getContentValues());
+        }
+
+    }
+
 }
