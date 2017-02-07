@@ -3,19 +3,13 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.ResultCodes;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Arrays;
-
-import me.makeachoice.gymratpta.BuildConfig;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.viewside.drawer.HomeDrawer;
@@ -154,8 +148,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
         //get Boss application
         mBoss = (Boss)mActivity.getApplication();
 
-        //initialize firebase authentication
-        initializeFirebaseAuth();
+        initializeNavigation();
     }
 
     /*
@@ -165,7 +158,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
     public void start(){
         super.start();
         //set authentication listener
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        //mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     /*
@@ -176,7 +169,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
         super.stop();
         if(mAuthStateListener != null){
             //remove authentication listener
-            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+            //mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
 
@@ -187,8 +180,9 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
     public void activityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == REQUEST_CODE_SIGN_IN) {
             if (resultCode == RESULT_OK) {
+                Log.d("Choice", "GymRatBaseKeeper.activityResult - user signed in");
                 //user is signed in, initialize navigation components
-                initializeNavigation();
+                //initializeNavigation();
                 return;
             }
 
@@ -218,37 +212,6 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
  *      void initializeDrawer() - initialize drawer navigation component
  */
 /**************************************************************************************************/
-    /*
-     * void initializeFirebaseAuth() - initialize Firebase authentication
-     */
-    private void initializeFirebaseAuth(){
-        Log.d("Choice", "GymRatBaseKeeper.initializeFirebaseAuth");
-        mFirebaseDebugCount = 0;
-        //get authentication instance
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
-        //create firebase authentication listener
-        mAuthStateListener = new FirebaseAuth.AuthStateListener(){
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if(mFirebaseDebugCount == 0){
-                    mFirebaseDebugCount++;
-
-                    if(user != null){
-                        //user signed in, initialize navigation layout
-                        initializeNavigation();
-                    }else{
-                        //debug count used to prevent multiple userSignIn calls, known bug
-                        userSignIn();
-                    }
-                    mBoss.saveUser(user);
-
-                }
-            }
-        };
-    }
 
     /*
      * void initializeNavigation() - initialize navigation ui
@@ -333,18 +296,6 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
  * Class Methods
  */
 /**************************************************************************************************/
-
-    private void userSignIn(){
-        mActivity.startActivityForResult(AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setProviders(Arrays.asList(
-                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                        new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
-                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                .build(), REQUEST_CODE_SIGN_IN);
-    }
 
     public void setOnQuickHelpRequestListener(OnQuickHelpRequestListener listener){
         mQuickHelpListener = listener;
