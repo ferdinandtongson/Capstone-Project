@@ -23,6 +23,8 @@ public class RoutineNameColumns {
     //routine name
     public static String COLUMN_ROUTINE_NAME = "routine_name";
 
+    //default sort order
+    public static String SORT_ORDER_DEFAULT = COLUMN_ROUTINE_NAME + " ASC";
 
     // A "projection" defines the columns that will be returned for each row
     public static String[] PROJECTION_ROUTINE_NAME =
