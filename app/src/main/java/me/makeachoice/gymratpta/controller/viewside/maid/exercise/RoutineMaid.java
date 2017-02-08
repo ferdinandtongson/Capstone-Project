@@ -50,7 +50,7 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NA
 /**************************************************************************************************/
 
 public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge,
-        RecyclerView.OnCreateContextMenuListener, MyActivity.OnContextItemSelectedListener{
+        RecyclerView.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener{
 
 /**************************************************************************************************/
 /*
@@ -167,6 +167,8 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //initialize recycler view
         initializeRecycler();
 
+        initializeFAB();
+
         //check if data is empty
         checkForEmptyRecycler(mData.isEmpty());
 
@@ -194,6 +196,8 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //create adapter consumed by the recyclerView
         mAdapter = new RoutineRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
 
+        mAdapter.setOnCreateContextMenuListener(this);
+
         //swap old data with new data
         mAdapter.swapData(mData);
     }
@@ -206,6 +210,22 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         mBasicRecycler.setAdapter(mAdapter);
     }
 
+    private void initializeFAB(){
+        String description = mFragment.getString(R.string.description_fab_routine);
+        mFAB.setContentDescription(description);
+
+        setOnClickFABListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFabClicked(view);
+            }
+        });
+    }
+
+
+    private void onFabClicked(View view){
+        Log.d("Choice", "RoutineMaid.onFabClicked");
+    }
 
 /**************************************************************************************************/
 
@@ -222,7 +242,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         //get clientCardItem
-        RoutineItem item = (RoutineItem)v.getTag(R.string.recycler_tagItem);
+        RoutineDisplayItem item = (RoutineDisplayItem)v.getTag(R.string.recycler_tagItem);
 
         //get routine name
         String routineName = (item.routineName);
@@ -236,12 +256,17 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         menu.add(0, CONTEXT_MENU_EDIT, 0, strEdit);
         menu.add(0, CONTEXT_MENU_DELETE, 0, strDelete);
 
+        int count = menu.size();
+        for(int i = 0; i < count; i++){
+            menu.getItem(i).setOnMenuItemClickListener(this);
+        }
+
     }
 
     /*
-     * boolean onContextItemSelected(MenuItem) - an item in the context menu has been clicked
+     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
      */
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case CONTEXT_MENU_EDIT:
                 Log.d("Choice", "     edit");
