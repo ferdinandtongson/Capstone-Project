@@ -72,6 +72,8 @@ import java.util.HashMap;
 import me.makeachoice.gymratpta.BuildConfig;
 import me.makeachoice.gymratpta.controller.modelside.firebase.CategoryFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.firebase.ExerciseFirebaseHelper;
+import me.makeachoice.gymratpta.controller.modelside.firebase.RoutineFirebaseHelper;
+import me.makeachoice.gymratpta.controller.modelside.firebase.RoutineNameFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.firebase.UserFirebaseHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
@@ -82,11 +84,13 @@ import me.makeachoice.gymratpta.model.item.exercise.CategoryFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineNameFBItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineNameItem;
 import me.makeachoice.gymratpta.model.stubData.CategoryStubData;
 import me.makeachoice.gymratpta.model.stubData.ExerciseStubData;
+import me.makeachoice.gymratpta.model.stubData.RoutineStubData;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
-
-import static android.R.attr.category;
 
 /**************************************************************************************************/
 
@@ -109,6 +113,8 @@ public class Boss extends MyBoss {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     public static int LOADER_EXERCISE_BASE = 700;
+    public static int LOADER_ROUTINE = 800;
+    public static int LOADER_ROUTINE_NAME = 900;
 
 /**************************************************************************************************/
 
@@ -525,15 +531,15 @@ public class Boss extends MyBoss {
         
         if(mExerciseCounter < mCategories.size()){
             loadInitExerciseData(mCategories.get(mExerciseCounter).fkey);
-
+        }
+        else{
+            initializeRoutineNameData();
         }
     }
 
     private void updateExerciseDatabase(ExerciseItem item){
-        Log.d("Choice", "Boss.updateDatabase: " + item.exerciseName);
         //get uri value for client
         Uri uriValue = Contractor.ExerciseEntry.CONTENT_URI;
-        Log.d("Choice", "     uri: " + uriValue);
 
         if(!mDoublesMap.containsKey(item.exerciseName)){
             mDoublesMap.put(item.exerciseName, item.exerciseName);
@@ -541,6 +547,63 @@ public class Boss extends MyBoss {
             getContentResolver().insert(uriValue, item.getContentValues());
         }
 
+    }
+
+    private void initializeRoutineNameData(){
+        ArrayList<RoutineNameFBItem> routineNames = RoutineStubData.createDefaultRoutineNames(this);
+
+        RoutineNameFirebaseHelper routineNameFB = RoutineNameFirebaseHelper.getInstance();
+
+        routineNameFB.addRoutineNameData(mCurrentUser.uid, routineNames);
+
+        int count = routineNames.size();
+        for(int i = 0; i < count; i++){
+            updateRoutineNamesDatabase(routineNames.get(i));
+        }
+
+        initializeRoutineData();
+    }
+
+    private void updateRoutineNamesDatabase(RoutineNameFBItem item){
+        //get uri value for client
+        Uri uriValue = Contractor.RoutineNameEntry.CONTENT_URI;
+
+        RoutineNameItem routineName = new RoutineNameItem(item);
+        routineName.uid = mCurrentUser.uid;
+
+        //add category to sqlite database
+        Uri uri = getContentResolver().insert(uriValue, routineName.getContentValues());
+
+        Log.d("Choice", "Boss.updateRoutine: " + routineName.routineName);
+        Log.d("Choice", "     uri: " + uri.toString());
+    }
+
+
+    private void initializeRoutineData(){
+        Log.d("Choice", "Boss.initializeRoutineData");
+        ArrayList<RoutineItem> routines = RoutineStubData.createDefaultRoutines(this);
+
+        RoutineFirebaseHelper routineFB = RoutineFirebaseHelper.getInstance();
+
+        routineFB.addRoutineData(mCurrentUser.uid, routines);
+
+        int count = routines.size();
+        for(int i = 0; i < count; i++){
+            updateRoutineDatabase(routines.get(i));
+        }
+    }
+
+    private void updateRoutineDatabase(RoutineItem item){
+        //get uri value for client
+        Uri uriValue = Contractor.RoutineEntry.CONTENT_URI;
+
+        item.uid = mCurrentUser.uid;
+
+        //add category to sqlite database
+        Uri uri = getContentResolver().insert(uriValue, item.getContentValues());
+
+        Log.d("Choice", "Boss.updateRoutine: " + item.exercise);
+        Log.d("Choice", "     uri: " + uri.toString());
     }
 
 }
