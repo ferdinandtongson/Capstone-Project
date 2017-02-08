@@ -5,7 +5,8 @@
     <string name="description_iconPhone" translatable="true">Call Client</string>
     <string name="description_imgProfile" translatable="true">Client Profile Photo</string>
 
-    <string name="description_fab_client" translatable="true">@string/add_client</string>
+    <string name="description_fab_client" translatable="false">@string/add_client</string>
+    <string name="description_fab_routine" translatable="false">@string/add_routine</string>
 
     <string name="description_card_txtSets" translatable="true">Number of Sets</string>
 
