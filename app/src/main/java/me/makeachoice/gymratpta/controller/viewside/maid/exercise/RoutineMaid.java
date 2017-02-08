@@ -20,13 +20,15 @@ import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.RoutineRecyclerAdapter;
 import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineDisplayItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NAME;
 
 /**************************************************************************************************/
 /*
@@ -67,7 +69,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     private final static int CONTEXT_MENU_DELETE = 1;
 
     //mData - data list consumed by the adapter
-    private ArrayList<RoutineItem> mData;
+    private ArrayList<RoutineDisplayItem> mData;
 
     //mAdapter - adapter consumed by recycler
     private RoutineRecyclerAdapter mAdapter;
@@ -126,8 +128,10 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
+        mData = new ArrayList();
         //load routines
-        loadRoutines();
+        loadRoutineNames();
+        prepareFragment();
     }
 
     /*
@@ -152,18 +156,17 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     /*
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
-    private void prepareFragment(Cursor cursor){
-        Log.d("Choice", "RoutineMaid.prepareFragment: " + cursor.getCount());
+    private void prepareFragment(){
+        //Log.d("Choice", "RoutineMaid.prepareFragment: " + cursor.getCount());
         //initialize "empty" text, displayed if data is empty
         initializeEmptyText();
 
         //initialize adapter
-        //initializeAdapter();
+        initializeAdapter();
 
         //initialize recycler view
-        //initializeRecycler();
+        initializeRecycler();
 
-        mData = new ArrayList();
         //check if data is empty
         checkForEmptyRecycler(mData.isEmpty());
 
@@ -255,6 +258,57 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 /**************************************************************************************************/
 
     /*
+     * void loadRoutineNames() - loads routine names onto cursor used by Adapter.
+     */
+    private void loadRoutineNames(){
+        Log.d("Choice", "RoutineMaid.laodRoutineNames");
+
+        // Initializes a loader for loading clients
+        mFragment.getActivity().getSupportLoaderManager().initLoader(LOADER_ROUTINE_NAME, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request client cursor from local database
+                        Uri uri = Contractor.RoutineNameEntry.buildRoutineNameByUID(mUserId);
+                        Log.d("Choice", "     uri: " + uri.toString());
+
+                        //get cursor
+                        return new CursorLoader(
+                                mFragment.getActivity(),
+                                uri,
+                                RoutineNameColumns.PROJECTION_ROUTINE_NAME,
+                                null,
+                                null,
+                                Contractor.RoutineNameEntry.SORT_ORDER_DEFAULT);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        Log.d("Choice", "RoutineMaid.loadRoutineName: " + cursor.getCount());
+                        int count = cursor.getCount();
+                        for(int i = 0; i < count; i++){
+                            cursor.moveToPosition(i);
+                            RoutineDisplayItem item = new RoutineDisplayItem();
+                            item.routineName = cursor.getString(RoutineNameColumns.INDEX_ROUTINE_NAME);
+
+                            mData.add(item);
+                        }
+
+                        mRoutineCount = 0;
+                        loadRoutines();
+                        mFragment.getLoaderManager().destroyLoader(LOADER_ROUTINE_NAME);
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                    }
+                });
+    }
+
+    private int mRoutineCount;
+
+    /*
      * void loadRoutines() - loads routines onto cursor used by Adapter.
      */
     private void loadRoutines(){
@@ -264,8 +318,10 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
                     @Override
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
+                        RoutineDisplayItem item = mData.get(mRoutineCount);
+
                         //request client cursor from local database
-                        Uri uri = Contractor.RoutineEntry.buildRoutineByUID(mUserId);
+                        Uri uri = Contractor.RoutineEntry.buildRoutineByName(mUserId, item.routineName);
                         Log.d("Choice", "RoutineMaid.loadRoutines");
                         Log.d("Choice", "     uri: " + uri);
 
@@ -282,13 +338,43 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
                     @Override
                     public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
                         //category cursor loaded, initialize layout
-                        prepareFragment(cursor);
+                        storeRoutines(cursor);
                     }
 
                     @Override
                     public void onLoaderReset(Loader<Cursor> cursorLoader) {
                     }
                 });
+    }
+
+    private void storeRoutines(Cursor cursor){
+        ArrayList<RoutineItem> routines = new ArrayList();
+
+        int count = cursor.getCount();
+
+        if(count > 0){
+            checkForEmptyRecycler(false);
+        }
+
+        for(int i = 0; i < count; i++){
+            cursor.moveToPosition(i);
+
+            RoutineItem item = new RoutineItem(cursor);
+            routines.add(item);
+        }
+
+        Log.d("Choice", "     routine: " + mData.get(mRoutineCount).routineName);
+        Log.d("Choice", "          routines: " + routines.size());
+        mData.get(mRoutineCount).routineExercises = routines;
+        mAdapter.addItem(mData.get(mRoutineCount));
+        mRoutineCount++;
+
+        if(mRoutineCount < mData.size()){
+            loadRoutines();
+        }
+        else{
+            Log.d("Choice", "RoutineMaid.storeRoutines - finished!!!!!");
+        }
     }
 
 }
