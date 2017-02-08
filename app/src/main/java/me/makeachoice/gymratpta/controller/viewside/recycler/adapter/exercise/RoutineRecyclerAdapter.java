@@ -11,7 +11,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineSessionItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineDisplayItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 
 /**************************************************************************************************/
 /*
@@ -35,7 +36,7 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
  *      Context mContext - activity context
  *      mItemLayoutId - item layout resource id
  *
- *      ArrayList<RoutineSessionItem> mData - an array list of item data consumed by the adapter
+ *      ArrayList<RoutineDisplayItem> mData - an array list of item data consumed by the adapter
  *      OnCreateContextMenuListener mCreateContextMenuListener - "create context menu" event listener
  */
 /**************************************************************************************************/
@@ -50,7 +51,7 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     private static String mStrDescriptionSet;
 
     //mData - an array list of item data consumed by the adapter
-    private ArrayList<RoutineSessionItem> mData;
+    private ArrayList<RoutineDisplayItem> mData;
 
     //mCreateContextMenuListener - "create context menu" event listener
     private static View.OnCreateContextMenuListener mCreateContextMenuListener;
@@ -102,16 +103,16 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     }
 
     /*
-     * RoutineSessionItem getItem(int) - get item at given position
+     * RoutineDisplayItem getItem(int) - get item at given position
      */
-    public RoutineSessionItem getItem(int position){
+    public RoutineDisplayItem getItem(int position){
         return mData.get(position);
     }
 
     /*
-     * ArrayList<RoutineSessionItem> getData() - get array data used by recycler
+     * ArrayList<RoutineDisplayItem> getData() - get array data used by recycler
      */
-    public ArrayList<RoutineSessionItem> getData(){ return mData; }
+    public ArrayList<RoutineDisplayItem> getData(){ return mData; }
 
 
 /**************************************************************************************************/
@@ -134,17 +135,17 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
 /**************************************************************************************************/
 /*
  * Public Methods:
- *      void addItem(RoutineSessionItem) - dynamically add items to adapter
- *      void adItemAt(RoutineSessionItem,int) - add item to adapter at specific position
+ *      void addItem(RoutineDisplayItem) - dynamically add items to adapter
+ *      void adItemAt(RoutineDisplayItem,int) - add item to adapter at specific position
  *      void removeItemAt(int) - remove item from adapter then refresh adapter
- *      void swapData(ArrayList<RoutineSessionItem>) - swap old data with new data
+ *      void swapData(ArrayList<RoutineDisplayItem>) - swap old data with new data
  *      void clearData() - remove all data from adapter
  */
 /**************************************************************************************************/
     /*
-     * void addItem(RoutineSessionItem) - dynamically add items to adapter
+     * void addItem(RoutineDisplayItem) - dynamically add items to adapter
      */
-    public void addItem(RoutineSessionItem item) {
+    public void addItem(RoutineDisplayItem item) {
         //add item object to data array
         mData.add(item);
 
@@ -153,9 +154,9 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     }
 
     /*
-     * void adItemAt(RoutineSessionItem,int) - add item to adapter at specific position
+     * void adItemAt(RoutineDisplayItem,int) - add item to adapter at specific position
      */
-    public void addItemAt(RoutineSessionItem item, int position){
+    public void addItemAt(RoutineDisplayItem item, int position){
         //add item object to data array at position
         mData.add(position, item);
 
@@ -173,9 +174,9 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     }
 
     /*
-     * void swapData(ArrayList<RoutineSessionItem>) - remove all data from adapter and replace with new data
+     * void swapData(ArrayList<RoutineDisplayItem>) - remove all data from adapter and replace with new data
      */
-    public void swapData(ArrayList<RoutineSessionItem> data){
+    public void swapData(ArrayList<RoutineDisplayItem> data){
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();
@@ -226,7 +227,7 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
 
             if(mData.size() > 0){
                 // Extract info from cursor
-                RoutineSessionItem item = mData.get(position);
+                RoutineDisplayItem item = mData.get(position);
 
                 //bind viewHolder components
                 holder.bindCardView(item, position);
@@ -323,16 +324,16 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 /**************************************************************************************************/
 /*
  * Binding Methods
- *      void bindCardView(RoutineSessionItem,int,int) - bind data to cardView
- *      void bindTextView(RoutineSessionItem) - bind data to textView components
+ *      void bindCardView(RoutineDisplayItem,int,int) - bind data to cardView
+ *      void bindTextView(RoutineDisplayItem) - bind data to textView components
  *      void setExerciseValues(...) - set exercise name and sets for routine
  */
 /**************************************************************************************************/
     /*
-     * void bindCardView(RoutineSessionItem,int,int) - bind data to itemView. Set tag values and contextMenu
+     * void bindCardView(RoutineDisplayItem,int,int) - bind data to itemView. Set tag values and contextMenu
      * listener, if not null
      */
-    private void bindCardView(RoutineSessionItem item, int position) {
+    private void bindCardView(RoutineDisplayItem item, int position) {
 
         mCrdView.setTag(R.string.recycler_tagPosition, position);
         mCrdView.setTag(R.string.recycler_tagItem, item);
@@ -344,29 +345,76 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
     }
 
     /*
-     * void bindTextView(RoutineSessionItem) - bind data to textView components. Set text and context
+     * void bindTextView(RoutineDisplayItem) - bind data to textView components. Set text and context
      * description values.
      */
-    private void bindTextView(RoutineSessionItem item){
+    private void bindTextView(RoutineDisplayItem item){
         mTxtRoutineName.setText(item.routineName);
         mTxtRoutineName.setContentDescription(item.routineName);
 
-        setExerciseValues(mTxtExercise01, mTxtSet01, item.exercise01, item.set01);
-        setExerciseValues(mTxtExercise02, mTxtSet02, item.exercise02, item.set02);
-        setExerciseValues(mTxtExercise03, mTxtSet03, item.exercise03, item.set03);
-        setExerciseValues(mTxtExercise04, mTxtSet04, item.exercise04, item.set04);
-        setExerciseValues(mTxtExercise05, mTxtSet05, item.exercise05, item.set05);
-        setExerciseValues(mTxtExercise06, mTxtSet06, item.exercise06, item.set06);
+        ArrayList<RoutineItem> routines = item.routineExercises;
+
+        RoutineItem routineItem;
+        int maxRoutine = routines.size();
+        for(int i = 0; i < 10; i++){
+
+            if(i < maxRoutine){
+                routineItem = routines.get(i);
+                setExerciseValues(i, routineItem.exercise, routineItem.numOfSets);
+            }
+            else{
+                setExerciseValues(i, "", 0);
+            }
+
+        }
+        /*setExerciseValues(mTxtExercise06, mTxtSet06, item.exercise06, item.set06);
         setExerciseValues(mTxtExercise07, mTxtSet07, item.exercise07, item.set07);
         setExerciseValues(mTxtExercise08, mTxtSet08, item.exercise08, item.set08);
         setExerciseValues(mTxtExercise09, mTxtSet09, item.exercise09, item.set09);
-        setExerciseValues(mTxtExercise10, mTxtSet10, item.exercise10, item.set10);
+        setExerciseValues(mTxtExercise10, mTxtSet10, item.exercise10, item.set10);*/
     }
 
+    private void setExerciseValues(int index, String exercise, int numOfSets){
+        switch(index){
+            case 0:
+                setTextViews(mTxtExercise01, mTxtSet01, exercise, numOfSets);
+                break;
+            case 1:
+                setTextViews(mTxtExercise02, mTxtSet02, exercise, numOfSets);
+                break;
+            case 2:
+                setTextViews(mTxtExercise03, mTxtSet03, exercise, numOfSets);
+                break;
+            case 3:
+                setTextViews(mTxtExercise04, mTxtSet04, exercise, numOfSets);
+                break;
+            case 4:
+                setTextViews(mTxtExercise05, mTxtSet05, exercise, numOfSets);
+                break;
+            case 5:
+                setTextViews(mTxtExercise06, mTxtSet06, exercise, numOfSets);
+                break;
+            case 6:
+                setTextViews(mTxtExercise07, mTxtSet07, exercise, numOfSets);
+                break;
+            case 7:
+                setTextViews(mTxtExercise08, mTxtSet08, exercise, numOfSets);
+                break;
+            case 8:
+                setTextViews(mTxtExercise09, mTxtSet09, exercise, numOfSets);
+                break;
+            case 9:
+                setTextViews(mTxtExercise10, mTxtSet10, exercise, numOfSets);
+                break;
+        }
+
+    }
+
+
     /*
-     * void setExerciseValues(...) - set exercise name and sets for routine
+     * void setTextViews(...) - set exercise name and sets for routine
      */
-    private void setExerciseValues(TextView txtExercise, TextView txtSet, String exercise, int set){
+    private void setTextViews(TextView txtExercise, TextView txtSet, String exercise, int set){
         if(exercise == null || exercise.equals("")){
             txtExercise.setVisibility(View.GONE);
             txtSet.setVisibility(View.GONE);
