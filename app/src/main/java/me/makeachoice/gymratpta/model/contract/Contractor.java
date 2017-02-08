@@ -9,6 +9,7 @@ import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
 
 import static android.content.ContentUris.withAppendedId;
@@ -46,6 +47,7 @@ public class Contractor {
     public static final String PATH_CATEGORY = "category";
     public static final String PATH_EXERCISE = "exercise";
     public static final String PATH_ROUTINE = "routine";
+    public static final String PATH_ROUTINE_NAME = "routineName";
 
     // To make it easy to query for the exact date, we normalize all dates that go into
     // the database to the start of the the Julian day at UTC.
@@ -282,9 +284,86 @@ public class Contractor {
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ROUTINE;
 
 
+        //"content://CONTENT_AUTHORITY/routine/[_id]
         public static Uri buildRoutineUri(long id) {
-            return withAppendedId(CONTENT_URI, id);
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
         }
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]
+        public static Uri buildRoutineByUID(String uid) {
+            return CONTENT_URI.buildUpon().appendPath(uid).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]
+        public static Uri buildRoutineByName(String uid, String routineName) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(routineName).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]/[orderNumber]
+        public static Uri buildRoutineByOrderNumber(String uid, String routineName, String orderNumber) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(routineName).appendPath(orderNumber).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]
+        public static String getUIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]
+        public static String getRoutineNameFromUri(Uri uri) {
+            return uri.getPathSegments().get(2);
+        }
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]/[orderNumber]
+        public static String getOrderNumberFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]/[exerciseName]
+        public static String getCategoryKeyFromExerciseNameUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+    }
+
+    /*
+     * RoutineNameEntry - user defined routine names
+     */
+    public static class RoutineNameEntry extends RoutineNameColumns implements BaseColumns {
+
+        public static Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_ROUTINE_NAME).build();
+
+        public static String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ROUTINE_NAME;
+        public static String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ROUTINE_NAME;
+
+
+        //"content://CONTENT_AUTHORITY/routineName/[_id]
+        public static Uri buildRoutineNameUri(long id) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/routineName/[uid]
+        public static Uri buildRoutineNameByUID(String uid) {
+            return CONTENT_URI.buildUpon().appendPath(uid).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/routineName/[uid]/routine_name/[name]
+        public static Uri buildRoutineNameByName(String uid, String name) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_ROUTINE_NAME).appendPath(name).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/routineName/[uid]/....
+        public static String getUIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        //"content://CONTENT_AUTHORITY/routineName/[uid]/routine_name/[name]
+        public static String getRoutineNameFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
     }
 
 /**************************************************************************************************/

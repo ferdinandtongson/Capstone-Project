@@ -17,6 +17,13 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_EXERCISE_WITH_ORDER_NUMBER;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME_WITH_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_ROUTINE_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.dbUriMatcher;
@@ -62,6 +69,20 @@ public class UriTypeHelper {
                 return Contractor.ExerciseEntry.CONTENT_ITEM_TYPE;
             case EXERCISE_WITH_NAME:
                 return Contractor.ExerciseEntry.CONTENT_ITEM_TYPE;
+            case ROUTINE:
+                return Contractor.RoutineEntry.CONTENT_TYPE;
+            case ROUTINE_WITH_UID:
+                return Contractor.RoutineEntry.CONTENT_TYPE;
+            case ROUTINE_WITH_ROUTINE_NAME:
+                return Contractor.RoutineEntry.CONTENT_TYPE;
+            case ROUTINE_EXERCISE_WITH_ORDER_NUMBER:
+                return Contractor.RoutineEntry.CONTENT_ITEM_TYPE;
+            case ROUTINE_NAME:
+                return Contractor.RoutineNameEntry.CONTENT_TYPE;
+            case ROUTINE_NAME_WITH_UID:
+                return Contractor.RoutineNameEntry.CONTENT_TYPE;
+            case ROUTINE_NAME_WITH_NAME:
+                return Contractor.RoutineNameEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

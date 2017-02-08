@@ -30,6 +30,16 @@ public class UriMatcherHelper {
     public static final int EXERCISE_WITH_FKEY = 403;
     public static final int EXERCISE_WITH_NAME = 404;
 
+    public static final int ROUTINE = 500;
+    public static final int ROUTINE_WITH_UID = 501;
+    public static final int ROUTINE_WITH_ROUTINE_NAME = 502;
+    public static final int ROUTINE_EXERCISE_WITH_ORDER_NUMBER = 503;
+
+    public static final int ROUTINE_NAME = 600;
+    public static final int ROUTINE_NAME_WITH_UID = 601;
+    public static final int ROUTINE_NAME_WITH_NAME = 602;
+
+
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
     static UriMatcher buildUriMatcher() {
@@ -64,6 +74,8 @@ public class UriMatcherHelper {
 
         addUriCategory(matcher, authority);
         addUriExercise(matcher, authority);
+        addUriRoutine(matcher, authority);
+        addUriRoutineName(matcher, authority);
 
         return matcher;
     }
@@ -108,5 +120,36 @@ public class UriMatcherHelper {
 
     }
 
+    private static void addUriRoutine(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/routine/
+        matcher.addURI(authority, Contractor.PATH_ROUTINE, ROUTINE);
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]
+        String uidPath = Contractor.PATH_ROUTINE + "/*";
+        matcher.addURI(authority, uidPath, ROUTINE_WITH_UID);
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]
+        String exerciseKeyPath = Contractor.PATH_ROUTINE + "/*/*";
+        matcher.addURI(authority, exerciseKeyPath, ROUTINE_WITH_ROUTINE_NAME);
+
+        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]/[orderNumber]
+        String fkeyPath = Contractor.PATH_ROUTINE + "/*/*/*";
+        matcher.addURI(authority, fkeyPath, ROUTINE_EXERCISE_WITH_ORDER_NUMBER);
+
+    }
+
+    private static void addUriRoutineName(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/routineName/
+        matcher.addURI(authority, Contractor.PATH_ROUTINE_NAME, ROUTINE_NAME);
+
+        //"content://CONTENT_AUTHORITY/routineName/[uid]
+        String uidPath = Contractor.PATH_ROUTINE_NAME + "/*";
+        matcher.addURI(authority, uidPath, ROUTINE_NAME_WITH_UID);
+
+        //"content://CONTENT_AUTHORITY/routineName/[uid]/[routineName]
+        String routienNamePath = Contractor.PATH_ROUTINE_NAME + "/*/*";
+        matcher.addURI(authority, routienNamePath, ROUTINE_NAME_WITH_NAME);
+
+    }
 
 }

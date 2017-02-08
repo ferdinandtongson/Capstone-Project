@@ -25,6 +25,8 @@ import android.net.Uri;
 import me.makeachoice.gymratpta.controller.modelside.query.CategoryQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.ExerciseQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.query.RoutineNameQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.query.RoutineQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
@@ -42,6 +44,13 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_EXERCISE_WITH_ORDER_NUMBER;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME_WITH_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_ROUTINE_NAME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.dbUriMatcher;
@@ -120,6 +129,27 @@ public class GymRatProvider extends ContentProvider {
             case EXERCISE_WITH_NAME:
                 retCursor = ExerciseQueryHelper.getExerciseByName(mOpenHelper, uri, projection, sortOrder);
                 break;
+            case ROUTINE:
+                retCursor = RoutineQueryHelper.getRoutine(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case ROUTINE_WITH_UID:
+                retCursor = RoutineQueryHelper.getRoutineByUId(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case ROUTINE_WITH_ROUTINE_NAME:
+                retCursor = RoutineQueryHelper.getRoutineByRoutineName(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case ROUTINE_EXERCISE_WITH_ORDER_NUMBER:
+                retCursor = RoutineQueryHelper.getRoutineExerciseByOrderNumber(mOpenHelper, uri, projection);
+                break;
+            case ROUTINE_NAME:
+                retCursor = RoutineNameQueryHelper.getRoutineName(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case ROUTINE_NAME_WITH_UID:
+                retCursor = RoutineNameQueryHelper.getRoutineNameByUId(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case ROUTINE_NAME_WITH_NAME:
+                retCursor = RoutineNameQueryHelper.getRoutineNameByName(mOpenHelper, uri, projection, sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -154,6 +184,12 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case EXERCISE:
                 returnUri = ExerciseQueryHelper.insertExercise(db, values);
+                break;
+            case ROUTINE:
+                returnUri = RoutineQueryHelper.insertRoutine(db, values);
+                break;
+            case ROUTINE_NAME:
+                returnUri = RoutineNameQueryHelper.insertRoutineName(db, values);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -196,6 +232,12 @@ public class GymRatProvider extends ContentProvider {
             case EXERCISE:
                 rowsDeleted = ExerciseQueryHelper.deleteExercise(db, uri, selection, selectionArgs);
                 break;
+            case ROUTINE:
+                rowsDeleted = RoutineQueryHelper.deleteRoutine(db, uri, selection, selectionArgs);
+                break;
+            case ROUTINE_NAME:
+                rowsDeleted = RoutineNameQueryHelper.deleteRoutineName(db, uri, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -226,6 +268,12 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case EXERCISE:
                 rowsUpdated = ExerciseQueryHelper.updateExercise(db, uri, values, selection, selectionArgs);
+                break;
+            case ROUTINE:
+                rowsUpdated = RoutineQueryHelper.updateRoutine(db, uri, values, selection, selectionArgs);
+                break;
+            case ROUTINE_NAME:
+                rowsUpdated = RoutineNameQueryHelper.updateRoutineName(db, uri, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
