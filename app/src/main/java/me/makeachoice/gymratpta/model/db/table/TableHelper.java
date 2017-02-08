@@ -55,4 +55,9 @@ public class TableHelper {
             Contractor.RoutineEntry.COLUMN_EXERCISE + " TEXT NOT NULL, " +
             Contractor.RoutineEntry.COLUMN_CATEGORY + " TEXT NOT NULL, " +
             Contractor.RoutineEntry.COLUMN_NUM_SETS + " INTEGER NOT NULL);";
+
+    public final static String SQL_CREATE_ROUTINE_NAME_TABLE = "CREATE TABLE " + Contractor.RoutineNameEntry.TABLE_NAME + " (" +
+            Contractor.RoutineNameEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.RoutineNameEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.RoutineNameEntry.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL);";
 }
