@@ -1,5 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,8 +25,8 @@ import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineDisplayItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
+import me.makeachoice.gymratpta.view.activity.RoutineDetailActivity;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
-import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NAME;
@@ -225,6 +226,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
     private void onFabClicked(View view){
         Log.d("Choice", "RoutineMaid.onFabClicked");
+        startRoutineDetail();
     }
 
 /**************************************************************************************************/
@@ -271,6 +273,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
             case CONTEXT_MENU_EDIT:
                 Log.d("Choice", "     edit");
                 //TODO - need to edit exercise routine
+                startRoutineDetail();
                 return true;
             case CONTEXT_MENU_DELETE:
                 Log.d("Choice", "     delete");
@@ -278,6 +281,12 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
                 return true;
         }
         return false;
+    }
+
+    private void startRoutineDetail(){
+        Intent intent = new Intent(mFragment.getContext(), RoutineDetailActivity.class);
+        mFragment.startActivity(intent);
+
     }
 
 /**************************************************************************************************/

@@ -40,6 +40,10 @@
             android:launchMode="singleTask"
             android:parentActivityName=".view.activity.AppointmentActivity"/>
 
+        <activity android:name=".view.activity.RoutineDetailActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".view.activity.ExerciseActivity"/>
+
         <provider android:name=".controller.modelside.provider.GymRatProvider"
             android:authorities="me.makeachoice.gymratpta.app"/>
 
