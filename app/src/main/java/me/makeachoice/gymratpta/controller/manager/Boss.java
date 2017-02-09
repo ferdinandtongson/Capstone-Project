@@ -84,6 +84,7 @@ import me.makeachoice.gymratpta.model.item.exercise.CategoryFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineNameFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineNameItem;
@@ -369,8 +370,11 @@ public class Boss extends MyBoss {
     }
 
     public ClientItem getClient(){ return mCurrentClient; }
-    
-    
+
+
+    private RoutineDetailItem mRoutineDetailItem;
+    public RoutineDetailItem getRoutineDetail(){ return mRoutineDetailItem; }
+    public void setRoutineDetailItem(RoutineDetailItem item){ mRoutineDetailItem = item; }
     
     
     
