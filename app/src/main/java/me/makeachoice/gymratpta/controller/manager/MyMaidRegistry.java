@@ -45,11 +45,11 @@ public abstract class MyMaidRegistry {
     /*
      * MyMaid requestMaid(String) - request Maid from register
      */
-    public MyMaid requestMaid(String keeperKey){
+    public MyMaid requestMaid(String maidKey){
         //check if Maid with key is registered
-        if(mRegistry.containsKey(keeperKey)){
+        if(mRegistry.containsKey(maidKey)){
             //return Maid requested
-            return mRegistry.get(keeperKey);
+            return mRegistry.get(maidKey);
         }
 
         //invalid Maid requested
@@ -59,15 +59,15 @@ public abstract class MyMaidRegistry {
     /*
      * void registerMaid(String,MyMaid) - register Maid
      */
-    public void registerMaid(String keeperKey, MyMaid houseKeeper){
-        mRegistry.put(keeperKey, houseKeeper);
+    public void registerMaid(String maidKey, MyMaid houseKeeper){
+        mRegistry.put(maidKey, houseKeeper);
     }
 
     /*
      * void unregisterMaid(String) - remove Maid from registry
      */
-    public void unregisterMaid(String keeperKey){
-        mRegistry.remove(keeperKey);
+    public void unregisterMaid(String maidKey){
+        mRegistry.remove(maidKey);
     }
 
     /*
