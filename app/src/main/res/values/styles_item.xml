@@ -19,6 +19,11 @@
         <item name="android:textColor">@color/textColor_default</item>
     </style>
 
+    <style name="GymRat.Item.TextView.Small" parent="Theme.AppCompat.Light">
+        <item name="android:textSize">@dimen/textSize_small</item>
+        <item name="android:textColor">@color/textColor_default</item>
+    </style>
+
 
     <style name="GymRat.Item.ImageView.Profile" parent="Theme.AppCompat.Light">
         <item name="android:src">@drawable/gym_rat_black_48dp</item>
