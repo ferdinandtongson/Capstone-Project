@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottom_nav_item1"
+        android:icon="@drawable/ic_cancel_black_36dp"
+        android:title="@string/bottom_nav_menu_cancel"
+        android:checkable="true"/>
+    <item
+        android:id="@+id/bottom_nav_item2"
+        android:icon="@drawable/ic_save_black_36dp"
+        android:title="@string/bottom_nav_menu_save"
+        android:checkable="true"/>
+
+</menu>
