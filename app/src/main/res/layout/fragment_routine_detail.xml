@@ -1,0 +1,42 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    style="@style/ChoiceTheme.Activity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/GymRat.Fragment.OutsideFrame"
+        >
+
+        <EditText android:id="@+id/routineDetail_edtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription=""
+            android:text="RoutineName"
+            style="@style/GymRat.Fragment.Text.Title"
+            />
+
+
+        <RelativeLayout
+            android:id="@+id/routineDetail_relExercises"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/routineDetail_edtName"
+            style="@style/GymRat.Fragment.InsideFrame"
+            >
+
+            <include
+                layout="@layout/standard_recycler_fab"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
