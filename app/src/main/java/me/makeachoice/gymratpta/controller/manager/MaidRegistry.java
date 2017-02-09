@@ -12,6 +12,7 @@ import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientInfoMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientScheduleMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPagerMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineDetailMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionNotesMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionNotesViewPagerMaid;
@@ -21,6 +22,7 @@ import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsVie
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 
 /**************************************************************************************************/
 /*
@@ -53,6 +55,7 @@ public class MaidRegistry extends MyMaidRegistry {
     public static final String MAID_EXERCISE = "ExerciseMaid";
     public static final String MAID_ROUTINE = "RoutineMaid";
     public static final String MAID_EXERCISE_VP = "ExerciseViewPagerMaid";
+    public static final String MAID_ROUTINE_DETAIL = "RoutineDetailMaid";
 
     //Session screen maids
     public static final String MAID_SESSION_ROUTINE = "SessionRoutineMaid";
@@ -189,6 +192,15 @@ public class MaidRegistry extends MyMaidRegistry {
         //register maid
         registerMaid(maidKey, maid);
     }
+
+    public void initializeRoutineDetailMaid(String maidKey, int layoutId, String userId, RoutineDetailItem routineItem){
+        //create maid
+        RoutineDetailMaid maid = new RoutineDetailMaid(maidKey, layoutId, userId, routineItem);
+
+        //register maid
+        registerMaid(maidKey, maid);
+    }
+
 
 /**************************************************************************************************/
 
