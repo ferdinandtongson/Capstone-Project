@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingBottom="5dp"
+    style="@style/GymRat.Item">
+
+    <TextView android:id="@+id/itemExerciseDetail_txtInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        style="@style/GymRat.Item.TextView.Small"/>
+
+    <TextView android:id="@+id/itemExerciseDetail_txtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/itemExerciseDetail_txtInfo"
+        style="@style/GymRat.Item.TextView"/>
+
+
+</RelativeLayout>
