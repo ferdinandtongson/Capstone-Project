@@ -1,12 +1,16 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
-import android.widget.TextView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
-import me.makeachoice.gymratpta.controller.viewside.bottomnav.ExerciseNav;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.SaveNav;
+import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -82,7 +86,6 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
         mActivityLayoutId = layoutId;
 
         mToolbarMenuId = R.menu.toolbar_menu;
-        //mBottomNavSelectedItemId = R.id.nav_exercises;
     }
 
 /**************************************************************************************************/
@@ -138,7 +141,7 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
      */
     private void initializeLayout(){
         //initialize maids
-        //initializeMaid();
+        initializeMaid();
 
         //initialize bottom navigation
         initializeBottomNavigation();
@@ -151,15 +154,17 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
         //get maid registry
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
+        RoutineDetailItem item = mBoss.getRoutineDetail();
+
         //viewPager layout used by exercise maid
-        int layoutId = R.layout.viewpager;
+        int layoutId = R.layout.fragment_routine_detail;
 
         //initialize exercise maid
-        maidRegistry.initializeExerciseMaid(MaidRegistry.MAID_EXERCISE, layoutId, mBoss.getUserId());
+        maidRegistry.initializeRoutineDetailMaid(MaidRegistry.MAID_ROUTINE_DETAIL, layoutId,
+                mBoss.getUserId(), mBoss.getRoutineDetail());
 
-        //layout used by routine maid
-        int routineId = R.layout.standard_recycler_fab;
-        maidRegistry.initializeRoutineMaid(MaidRegistry.MAID_ROUTINE, routineId, mBoss.getUserId());
+        loadFragment(maidRegistry.requestMaid(MaidRegistry.MAID_ROUTINE_DETAIL));
+
     }
 
     /*
@@ -187,5 +192,28 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
     }
 
 /**************************************************************************************************/
+
+
+    /*
+     * void loadFragment(MyMaid) - load appropriate fragment requested by user
+     */
+    private void loadFragment(MyMaid maid){
+        Log.d("Choice", "     load Fragment: " + maid.toString());
+        //get fragment manger
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+
+        //get fragment transaction object
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        //get fragment managed by maid
+        Fragment fragment = maid.getFragment();
+
+        //add fragment to fragment container
+        fragmentTransaction.replace(R.id.choiceFragmentContainer, fragment);
+
+        //commit fragment transaction
+        fragmentTransaction.commit();
+    }
+
 
 }
