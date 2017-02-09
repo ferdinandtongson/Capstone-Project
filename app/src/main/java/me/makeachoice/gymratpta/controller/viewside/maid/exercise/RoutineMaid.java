@@ -18,12 +18,13 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.RoutineRecyclerAdapter;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineDisplayItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.view.activity.RoutineDetailActivity;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
@@ -70,7 +71,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     private final static int CONTEXT_MENU_DELETE = 1;
 
     //mData - data list consumed by the adapter
-    private ArrayList<RoutineDisplayItem> mData;
+    private ArrayList<RoutineDetailItem> mData;
 
     //mAdapter - adapter consumed by recycler
     private RoutineRecyclerAdapter mAdapter;
@@ -226,6 +227,11 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
     private void onFabClicked(View view){
         Log.d("Choice", "RoutineMaid.onFabClicked");
+        mRoutineDetailItem = new RoutineDetailItem();
+        mRoutineDetailItem.routineName = "";
+        mRoutineDetailItem.routineExercises = new ArrayList<RoutineItem>();
+
+        ((Boss)mFragment.getActivity().getApplication()).setRoutineDetailItem(mRoutineDetailItem);
         startRoutineDetail();
     }
 
@@ -244,10 +250,10 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         //get clientCardItem
-        RoutineDisplayItem item = (RoutineDisplayItem)v.getTag(R.string.recycler_tagItem);
+        mRoutineDetailItem = (RoutineDetailItem)v.getTag(R.string.recycler_tagItem);
 
         //get routine name
-        String routineName = (item.routineName);
+        String routineName = (mRoutineDetailItem.routineName);
 
         //create string values for menu
         String strEdit = mFragment.getString(R.string.edit);
@@ -265,6 +271,8 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
     }
 
+    private RoutineDetailItem mRoutineDetailItem;
+
     /*
      * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
      */
@@ -272,7 +280,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         switch (item.getItemId()) {
             case CONTEXT_MENU_EDIT:
                 Log.d("Choice", "     edit");
-                //TODO - need to edit exercise routine
+                ((Boss)mFragment.getActivity().getApplication()).setRoutineDetailItem(mRoutineDetailItem);
                 startRoutineDetail();
                 return true;
             case CONTEXT_MENU_DELETE:
@@ -323,7 +331,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
                         int count = cursor.getCount();
                         for(int i = 0; i < count; i++){
                             cursor.moveToPosition(i);
-                            RoutineDisplayItem item = new RoutineDisplayItem();
+                            RoutineDetailItem item = new RoutineDetailItem();
                             item.routineName = cursor.getString(RoutineNameColumns.INDEX_ROUTINE_NAME);
 
                             mData.add(item);
@@ -352,7 +360,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
                     @Override
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-                        RoutineDisplayItem item = mData.get(mRoutineCount);
+                        RoutineDetailItem item = mData.get(mRoutineCount);
 
                         //request client cursor from local database
                         Uri uri = Contractor.RoutineEntry.buildRoutineByName(mUserId, item.routineName);
