@@ -165,7 +165,7 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
     private void initializeAdapter() {
 
         //layout resource file id used by recyclerView adapter
-        int adapterLayoutId = R.layout.item_simple;
+        int adapterLayoutId = R.layout.item_exercise_detail;
 
         //create adapter consumed by the recyclerView
         mAdapter = new RoutineDetailRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
