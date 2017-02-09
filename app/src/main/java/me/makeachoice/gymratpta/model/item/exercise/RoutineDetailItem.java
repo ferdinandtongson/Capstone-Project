@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Usuario on 2/7/2017.
  */
 
-public class RoutineDisplayItem {
+public class RoutineDetailItem {
     public String routineName;
     public ArrayList<RoutineItem> routineExercises;
 }
