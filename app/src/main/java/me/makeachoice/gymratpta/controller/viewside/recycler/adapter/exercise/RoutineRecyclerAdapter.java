@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineDisplayItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 
 /**************************************************************************************************/
@@ -36,7 +36,7 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
  *      Context mContext - activity context
  *      mItemLayoutId - item layout resource id
  *
- *      ArrayList<RoutineDisplayItem> mData - an array list of item data consumed by the adapter
+ *      ArrayList<RoutineDetailItem> mData - an array list of item data consumed by the adapter
  *      OnCreateContextMenuListener mCreateContextMenuListener - "create context menu" event listener
  */
 /**************************************************************************************************/
@@ -51,7 +51,7 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     private static String mStrDescriptionSet;
 
     //mData - an array list of item data consumed by the adapter
-    private ArrayList<RoutineDisplayItem> mData;
+    private ArrayList<RoutineDetailItem> mData;
 
     //mCreateContextMenuListener - "create context menu" event listener
     private static View.OnCreateContextMenuListener mCreateContextMenuListener;
@@ -103,16 +103,16 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     }
 
     /*
-     * RoutineDisplayItem getItem(int) - get item at given position
+     * RoutineDetailItem getItem(int) - get item at given position
      */
-    public RoutineDisplayItem getItem(int position){
+    public RoutineDetailItem getItem(int position){
         return mData.get(position);
     }
 
     /*
-     * ArrayList<RoutineDisplayItem> getData() - get array data used by recycler
+     * ArrayList<RoutineDetailItem> getData() - get array data used by recycler
      */
-    public ArrayList<RoutineDisplayItem> getData(){ return mData; }
+    public ArrayList<RoutineDetailItem> getData(){ return mData; }
 
 
 /**************************************************************************************************/
@@ -135,17 +135,17 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
 /**************************************************************************************************/
 /*
  * Public Methods:
- *      void addItem(RoutineDisplayItem) - dynamically add items to adapter
- *      void adItemAt(RoutineDisplayItem,int) - add item to adapter at specific position
+ *      void addItem(RoutineDetailItem) - dynamically add items to adapter
+ *      void adItemAt(RoutineDetailItem,int) - add item to adapter at specific position
  *      void removeItemAt(int) - remove item from adapter then refresh adapter
- *      void swapData(ArrayList<RoutineDisplayItem>) - swap old data with new data
+ *      void swapData(ArrayList<RoutineDetailItem>) - swap old data with new data
  *      void clearData() - remove all data from adapter
  */
 /**************************************************************************************************/
     /*
-     * void addItem(RoutineDisplayItem) - dynamically add items to adapter
+     * void addItem(RoutineDetailItem) - dynamically add items to adapter
      */
-    public void addItem(RoutineDisplayItem item) {
+    public void addItem(RoutineDetailItem item) {
         //add item object to data array
         mData.add(item);
 
@@ -154,9 +154,9 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     }
 
     /*
-     * void adItemAt(RoutineDisplayItem,int) - add item to adapter at specific position
+     * void adItemAt(RoutineDetailItem,int) - add item to adapter at specific position
      */
-    public void addItemAt(RoutineDisplayItem item, int position){
+    public void addItemAt(RoutineDetailItem item, int position){
         //add item object to data array at position
         mData.add(position, item);
 
@@ -174,9 +174,9 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     }
 
     /*
-     * void swapData(ArrayList<RoutineDisplayItem>) - remove all data from adapter and replace with new data
+     * void swapData(ArrayList<RoutineDetailItem>) - remove all data from adapter and replace with new data
      */
-    public void swapData(ArrayList<RoutineDisplayItem> data){
+    public void swapData(ArrayList<RoutineDetailItem> data){
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();
@@ -194,7 +194,7 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
 
 
 /**************************************************************************************************/
-/**
+/*
  * Implemented Methods from RecyclerView.Adapter:
  *      ViewHolder onCreateViewHolder(ViewGroup, int)
  *      void onBindViewHolder(ViewHolder, int)
@@ -227,7 +227,7 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
 
             if(mData.size() > 0){
                 // Extract info from cursor
-                RoutineDisplayItem item = mData.get(position);
+                RoutineDetailItem item = mData.get(position);
 
                 //bind viewHolder components
                 holder.bindCardView(item, position);
@@ -324,16 +324,16 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 /**************************************************************************************************/
 /*
  * Binding Methods
- *      void bindCardView(RoutineDisplayItem,int,int) - bind data to cardView
- *      void bindTextView(RoutineDisplayItem) - bind data to textView components
+ *      void bindCardView(RoutineDetailItem,int,int) - bind data to cardView
+ *      void bindTextView(RoutineDetailItem) - bind data to textView components
  *      void setExerciseValues(...) - set exercise name and sets for routine
  */
 /**************************************************************************************************/
     /*
-     * void bindCardView(RoutineDisplayItem,int,int) - bind data to itemView. Set tag values and contextMenu
+     * void bindCardView(RoutineDetailItem,int,int) - bind data to itemView. Set tag values and contextMenu
      * listener, if not null
      */
-    private void bindCardView(RoutineDisplayItem item, int position) {
+    private void bindCardView(RoutineDetailItem item, int position) {
 
         mCrdView.setTag(R.string.recycler_tagPosition, position);
         mCrdView.setTag(R.string.recycler_tagItem, item);
@@ -345,10 +345,10 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
     }
 
     /*
-     * void bindTextView(RoutineDisplayItem) - bind data to textView components. Set text and context
+     * void bindTextView(RoutineDetailItem) - bind data to textView components. Set text and context
      * description values.
      */
-    private void bindTextView(RoutineDisplayItem item){
+    private void bindTextView(RoutineDetailItem item){
         mTxtRoutineName.setText(item.routineName);
         mTxtRoutineName.setContentDescription(item.routineName);
 
