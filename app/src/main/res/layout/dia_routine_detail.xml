@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/darkgray"
+        android:textSize="22sp" />
+
+    <View
+        android:id="@+id/line01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/txtTitle"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/txtCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/line01"
+        android:textColor="@color/darkgray"
+        android:textSize="16sp"
+        android:text="Category"
+        />
+
+    <Spinner
+        android:id="@+id/spnCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:layout_below="@id/txtCategory"
+        android:background="@color/powderBlueish"
+        />
+
+    <TextView
+        android:id="@+id/txtExercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/spnCategory"
+        android:textColor="@color/darkgray"
+        android:textSize="16sp"
+        android:text="Exercise"
+        />
+
+    <Spinner
+        android:id="@+id/spnExercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:layout_below="@id/txtExercise"
+        android:background="@color/powderBlueish"
+        />
+
+    <TextView
+        android:id="@+id/txtSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/spnExercise"
+        android:textColor="@color/darkgray"
+        android:textSize="16sp"
+        android:text="Sets"
+        />
+
+    <Spinner
+        android:id="@+id/spnSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:layout_below="@id/txtSet"
+        android:background="@color/powderBlueish"
+        />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spnSet"
+        android:layout_alignParentEnd="true"
+        android:text="@string/save" />
+
+</RelativeLayout>
