@@ -2,6 +2,7 @@ package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,30 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
     //mData - an array list of item data consumed by the adapter
     private ArrayList<RoutineItem> mData;
 
-    //mCreateContextMenuListener - "create context menu" event listener
-    ///private static View.OnCreateContextMenuListener mCreateContextMenuListener;
+    public interface ItemTouchHelperAdapter {
+
+        /**
+         * Called when an item has been dragged far enough to trigger a move. This is called every time
+         * an item is shifted, and not at the end of a "drop" event.
+         *
+         * @param fromPosition The start position of the moved item.
+         * @param toPosition   Then end position of the moved item.
+         * @see RecyclerView#getAdapterPositionFor(RecyclerView.ViewHolder)
+         * @see RecyclerView.ViewHolder#getAdapterPosition()
+         */
+        void onItemMove(int fromPosition, int toPosition);
+
+
+        /**
+         * Called when an item has been dismissed by a swipe.
+         *
+         * @param position The position of the item dismissed.
+         * @see RecyclerView#getAdapterPositionFor(RecyclerView.ViewHolder)
+         * @see RecyclerView.ViewHolder#getAdapterPosition()
+         */
+        void onItemDismiss(int position);
+    }
+
 
 /**************************************************************************************************/
 
@@ -104,6 +127,19 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
      * ArrayList<RoutineItem> getData() - get array data used by recycler
      */
     public ArrayList<RoutineItem> getData(){ return mData; }
+
+    public void onItemDismiss(int position) {
+        mData.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void onItemMove(int fromPosition, int toPosition) {
+
+        RoutineItem prevItem = mData.remove(fromPosition);
+        mData.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prevItem);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
 
 /**************************************************************************************************/
 
@@ -286,6 +322,5 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 }
 
 /**************************************************************************************************/
-
 
 }
