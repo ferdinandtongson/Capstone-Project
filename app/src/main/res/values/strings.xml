@@ -114,6 +114,7 @@
     <string name="cancel" translatable="true">Cancel</string>
     <string name="cancel_session" translatable="true">Cancel Session</string>
     <string name="cardio" translatable="true">Cardio</string>
+    <string name="category" translatable="true">Category</string>
     <string name="change_previous" translatable="true">Change from Previous</string>
     <string name="change_start" translatable="true">Change from Start</string>
     <string name="chest" translatable="true">Chest</string>
@@ -127,6 +128,7 @@
     <string name="distance" translatable="true">Distance</string>
     <string name="edit" translatable="true">Edit</string>
     <string name="email" translatable="true">Email</string>
+    <string name="exercise" translatable="true">Exercise</string>
     <string name="exercises" translatable="true">Exercises</string>
     <string name="for_the_day" translatable="true">For the Day</string>
     <string name="for_the_week" translatable="true">For the Week</string>
