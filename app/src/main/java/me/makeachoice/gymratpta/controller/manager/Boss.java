@@ -54,6 +54,7 @@ package me.makeachoice.gymratpta.controller.manager;
 /**************************************************************************************************/
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -118,6 +119,11 @@ public class Boss extends MyBoss {
     public static int LOADER_ROUTINE = 800;
     public static int LOADER_ROUTINE_NAME = 900;
 
+    public static String PREF_CLIENT_STATUS = "clientStatus";
+    public static String PREF_SESSION_STATUS = "sessionStatus";
+    public static String PREF_DAY_MAX = "dayMax";
+    public static String PREF_SET_MAX = "setMax";
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -150,7 +156,7 @@ public class Boss extends MyBoss {
         initDatabase();
 
         //initialize Staff classes
-        initStaff();
+        //initStaff();
 
         //initialize Valet classes
         initValets();
@@ -185,11 +191,6 @@ public class Boss extends MyBoss {
      * void initStaff() - initializes Staff classes; they maintain ArrayList and HashMap buffers
      */
     protected void initStaff(){
-        //initialize Portfolio staff
-        //mPortfolioStaff = new PortfolioStaff(this);
-
-        //set portfolioMap; this is for the ability to have more than one portfolio screen
-        //mPortfolioStaff.setPortfolioMap(mPortfolioValet.getPortfolioMap());
 
     }
 
@@ -217,6 +218,18 @@ public class Boss extends MyBoss {
 
         //initialize News butler
         //mNewsButler = new NewsButler(this);
+    }
+
+    private void initPreferences(){
+        //public static final String MY_PREFS_NAME = "MyPrefsFile";
+        SharedPreferences.Editor editor = getSharedPreferences(mCurrentUser.uid, MODE_PRIVATE).edit();
+
+        editor.putString(PREF_CLIENT_STATUS, "ALL"); //client status - ALL, ACTIVE, RETIRED
+        editor.putString(PREF_SESSION_STATUS, "CURRENT"); //session status - ALL, CURRENT
+        editor.putInt(PREF_DAY_MAX, 60); //number of days that can be scrolled - 30, 60, 90
+        editor.putInt(PREF_SET_MAX, 7); //maximum number of sets
+        editor.commit();
+
     }
 
 /**************************************************************************************************/
@@ -304,6 +317,7 @@ public class Boss extends MyBoss {
         }
         cursor.close();
 
+        initPreferences();
         checkUserInFirebase(user);
     }
 
