@@ -13,26 +13,72 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CATEGORY;
 
-/**
- * Created by Usuario on 2/9/2017.
+/**************************************************************************************************/
+/*
+ * CategoryLoader is a cursor loader that loads data from exercise category table
  */
+/**************************************************************************************************/
 
 public class CategoryLoader {
+
+/**************************************************************************************************/
+/*
+ * Class Variables
+ *      MyActivity mActivity - activity context
+ *      String mUserId - user id number taken from firebase authentication
+ *      OnCategoryLoadListener mListener - listens for when the category data is loaded
+ *
+ *      interface OnCategoryLoadListener:
+ *          onCategoryLoadFinished(Cursor) - notifies listener category data has finished loading
+ */
+/**************************************************************************************************/
+
+    //mActivity - activity context
     private static MyActivity mActivity;
+
+    //mUserId - user id number taken from firebase authentication
     private static String mUserId;
 
+    //mListener - listens for when the category data is loaded
     private static OnCategoryLoadListener mListener;
     public interface OnCategoryLoadListener{
+        //notify listener that category data has finished loading
         public void onCategoryLoadFinished(Cursor cursor);
     }
 
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Public Methods
+ *      void loadCategories(...) - start loader to load category data from database
+ *      void destroyLoader(...) - destroy loader and any data managed by the loader
+ */
+/**************************************************************************************************/
+    /*
+     * void loadCategories(...) - start loader to load category data from database
+     */
     public static void loadCategories(MyActivity activity, String userId, OnCategoryLoadListener listener){
+        //load category using default loader category id
+        loadCategories(activity, userId, LOADER_CATEGORY, listener);
+    }
+
+    /*
+     * void loadCategories(...) - start loader to load category data from database
+     */
+    public static void loadCategories(MyActivity activity, String userId, int loaderId,
+                                      OnCategoryLoadListener listener){
+        //get activity context
         mActivity = activity;
-        mListener = listener;
+
+        //get user id
         mUserId = userId;
 
-        // Initializes a loader for loading clients
-        mActivity.getSupportLoaderManager().initLoader(LOADER_CATEGORY, null,
+        //get listener
+        mListener = listener;
+
+        // Initializes category loader
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
                 new LoaderManager.LoaderCallbacks<Cursor>() {
                     @Override
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -51,13 +97,36 @@ public class CategoryLoader {
 
                     @Override
                     public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
-                        mListener.onCategoryLoadFinished(cursor);
+                        //make sure listener is not null
+                        if(mListener != null){
+                            //notify listener that category data has finished loading
+                            mListener.onCategoryLoadFinished(cursor);
+                        }
                     }
 
                     @Override
                     public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                        //does nothing
                     }
                 });
     }
+
+    /*
+     * void destroyLoader(...) - destroy loader and any data managed by the loader
+     */
+    public static void destroyLoader(MyActivity activity){
+        //destroy loader using default category loader id
+        activity.getSupportLoaderManager().destroyLoader(LOADER_CATEGORY);
+    }
+
+    /*
+     * void destroyLoader(...) - destroy loader and any data managed by the loader
+     */
+    public static void destroyLoader(MyActivity activity, int loaderId){
+        //destroy loader
+        activity.getSupportLoaderManager().destroyLoader(loaderId);
+    }
+
+/**************************************************************************************************/
 
 }
