@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/diaExercise_txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/GymRat.Dialog.TextView.Large"
+        />
+
+    <View
+        android:id="@+id/line01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/diaExercise_txtTitle"
+        android:background="@color/black"/>
+
+    <TextView
+        android:id="@+id/diaExercise_txtCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/line01"
+        android:text="@string/category"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <Spinner
+        android:id="@+id/diaExercise_spnCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaExercise_txtCategory"
+        android:spinnerMode="dropdown"
+        style="@style/GymRat.Dialog.Spinner"
+        />
+
+    <TextView
+        android:id="@+id/diaExercise_txtExercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/diaExercise_spnCategory"
+        android:text="@string/exercise"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <Spinner
+        android:id="@+id/diaExercise_spnExercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaExercise_txtExercise"
+        style="@style/GymRat.Dialog.Spinner"
+        />
+
+    <TextView
+        android:id="@+id/diaExercise_txtSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/diaExercise_spnExercise"
+        android:text="@string/sets"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <Spinner
+        android:id="@+id/diaExercise_spnSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaExercise_txtSet"
+        style="@style/GymRat.Dialog.Spinner"
+        />
+
+    <TextView
+        android:id="@+id/diaExercise_txtSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaExercise_spnSet"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/save"
+        style="@style/GymRat.Dialog.TextView.Button"
+        />
+
+</RelativeLayout>
