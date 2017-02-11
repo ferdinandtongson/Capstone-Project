@@ -18,6 +18,10 @@
     <dimen name="textSize_normal">16sp</dimen>
     <dimen name="textSize_large">20sp</dimen>
 
+    <!-- textView button -->
+    <dimen name="textView_button_padding_sides">12dp</dimen>
+    <dimen name="textView_button_padding">7dp</dimen>
+
     <!-- card -->
     <dimen name="card_main_layoutMargin">5dp</dimen>
     <dimen name="card_cornerRadius">4dp</dimen>
@@ -36,5 +40,8 @@
 
     <!-- icon image -->
     <dimen name="iconSize_normal">22dp</dimen>
+
+    <!-- spinner -->
+    <dimen name="spinner_padding">5dp</dimen>
 
 </resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="GymRat.Dialog" parent="Theme.AppCompat.Light">
+        <item name="android:layout_margin">1dp</item>
+        <item name="android:background">@color/item_background</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="GymRat.Dialog.TextView" parent="Theme.AppCompat.Light">
+        <item name="android:textSize">@dimen/textSize_normal</item>
+        <item name="android:textColor">@color/textColor_default</item>
+    </style>
+
+    <style name="GymRat.Dialog.TextView.Large" parent="Theme.AppCompat.Light">
+        <item name="android:textSize">@dimen/textSize_large</item>
+        <item name="android:textColor">@color/textColor_default</item>
+    </style>
+
+    <style name="GymRat.Dialog.TextView.Small" parent="Theme.AppCompat.Light">
+        <item name="android:textSize">@dimen/textSize_small</item>
+        <item name="android:textColor">@color/textColor_default</item>
+    </style>
+
+    <style name="GymRat.Dialog.TextView.Button" parent="Theme.AppCompat.Light">
+        <item name="android:paddingTop">@dimen/textView_button_padding</item>
+        <item name="android:paddingStart">@dimen/textView_button_padding_sides</item>
+        <item name="android:paddingEnd">@dimen/textView_button_padding_sides</item>
+        <item name="android:paddingBottom">@dimen/textView_button_padding</item>
+        <item name="android:textSize">@dimen/textSize_normal</item>
+        <item name="android:textColor">@color/textColor_default</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/button_border</item>
+    </style>
+
+    <style name="GymRat.Dialog.Spinner" parent="Theme.AppCompat.Light">
+        <item name="android:paddingTop">@dimen/spinner_padding</item>
+        <item name="android:paddingBottom">@dimen/spinner_padding</item>
+        <item name="android:background">@drawable/spinner_border_arrow</item>
+    </style>
+
+
+</resources>
