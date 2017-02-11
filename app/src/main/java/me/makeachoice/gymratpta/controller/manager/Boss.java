@@ -113,6 +113,7 @@ public class Boss extends MyBoss {
     //mAuthStateListener - firebase authentication listener
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    public static int LOADER_CATEGORY = 600;
     public static int LOADER_EXERCISE_BASE = 700;
     public static int LOADER_ROUTINE = 800;
     public static int LOADER_ROUTINE_NAME = 900;
