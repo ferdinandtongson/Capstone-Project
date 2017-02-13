@@ -2,7 +2,6 @@ package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +24,24 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
 /**************************************************************************************************/
 /*
  * Class Variables
+ *      String MARKER - string value used to mark keep track of item locations
+ *      String mStrSets - string value for "Sets"
+ *
  *      Context mContext - activity context
  *      mItemLayoutId - item layout resource id
  *
- *      ArrayList<RoutineDetailItem> mData - an array list of item data consumed by the adapter
- *      OnCreateContextMenuListener mCreateContextMenuListener - "create context menu" event listener
+ *      ArrayList<RoutineItem> mData - an array list of item data consumed by the adapter
+ *      ArrayList<String> mMarkerList - an array list used to mark the location of an item when using
+ *          drag and drop move
+ *      OnClickListener mOnClickListener - onClick listener for item click event
  */
 /**************************************************************************************************/
+
+    //MARKER - string value used to mark keep track of item locations
+    private static String MARKER = "routine";
+
+    //mStrSets - string value for "Sets"
+    private static String mStrSets;
 
     //mContext - activity context
     private Context mContext;
@@ -39,36 +49,14 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
     //mItemLayoutId - item layout resource id
     private int mItemLayoutId;
 
-    //mStrDescriptionSet - content description "number of sets:"
-    //private static String mStrDescriptionSet;
-
     //mData - an array list of item data consumed by the adapter
     private ArrayList<RoutineItem> mData;
 
-    public interface ItemTouchHelperAdapter {
+    //mMarkerList - an array list used to mark the location of an item when using drag and drop move
+    private ArrayList<String> mMarkerList;
 
-        /**
-         * Called when an item has been dragged far enough to trigger a move. This is called every time
-         * an item is shifted, and not at the end of a "drop" event.
-         *
-         * @param fromPosition The start position of the moved item.
-         * @param toPosition   Then end position of the moved item.
-         * @see RecyclerView#getAdapterPositionFor(RecyclerView.ViewHolder)
-         * @see RecyclerView.ViewHolder#getAdapterPosition()
-         */
-        void onItemMove(int fromPosition, int toPosition);
-
-
-        /**
-         * Called when an item has been dismissed by a swipe.
-         *
-         * @param position The position of the item dismissed.
-         * @see RecyclerView#getAdapterPositionFor(RecyclerView.ViewHolder)
-         * @see RecyclerView.ViewHolder#getAdapterPosition()
-         */
-        void onItemDismiss(int position);
-    }
-
+    //mOnClickListener - onClick listener for item click event
+    private static View.OnClickListener mOnItemClickListener;
 
 /**************************************************************************************************/
 
@@ -87,21 +75,27 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
 
-        //set content description
-        //mStrDescriptionSet = mContext.getString(R.string.description_card_txtSets);
-
         //initialize data array
         mData = new ArrayList<>();
+
+        //initialize marker list
+        mMarkerList = new ArrayList<>();
+
+        //string value "sets"
+        mStrSets = mContext.getString(R.string.sets).toLowerCase();
     }
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * Getter Methods:
+ * Getter & Setter Methods:
  *      int getItemCount() - get number of items in adapter
- *      ExerciseItem getItem(int) - get item at given position
- *      ArrayList<ExerciseItem> getData() - get array data used by recycler
+ *      RoutineItem getItem(int) - get item at given position
+ *      ArrayList<RoutineItem> getData() - get array data used by recycler
+ *      int getPosition(String) - get item position using it's markerId
+ *
+ *      void setOnItemClickListener(...) - set listener to listen for item click events
  */
 /**************************************************************************************************/
     /*
@@ -128,18 +122,75 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
      */
     public ArrayList<RoutineItem> getData(){ return mData; }
 
+    /*
+     * int getPosition(String) - get item position using it's markerId
+     */
+    public int getPosition(String markerId){
+        //get size of marker list
+        int count = mMarkerList.size();
+
+        //loop through list
+        for(int i = 0; i < count; i++){
+
+            //check if markerId matches item in list
+            if(markerId.equals(mMarkerList.get(i))){
+                //if match, return index
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /*
+     * void setOnItemClickListener(...) - set listener to listen for item click events
+     */
+    public void setOnItemClickListener(View.OnClickListener listener){
+        //set listener
+        mOnItemClickListener = listener;
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Getter Methods:
+ *      void onItemDismiss(int) - item was removed with side-swipe event
+ *      void onItemMove(int,int) - item was moved with drag-and-drop event
+ */
+/**************************************************************************************************/
+    /*
+     * void onItemDismiss(int) - item was removed with side-swipe event
+     */
     public void onItemDismiss(int position) {
+        //remove item from list
         mData.remove(position);
+
+        //remove marker from list
+        mMarkerList.remove(position);
+
+        //notify adapter
         notifyItemRemoved(position);
     }
 
+    /*
+     * void onItemMove(int,int) - item was moved with drag-and-drop event
+     */
     public void onItemMove(int fromPosition, int toPosition) {
+        //remove item, that was dragged, from list
+        RoutineItem moveItem = mData.remove(fromPosition);
 
-        RoutineItem prevItem = mData.remove(fromPosition);
-        mData.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prevItem);
+        //add item to new location in list
+        mData.add(toPosition, moveItem);
+
+        //remove marker, attached to item that was dragged, from list
+        String positionId = mMarkerList.remove(fromPosition);
+
+        //add marker to new location in list
+        mMarkerList.add(toPosition, positionId);
+
+        //notify adapter
         notifyItemMoved(fromPosition, toPosition);
     }
-
 
 /**************************************************************************************************/
 
@@ -147,8 +198,8 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
 /*
  * Public Methods:
  *      void addItem(RoutineItem) - dynamically add items to adapter
- *      void adItemAt(RoutineItem,int) - add item to adapter at specific position
- *      void removeItemAt(int) - remove item from adapter then refresh adapter
+ *      void addItemAt(RoutineItem,int) - add item to adapter at specific position
+ *      void replaceItemAt(...) - replace item at given position
  *      void swapData(ArrayList<RoutineItem>) - swap old data with new data
  *      void clearData() - remove all data from adapter
  */
@@ -157,6 +208,9 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
      * void addItem(RoutineItem) - dynamically add items to adapter
      */
     public void addItem(RoutineItem item) {
+        //clear marker id list
+        mMarkerList.clear();
+
         //add item object to data array
         mData.add(item);
 
@@ -165,9 +219,12 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
     }
 
     /*
-     * void adItemAt(RoutineItem,int) - add item to adapter at specific position
+     * void addItemAt(RoutineItem,int) - add item to adapter at specific position
      */
     public void addItemAt(RoutineItem item, int position){
+        //clear marker id list
+        mMarkerList.clear();
+
         //add item object to data array at position
         mData.add(position, item);
 
@@ -176,12 +233,17 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
     }
 
     /*
-     * void removeItemAt(int) - remove item from adapter then refresh adapter
+     * void replaceItemAt(...) - replace item at given position
      */
-    public void removeItemAt(int position){
-        mData.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeRemoved(position, mData.size());
+    public void replaceItemAt(RoutineItem item, int position){
+        //clear marker id list
+        mMarkerList.clear();
+
+        //set new routineItem at given index position
+        mData.set(position, item);
+
+        //notify adapter of data change
+        this.notifyDataSetChanged();
     }
 
     /*
@@ -190,6 +252,7 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
     public void swapData(ArrayList<RoutineItem> data){
         mData.clear();
         mData.addAll(data);
+        mMarkerList.clear();
         notifyDataSetChanged();
     }
 
@@ -198,6 +261,7 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
      */
     public void clearData(){
         mData.clear();
+        mMarkerList.clear();
         notifyDataSetChanged();
     }
 
@@ -222,7 +286,6 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
                 from(viewGroup.getContext()).
                 inflate(mItemLayoutId, viewGroup, false);
 
-
         //return ViewHolder
         return new MyViewHolder(itemView);
     }
@@ -234,16 +297,18 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         if(mData.size() > 0){
+            //get item from data
+            RoutineItem item = mData.get(position);
 
-            if(mData.size() > 0){
-                // Extract info from cursor
-                RoutineItem item = mData.get(position);
+            //update item order number
+            item.orderNumber = position;
 
-                //bind viewHolder components
-                holder.bindCardView(item, position);
-                holder.bindTextView(item);
-            }
+            //add marker to list
+            mMarkerList.add(MARKER + position);
 
+            //bind viewHolder components
+            holder.bindCardView(item, position);
+            holder.bindTextView(item);
         }
 
     }
@@ -280,7 +345,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 /**************************************************************************************************/
     public MyViewHolder(View recycleView){
         super(recycleView);
-        //set CardView object
+        //set view that holds the children
         mItemView = (RelativeLayout)recycleView.findViewById(R.id.choiceItem);
 
         mTxtName = (TextView)recycleView.findViewById(R.id.itemExerciseDetail_txtName);
@@ -303,8 +368,19 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
  */
     private void bindCardView(RoutineItem item, int position) {
 
+        //save item position (is NOT updated when a drag-and-drop event occurs)
         mItemView.setTag(R.string.recycler_tagPosition, position);
+
+        //save item
         mItemView.setTag(R.string.recycler_tagItem, item);
+
+        //save marker, used to determine position
+        mItemView.setTag(R.string.recycler_tagId, MARKER + position);
+
+        if(mOnItemClickListener != null){
+            //notify listener of onClick event
+            mItemView.setOnClickListener(mOnItemClickListener);
+        }
 
     }
 
@@ -313,12 +389,14 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      * description values.
      */
     private void bindTextView(RoutineItem item){
-        String strInfo = item.category + " / " + item.numOfSets + " sets";
+
+        String strInfo = item.category + " / " + item.numOfSets + " " + mStrSets;
         mTxtName.setText(item.exercise);
+        mTxtName.setContentDescription(item.exercise);
+
         mTxtExerciseInfo.setText(strInfo);
+        mTxtExerciseInfo.setContentDescription(strInfo);
     }
-
-
 }
 
 /**************************************************************************************************/
