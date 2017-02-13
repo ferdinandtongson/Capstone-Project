@@ -34,7 +34,7 @@ public class RoutineStubData {
         routineNames.add(item05);
 
         RoutineNameFBItem item06 = new RoutineNameFBItem();
-        item06.routineName = "Shoulders Routine";
+        item06.routineName = "Shoulder Routine";
         routineNames.add(item06);
 
         return routineNames;
