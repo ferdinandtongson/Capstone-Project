@@ -132,9 +132,6 @@ public class SaveNav extends MyBottomNav implements BottomNavigationView.OnNavig
                     //notify listener of onSave click event
                     mListener.onSaveRoutine();
                 }
-
-                //return to parent activity
-                mActivity.onBackPressed();
                 break;
         }
 
