@@ -12,7 +12,7 @@ import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
  */
 /**************************************************************************************************/
 
-public class RoutineNameItem extends RoutineNameFBItem{
+public class RoutineNameItem{
 
 /**************************************************************************************************/
 /*
@@ -21,6 +21,7 @@ public class RoutineNameItem extends RoutineNameFBItem{
 /**************************************************************************************************/
 
     public String uid;
+    public String routineName;
 
 /**************************************************************************************************/
 
@@ -32,8 +33,8 @@ public class RoutineNameItem extends RoutineNameFBItem{
 
     public RoutineNameItem(){}
 
-    public RoutineNameItem(RoutineNameFBItem item){
-        routineName = item.routineName;
+    public RoutineNameItem(String name){
+        routineName = name;
     }
 
     public RoutineNameItem(Cursor cursor){
