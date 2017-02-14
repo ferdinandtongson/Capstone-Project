@@ -8,27 +8,22 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import me.makeachoice.gymratpta.model.item.exercise.RoutineFBItem;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineNameFBItem;
-
-import static me.makeachoice.gymratpta.R.string.routine;
-import static me.makeachoice.gymratpta.R.string.routines;
-import static me.makeachoice.gymratpta.controller.modelside.firebase.RoutineFirebaseHelper.CHILD_ORDER_NUMBER;
-
-/**
- * Created by Usuario on 2/7/2017.
+/**************************************************************************************************/
+/*
+ * RoutineNameFirebaseHelper helps in accessing routine name data from firebase
  */
+/**************************************************************************************************/
 
 public class RoutineNameFirebaseHelper {
 
 /**************************************************************************************************/
 /*
  * Class Variables:
+ *      String PARENT - parent director
+ *      FirebaseDatabase mFireDB - firebase instance
+ *      OnDataLoadedListener mOnDataLoadListener - listens for onDataLoaded events
  */
 /**************************************************************************************************/
-
-    public static String CHILD_ROUTINE_NAME = "routineName";
 
     //PARENT - parent director
     private static String PARENT = "routineName";
@@ -36,6 +31,7 @@ public class RoutineNameFirebaseHelper {
     //mFireDB - firebase instance
     private FirebaseDatabase mFireDB;
 
+    //mOnDataLoadListener - listens for onDataLoaded events
     private OnDataLoadedListener mOnDataLoadedListener;
 
     //Implemented communication bridge
@@ -87,7 +83,7 @@ public class RoutineNameFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addRoutineNameData(String userId, ArrayList<RoutineNameFBItem> routineNames){
+    public void addRoutineNameData(String userId, ArrayList<String> routineNames){
         int count = routineNames.size();
         for(int i = 0; i < count; i++){
             addRoutineName(userId, routineNames.get(i));
@@ -95,23 +91,25 @@ public class RoutineNameFirebaseHelper {
 
     }
 
-    public void addRoutineName(String userId, RoutineNameFBItem item){
-        DatabaseReference ref = getRoutineNameReference(userId);
-        ref.push().setValue(item);
+    public void addRoutineName(String userId, String routineName){
+        DatabaseReference ref = getRoutineNameReference(userId).child(routineName);
+
+        ref.setValue("");
     }
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * Set Data Methods
+ * Delete Data Methods
  */
 /**************************************************************************************************/
 
-    public void setRoutineName(String userId, String fkey, String routineName){
-        DatabaseReference refRoutine = getRoutineNameReference(userId).child(fkey);
+    public void deleteRoutineName(String userId, String routineName){
+        DatabaseReference refRoutine = getRoutineNameReference(userId).child(routineName);
 
-        refRoutine.child(CHILD_ROUTINE_NAME).setValue(routineName);
+        refRoutine.removeValue();
+
     }
 
 /**************************************************************************************************/
@@ -120,7 +118,7 @@ public class RoutineNameFirebaseHelper {
 /*
  * Request Data Methods
  */
-    /**************************************************************************************************/
+/**************************************************************************************************/
 
     public void requestRoutineData(String userId, OnDataLoadedListener listener){
         //get reference
