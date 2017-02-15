@@ -10,4 +10,6 @@
 
     <string name="description_card_txtSets" translatable="true">Number of Sets</string>
 
+    <string name="description_edit_routine_name" translatable="true">Edit Routine Name</string>
+
 </resources>
