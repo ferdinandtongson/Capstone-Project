@@ -262,12 +262,6 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
 
         //set routine name
         mEdtName.setText(mRoutineDetailItem.routineName);
-
-        //get content description value
-        String strDescription = mFragment.getString(R.string.description_edit_routine_name);
-
-        //set content description
-        mEdtName.setContentDescription(strDescription);
     }
 
     /*
