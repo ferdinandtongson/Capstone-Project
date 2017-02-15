@@ -87,7 +87,6 @@ import me.makeachoice.gymratpta.model.item.exercise.ExerciseFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineNameFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineNameItem;
 import me.makeachoice.gymratpta.model.stubData.CategoryStubData;
 import me.makeachoice.gymratpta.model.stubData.ExerciseStubData;
@@ -124,6 +123,10 @@ public class Boss extends MyBoss {
     public static String PREF_DAY_MAX = "dayMax";
     public static String PREF_SET_MAX = "setMax";
 
+    public static String EXTRA_ROUTINE_UPDATE = "update";
+
+    public static int REQUEST_CODE_ROUTINE_DETAIL = 100;
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -148,7 +151,9 @@ public class Boss extends MyBoss {
         mKeeperRegistry.initializeHouseKeepers();
 
         mInitializeUser = false;
-        //dropAllTables();
+        if(mInitializeUser){
+            dropAllTables();
+        }
 
         initializeFirebaseAuth();
 
@@ -177,6 +182,8 @@ public class Boss extends MyBoss {
         dbHelper.dropTable(db, Contractor.ClientEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.CategoryEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.ExerciseEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.RoutineEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.RoutineNameEntry.TABLE_NAME);
 
         db.close();
 
@@ -569,32 +576,30 @@ public class Boss extends MyBoss {
     }
 
     private void initializeRoutineNameData(){
-        ArrayList<RoutineNameFBItem> routineNames = RoutineStubData.createDefaultRoutineNames(this);
+        ArrayList<String> names = RoutineStubData.createDefaultRoutineNames();
 
         RoutineNameFirebaseHelper routineNameFB = RoutineNameFirebaseHelper.getInstance();
 
-        routineNameFB.addRoutineNameData(mCurrentUser.uid, routineNames);
+        routineNameFB.addRoutineNameData(mCurrentUser.uid, names);
 
-        int count = routineNames.size();
+        int count = names.size();
         for(int i = 0; i < count; i++){
-            updateRoutineNamesDatabase(routineNames.get(i));
+            updateRoutineNamesDatabase(names.get(i));
         }
 
         initializeRoutineData();
     }
 
-    private void updateRoutineNamesDatabase(RoutineNameFBItem item){
+    private void updateRoutineNamesDatabase(String routineName){
         //get uri value for client
         Uri uriValue = Contractor.RoutineNameEntry.CONTENT_URI;
 
-        RoutineNameItem routineName = new RoutineNameItem(item);
-        routineName.uid = mCurrentUser.uid;
+        RoutineNameItem routineItem = new RoutineNameItem(routineName);
+        routineItem.uid = mCurrentUser.uid;
 
         //add category to sqlite database
-        Uri uri = getContentResolver().insert(uriValue, routineName.getContentValues());
+        Uri uri = getContentResolver().insert(uriValue, routineItem.getContentValues());
 
-        Log.d("Choice", "Boss.updateRoutine: " + routineName.routineName);
-        Log.d("Choice", "     uri: " + uri.toString());
     }
 
 
@@ -608,6 +613,7 @@ public class Boss extends MyBoss {
 
         int count = routines.size();
         for(int i = 0; i < count; i++){
+            Log.d("Choice", "     " + routines.get(i).routineName + " - " + routines.get(i).exercise);
             updateRoutineDatabase(routines.get(i));
         }
     }
@@ -621,7 +627,6 @@ public class Boss extends MyBoss {
         //add category to sqlite database
         Uri uri = getContentResolver().insert(uriValue, item.getContentValues());
 
-        Log.d("Choice", "Boss.updateRoutine: " + item.exercise);
         Log.d("Choice", "     uri: " + uri.toString());
     }
 
