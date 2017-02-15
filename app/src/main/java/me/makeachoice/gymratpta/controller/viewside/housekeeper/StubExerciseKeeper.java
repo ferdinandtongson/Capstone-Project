@@ -1,11 +1,18 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.ExerciseNav;
+import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static android.app.Activity.RESULT_OK;
+import static me.makeachoice.gymratpta.controller.manager.Boss.EXTRA_ROUTINE_UPDATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.REQUEST_CODE_ROUTINE_DETAIL;
 
 /**************************************************************************************************/
 /*
@@ -119,6 +126,25 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
     protected void openBundle(Bundle bundle){
         //TODO - handle saved instance states from bundle
         //set saved instance state data
+    }
+
+    public void activityResult(int requestCode, int resultCode, Intent data){
+        Log.d("Choice", "ExerciseKeeper.activityResult: " + requestCode);
+        Log.d("Choice", "     request code: " + requestCode);
+        Log.d("Choice", "     result: " + resultCode);
+
+        //get result of Activity
+        if(requestCode == REQUEST_CODE_ROUTINE_DETAIL){
+            if(resultCode == RESULT_OK){
+                Log.d("Choice", "     reset RoutineMaid");
+                //get maid registry
+                MaidRegistry maidRegistry = MaidRegistry.getInstance();
+
+                RoutineMaid maid = (RoutineMaid)maidRegistry.requestMaid(MaidRegistry.MAID_ROUTINE);
+                maid.resetData();
+
+            }
+        }
     }
 
 /**************************************************************************************************/
