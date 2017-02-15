@@ -14,4 +14,6 @@
     <string name="msg_routine_name_blank" translatable="true">Routine Name is blank!</string>
     <string name="msg_invalid_character_routine_name" translatable="true">Invalid character used in Routine Name!</string>
     <string name="msg_routine_name_exists" translatable="true">Routine Name already exists!</string>
+
+    <string name="msg_do_not_show_warning" translatable="true">Don\'t Show Warning</string>
 </resources>
