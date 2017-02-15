@@ -33,6 +33,7 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
 /**************************************************************************************************/
 /*
  * Class Variables
+ *      MAX_EXERCISES - maximum number of routine exercises
  *      Context mContext - activity context
  *      mItemLayoutId - item layout resource id
  *
@@ -40,6 +41,9 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
  *      OnCreateContextMenuListener mCreateContextMenuListener - "create context menu" event listener
  */
 /**************************************************************************************************/
+
+    //MAX_EXERCISES - maximum number of routine exercises
+    private static int MAX_EXERCISES = 10;
 
     //mContext - activity context
     private Context mContext;
@@ -53,8 +57,8 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     //mData - an array list of item data consumed by the adapter
     private ArrayList<RoutineDetailItem> mData;
 
-    //mCreateContextMenuListener - "create context menu" event listener
-    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
+    //mOnClickListener - onClick listener for item click event
+    private static View.OnClickListener mOnItemClickListener;
 
 /**************************************************************************************************/
 
@@ -84,10 +88,11 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
 
 /**************************************************************************************************/
 /*
- * Getter Methods:
+ * Getter & Setter Methods:
  *      int getItemCount() - get number of items in adapter
- *      ExerciseItem getItem(int) - get item at given position
- *      ArrayList<ExerciseItem> getData() - get array data used by recycler
+ *      RoutineDetailItem getItem(int) - get item at given position
+ *      ArrayList<RoutineDetailItem> getData() - get array data used by recycler
+ *      void setOnItemClickListener(...) - set listener to listen for item click events
  */
 /**************************************************************************************************/
     /*
@@ -114,20 +119,40 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
      */
     public ArrayList<RoutineDetailItem> getData(){ return mData; }
 
+    /*
+     * void setOnItemClickListener(...) - set listener to listen for item click events
+     */
+    public void setOnItemClickListener(View.OnClickListener listener){
+        //set listener
+        mOnItemClickListener = listener;
+    }
+
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * Set Listener Methods:
- *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+ * Getter Methods:
+ *      void onItemDismiss(int) - item is removed with side-swipe event
+ *      void onItemMove(int,int) - does nothing
  */
 /**************************************************************************************************/
     /*
-     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+     * void onItemDismiss(int) - item is removed with side-swipe event
      */
-    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
-        mCreateContextMenuListener = listener;
+    public void onItemDismiss(int position) {
+        //remove item from list
+        mData.remove(position);
+
+        //notify adapter
+        notifyItemRemoved(position);
+    }
+
+    /*
+     * void onItemMove(int,int) - does nothing
+     */
+    public void onItemMove(int fromPosition, int toPosition) {
+        //does nothing
     }
 
 /**************************************************************************************************/
@@ -224,16 +249,12 @@ public class RoutineRecyclerAdapter extends RecyclerView.Adapter<RoutineRecycler
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         if(mData.size() > 0){
+            // Extract info from cursor
+            RoutineDetailItem item = mData.get(position);
 
-            if(mData.size() > 0){
-                // Extract info from cursor
-                RoutineDetailItem item = mData.get(position);
-
-                //bind viewHolder components
-                holder.bindCardView(item, position);
-                holder.bindTextView(item);
-            }
-
+            //bind viewHolder components
+            holder.bindCardView(item, position);
+            holder.bindTextView(item);
         }
 
     }
@@ -327,6 +348,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
  *      void bindCardView(RoutineDetailItem,int,int) - bind data to cardView
  *      void bindTextView(RoutineDetailItem) - bind data to textView components
  *      void setExerciseValues(...) - set exercise name and sets for routine
+ *      void setExerciseValues(...) - set textViews and values corresponding to the index
  */
 /**************************************************************************************************/
     /*
@@ -338,8 +360,8 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
         mCrdView.setTag(R.string.recycler_tagPosition, position);
         mCrdView.setTag(R.string.recycler_tagItem, item);
 
-        if(mCreateContextMenuListener != null){
-            mCrdView.setOnCreateContextMenuListener(mCreateContextMenuListener);
+        if(mOnItemClickListener != null){
+            mCrdView.setOnClickListener(mOnItemClickListener);
         }
 
     }
@@ -349,31 +371,41 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      * description values.
      */
     private void bindTextView(RoutineDetailItem item){
+        //set text and content description value
         mTxtRoutineName.setText(item.routineName);
         mTxtRoutineName.setContentDescription(item.routineName);
 
+        //get routine exercise list
         ArrayList<RoutineItem> routines = item.routineExercises;
 
+        //create routineItem buffer
         RoutineItem routineItem;
-        int maxRoutine = routines.size();
-        for(int i = 0; i < 10; i++){
 
-            if(i < maxRoutine){
+        //number of routine exercises in list
+        int routineCount = routines.size();
+
+        //loop up to maximum number of possible exercises (10)
+        for(int i = 0; i < MAX_EXERCISES; i++){
+
+            //if index is less the routine count
+            if(i < routineCount){
+                //get routine item
                 routineItem = routines.get(i);
+
+                //set routine exercise values
                 setExerciseValues(i, routineItem.exercise, routineItem.numOfSets);
             }
             else{
+                //index is greater than exercise list, hid textView
                 setExerciseValues(i, "", 0);
             }
 
         }
-        /*setExerciseValues(mTxtExercise06, mTxtSet06, item.exercise06, item.set06);
-        setExerciseValues(mTxtExercise07, mTxtSet07, item.exercise07, item.set07);
-        setExerciseValues(mTxtExercise08, mTxtSet08, item.exercise08, item.set08);
-        setExerciseValues(mTxtExercise09, mTxtSet09, item.exercise09, item.set09);
-        setExerciseValues(mTxtExercise10, mTxtSet10, item.exercise10, item.set10);*/
     }
 
+    /*
+     * void setExerciseValues(...) - set textViews and values corresponding to the index
+     */
     private void setExerciseValues(int index, String exercise, int numOfSets){
         switch(index){
             case 0:
@@ -415,11 +447,14 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      * void setTextViews(...) - set exercise name and sets for routine
      */
     private void setTextViews(TextView txtExercise, TextView txtSet, String exercise, int set){
+        //check if exercise has any value
         if(exercise == null || exercise.equals("")){
+            //empty or null, hid textViews
             txtExercise.setVisibility(View.GONE);
             txtSet.setVisibility(View.GONE);
         }
         else{
+            //has value, show and set string value for textViews
             txtExercise.setVisibility(View.VISIBLE);
             txtSet.setVisibility(View.VISIBLE);
 
