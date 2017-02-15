@@ -35,6 +35,7 @@ public class SaveNav extends MyBottomNav implements BottomNavigationView.OnNavig
     public interface OnSaveRoutineListener{
         //notify listener of an onSave click event
         public void onSaveRoutine();
+        public void onCancelRoutine();
     }
 
 /**************************************************************************************************/
@@ -124,14 +125,11 @@ public class SaveNav extends MyBottomNav implements BottomNavigationView.OnNavig
         switch (itemId) {
             case bottom_nav_item1: // 0 - cancel
                 //onCancel event, return to parent activity
-                mActivity.onBackPressed();
+                mListener.onCancelRoutine();
                 break;
             case bottom_nav_item2: // 1 - save
-                //onSave event, check if there is a listener
-                if(mListener != null){
-                    //notify listener of onSave click event
-                    mListener.onSaveRoutine();
-                }
+                //notify listener of onSave click event
+                mListener.onSaveRoutine();
                 break;
         }
 
