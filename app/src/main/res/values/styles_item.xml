@@ -3,7 +3,7 @@
 
     <style name="GymRat.Item" parent="Theme.AppCompat.Light">
         <item name="android:layout_margin">1dp</item>
-        <item name="android:background">@drawable/item_border</item>
+        <item name="android:background">@drawable/bg_blue</item>
         <item name="android:foreground">?selectableItemBackground</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
