@@ -29,6 +29,7 @@ import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineNameItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static me.makeachoice.gymratpta.controller.manager.Boss.EXTRA_ROUTINE_UPDATE;
 
@@ -371,7 +372,7 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
             saveExerciseList(newName, exerciseList);
 
             //set return result to calling parent activity
-            setReturnResult(true);
+            setReturnResult(RESULT_OK);
         }
     }
 
@@ -380,7 +381,7 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
      */
     private void onRoutineCanceled(){
         //set return result to calling parent activity
-        setReturnResult(false);
+        setReturnResult(RESULT_CANCELED);
     }
 
     /*
@@ -412,15 +413,12 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
     /*
      * void setReturnResult(boolean) - set return result to calling parent activity
      */
-    private void setReturnResult(boolean updateResult){
+    private void setReturnResult(int result){
         //create intent
         Intent intent = mActivity.getIntent();
 
-        //put return result in intent extra
-        intent.putExtra(EXTRA_ROUTINE_UPDATE, updateResult);
-
         //set result
-        mActivity.setResult(RESULT_OK, intent);
+        mActivity.setResult(result, intent);
 
         //close activity
         mActivity.finishActivity();
