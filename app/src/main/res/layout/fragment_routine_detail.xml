@@ -14,9 +14,9 @@
         <EditText android:id="@+id/routineDetail_edtName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription=""
-            android:text="RoutineName"
-            style="@style/GymRat.Fragment.Text.Title"
+            android:contentDescription="@string/description_enter_routine_name"
+            android:hint="@string/description_enter_routine_name"
+            style="@style/GymRat.Fragment.EditText"
             />
 
 
