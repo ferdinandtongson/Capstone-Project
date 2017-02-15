@@ -35,6 +35,10 @@
         <item name="android:background">@drawable/button_border</item>
     </style>
 
+    <style name="GymRat.Dialog.TextView.Button.Small" parent="GymRat.Dialog.TextView.Button">
+        <item name="android:textSize">@dimen/textSize_small</item>
+    </style>
+
     <style name="GymRat.Dialog.Spinner" parent="Theme.AppCompat.Light">
         <item name="android:paddingTop">@dimen/spinner_padding</item>
         <item name="android:paddingBottom">@dimen/spinner_padding</item>
