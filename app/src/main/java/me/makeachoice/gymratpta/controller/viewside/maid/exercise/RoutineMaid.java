@@ -1,17 +1,14 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,18 +16,19 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
+import me.makeachoice.gymratpta.controller.modelside.loader.RoutineLoader;
+import me.makeachoice.gymratpta.controller.modelside.loader.RoutineNameLoader;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.RoutineRecyclerAdapter;
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.view.activity.RoutineDetailActivity;
+import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
+import me.makeachoice.library.android.base.view.activity.MyActivity;
 
-import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
-import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NAME;
+import static me.makeachoice.gymratpta.controller.manager.Boss.REQUEST_CODE_ROUTINE_DETAIL;
 
 /**************************************************************************************************/
 /*
@@ -41,6 +39,11 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NA
  *      int mLayoutId - resource id number of fragment layout
  *      View mLayout - fragment layout view holding the child views
  *
+ * Variables from GymRatRecyclerMaid:
+ *      TextView mTxtEmpty - textView component displayed when recycler is empty
+ *      BasicRecycler mBasicRecycler - recycler component
+ *      FloatingActionButton mFAB - floating action button component
+ *
  * Methods from MyMaid:
  *      void activityCreated() - called when Activity.onCreate() completed
  *      void destroyView() - called when fragment is being removed
@@ -48,11 +51,15 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NA
  *      void saveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
  *      String getKey() - get maid key value
  *      Fragment getFragment() - get new instance fragment
+ *
+ * Methods from GymRatRecyclerMaid:
+ *      void setEmptyMessage(String) - set "empty" message to be displayed when recycler is empty
+ *      void setOnClickFABListener(View.OnClickListener) - set onClick listener for FAB
+ *      void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
  */
 /**************************************************************************************************/
 
-public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge,
-        RecyclerView.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener{
+public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -78,6 +85,34 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
     private String mUserId;
 
+    private RoutineDetailItem mRoutineDetailItem;
+    private int mRoutineLoadCount;
+
+
+
+    //mTouchCallback - helper class that enables drag-and-drop and swipe to dismiss functionality to recycler
+    private ItemTouchHelper.Callback mTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP |
+            ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                              RecyclerView.ViewHolder target) {
+            //notify adapter of drag-and-drop event
+            ///mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            int itemIndex = viewHolder.getAdapterPosition();
+
+            RoutineDetailItem item = mAdapter.getItem(itemIndex);
+
+            //notify adapter of swip to dismiss event
+            initializeDialog(item.routineName);
+            //mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+        }
+    };
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -92,10 +127,34 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //get maidKey
         mMaidKey = maidKey;
 
+        //get user id
         mUserId = userId;
 
         //fragment layout id number
         mLayoutId = layoutId;
+
+        //initialize data list
+        mData = new ArrayList<>();
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Public Method
+ */
+/**************************************************************************************************/
+
+    public void resetData(){
+        //clear list
+        mData.clear();
+
+        //swap old data with new data
+        mAdapter.swapData(mData);
+
+        //load routines
+        loadRoutineNames();
+
     }
 
 /**************************************************************************************************/
@@ -130,9 +189,13 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
-        mData = new ArrayList();
+        //clear list
+        mData.clear();
+
         //load routines
         loadRoutineNames();
+
+        //initialize fragment as data is being loaded
         prepareFragment();
     }
 
@@ -151,15 +214,17 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 /*
  * Class Methods:
  *      void prepareFragment(View) - prepare components and data to be displayed by fragment
+ *      void initializeEmptyText() - textView used when recycler is empty
  *      void initializeRecycler() - initialize recycler to display exercise items
- *      EditAddDialog initializeDialog(...) - create exercise edit/add dialog
+ *      void initializeAdapter() - initialize adapter to display routine detail info
+ *      void initializeRecycler() - initialize recycler to display list of routine details
+ *      void initializeFAB() - initialize floating action button
  */
 /**************************************************************************************************/
     /*
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment(){
-        //Log.d("Choice", "RoutineMaid.prepareFragment: " + cursor.getCount());
         //initialize "empty" text, displayed if data is empty
         initializeEmptyText();
 
@@ -169,11 +234,11 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //initialize recycler view
         initializeRecycler();
 
+        //initialize floating action button
         initializeFAB();
 
-        //check if data is empty
-        checkForEmptyRecycler(mData.isEmpty());
-
+        //update empty textView
+        updateEmptyText();
     }
 
     /*
@@ -187,35 +252,54 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         setEmptyMessage(emptyMsg);
     }
 
-
+    /*
+     * void initializeAdapter() - initialize adapter to display routine detail info
+     */
     private void initializeAdapter() {
-        //get data stub
-        //mData = RoutineStubData.createDefaultRoutines(mLayout.getContext());
-
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.card_routine;
 
         //create adapter consumed by the recyclerView
         mAdapter = new RoutineRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
 
-        mAdapter.setOnCreateContextMenuListener(this);
+        //add listener for onItemClick events
+        mAdapter.setOnItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //onItemClick event occurred
+                onItemClicked(view);
+            }
+        });
 
         //swap old data with new data
         mAdapter.swapData(mData);
     }
 
     /*
-     * void initializeRecycler() - initialize recycler to display exercise items
+     * void initializeRecycler() - initialize recycler to display list of routine details
      */
     private void initializeRecycler(){
         //set adapter
         mBasicRecycler.setAdapter(mAdapter);
+
+        //create item touch helper
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mTouchCallback);
+
+        //attach helper to recycler, enables drag-and-drop and swipe to dismiss functionality
+        itemTouchHelper.attachToRecyclerView(mBasicRecycler.getRecycler());
     }
 
+    /*
+     * void initializeFAB() - initialize floating action button
+     */
     private void initializeFAB(){
+        //get content description string value
         String description = mFragment.getString(R.string.description_fab_routine);
+
+        //set content description for FAB
         mFAB.setContentDescription(description);
 
+        //set onClick listener for FAB
         setOnClickFABListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -224,199 +308,255 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         });
     }
 
+    /*
+     * RoutineExerciseDialog initializeDialog(...) - show routine exercise details dialog
+     */
+    private DeleteWarningDialog initializeDialog(String routineName) {
+        //get activity context
+        MyActivity activity = (MyActivity)mFragment.getActivity();
 
-    private void onFabClicked(View view){
-        Log.d("Choice", "RoutineMaid.onFabClicked");
-        mRoutineDetailItem = new RoutineDetailItem();
-        mRoutineDetailItem.routineName = "";
-        mRoutineDetailItem.routineExercises = new ArrayList<RoutineItem>();
+        //get fragment manager
+        FragmentManager fm = activity.getSupportFragmentManager();
 
-        ((Boss)mFragment.getActivity().getApplication()).setRoutineDetailItem(mRoutineDetailItem);
-        startRoutineDetail();
+        //create dialog
+        mDialog = new DeleteWarningDialog();
+        mDialog.setDialogValues(activity, routineName);
+        mDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                resetData();
+            }
+        });
+
+        mDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
+            @Override
+            public void onDelete() {
+                Log.d("Choice", "RoutineMaid.onDelete");
+            }
+        });
+
+
+        //show dialog
+        mDialog.show(fm, "diaDeleteRoutine");
+
+        return mDialog;
+    }
+
+    private DeleteWarningDialog mDialog;
+
+    /*
+     * void updateEmptyText() - check if adapter is empty or not then updates empty textView
+     */
+    private void updateEmptyText(){
+        if(mAdapter.getItemCount() > 0){
+            //is not empty
+            isEmptyRecycler(false);
+        }
+        else{
+            //is empty
+            isEmptyRecycler(true);
+        }
     }
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * Context Menu Methods:
- *      void onCreateContextMenu(...) - create context menu
- *      boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+ * Event Methods:
+ *      void onItemClicked(View) - recyclerView item was clicked, show routine detail screen
+ *      void onFabClicked(View) - fab click event occurred, show routine detail screen
+ *      void startRoutineDetail() - start routine detail activity
  */
 /**************************************************************************************************/
     /*
-     * void onCreateContextMenu(...) - create context menu
+     * void onItemClicked(View) - recyclerView item was clicked, show routine detail screen
      */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        //get clientCardItem
-        mRoutineDetailItem = (RoutineDetailItem)v.getTag(R.string.recycler_tagItem);
+    private void onItemClicked(View view){
+        //get routine detail item from item clicked
+        mRoutineDetailItem = (RoutineDetailItem)view.getTag(R.string.recycler_tagItem);
 
-        //get routine name
-        String routineName = (mRoutineDetailItem.routineName);
+        //save routine detail item in Boss
+        ((Boss)mFragment.getActivity().getApplication()).setRoutineDetailItem(mRoutineDetailItem);
 
-        //create string values for menu
-        String strEdit = mFragment.getString(R.string.edit);
-        String strDelete = mFragment.getString(R.string.delete);
-
-        //create context menu
-        menu.setHeaderTitle(routineName);
-        menu.add(0, CONTEXT_MENU_EDIT, 0, strEdit);
-        menu.add(0, CONTEXT_MENU_DELETE, 0, strDelete);
-
-        int count = menu.size();
-        for(int i = 0; i < count; i++){
-            menu.getItem(i).setOnMenuItemClickListener(this);
-        }
+        //start routine detail screen
+        startRoutineDetail();
 
     }
-
-    private RoutineDetailItem mRoutineDetailItem;
 
     /*
-     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+     * void onFabClicked(View) - fab click event occurred, show routine detail screen
      */
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case CONTEXT_MENU_EDIT:
-                Log.d("Choice", "     edit");
-                ((Boss)mFragment.getActivity().getApplication()).setRoutineDetailItem(mRoutineDetailItem);
-                startRoutineDetail();
-                return true;
-            case CONTEXT_MENU_DELETE:
-                Log.d("Choice", "     delete");
-                //TODO - need to delete exercise routine
-                return true;
-        }
-        return false;
+    private void onFabClicked(View view){
+        //create routine detail item buffer
+        mRoutineDetailItem = new RoutineDetailItem();
+        mRoutineDetailItem.routineName = "";
+        mRoutineDetailItem.routineExercises = new ArrayList<RoutineItem>();
+
+        //save routine detail item in Boss
+        ((Boss)mFragment.getActivity().getApplication()).setRoutineDetailItem(mRoutineDetailItem);
+
+        //start routine detail screen
+        startRoutineDetail();
     }
 
+    /*
+     * void startRoutineDetail() - start routine detail activity
+     */
     private void startRoutineDetail(){
-        Intent intent = new Intent(mFragment.getContext(), RoutineDetailActivity.class);
-        mFragment.startActivity(intent);
+        //get activity context
+        MyActivity activity = (MyActivity)mFragment.getActivity();
+
+        //create intent
+        Intent intent = new Intent(activity, RoutineDetailActivity.class);
+
+        //NOTE - if you use mFragment.startActivityForResult, result code will be modified
+        activity.startActivityForResult(intent, REQUEST_CODE_ROUTINE_DETAIL);
 
     }
 
 /**************************************************************************************************/
 
+/**************************************************************************************************/
+/*
+ * Load Methods:
+ *      void loadRoutineNames() - load routine name data from database
+ *      void loadRoutine() - load routine exercise data from database
+ *      void onRoutineNameDataLoaded(Cursor) - routine name data loaded from database
+ *      void onRoutineDataLoaded(Cursor) - routine exercise data loaded from database
+ *      void loadMoreRoutines() - check if more routine exercise data needs to be loaded
+ */
+/**************************************************************************************************/
     /*
-     * void loadRoutineNames() - loads routine names onto cursor used by Adapter.
+     * void loadRoutineNames() - load routine name data from database
      */
     private void loadRoutineNames(){
-        Log.d("Choice", "RoutineMaid.laodRoutineNames");
+        MyActivity activity = (MyActivity)mFragment.getActivity();
 
-        // Initializes a loader for loading clients
-        mFragment.getActivity().getSupportLoaderManager().initLoader(LOADER_ROUTINE_NAME, null,
-                new LoaderManager.LoaderCallbacks<Cursor>() {
-                    @Override
-                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
-                        //request client cursor from local database
-                        Uri uri = Contractor.RoutineNameEntry.buildRoutineNameByUID(mUserId);
-                        Log.d("Choice", "     uri: " + uri.toString());
-
-                        //get cursor
-                        return new CursorLoader(
-                                mFragment.getActivity(),
-                                uri,
-                                RoutineNameColumns.PROJECTION_ROUTINE_NAME,
-                                null,
-                                null,
-                                Contractor.RoutineNameEntry.SORT_ORDER_DEFAULT);
-                    }
-
-                    @Override
-                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
-                        Log.d("Choice", "RoutineMaid.loadRoutineName: " + cursor.getCount());
-                        int count = cursor.getCount();
-                        for(int i = 0; i < count; i++){
-                            cursor.moveToPosition(i);
-                            RoutineDetailItem item = new RoutineDetailItem();
-                            item.routineName = cursor.getString(RoutineNameColumns.INDEX_ROUTINE_NAME);
-
-                            mData.add(item);
-                        }
-
-                        mRoutineCount = 0;
-                        loadRoutines();
-                        mFragment.getLoaderManager().destroyLoader(LOADER_ROUTINE_NAME);
-                    }
-
-                    @Override
-                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-                    }
-                });
+        //start loader to get routine data from database
+        RoutineNameLoader.loadRoutineNames(activity, mUserId, new RoutineNameLoader.OnRoutineNameLoadListener() {
+            @Override
+            public void onRoutineNameLoadFinished(Cursor cursor) {
+                onRoutineNameDataLoaded(cursor);
+            }
+        });
     }
-
-    private int mRoutineCount;
 
     /*
-     * void loadRoutines() - loads routines onto cursor used by Adapter.
+     * void loadRoutine() - load routine exercise data from database
      */
-    private void loadRoutines(){
-        // Initializes a loader for loading clients
-        mFragment.getActivity().getSupportLoaderManager().initLoader(LOADER_ROUTINE, null,
-                new LoaderManager.LoaderCallbacks<Cursor>() {
-                    @Override
-                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+    private void loadRoutine(int loadCount){
+        //get activity context
+        MyActivity activity = (MyActivity)mFragment.getActivity();
 
-                        RoutineDetailItem item = mData.get(mRoutineCount);
+        //get routine name at loadCount index
+        String routineName = mData.get(loadCount).routineName;
 
-                        //request client cursor from local database
-                        Uri uri = Contractor.RoutineEntry.buildRoutineByName(mUserId, item.routineName);
-                        Log.d("Choice", "RoutineMaid.loadRoutines");
-                        Log.d("Choice", "     uri: " + uri);
-
-                        //get cursor
-                        return new CursorLoader(
-                                mFragment.getActivity(),
-                                uri,
-                                RoutineColumns.PROJECTION_ROUTINE,
-                                null,
-                                null,
-                                Contractor.RoutineEntry.SORT_ORDER_DEFAULT);
-                    }
-
-                    @Override
-                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
-                        //category cursor loaded, initialize layout
-                        storeRoutines(cursor);
-                    }
-
-                    @Override
-                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-                    }
-                });
+        //start loader to get routine data from database
+        RoutineLoader.loadRoutineByName(activity, mUserId, routineName, new RoutineLoader.OnRoutineLoadListener() {
+            @Override
+            public void onRoutineLoadFinished(Cursor cursor) {
+                onRoutineDataLoaded(cursor);
+            }
+        });
     }
 
-    private void storeRoutines(Cursor cursor){
-        ArrayList<RoutineItem> routines = new ArrayList();
 
+
+    /*
+     * void onRoutineNameDataLoaded(Cursor) - routine name data loaded from database
+     */
+    private void onRoutineNameDataLoaded(Cursor cursor){
+        //get size of cursor
         int count = cursor.getCount();
 
-        if(count > 0){
-            checkForEmptyRecycler(false);
-        }
-
+        //loop through cursor
         for(int i = 0; i < count; i++){
+            //move cursor to index position
             cursor.moveToPosition(i);
 
+            //create routine detail object
+            RoutineDetailItem item = new RoutineDetailItem();
+
+            //save routine name
+            item.routineName = cursor.getString(RoutineNameColumns.INDEX_ROUTINE_NAME);
+
+            //create array list buffer for routine exercises
+            item.routineExercises = new ArrayList<>();
+
+            //add
+            mData.add(item);
+        }
+
+        //destroy routine name loader
+        RoutineNameLoader.destroyLoader((MyActivity)mFragment.getActivity());
+
+        //initialize routine load count
+        mRoutineLoadCount = 0;
+
+        //load routine
+        loadRoutine(mRoutineLoadCount);
+
+    }
+
+
+
+    /*
+     * void onRoutineDataLoaded(Cursor) - routine exercise data loaded from database
+     */
+    private void onRoutineDataLoaded(Cursor cursor){
+        //get activity context
+        MyActivity activity = (MyActivity)mFragment.getActivity();
+
+        //create routine item list buffer
+        ArrayList<RoutineItem> routines = new ArrayList();
+
+        //get size of cursor
+        int count = cursor.getCount();
+
+        //loop through cursor
+        for(int i = 0; i < count; i++){
+            //move cursor to index
+            cursor.moveToPosition(i);
+
+            //create routine item from cursor data
             RoutineItem item = new RoutineItem(cursor);
+
+            //add routine item to list buffer
             routines.add(item);
         }
 
-        Log.d("Choice", "     routine: " + mData.get(mRoutineCount).routineName);
-        Log.d("Choice", "          routines: " + routines.size());
-        mData.get(mRoutineCount).routineExercises = routines;
-        mAdapter.addItem(mData.get(mRoutineCount));
-        mRoutineCount++;
+        //save routine exercise list to routineDetail items list
+        mData.get(mRoutineLoadCount).routineExercises = routines;
 
-        if(mRoutineCount < mData.size()){
-            loadRoutines();
+        //destroy loader activity
+        RoutineLoader.destroyLoader(activity);
+
+        //add routine detail item to adapter
+        mAdapter.addItem(mData.get(mRoutineLoadCount));
+
+        updateEmptyText();
+
+        loadMoreRoutines();
+
+    }
+
+    /*
+     * void loadMoreRoutines() - check if more routine exercise data needs to be loaded
+     */
+    private void loadMoreRoutines(){
+        //increment routine load count
+        mRoutineLoadCount++;
+
+        //check if load count is less than routineDetail list count
+        if(mRoutineLoadCount < mData.size()){
+            //less than, load next routine exercise data
+            loadRoutine(mRoutineLoadCount);
         }
         else{
-            Log.d("Choice", "RoutineMaid.storeRoutines - finished!!!!!");
+            //routine load is finished
         }
     }
+
+/**************************************************************************************************/
 
 }
