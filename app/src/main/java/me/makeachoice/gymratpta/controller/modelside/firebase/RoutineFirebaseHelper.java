@@ -143,6 +143,26 @@ public class RoutineFirebaseHelper {
 
 /**************************************************************************************************/
 /*
+ * Remove Data Methods
+ */
+/**************************************************************************************************/
+
+    public void deleteRoutine(String userId, String routineName){
+        DatabaseReference refRoutine = getRoutineDetailReference(userId, routineName);
+
+        refRoutine.removeValue();
+    }
+
+    public void deleteRoutineExercise(String userId, String routineName, String index){
+        DatabaseReference refRoutine = getRoutineDetailReference(userId, routineName);
+
+        refRoutine.child(index).removeValue();
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
  * Request Data Methods
  */
 /**************************************************************************************************/
