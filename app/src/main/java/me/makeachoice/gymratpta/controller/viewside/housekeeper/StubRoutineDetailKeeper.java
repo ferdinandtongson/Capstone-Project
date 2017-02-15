@@ -85,26 +85,34 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
 /**************************************************************************************************/
 /*
  * Class Variables:
+ *      String mUserId - user id taken from firebase authentication
+ *      boolean mIsNewRoutine - status flag if routine is new routine or old
+ *
+ *      RoutineDetailItem mRoutineDetailItem - details of the given routine
+ *      RoutineNameItem mSaveRoutineName - routine name item being saved
+ *      HashMap<String,RoutineNameItem> mRoutineNameMap - hashMap of routine names in database
+ *      RoutineDetailMaid mMaid - routine detail maid
  */
 /**************************************************************************************************/
 
     //mUserId - user id taken from firebase authentication
     private String mUserId;
 
+    //mIsNewRoutine - status flag if routine is new routine or old
+    private boolean mIsNewRoutine;
+
     //mRoutineDetailItem - details of the given routine
     private RoutineDetailItem mRoutineDetailItem;
 
-    //mIsNewRoutine - status flag if routine is new routine or old
-    private boolean mIsNewRoutine;
+    //mSaveRoutineName - routine name item being saved
+    private RoutineNameItem mSaveRoutineName;
+
+    //mRoutineNameMap - hashMap of routine names in database
+    private HashMap<String, RoutineNameItem> mRoutineNameMap;
 
     //mMaid - routine detail maid
     private RoutineDetailMaid mMaid;
 
-    private RoutineNameItem mSaveRoutineName;
-
-    private HashMap<String, RoutineNameItem> mRoutineNameMap;
-
-    private boolean mSavingData;
 
 
 /**************************************************************************************************/
@@ -205,7 +213,16 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
             mIsNewRoutine = false;
         }
 
-        mSavingData = false;
+        //create intent
+        Intent intent = mActivity.getIntent();
+
+        //put return result in intent extra
+        intent.putExtra(EXTRA_ROUTINE_UPDATE, false);
+
+        //set result
+        mActivity.setResult(RESULT_OK, intent);
+
+
     }
 
     /*
@@ -327,8 +344,6 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
      */
     @Override
     public void backPressed(){
-        //set return result to calling parent activity
-        setReturnResult(false);
     }
 
     /*
@@ -343,7 +358,6 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
 
         //validate routine name and exercise list
         if(validName(newName) && validList(exerciseList)){
-            mSavingData = true;
 
             //both name and list are valid, create routine name object
             mSaveRoutineName = new RoutineNameItem();
