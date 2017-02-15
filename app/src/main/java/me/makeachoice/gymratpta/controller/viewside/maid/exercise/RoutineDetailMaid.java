@@ -114,6 +114,9 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             //notify adapter of swip to dismiss event
             mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+
+            //update empty adapter textView
+            updateEmptyText();
         }
     };
 
@@ -226,6 +229,7 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
  *      void initializeRecycler() - initialize recycler to display list of exercise items
  *      void initializeFAB() - initialize FAB component
  *      RoutineExerciseDialog initializeDialog(...) - show routine exercise list dialog
+ *      void updateEmptyText() - check if adapter is empty or not then updates empty textView
  */
 /**************************************************************************************************/
     /*
@@ -245,7 +249,7 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
         initializeFAB();
 
         //check if exercise list is empty
-        checkForEmptyRecycler(mRoutineExerciseList.isEmpty());
+        isEmptyRecycler(mRoutineExerciseList.isEmpty());
 
     }
 
@@ -271,7 +275,7 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
      */
     private void initializeEmptyText(){
         //get "empty" text message
-        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addRoutine);
+        String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addRoutineExercise);
 
         //set message
         setEmptyMessage(emptyMsg);
@@ -287,6 +291,15 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
         //create adapter consumed by the recyclerView
         mAdapter = new RoutineDetailRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
 
+        //add listener for onItemClick events
+        mAdapter.setOnItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //onItemClick event occurred
+                onItemClicked(view);
+            }
+        });
+
         //swap old data with new data
         mAdapter.swapData(mRoutineExerciseList);
     }
@@ -301,17 +314,8 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
         //create item touch helper
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mTouchCallback);
 
-        //attach helper to recycler, enables drag-and-drop and swipe to dismiss funcationality
+        //attach helper to recycler, enables drag-and-drop and swipe to dismiss functionality
         itemTouchHelper.attachToRecyclerView(mBasicRecycler.getRecycler());
-
-        //add listener for onItemClick events
-        mAdapter.setOnItemClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //onItemClick event occurred
-                onItemClicked(view);
-            }
-        });
     }
 
     /*
@@ -362,11 +366,25 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
         return mDialog;
     }
 
+    /*
+     * void updateEmptyText() - check if adapter is empty or not then updates empty textView
+     */
+    private void updateEmptyText(){
+        if(mAdapter.getItemCount() > 0){
+            //is not empty
+            isEmptyRecycler(false);
+        }
+        else{
+            //is empty
+            isEmptyRecycler(true);
+        }
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * Getter Methods:
+ * Event Methods:
  *      void onItemClicked(View) - recyclerView item was clicked, show dialog
  *      void onFabClicked(View) - FAB item was clicked, show dialog
  *      void onSaveRoutineDetail(RoutineItem) - save routine exercise detail from dialog
@@ -427,6 +445,9 @@ public class RoutineDetailMaid extends GymRatRecyclerMaid implements BasicFragme
             //add routine exercise item to adapter
             mAdapter.addItem(item);
         }
+
+        //update empty adapter textView
+        updateEmptyText();
 
         //dismiss dialog
         mDialog.dismiss();
