@@ -123,7 +123,7 @@ public class SessionRoutineMaid extends GymRatRecyclerMaid implements BasicFragm
         setEmptyMessage(emptyMsg);
 
         mData = ClientStubData.createClientData(mLayout.getContext());
-        checkForEmptyRecycler(mData.isEmpty());
+        isEmptyRecycler(mData.isEmpty());
 
         initializeAdapter();
     }

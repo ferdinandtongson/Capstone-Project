@@ -176,10 +176,10 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
 
         if(cursor != null && cursor.getCount() > 0){
             //check if data is empty
-            checkForEmptyRecycler(false);
+            isEmptyRecycler(false);
         }
         else{
-            checkForEmptyRecycler(true);
+            isEmptyRecycler(true);
         }
     }
 

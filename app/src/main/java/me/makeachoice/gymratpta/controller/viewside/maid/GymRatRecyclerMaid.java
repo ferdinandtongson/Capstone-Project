@@ -110,7 +110,7 @@ public abstract class GymRatRecyclerMaid extends MyMaid implements BasicFragment
  * Class Methods
  *      void setEmptyMessage(String) - set "empty" message to be displayed when recycler is empty
  *      void setOnClickFABListener(View.OnClickListener) - set onClick listener for FAB
- *      void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
+ *      void isEmptyRecycler(boolean) - checks whether to display "empty" message or not
  */
 /**************************************************************************************************/
     /*
@@ -128,9 +128,9 @@ public abstract class GymRatRecyclerMaid extends MyMaid implements BasicFragment
     }
 
     /*
-     * void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
+     * void isEmptyRecycler(boolean) - checks whether to display "empty" message or not
      */
-    protected void checkForEmptyRecycler(boolean isEmpty){
+    protected void isEmptyRecycler(boolean isEmpty){
         if(isEmpty){
             mTxtEmpty.setVisibility(View.VISIBLE);
         }

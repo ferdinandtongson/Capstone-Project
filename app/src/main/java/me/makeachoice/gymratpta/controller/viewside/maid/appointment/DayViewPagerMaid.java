@@ -125,7 +125,7 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
         String emptyMsg = mLayout.getResources().getString(R.string.emptyRecycler_addExercise);
         setEmptyMessage(emptyMsg);
 
-        checkForEmptyRecycler(mData.isEmpty());
+        isEmptyRecycler(mData.isEmpty());
 
         initializeAdapter();
     }
