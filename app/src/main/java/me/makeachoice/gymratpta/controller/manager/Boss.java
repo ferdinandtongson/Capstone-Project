@@ -122,6 +122,7 @@ public class Boss extends MyBoss {
     public static String PREF_SESSION_STATUS = "sessionStatus";
     public static String PREF_DAY_MAX = "dayMax";
     public static String PREF_SET_MAX = "setMax";
+    public static String PREF_DELETE_WARNING = "deleteWarning";
 
     public static String EXTRA_ROUTINE_UPDATE = "update";
 
@@ -227,7 +228,7 @@ public class Boss extends MyBoss {
         //mNewsButler = new NewsButler(this);
     }
 
-    private void initPreferences(){
+    public void initPreferences(){
         //public static final String MY_PREFS_NAME = "MyPrefsFile";
         SharedPreferences.Editor editor = getSharedPreferences(mCurrentUser.uid, MODE_PRIVATE).edit();
 
@@ -235,6 +236,7 @@ public class Boss extends MyBoss {
         editor.putString(PREF_SESSION_STATUS, "CURRENT"); //session status - ALL, CURRENT
         editor.putInt(PREF_DAY_MAX, 60); //number of days that can be scrolled - 30, 60, 90
         editor.putInt(PREF_SET_MAX, 7); //maximum number of sets
+        editor.putBoolean(PREF_DELETE_WARNING, true); //show delete warning dialog
         editor.commit();
 
     }
