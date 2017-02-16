@@ -2,12 +2,13 @@ package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,15 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
+import me.makeachoice.gymratpta.controller.modelside.firebase.RoutineFirebaseHelper;
+import me.makeachoice.gymratpta.controller.modelside.firebase.RoutineNameFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.loader.RoutineLoader;
 import me.makeachoice.gymratpta.controller.modelside.loader.RoutineNameLoader;
+import me.makeachoice.gymratpta.controller.modelside.query.RoutineNameQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.query.RoutineQueryHelper;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.RoutineRecyclerAdapter;
+import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
@@ -28,6 +34,8 @@ import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
+import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING;
 import static me.makeachoice.gymratpta.controller.manager.Boss.REQUEST_CODE_ROUTINE_DETAIL;
 
 /**************************************************************************************************/
@@ -64,31 +72,39 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 /**************************************************************************************************/
 /*
  * Class Variables
- *      int CONTEXT_MENU_EDIT - "edit" context menu id number
- *      int CONTEXT_MENU_DELETE = "delete" context menu id number
+ *      MyActivity mActivity - activity context
+ *      String mUserId - user id from firebase authentication
+ *      int mRoutineLoadCount - number of routines to load from database
+ *
+ *      RoutineDetailItem mRoutineDetailItem - routine detail item to be added, edited, or deleted
+ *      mData - data list of user-defined routine exercises consumed by the adapter
  *      ArrayList<RoutineItem> mData - data list consumed by the adapter
+ *
  *      ExerciseRecyclerAdapter mAdapter - adapter consumed by recycler
+ *      DeleteWarningDialog mWarningDialog - dialog warning user that a routine is about to be deleted
  */
 /**************************************************************************************************/
 
-    //CONTEXT_MENU_EDIT - "edit" context menu id number
-    private final static int CONTEXT_MENU_EDIT = 0;
+    //mActivity - activity context
+    private MyActivity mActivity;
 
-    //CONTEXT_MENU_DELETE - "delete" context menu id number
-    private final static int CONTEXT_MENU_DELETE = 1;
+    //mUserId - user id from firebase authentication
+    private String mUserId;
 
-    //mData - data list consumed by the adapter
+    //mRoutineLoadCount - number of routines to load from database
+    private int mRoutineLoadCount;
+
+    //mRoutineDetailItem - routine detail item to be added, edited, or deleted
+    private RoutineDetailItem mRoutineDetailItem;
+
+    //mData - data list of user-defined routine exercises consumed by the adapter
     private ArrayList<RoutineDetailItem> mData;
 
     //mAdapter - adapter consumed by recycler
     private RoutineRecyclerAdapter mAdapter;
 
-    private String mUserId;
-
-    private RoutineDetailItem mRoutineDetailItem;
-    private int mRoutineLoadCount;
-
-
+    //mWarningDialog - dialog warning user that a routine is about to be deleted
+    private DeleteWarningDialog mWarningDialog;
 
     //mTouchCallback - helper class that enables drag-and-drop and swipe to dismiss functionality to recycler
     private ItemTouchHelper.Callback mTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP |
@@ -96,20 +112,17 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                               RecyclerView.ViewHolder target) {
-            //notify adapter of drag-and-drop event
-            ///mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            //does nothing
             return false;
         }
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            //get index of item swiped
             int itemIndex = viewHolder.getAdapterPosition();
 
-            RoutineDetailItem item = mAdapter.getItem(itemIndex);
-
-            //notify adapter of swip to dismiss event
-            initializeDialog(item.routineName);
-            //mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+            //onDelete has been requested
+            onDeleteRequested(itemIndex);
         }
     };
 
@@ -189,6 +202,9 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
+        //get activity
+        mActivity = (MyActivity)mFragment.getActivity();
+
         //clear list
         mData.clear();
 
@@ -219,6 +235,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
  *      void initializeAdapter() - initialize adapter to display routine detail info
  *      void initializeRecycler() - initialize recycler to display list of routine details
  *      void initializeFAB() - initialize floating action button
+ *      DeleteWarningDialog initializeDialog(...) - delete warning dialog
  */
 /**************************************************************************************************/
     /*
@@ -309,40 +326,45 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     }
 
     /*
-     * RoutineExerciseDialog initializeDialog(...) - show routine exercise details dialog
+     * DeleteWarningDialog initializeDialog(...) - delete warning dialog
      */
     private DeleteWarningDialog initializeDialog(String routineName) {
-        //get activity context
-        MyActivity activity = (MyActivity)mFragment.getActivity();
 
         //get fragment manager
-        FragmentManager fm = activity.getSupportFragmentManager();
+        FragmentManager fm = mActivity.getSupportFragmentManager();
 
         //create dialog
-        mDialog = new DeleteWarningDialog();
-        mDialog.setDialogValues(activity, routineName);
-        mDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
+        mWarningDialog = new DeleteWarningDialog();
+
+        //set dialog values
+        mWarningDialog.setDialogValues(mActivity, mUserId, routineName);
+
+        //set onDismiss listener
+        mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 resetData();
             }
         });
 
-        mDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
+        //set onDelete listener
+        mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
             @Override
             public void onDelete() {
-                Log.d("Choice", "RoutineMaid.onDelete");
+                //delete routine
+                deleteRoutine(mRoutineDetailItem);
+
+                //dismiss dialog
+                mWarningDialog.dismiss();
             }
         });
 
 
         //show dialog
-        mDialog.show(fm, "diaDeleteRoutine");
+        mWarningDialog.show(fm, "diaDeleteRoutine");
 
-        return mDialog;
+        return mWarningDialog;
     }
-
-    private DeleteWarningDialog mDialog;
 
     /*
      * void updateEmptyText() - check if adapter is empty or not then updates empty textView
@@ -365,6 +387,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
  * Event Methods:
  *      void onItemClicked(View) - recyclerView item was clicked, show routine detail screen
  *      void onFabClicked(View) - fab click event occurred, show routine detail screen
+ *      void onDeleteRequested(int) - routine item delete request
  *      void startRoutineDetail() - start routine detail activity
  */
 /**************************************************************************************************/
@@ -376,7 +399,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         mRoutineDetailItem = (RoutineDetailItem)view.getTag(R.string.recycler_tagItem);
 
         //save routine detail item in Boss
-        ((Boss)mFragment.getActivity().getApplication()).setRoutineDetailItem(mRoutineDetailItem);
+        ((Boss)mActivity.getApplication()).setRoutineDetailItem(mRoutineDetailItem);
 
         //start routine detail screen
         startRoutineDetail();
@@ -390,27 +413,50 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //create routine detail item buffer
         mRoutineDetailItem = new RoutineDetailItem();
         mRoutineDetailItem.routineName = "";
-        mRoutineDetailItem.routineExercises = new ArrayList<RoutineItem>();
+        mRoutineDetailItem.routineExercises = new ArrayList<>();
 
         //save routine detail item in Boss
-        ((Boss)mFragment.getActivity().getApplication()).setRoutineDetailItem(mRoutineDetailItem);
+        ((Boss)mActivity.getApplication()).setRoutineDetailItem(mRoutineDetailItem);
 
         //start routine detail screen
         startRoutineDetail();
     }
 
     /*
+     * void onDeleteRequested(int) - routine item delete request
+     */
+    private void onDeleteRequested(int itemIndex){
+        //get routine item to be requesting to be deleted
+        mRoutineDetailItem = mAdapter.getItem(itemIndex);
+
+        //get user shared preference
+        SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
+
+        //get user preference to want to receive deletion warning
+        boolean showWarning = prefs.getBoolean(PREF_DELETE_WARNING, true);
+
+        //check status
+        if(showWarning){
+            //wants warning, show "delete warning" dialog
+            initializeDialog(mRoutineDetailItem.routineName);
+        }
+        else{
+            //no warning, delete routine
+            deleteRoutine(mRoutineDetailItem);
+        }
+
+    }
+
+    /*
      * void startRoutineDetail() - start routine detail activity
      */
     private void startRoutineDetail(){
-        //get activity context
-        MyActivity activity = (MyActivity)mFragment.getActivity();
 
         //create intent
-        Intent intent = new Intent(activity, RoutineDetailActivity.class);
+        Intent intent = new Intent(mActivity, RoutineDetailActivity.class);
 
         //NOTE - if you use mFragment.startActivityForResult, result code will be modified
-        activity.startActivityForResult(intent, REQUEST_CODE_ROUTINE_DETAIL);
+        mActivity.startActivityForResult(intent, REQUEST_CODE_ROUTINE_DETAIL);
 
     }
 
@@ -430,10 +476,8 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
      * void loadRoutineNames() - load routine name data from database
      */
     private void loadRoutineNames(){
-        MyActivity activity = (MyActivity)mFragment.getActivity();
-
         //start loader to get routine data from database
-        RoutineNameLoader.loadRoutineNames(activity, mUserId, new RoutineNameLoader.OnRoutineNameLoadListener() {
+        RoutineNameLoader.loadRoutineNames(mActivity, mUserId, new RoutineNameLoader.OnRoutineNameLoadListener() {
             @Override
             public void onRoutineNameLoadFinished(Cursor cursor) {
                 onRoutineNameDataLoaded(cursor);
@@ -445,22 +489,17 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
      * void loadRoutine() - load routine exercise data from database
      */
     private void loadRoutine(int loadCount){
-        //get activity context
-        MyActivity activity = (MyActivity)mFragment.getActivity();
-
         //get routine name at loadCount index
         String routineName = mData.get(loadCount).routineName;
 
         //start loader to get routine data from database
-        RoutineLoader.loadRoutineByName(activity, mUserId, routineName, new RoutineLoader.OnRoutineLoadListener() {
+        RoutineLoader.loadRoutineByName(mActivity, mUserId, routineName, new RoutineLoader.OnRoutineLoadListener() {
             @Override
             public void onRoutineLoadFinished(Cursor cursor) {
                 onRoutineDataLoaded(cursor);
             }
         });
     }
-
-
 
     /*
      * void onRoutineNameDataLoaded(Cursor) - routine name data loaded from database
@@ -488,7 +527,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         }
 
         //destroy routine name loader
-        RoutineNameLoader.destroyLoader((MyActivity)mFragment.getActivity());
+        RoutineNameLoader.destroyLoader(mActivity);
 
         //initialize routine load count
         mRoutineLoadCount = 0;
@@ -498,17 +537,12 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
     }
 
-
-
     /*
      * void onRoutineDataLoaded(Cursor) - routine exercise data loaded from database
      */
     private void onRoutineDataLoaded(Cursor cursor){
-        //get activity context
-        MyActivity activity = (MyActivity)mFragment.getActivity();
-
         //create routine item list buffer
-        ArrayList<RoutineItem> routines = new ArrayList();
+        ArrayList<RoutineItem> routines = new ArrayList<>();
 
         //get size of cursor
         int count = cursor.getCount();
@@ -529,7 +563,7 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         mData.get(mRoutineLoadCount).routineExercises = routines;
 
         //destroy loader activity
-        RoutineLoader.destroyLoader(activity);
+        RoutineLoader.destroyLoader(mActivity);
 
         //add routine detail item to adapter
         mAdapter.addItem(mData.get(mRoutineLoadCount));
@@ -552,9 +586,70 @@ public class RoutineMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
             //less than, load next routine exercise data
             loadRoutine(mRoutineLoadCount);
         }
-        else{
-            //routine load is finished
-        }
+    }
+
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Delete Routine:
+ *      void deleteRoutine(...) - delete routine data from firebase and database
+ *      void deleteRoutineFromFirebase(...) - delete routine data from firebase
+ *      void deleteRoutineFromDatabase(...) - delete routine data from database
+ */
+/**************************************************************************************************/
+    /*
+     * void deleteRoutine(...) - delete routine data from firebase and database
+     */
+    private void deleteRoutine(RoutineDetailItem deleteItem){
+        //delete routine data from firebase
+        deleteRoutineFromFirebase(deleteItem);
+
+        //delete routine data from database
+        deleteRoutineFromDatabase(deleteItem);
+    }
+
+    /*
+     * void deleteRoutineFromFirebase(...) - delete routine data from firebase
+     */
+    private void deleteRoutineFromFirebase(RoutineDetailItem deleteItem){
+        RoutineNameFirebaseHelper routineNameFB = RoutineNameFirebaseHelper.getInstance();
+        //get firebase instance
+        RoutineFirebaseHelper routineFB = RoutineFirebaseHelper.getInstance();
+
+        String routineName = deleteItem.routineName;
+
+        //delete routine name from firebase
+        routineNameFB.deleteRoutineName(mUserId, routineName);
+
+        //delete routine exercises from firebase
+        routineFB.deleteRoutine(mUserId, routineName);
+    }
+
+    /*
+     * void deleteRoutineFromDatabase(...) - delete routine data from database
+     */
+    private void deleteRoutineFromDatabase(RoutineDetailItem deleteItem){
+        //get uri value for routine name table
+        Uri uriRoutineName = Contractor.RoutineNameEntry.CONTENT_URI;
+
+        //get uri for routine table
+        Uri uriRoutine = Contractor.RoutineEntry.CONTENT_URI;
+
+
+        //get name from routine detail item
+        String routineName = deleteItem.routineName;
+
+        //remove routine name from database
+        int nameDeleted = mActivity.getContentResolver().delete(uriRoutineName,
+                RoutineNameQueryHelper.routineNameSelection, new String[]{mUserId, routineName});
+
+
+        //remove exercise routines from database
+        int exercisesDeleted = mActivity.getContentResolver().delete(uriRoutine,
+                RoutineQueryHelper.routineNameSelection, new String[]{mUserId, routineName});
+
     }
 
 /**************************************************************************************************/
