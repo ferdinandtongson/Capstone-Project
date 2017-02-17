@@ -44,6 +44,19 @@ public class ClientItem extends ClientFBItem {
         status = item.status;
     }
 
+    public ClientItem(Cursor cursor){
+        uid = cursor.getString(ClientColumns.INDEX_UID);
+        fkey = cursor.getString(ClientColumns.INDEX_FKEY);
+        contactId = cursor.getLong(ClientColumns.INDEX_CONTACTS_ID);
+        clientName = cursor.getString(ClientColumns.INDEX_CLIENT_NAME);
+        email = cursor.getString(ClientColumns.INDEX_CLIENT_EMAIL);
+        phone = cursor.getString(ClientColumns.INDEX_CLIENT_PHONE);
+        firstSession = cursor.getString(ClientColumns.INDEX_FIRST_SESSION);
+        goals = cursor.getString(ClientColumns.INDEX_CLIENT_GOALS);
+        status = cursor.getString(ClientColumns.INDEX_CLIENT_STATUS);
+        profilePic = cursor.getString(ClientColumns.INDEX_PROFILE_PIC);
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -71,23 +84,6 @@ public class ClientItem extends ClientFBItem {
         values.put(Contractor.ClientEntry.COLUMN_PROFILE_PIC, profilePic);
 
         return values;
-    }
-
-    /*
-     * ClientItem addData(Cursor) - add cursor data to item
-     */
-    public void addData(Cursor cursor){
-        ClientItem item = new ClientItem();
-        uid = cursor.getString(ClientColumns.INDEX_UID);
-        fkey = cursor.getString(ClientColumns.INDEX_FKEY);
-        contactId = cursor.getLong(ClientColumns.INDEX_CONTACTS_ID);
-        clientName = cursor.getString(ClientColumns.INDEX_CLIENT_NAME);
-        email = cursor.getString(ClientColumns.INDEX_CLIENT_EMAIL);
-        phone = cursor.getString(ClientColumns.INDEX_CLIENT_PHONE);
-        firstSession = cursor.getString(ClientColumns.INDEX_FIRST_SESSION);
-        goals = cursor.getString(ClientColumns.INDEX_CLIENT_GOALS);
-        status = cursor.getString(ClientColumns.INDEX_CLIENT_STATUS);
-        profilePic = cursor.getString(ClientColumns.INDEX_PROFILE_PIC);
     }
 
 /**************************************************************************************************/

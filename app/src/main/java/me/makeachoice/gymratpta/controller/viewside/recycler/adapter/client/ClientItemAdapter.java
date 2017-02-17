@@ -182,8 +182,7 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     public void onBindViewHolder(ClientItemAdapter.MyViewHolder holder, int position) {
         // Extract info from cursor
         mCursor.moveToPosition(position);
-        ClientItem item = new ClientItem();
-        item.addData(mCursor);
+        ClientItem item = new ClientItem(mCursor);
 
         mClientMap.put(item.clientName, item);
 
