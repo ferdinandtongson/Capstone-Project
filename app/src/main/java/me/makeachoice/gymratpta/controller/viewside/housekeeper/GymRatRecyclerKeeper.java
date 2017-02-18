@@ -179,22 +179,10 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
     }
 
     /*
-     * void checkForEmptyRecycler(boolean) - checks whether to display "empty" message or not
+     * void isEmptyRecycler(boolean) - checks whether to display "empty" message or not
      */
-    protected void checkForEmptyRecycler(boolean isEmpty){
+    protected void isEmptyRecycler(boolean isEmpty){
         if(isEmpty){
-            mTxtEmpty.setVisibility(View.VISIBLE);
-        }
-        else{
-            mTxtEmpty.setVisibility(View.GONE);
-        }
-    }
-
-    /*
-     * void checkForEmptyRecycler(int) - checks whether to display "empty" message or not
-     */
-    protected void checkForEmptyRecycler(int count){
-        if(count <= 0){
             mTxtEmpty.setVisibility(View.VISIBLE);
         }
         else{
