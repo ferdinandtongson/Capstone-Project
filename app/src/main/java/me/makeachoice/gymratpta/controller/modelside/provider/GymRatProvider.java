@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import me.makeachoice.gymratpta.controller.modelside.query.AppointmentQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.CategoryQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.ExerciseQueryHelper;
@@ -31,6 +32,11 @@ import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_DAY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_FKEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_NAME;
@@ -150,6 +156,18 @@ public class GymRatProvider extends ContentProvider {
             case ROUTINE_NAME_WITH_NAME:
                 retCursor = RoutineNameQueryHelper.getRoutineNameByName(mOpenHelper, uri, projection, sortOrder);
                 break;
+            case APPOINTMENT_WITH_UID:
+                retCursor = AppointmentQueryHelper.getAppointmentByUId(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case APPOINTMENT_WITH_DAY:
+                retCursor = AppointmentQueryHelper.getAppointmentByDay(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case APPOINTMENT_WITH_CLIENT_KEY:
+                retCursor = AppointmentQueryHelper.getAppointmentByClientKey(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case APPOINTMENT_WITH_FKEY:
+                retCursor = AppointmentQueryHelper.getAppointmentByFKey(mOpenHelper, uri, projection, sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -190,6 +208,9 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case ROUTINE_NAME:
                 returnUri = RoutineNameQueryHelper.insertRoutineName(db, values);
+                break;
+            case APPOINTMENT:
+                returnUri = AppointmentQueryHelper.insertAppointment(db, values);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -238,6 +259,9 @@ public class GymRatProvider extends ContentProvider {
             case ROUTINE_NAME:
                 rowsDeleted = RoutineNameQueryHelper.deleteRoutineName(db, uri, selection, selectionArgs);
                 break;
+            case APPOINTMENT:
+                rowsDeleted = AppointmentQueryHelper.deleteAppointment(db, uri, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -274,6 +298,9 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case ROUTINE_NAME:
                 rowsUpdated = RoutineNameQueryHelper.updateRoutineName(db, uri, values, selection, selectionArgs);
+                break;
+            case APPOINTMENT:
+                rowsUpdated = AppointmentQueryHelper.updateAppointment(db, uri, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
