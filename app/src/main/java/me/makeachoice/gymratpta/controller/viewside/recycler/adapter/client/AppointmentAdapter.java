@@ -1,4 +1,4 @@
-package me.makeachoice.gymratpta.controller.viewside.recycler.adapter;
+package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -20,7 +20,7 @@ import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
 /**************************************************************************************************/
 /*
- * ClientRecyclerAdapter extends RecyclerView.Adapter. It displays a list of client card items with
+ * AppointmentAdapter extends RecyclerView.Adapter. It displays a list of client card items with
  * each card displaying the profile image of the client, client name and one additional info item
  * (found at the top right corner of the card). It also has an info icon, email icon, and a phone
  * icon.
@@ -35,7 +35,7 @@ import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
  */
 /**************************************************************************************************/
 
-public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAdapter.MyViewHolder> {
+public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.MyViewHolder> {
 
 /**************************************************************************************************/
 /*
@@ -94,13 +94,13 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
 
 /**************************************************************************************************/
 /*
- * ClientRecyclerAdapter - constructor
+ * AppointmentAdapter - constructor
  */
 /**************************************************************************************************/
     /*
-     * ClientRecyclerAdapter - constructor
+     * AppointmentAdapter - constructor
      */
-    public ClientRecyclerAdapter(Context ctx, int itemLayoutId){
+    public AppointmentAdapter(Context ctx, int itemLayoutId){
         //get context
         mContext = ctx;
 
@@ -293,7 +293,7 @@ public class ClientRecyclerAdapter extends RecyclerView.Adapter<ClientRecyclerAd
             holder.bindCardView(item, position, cardColor);
             holder.bindTextView(item);
             holder.bindProfileImage(item);
-            holder.bindIconImages(item);
+            holder.bindIconImages(item, position);
         }
     }
 
@@ -403,17 +403,20 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      * void bindIconImages(ClientCardItem) - bind data to imageView icons. Set tag values and
      * onClickListener if mIconClickListener is NOT null.
      */
-    private void bindIconImages(ClientCardItem item){
+    private void bindIconImages(ClientCardItem item, int position){
         if(mIconClickListener != null){
             mImgInfo.setTag(R.string.recycler_tagItem, item);
+            mImgInfo.setTag(R.string.recycler_tagPosition, position);
             mImgInfo.setTag(R.string.recycler_tagId, ICON_INFO);
             mImgInfo.setOnClickListener(mIconClickListener);
 
             mImgPhone.setTag(R.string.recycler_tagItem, item);
+            mImgPhone.setTag(R.string.recycler_tagPosition, position);
             mImgPhone.setTag(R.string.recycler_tagId, ICON_PHONE);
             mImgPhone.setOnClickListener(mIconClickListener);
 
             mImgEmail.setTag(R.string.recycler_tagItem, item);
+            mImgEmail.setTag(R.string.recycler_tagPosition, position);
             mImgEmail.setTag(R.string.recycler_tagId, ICON_EMAIL);
             mImgEmail.setOnClickListener(mIconClickListener);
         }
