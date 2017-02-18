@@ -60,4 +60,14 @@ public class TableHelper {
             Contractor.RoutineNameEntry._ID + " INTEGER PRIMARY KEY," +
             Contractor.RoutineNameEntry.COLUMN_UID + " TEXT NOT NULL, " +
             Contractor.RoutineNameEntry.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL);";
+
+    public final static String SQL_CREATE_APPOINTMENT_TABLE = "CREATE TABLE " + Contractor.AppointmentEntry.TABLE_NAME + " (" +
+            Contractor.AppointmentEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.AppointmentEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.AppointmentEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
+            Contractor.AppointmentEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
+            Contractor.AppointmentEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
+            Contractor.AppointmentEntry.COLUMN_CLIENT_KEY + " TEXT NOT NULL, " +
+            Contractor.AppointmentEntry.COLUMN_CLIENT_NAME + " TEXT, " +
+            Contractor.AppointmentEntry.COLUMN_APPOINTMENT_STATUS + " TEXT);";
 }
