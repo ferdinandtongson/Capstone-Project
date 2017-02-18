@@ -4,6 +4,10 @@ import android.net.Uri;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
 
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_DAY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_NAME;
@@ -83,6 +87,14 @@ public class UriTypeHelper {
                 return Contractor.RoutineNameEntry.CONTENT_TYPE;
             case ROUTINE_NAME_WITH_NAME:
                 return Contractor.RoutineNameEntry.CONTENT_ITEM_TYPE;
+            case APPOINTMENT:
+                return Contractor.AppointmentEntry.CONTENT_TYPE;
+            case APPOINTMENT_WITH_DAY:
+                return Contractor.AppointmentEntry.CONTENT_TYPE;
+            case APPOINTMENT_WITH_CLIENT_KEY:
+                return Contractor.AppointmentEntry.CONTENT_TYPE;
+            case APPOINTMENT_WITH_FKEY:
+                return Contractor.AppointmentEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
