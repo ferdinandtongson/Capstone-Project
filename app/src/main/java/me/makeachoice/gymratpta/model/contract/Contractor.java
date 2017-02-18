@@ -118,7 +118,7 @@ public class Contractor {
         }
 
         //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fKey]
-        public static Uri buildClientByFirebaseKey(String uid, String fKey) {
+        public static Uri buildClientByFKey(String uid, String fKey) {
             return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_FKEY).appendPath(fKey).build();
         }
 
@@ -133,7 +133,7 @@ public class Contractor {
         }
 
         //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fKey]
-        public static String getFirebaseKeyFromUri(Uri uri) {
+        public static String getFKeyFromUri(Uri uri) {
             return uri.getPathSegments().get(3);
         }
 
