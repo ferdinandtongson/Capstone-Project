@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <TextView android:id="@+id/diaSchedule_txtDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        style="@style/GymRat.Dialog.TextView.Large"
+        />
+
+
+    <View
+        android:id="@+id/line01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/diaSchedule_txtDate"
+        android:background="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/diaSchedule_txtClient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/line01"
+        android:text="@string/dialogSchedule_client"
+        android:contentDescription="@string/dialogSchedule_client"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <Spinner
+        android:id="@+id/diaSchedule_spnClient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaSchedule_txtClient"
+        android:layout_marginTop="2dp"
+        android:spinnerMode="dropdown"
+        style="@style/GymRat.Dialog.Spinner"
+        />
+
+    <TextView
+        android:id="@+id/diaSchedule_txtTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/diaSchedule_spnClient"
+        android:text="@string/dialogSchedule_time"
+        android:contentDescription="@string/dialogSchedule_time"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <TextView android:id="@+id/diaSchedule_txtTimeSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaSchedule_txtTime"
+        style="@style/GymRat.Dialog.TextView.Button"
+        />
+
+
+    <TextView
+        android:id="@+id/diaSchedule_txtSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaSchedule_txtTimeSelect"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/save"
+        style="@style/GymRat.Dialog.TextView.Button"
+        />
+
+</RelativeLayout>
