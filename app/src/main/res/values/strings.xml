@@ -109,6 +109,7 @@
     <!-- dictionary -->
     <string name="activate" translatable="true">Activate</string>
     <string name="active" translatable="true">Active</string>
+    <string name="add_appointment" translatable="true">Add Appointment</string>
     <string name="add_client" translatable="true">Add Client</string>
     <string name="add_exercise" translatable="true">Add Exercise</string>
     <string name="add_routine" translatable="true">Add Routine</string>
