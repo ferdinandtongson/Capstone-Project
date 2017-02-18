@@ -96,6 +96,9 @@
 
     <!-- dialog -->
     <string name="dialogContacts_title" translatable="false">@string/contacts_list</string>
+    <!-- dialog: schedule session -->
+    <string name="dialogSchedule_client" translatable="false">@string/client</string>
+    <string name="dialogSchedule_time" translatable="false">@string/session_time</string>
 
     <!-- spinner: client status -->
     <string-array name="client_status">
@@ -120,6 +123,7 @@
     <string name="change_previous" translatable="true">Change from Previous</string>
     <string name="change_start" translatable="true">Change from Start</string>
     <string name="chest" translatable="true">Chest</string>
+    <string name="client" translatable="true">Client</string>
     <string name="client_goals" translatable="true">Client Goals</string>
     <string name="client_info" translatable="true">Client Info</string>
     <string name="clients" translatable="true">Clients</string>
@@ -156,6 +160,7 @@
     <string name="save" translatable="true">Save</string>
     <string name="schedule" translatable="true">Schedule</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
+    <string name="session_time" translatable="true">Session Time</string>
     <string name="sessions" translatable="true">Sessions</string>
     <string name="sets" translatable="true">Sets</string>
     <string name="settings" translatable="true">Settings</string>
@@ -164,6 +169,7 @@
     <string name="start" translatable="true">Start</string>
     <string name="stats" translatable="true">Stats</string>
     <string name="time" translatable="true">Time</string>
+    <string name="today" translatable="true">Today</string>
     <string name="training_info" translatable="true">Training Info</string>
     <string name="weight" translatable="true">Weight</string>
 
