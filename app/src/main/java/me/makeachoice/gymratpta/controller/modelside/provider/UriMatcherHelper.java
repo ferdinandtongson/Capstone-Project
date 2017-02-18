@@ -39,6 +39,12 @@ public class UriMatcherHelper {
     public static final int ROUTINE_NAME_WITH_UID = 601;
     public static final int ROUTINE_NAME_WITH_NAME = 602;
 
+    public static final int APPOINTMENT = 700;
+    public static final int APPOINTMENT_WITH_UID = 701;
+    public static final int APPOINTMENT_WITH_DAY = 702;
+    public static final int APPOINTMENT_WITH_CLIENT_KEY = 703;
+    public static final int APPOINTMENT_WITH_FKEY = 704;
+
 
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
@@ -76,6 +82,7 @@ public class UriMatcherHelper {
         addUriExercise(matcher, authority);
         addUriRoutine(matcher, authority);
         addUriRoutineName(matcher, authority);
+        addUriAppointment(matcher, authority);
 
         return matcher;
     }
@@ -147,8 +154,30 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, ROUTINE_NAME_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/routineName/[uid]/[routineName]
-        String routienNamePath = Contractor.PATH_ROUTINE_NAME + "/*/*";
-        matcher.addURI(authority, routienNamePath, ROUTINE_NAME_WITH_NAME);
+        String routiNENamePath = Contractor.PATH_ROUTINE_NAME + "/*/*";
+        matcher.addURI(authority, routiNENamePath, ROUTINE_NAME_WITH_NAME);
+
+    }
+
+    private static void addUriAppointment(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/appointment/
+        matcher.addURI(authority, Contractor.PATH_APPOINTMENT, APPOINTMENT);
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]
+        String uidPath = Contractor.PATH_APPOINTMENT + "/*";
+        matcher.addURI(authority, uidPath, APPOINTMENT_WITH_UID);
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/appointment_date/[appointmentDay]
+        String dayPath = Contractor.PATH_APPOINTMENT + "/*/" + Contractor.AppointmentEntry.COLUMN_APPOINTMENT_DATE + "/*";
+        matcher.addURI(authority, dayPath, APPOINTMENT_WITH_DAY);
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/client_key/[clientKey]
+        String clientKeyPath = Contractor.PATH_APPOINTMENT + "/*/" + Contractor.AppointmentEntry.COLUMN_CLIENT_KEY + "/*";
+        matcher.addURI(authority, clientKeyPath, APPOINTMENT_WITH_CLIENT_KEY);
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/fkey/[fkey]
+        String keyPath = Contractor.PATH_APPOINTMENT + "/*/" + Contractor.AppointmentEntry.COLUMN_FKEY + "/*";
+        matcher.addURI(authority, keyPath, APPOINTMENT_WITH_FKEY);
 
     }
 
