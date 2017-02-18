@@ -8,20 +8,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
-/**
- * Created by Usuario on 2/2/2017.
+/**************************************************************************************************/
+/*
+ *  ClientQueryHelper helps build queries to the client table
  */
+/**************************************************************************************************/
 
 public class ClientQueryHelper {
 
 /**************************************************************************************************/
 /*
- *  ClientProvider content provider for user info
+ *  Query builder
  */
 /**************************************************************************************************/
 
@@ -72,7 +73,7 @@ public class ClientQueryHelper {
          return ClientQueryHelper.clientQueryBuilder.query(
                  dbHelper.getReadableDatabase(),
                  projection,
-                 //selection - user.uid = ?
+                 //selection - client.uid = ?
                  ClientQueryHelper.uidSelection,
                  new String[]{uid},
                  null,
@@ -107,7 +108,7 @@ public class ClientQueryHelper {
     public static Cursor getClientByFKey(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fKey]
         String uid = Contractor.ClientEntry.getUIdFromUri(uri);
-        String fkey = Contractor.ClientEntry.getFirebaseKeyFromUri(uri);
+        String fkey = Contractor.ClientEntry.getFKeyFromUri(uri);
 
         //query from user table
         return ClientQueryHelper.clientQueryBuilder.query(
@@ -162,13 +163,10 @@ public class ClientQueryHelper {
             _id = db.insert(Contractor.ClientEntry.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
-            Log.d("Choice", "     exception: " + mSQLException.toString());
             if(mSQLException instanceof SQLiteConstraintException){
                 //some toast message to user.
-                Log.d("Choice", "     constraint exception");
             }else if(mSQLException instanceof SQLiteDatatypeMismatchException) {
                 //some toast message to user.
-                Log.d("Choice", "     mismatch exception");
             }
             throw mSQLException;
         }
