@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.format.Time;
 
+import me.makeachoice.gymratpta.model.contract.client.AppointmentColumns;
 import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
@@ -13,7 +14,6 @@ import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
 
 import static android.content.ContentUris.withAppendedId;
-
 
 /**************************************************************************************************/
 /*
@@ -144,6 +144,63 @@ public class Contractor {
 
     }
 
+    /*
+     * AppointmentEntry - client appointments
+     */
+    public static class AppointmentEntry extends AppointmentColumns implements BaseColumns {
+
+        public static Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_APPOINTMENT).build();
+
+        public static String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_APPOINTMENT;
+        public static String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_APPOINTMENT;
+
+        //"content://CONTENT_AUTHORITY/appointment/[_id]
+        public static Uri buildAppointmentUri(long id) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]
+        public static Uri buildAppointmentByUID(String uid) {
+            return CONTENT_URI.buildUpon().appendPath(uid).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/appointment_date/[appointmentDay]
+        public static Uri buildAppointmentByDate(String uid, String appointmentDay) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_APPOINTMENT_DATE).appendPath(appointmentDay).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/client_key/[clientKey]
+        public static Uri buildAppointmentByClientKey(String uid, String clientKey) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CLIENT_KEY).appendPath(clientKey).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/fkey/[fkey]
+        public static Uri buildAppointmentByFkey(String uid, String appointmentDay, String appointmentTime, String fkey) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_FKEY).appendPath(fkey).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/....
+        public static String getUIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/appointment_date/[appointmentDay]
+        public static String getDateFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/client_key/[clientKey]
+        public static String getClientKeyFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/fkey/[fkey]
+        public static String getFKeyUri(Uri uri){ return uri.getPathSegments().get(3); }
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -152,6 +209,7 @@ public class Contractor {
  *          CategoryEntry - user defined exercise categories
  *          ExerciseEntry - user defined exercises
  *          RoutineEntry - user defined exercise routines
+ *          RoutineNameEntry - user defined routine names
  */
 /**************************************************************************************************/
     /*
