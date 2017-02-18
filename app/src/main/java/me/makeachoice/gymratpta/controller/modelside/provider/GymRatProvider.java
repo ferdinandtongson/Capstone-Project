@@ -160,7 +160,7 @@ public class GymRatProvider extends ContentProvider {
                 retCursor = AppointmentQueryHelper.getAppointmentByUId(mOpenHelper, uri, projection, sortOrder);
                 break;
             case APPOINTMENT_WITH_DAY:
-                retCursor = AppointmentQueryHelper.getAppointmentByDay(mOpenHelper, uri, projection, sortOrder);
+                retCursor = AppointmentQueryHelper.getAppointmentByDate(mOpenHelper, uri, projection, sortOrder);
                 break;
             case APPOINTMENT_WITH_CLIENT_KEY:
                 retCursor = AppointmentQueryHelper.getAppointmentByClientKey(mOpenHelper, uri, projection, sortOrder);
