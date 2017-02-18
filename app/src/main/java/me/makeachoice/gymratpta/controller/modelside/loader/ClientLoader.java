@@ -28,6 +28,7 @@ public class ClientLoader {
  *      MyActivity mActivity - activity context
  *      String mUserId - user id number taken from firebase authentication
  *      mStatus - client status value
+ *      mFKey - client fkey value
  *
  *      OnClientLoadListener mListener - listens for when the client data is loaded
  *      interface OnClientLoadListener:
@@ -43,6 +44,9 @@ public class ClientLoader {
 
     //mStatus - client status value
     private static String mStatus;
+
+    //mFKey - client fkey value
+    private static String mFKey;
 
     //mListener - listens for when client data is loaded
     private static OnClientLoadListener mListener;
@@ -152,6 +156,68 @@ public class ClientLoader {
 
                         //request client cursor from local database
                         Uri uri = Contractor.ClientEntry.buildClientByStatus(mUserId, mStatus);
+
+                        //get cursor
+                        return new CursorLoader(
+                                mActivity,
+                                uri,
+                                ClientColumns.PROJECTION,
+                                null,
+                                null,
+                                Contractor.ClientEntry.SORT_ORDER_DEFAULT);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //make sure listener is not NULL
+                        if(mListener != null){
+                            //notify listener that client data has finished loading
+                            mListener.onClientLoadFinished(cursor);
+                        }
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                        //does nothing
+                    }
+                });
+    }
+
+    /*
+     * void loadClientsByFKey(...) - start loader to load client data from database by fkey
+     */
+    public static void loadClientsByFKey(MyActivity activity, String userId, String fkey,
+                                           OnClientLoadListener listener){
+        //load exercise using default loader exercise id
+        loadClientsByFKey(activity, userId, fkey, LOADER_CLIENT, listener);
+    }
+
+
+    /*
+     * void loadClientsByFKey(...) - start loader to load client data from database by fkey
+     */
+    public static void loadClientsByFKey(MyActivity activity, String userId, String fkey,
+                                           int loaderId, OnClientLoadListener listener){
+        //get activity context
+        mActivity = activity;
+
+        //get user id
+        mUserId = userId;
+
+        //get fkey
+        mFKey = fkey;
+
+        //get listener
+        mListener = listener;
+
+        // Initializes exercise loader
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request client cursor from local database
+                        Uri uri = Contractor.ClientEntry.buildClientByFKey(mUserId, mFKey);
 
                         //get cursor
                         return new CursorLoader(
