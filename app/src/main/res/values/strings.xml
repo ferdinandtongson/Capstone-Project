@@ -99,6 +99,8 @@
     <!-- dialog: schedule session -->
     <string name="dialogSchedule_client" translatable="false">@string/client</string>
     <string name="dialogSchedule_time" translatable="false">@string/session_time</string>
+    <string name="dialogSchedule_routine" translatable="false">@string/routine</string>
+    <string name="dialogSchedule_no_routine_selected" translatable="true">- None Selected -</string>
 
     <!-- spinner: client status -->
     <string-array name="client_status">
