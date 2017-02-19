@@ -170,7 +170,7 @@ public class ScheduleAppointmentDialog extends DialogFragment {
             mSaveApmtItem.uid = mUserId;
             mSaveApmtItem.fkey = "";
             mSaveApmtItem.appointmentDay = DateTimeHelper.getToday();
-            mSaveApmtItem.appointmentTime = "";
+            mSaveApmtItem.appointmentTime = DateTimeHelper.getCurrentTime();
             mSaveApmtItem.clientKey = "";
             mSaveApmtItem.clientName = "";
             mSaveApmtItem.status = "";
