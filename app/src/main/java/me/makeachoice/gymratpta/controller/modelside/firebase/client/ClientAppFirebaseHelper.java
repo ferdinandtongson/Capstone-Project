@@ -116,10 +116,10 @@ public class ClientAppFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteAppointment(String userId, String clientKey, String appointmentDay, String appointmentTime){
-        DatabaseReference refRoutine = getClientAppReferenceByClientKey(userId, clientKey);
+    public void deleteAppointment(String userId, String clientKey, String appointmentDate, String appointmentTime){
+        DatabaseReference ref = getClientAppReferenceByClientKey(userId, clientKey);
 
-        Query appointmentQuery = refRoutine.orderByChild(CHILD_CLIENT_NAME).equalTo(appointmentDay);
+        Query appointmentQuery = ref.orderByChild(CHILD_APPOINTMENT_DATE).equalTo(appointmentDate);
 
         final String appTime = appointmentTime;
 
@@ -139,9 +139,6 @@ public class ClientAppFirebaseHelper {
                 Log.e(TAG, "onCancelled", databaseError.toException());
             }
         });
-
-        refRoutine.removeValue();
-
     }
 
 /**************************************************************************************************/
