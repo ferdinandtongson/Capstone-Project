@@ -2,10 +2,8 @@ package me.makeachoice.gymratpta.view.dialog;
 
 import android.app.TimePickerDialog;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +17,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.firebase.client.AppointmentFirebaseHelper;
-import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientAppFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.item.client.AppointmentFBItem;
 import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
-import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
@@ -55,8 +48,8 @@ public class ScheduleAppointmentDialog extends DialogFragment {
     //mSelectedIndex - client spinner index used if editing a previous client appointment item
     private int mSelectedIndex;
 
-    //mClientApmtItem - client appointment item
-    private AppointmentItem mClientApmtItem;
+    //mEditApmtItem - client appointment item being edited
+    private AppointmentItem mEditApmtItem;
 
     //mSaveApmtItem - client appointment item to save
     private AppointmentItem mSaveApmtItem;
@@ -80,7 +73,13 @@ public class ScheduleAppointmentDialog extends DialogFragment {
             };
 
 
-    private boolean mIsNewAppointment;
+    //mSavedListener - notifies listener that the saved button was clicked
+    private OnSaveClickListener mSavedListener;
+    public interface OnSaveClickListener{
+        public void onSaveClicked(AppointmentItem appItem);
+    }
+
+
 
 /**************************************************************************************************/
 
@@ -100,6 +99,9 @@ public class ScheduleAppointmentDialog extends DialogFragment {
 /*
  * Public Method
  *      void setDialogValues(MyActivity,String,RoutineItem) - set dialog values
+ *      void initializeEditItem(...) - initialize client appointment item being edited
+ *      void initializeSaveItem(...) - initialize appointment item to be saved
+ *      void setOnSavedListener(...) - set listener for saved click event
  */
 /**************************************************************************************************/
     /*
@@ -112,48 +114,59 @@ public class ScheduleAppointmentDialog extends DialogFragment {
         //set user id
         mUserId = userId;
 
-
+        //initialize client list buffer
         mClientList = new ArrayList<>();
 
+        //initialize client name list buffer
         mClientNames = new ArrayList<>();
 
+        //initialize appointment item to save
         initializeSaveItem(item);
 
-        initializeClientAppointmentItem(item);
+        //save appointment item being edited
+        initializeEditItem(item);
 
         if(item == null){
-            mIsNewAppointment = true;
-
             //set spinner selected index
             mSelectedIndex = 0;
         }
-        else{
-            mIsNewAppointment = false;
-        }
     }
 
-    private void initializeClientAppointmentItem(AppointmentItem item){
+    /*
+     * void initializeEditItem(...) - initialize client appointment item being edited
+     */
+    private void initializeEditItem(AppointmentItem item){
+        //check if appointment item is null
         if(item == null){
-            //is null, create client appointment
-            mClientApmtItem = new AppointmentItem();
+            //is null, create new client appointment
+            mEditApmtItem = new AppointmentItem();
 
-            mClientApmtItem.uid = mUserId;
-            mClientApmtItem.fkey = "";
-            mClientApmtItem.appointmentDay = DateTimeHelper.getToday();
-            mClientApmtItem.appointmentTime = "";
-            mClientApmtItem.clientKey = "";
-            mClientApmtItem.clientName = "";
-            mClientApmtItem.status = "";
+            //add empty values for appointment item
+            mEditApmtItem.uid = mUserId;
+            mEditApmtItem.fkey = "";
+            mEditApmtItem.appointmentDay = DateTimeHelper.getToday();
+            mEditApmtItem.appointmentTime = "";
+            mEditApmtItem.clientKey = "";
+            mEditApmtItem.clientName = "";
+            mEditApmtItem.status = "";
         }
         else{
-            mClientApmtItem = item;
+            //save appointment item to buffer, item being edited
+            mEditApmtItem = item;
         }
 
     }
 
+    /*
+     * void initializeSaveItem(...) - initialize appointment item to be saved
+     */
     private void initializeSaveItem(AppointmentItem item){
+        //create appointment item to be saved
         mSaveApmtItem = new AppointmentItem();
+
+        //check if item is null
         if(item == null){
+            //if null, new appointment item being created
             mSaveApmtItem.uid = mUserId;
             mSaveApmtItem.fkey = "";
             mSaveApmtItem.appointmentDay = DateTimeHelper.getToday();
@@ -163,6 +176,7 @@ public class ScheduleAppointmentDialog extends DialogFragment {
             mSaveApmtItem.status = "";
         }
         else{
+            //old appointment item being edited, save values to save item
             mSaveApmtItem.uid = mUserId;
             mSaveApmtItem.fkey = item.fkey;
             mSaveApmtItem.appointmentDay = item.appointmentDay;
@@ -172,6 +186,13 @@ public class ScheduleAppointmentDialog extends DialogFragment {
             mSaveApmtItem.status = item.status;
         }
 
+    }
+
+    /*
+     * void setOnSavedListener(...) - set listener for saved click event
+     */
+    public void setOnSavedListener(OnSaveClickListener listener){
+        mSavedListener = listener;
     }
 
 /**************************************************************************************************/
@@ -184,7 +205,9 @@ public class ScheduleAppointmentDialog extends DialogFragment {
  *      void initializeDialog() - initialize dialog component
  *      void initializeDateTextView(View) - initialize textView component for dialog
  *      void initializeTimeTextView() - initialize time textView component
+ *      void initializeSaveTextView() - initialize save textView component
  *      void initializeSpinner() - initialize client spinner component
+ *      String getTimeSelected() - get appointment time selected
  */
 /**************************************************************************************************/
     /*
@@ -274,9 +297,14 @@ public class ScheduleAppointmentDialog extends DialogFragment {
         });
     }
 
+    /*
+     * void initializeSaveTextView() - initialize save textView component
+     */
     private void initializeSaveTextView(){
+        //get save textView component
         TextView txtSave = (TextView)mRootView.findViewById(R.id.diaSchedule_txtSave);
 
+        //set onClick listener
         txtSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -321,15 +349,19 @@ public class ScheduleAppointmentDialog extends DialogFragment {
         spnClient.setSelection(mSelectedIndex);
     }
 
-
+    /*
+     * String getTimeSelected() - get appointment time selected
+     */
     private String getTimeSelected(){
-        if(mClientApmtItem != null){
-            return mClientApmtItem.appointmentTime;
+        //check if appointment is being edited
+        if(!mEditApmtItem.appointmentTime.isEmpty()){
+            //get appointment time
+            return mEditApmtItem.appointmentTime;
         }
         else{
+            //new appointment, get current time
             return DateTimeHelper.getCurrentTime();
         }
-
     }
 
 /**************************************************************************************************/
@@ -361,7 +393,7 @@ public class ScheduleAppointmentDialog extends DialogFragment {
      */
     private void onClientDataLoaded(Cursor cursor){
         //get client name from client appointment item
-        String selectedClient = mClientApmtItem.clientName;
+        String selectedClient = mEditApmtItem.clientName;
 
         //get size of cursor
         int count = cursor.getCount();
@@ -403,139 +435,71 @@ public class ScheduleAppointmentDialog extends DialogFragment {
 /**************************************************************************************************/
 /*
  * Event Methods
+ *      void onClientSelected(int) - client was selected from spinner
+ *      void onTimePickerSet(int,int) - appointment time has been selected
+ *      void onSaveRequested() - save appointment has been requested
+ *      void hasPassed(String) - check if selected time has already passed
  */
 /**************************************************************************************************/
-
+    /*
+     * void onClientSelected(int) - client was selected from spinner
+     */
     private void onClientSelected(int index){
-        Log.d("Choice", "SessionDialog.onClientSelected: " + index);
-        ClientItem item = mClientList.get(index);
+        //get client from list
+        ClientItem clientItem = mClientList.get(index);
 
-        mSaveApmtItem.clientKey = item.fkey;
-        mSaveApmtItem.clientName = item.clientName;
+        //save client data to save appointment item
+        mSaveApmtItem.clientKey = clientItem.fkey;
+        mSaveApmtItem.clientName = clientItem.clientName;
     }
 
-    private int mHour;
-    private int mMinute;
+    /*
+     * void onTimePickerSet(int,int) - appointment time has been selected
+     */
     private void onTimePickerSet(int selectedHour, int selectedMinute){
-        Log.d("Choice", "SessionDialog.onTimePickerSet");
-        Log.d("Choice", "     hour: " + selectedHour);
-        mHour = selectedHour;
-        mMinute = selectedMinute;
 
+        //convert time to string value
         String strTime = DateTimeHelper.convert24Hour(selectedHour, selectedMinute);
 
         // set current time into textView
         mTxtTimeSelected.setText(strTime);
 
+        //save time to save appointment item
         mSaveApmtItem.appointmentTime = strTime;
 
+        //notify user if appointment time has passed
+        hasPassed(strTime);
     }
 
+    /*
+     * void onSaveRequested() - save appointment has been requested
+     */
     private void onSaveRequested(){
-        saveAppointment(mSaveApmtItem);
-        if(validTime()){
-            //save to firebase
+        //check if save listener is Not null
+        if(mSavedListener != null){
+            //notify save listener
+            mSavedListener.onSaveClicked(mSaveApmtItem);
         }
-        else{
-            //show time warning dialog
-        }
-
-    }
-
-    private boolean validTime(){
-        Toast.makeText(mActivity, "Session Time has passed.", Toast.LENGTH_LONG).show();
-        return true;
-    }
-
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * Save Methods
- */
-/**************************************************************************************************/
-
-    /*
-     * void saveAppointment(AppointmentItem) - save appointment to firebase and local database
-     */
-    private void saveAppointment(AppointmentItem item){
-        //save to firebase
-        saveAppointmentToFirebase(item);
-
-        //save to local database
-        saveAppointmentToDatabase(item);
-
     }
 
     /*
-     * void saveAppointmentToFirebase(AppointmentItem) - save appointment to firebase
+     * void hasPassed(String) - check if selected time has already passed
      */
-    private void saveAppointmentToFirebase(AppointmentItem saveItem){
-        //get client appointment firebase helper instance
-        AppointmentFirebaseHelper appointmentFB = AppointmentFirebaseHelper.getInstance();
-        ClientAppFirebaseHelper clientFB = ClientAppFirebaseHelper.getInstance();
+    private void hasPassed(String selectedTime){
+        //create "time has passed" message
+        String msg = mActivity.getString(R.string.msg_appointment_time_passed);
 
-        //get client key from old appointment item
-        String oldKey = mClientApmtItem.clientKey;
+        //get current time
+        String currentTime = DateTimeHelper.getCurrentTime();
 
-        //check if appointment is NOT new and client key is NOT the same
-        /*if(!mIsNewAppointment && !oldKey.equals(saveItem.clientKey)){
-            //routine name has been edited, remove old routine name from firebase
-            appointmentFB.deleteRoutineName(mUserId, oldName);
-
-            //remove routine from routine firebase
-            routineFB.deleteRoutine(mUserId, oldName);
-        }*/
-
-        AppointmentFBItem appointmentFBItem = new AppointmentFBItem();
-        appointmentFBItem.appointmentTime = saveItem.appointmentTime;
-        appointmentFBItem.clientKey = saveItem.clientKey;
-        appointmentFBItem.clientName = saveItem.clientName;
-        appointmentFBItem.status = saveItem.status;
-
-        //save appointment
-        appointmentFB.addAppointmentByDay(mUserId, saveItem.appointmentDay, appointmentFBItem);
-
-        ClientAppFBItem clientFBItem = new ClientAppFBItem();
-        clientFBItem.appointmentDate = saveItem.appointmentDay;
-        clientFBItem.appointmentTime = saveItem.appointmentTime;
-        clientFBItem.clientName = saveItem.clientName;
-        clientFBItem.status = saveItem.status;
-
-        clientFB.addClientAppByClientKey(mUserId, saveItem.clientKey, clientFBItem);
-    }
-
-    private void saveAppointmentToDatabase(AppointmentItem saveItem){
-        //get uri value for routine name table
-        Uri uriValue = Contractor.AppointmentEntry.CONTENT_URI;
-
-        //get name from routine detail item
-        //String oldName = mRoutineDetailItem.routineName;
-
-        //check if routine detail is NOT new
-        /*if(!mIsNewRoutine){
-            //routine is being edited, check if routine name is NOT the same
-            if(!oldName.equals(nameItem.routineName)){
-                //routine name has been edited, remove old routine name from database
-                int rowDeleted = mActivity.getContentResolver().delete(uriValue,
-                        RoutineNameQueryHelper.routineNameSelection, new String[]{mUserId, oldName});
-
-                //add new routine name to database
-                mActivity.getContentResolver().insert(uriValue, nameItem.getContentValues());
-            }
-
+        //compare current time with selected time
+        if(DateTimeHelper.isTime1AfterTime2(currentTime, selectedTime) == 1){
+            //selected time has already passed, notify user
+            Toast.makeText(mActivity, msg, Toast.LENGTH_LONG).show();
         }
-        else{
-            //routine is new, add routine name to database
-            mActivity.getContentResolver().insert(uriValue, nameItem.getContentValues());
-        }*/
 
-        //appointment is new, add appointment to database
-        mActivity.getContentResolver().insert(uriValue, saveItem.getContentValues());
     }
 
 /**************************************************************************************************/
-
-
 
 }
