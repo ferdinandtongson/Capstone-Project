@@ -59,6 +59,14 @@ public class AppointmentQueryHelper {
                     "." + Contractor.AppointmentEntry.COLUMN_UID + " = ? AND " +
                     Contractor.AppointmentEntry.COLUMN_FKEY+ " = ? ";
 
+    //query selection - appointment.uid = ? AND client_key = ? AND appointment_date = ? AND appointment_time = ?
+    public static final String clientKeyDateTimeSelection =
+            Contractor.AppointmentEntry.TABLE_NAME+
+                    "." + Contractor.AppointmentEntry.COLUMN_UID + " = ? AND " +
+                    Contractor.AppointmentEntry.COLUMN_CLIENT_KEY + " = ? AND " +
+                    Contractor.AppointmentEntry.COLUMN_APPOINTMENT_DATE + " = ? AND " +
+                    Contractor.AppointmentEntry.COLUMN_APPOINTMENT_TIME + " = ? ";
+
 
 /**************************************************************************************************/
 
