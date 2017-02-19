@@ -37,7 +37,6 @@ import me.makeachoice.gymratpta.view.dialog.ScheduleAppointmentDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.facebook.login.widget.ProfilePictureView.TAG;
 import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING_APPOINTMENT;
 
 /**************************************************************************************************/
@@ -190,6 +189,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 
         mAppointments = new ArrayList<>();
         mClients = new ArrayList<>();
+        mEditingAppointment = false;
 
         //get user id from Boss
         mUserId = mBoss.getUserId();
