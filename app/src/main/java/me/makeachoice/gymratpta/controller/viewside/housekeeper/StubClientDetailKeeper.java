@@ -157,7 +157,7 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
         maidRegistry.initializeClientInfoMaid(MaidRegistry.MAID_CLIENT_INFO, infoId, mClientItem);
 
         int scheduleId = R.layout.standard_recycler_fab;
-        maidRegistry.initializeClientScheduleMaid(MaidRegistry.MAID_CLIENT_SCHEDULE, scheduleId);
+        maidRegistry.initializeClientScheduleMaid(MaidRegistry.MAID_CLIENT_SCHEDULE, scheduleId, mClientItem);
 
         //viewPager layout used by exercise maid
         int pagerId = R.layout.viewpager_fixed;
