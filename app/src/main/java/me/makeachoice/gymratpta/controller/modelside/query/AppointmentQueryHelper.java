@@ -133,7 +133,7 @@ public class AppointmentQueryHelper {
                 dbHelper.getReadableDatabase(),
                 projection,
                 //query selection - appointment.uid = ? AND client_key = ?
-                AppointmentQueryHelper.dateSelection,
+                AppointmentQueryHelper.clientKeySelection,
                 new String[]{uid, clientKey},
                 null,
                 null,
@@ -154,7 +154,7 @@ public class AppointmentQueryHelper {
                 dbHelper.getReadableDatabase(),
                 projection,
                 //query selection - appointment.uid = ? AND fkey = ?
-                AppointmentQueryHelper.dateSelection,
+                AppointmentQueryHelper.fkeySelection,
                 new String[]{uid, fkey},
                 null,
                 null,
