@@ -29,6 +29,9 @@ public class AppointmentColumns {
     //client name
     public static final String COLUMN_CLIENT_NAME = "client_name";
 
+    //routine name
+    public static final String COLUMN_ROUTINE_NAME = "routine_name";
+
     //appointment status
     public static final String COLUMN_APPOINTMENT_STATUS = "appointment_status";
 
@@ -48,6 +51,7 @@ public class AppointmentColumns {
                     COLUMN_APPOINTMENT_TIME,
                     COLUMN_CLIENT_KEY,
                     COLUMN_CLIENT_NAME,
+                    COLUMN_ROUTINE_NAME,
                     COLUMN_APPOINTMENT_STATUS
             };
 
@@ -57,6 +61,7 @@ public class AppointmentColumns {
     public static final int INDEX_APPOINTMENT_TIME = 3;
     public static final int INDEX_CLIENT_KEY = 4;
     public static final int INDEX_CLIENT_NAME = 5;
-    public static final int INDEX_APPOINTMENT_STATUS = 6;
+    public static final int INDEX_ROUTINE_NAME = 6;
+    public static final int INDEX_APPOINTMENT_STATUS = 7;
 
 }

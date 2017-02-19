@@ -69,5 +69,6 @@ public class TableHelper {
             Contractor.AppointmentEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
             Contractor.AppointmentEntry.COLUMN_CLIENT_KEY + " TEXT NOT NULL, " +
             Contractor.AppointmentEntry.COLUMN_CLIENT_NAME + " TEXT, " +
+            Contractor.AppointmentEntry.COLUMN_ROUTINE_NAME + " TEXT, " +
             Contractor.AppointmentEntry.COLUMN_APPOINTMENT_STATUS + " TEXT);";
 }

@@ -32,6 +32,7 @@ public class AppointmentFirebaseHelper {
     public final static String CHILD_APPOINTMENT_TIME = "appointmentTime";
     public final static String CHILD_CLIENT_KEY = "clientKey";
     public final static String CHILD_CLIENT_NAME = "clientName";
+    public final static String CHILD_ROUTINE_NAME = "routineName";
     public final static String CHILD_STATUS = "status";
 
     //PARENT - parent director
