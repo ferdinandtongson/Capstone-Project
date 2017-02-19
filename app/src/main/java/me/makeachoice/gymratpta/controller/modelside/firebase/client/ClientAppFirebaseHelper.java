@@ -116,29 +116,15 @@ public class ClientAppFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteAppointment(String userId, String clientKey, String appointmentDate, String appointmentTime){
+    public void deleteAppointment(String userId, String clientKey, String appointmentDate,
+                                  String appointmentTime, ValueEventListener listener){
         DatabaseReference ref = getClientAppReferenceByClientKey(userId, clientKey);
 
         Query appointmentQuery = ref.orderByChild(CHILD_APPOINTMENT_DATE).equalTo(appointmentDate);
 
         final String appTime = appointmentTime;
 
-        appointmentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    ClientAppFBItem appointment = postSnapshot.getValue(ClientAppFBItem.class);
-                    if(appointment.appointmentTime.equals(appTime)){
-                        postSnapshot.getRef().removeValue();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled", databaseError.toException());
-            }
-        });
+        appointmentQuery.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
