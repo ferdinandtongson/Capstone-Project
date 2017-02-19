@@ -16,4 +16,5 @@
     <string name="msg_routine_name_exists" translatable="true">Routine Name already exists!</string>
 
     <string name="msg_do_not_show_warning" translatable="true">Don\'t Show Warning</string>
+    <string name="msg_appointment_time_passed" translatable="true">Appointment time has already passed!</string>
 </resources>
