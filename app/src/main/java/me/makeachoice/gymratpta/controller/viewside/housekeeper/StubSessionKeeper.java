@@ -11,6 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
@@ -33,6 +37,7 @@ import me.makeachoice.gymratpta.view.dialog.ScheduleAppointmentDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.facebook.login.widget.ProfilePictureView.TAG;
 import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING_APPOINTMENT;
 
 /**************************************************************************************************/
@@ -108,7 +113,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     private AppointmentAdapter mAdapter;
 
     private String mUserId;
-    private boolean editingAppointment;
+    private boolean mEditingAppointment;
     private AppointmentItem mDeleteItem;
     private AppointmentItem mSaveItem;
 
@@ -560,7 +565,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         mDeleteItem = null;
 
         //set edit appointment false, creating new appointment
-        editingAppointment = false;
+        mEditingAppointment = false;
 
         //initialize schedule appointment dialog
         initializeScheduleDialog(null);
@@ -587,7 +592,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      */
     private void onEditAppointment(int index){
         //set edit appointment status flag as true
-        editingAppointment = true;
+        mEditingAppointment = true;
 
         //save edit appointment as delete appointment item
         mDeleteItem = mAppointments.get(index);
@@ -607,7 +612,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         mAppDialog.dismiss();
 
         //check if editing an old appointment
-        if(editingAppointment){
+        if(mEditingAppointment){
             //yes, delete old appointment (new appointment will be saved after deletion)
             deleteAppointment(mDeleteItem);
         }
@@ -621,6 +626,9 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      * void onAppointmentDeleteRequest(int) - delete appointment requested
      */
     private void onAppointmentDeleteRequest(int index){
+        //set editing old appointment flag, false
+        mEditingAppointment = false;
+        
         //get clientItem
         ClientItem clientItem = mClients.get(index);
 
@@ -651,6 +659,8 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
  * Save Methods
  *      void saveAppointment(AppointmentItem) - save appointment item
  *      void saveAppointmentToFirebase(AppointmentItem) - save appointment to firebase
+ *      void saveAppointmentToAppointmentFB(AppointmentItem) - save appointment to appointment firebase
+ *      void saveAppointmentToClientAppFB(AppointmentItem) - save appointment to client appointment firebase
  *      void saveAppointmentToDatabase(...) - save appointment to local database
  */
 /**************************************************************************************************/
@@ -670,6 +680,17 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      * void saveAppointmentToFirebase(AppointmentItem) - save appointment to firebase
      */
     private void saveAppointmentToFirebase(AppointmentItem saveItem){
+        //save appointment to appointment firebase
+        saveAppointmentToAppointmentFB(saveItem);
+
+        //save appointment to client appointment firebase
+        saveAppointmentToClientAppFB(saveItem);
+    }
+
+    /*
+     * void saveAppointmentToAppointmentFB(AppointmentItem) - save appointment to appointment firebase
+     */
+    private void saveAppointmentToAppointmentFB(AppointmentItem saveItem){
         //get appointment firebase helper instance
         AppointmentFirebaseHelper appointmentFB = AppointmentFirebaseHelper.getInstance();
 
@@ -684,6 +705,12 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         //save appointment item to firebase
         appointmentFB.addAppointmentByDay(mUserId, saveItem.appointmentDate, appointmentFBItem);
 
+    }
+
+    /*
+     * void saveAppointmentToClientAppFB(AppointmentItem) - save appointment to client appointment firebase
+     */
+    private void saveAppointmentToClientAppFB(AppointmentItem saveItem){
         //get client appointment firebase helper instance
         ClientAppFirebaseHelper clientFB = ClientAppFirebaseHelper.getInstance();
 
@@ -728,8 +755,6 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      */
     private void deleteAppointment(AppointmentItem deleteItem){
         deleteAppointmentFromFirebase(deleteItem);
-        deleteAppointmentFromDatabase(deleteItem);
-
     }
 
     /*
@@ -738,25 +763,58 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     private void deleteAppointmentFromFirebase(AppointmentItem deleteItem){
         //create string values used to delete appointment
         String appDate = deleteItem.appointmentDate;
-        String appTime = deleteItem.appointmentTime;
+        final String appTime = deleteItem.appointmentTime;
         String clientKey = deleteItem.clientKey;
         String clientName = deleteItem.clientName;
 
         //get appointment firebase helper instance
         AppointmentFirebaseHelper appointmentFB = AppointmentFirebaseHelper.getInstance();
         //delete appointment from firebase
-        appointmentFB.deleteAppointment(mUserId, appDate, clientName, appTime);
+        appointmentFB.deleteAppointment(mUserId, appDate, clientName, appTime, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    AppointmentFBItem appointment = postSnapshot.getValue(AppointmentFBItem.class);
+                    if(appointment.appointmentTime.equals(appTime)){
+                        postSnapshot.getRef().removeValue();
+                    }
+                }
+
+                if(mEditingAppointment){
+                    saveAppointmentToAppointmentFB(mSaveItem);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //does nothing
+            }
+        });
 
         //get client appointment firebase helper
         ClientAppFirebaseHelper clientFB = ClientAppFirebaseHelper.getInstance();
         //delete client appointment from firebase
-        clientFB.deleteAppointment(mUserId, clientKey, appDate, appTime);
+        clientFB.deleteAppointment(mUserId, clientKey, appDate, appTime, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    ClientAppFBItem appointment = postSnapshot.getValue(ClientAppFBItem.class);
+                    if(appointment.appointmentTime.equals(appTime)){
+                        postSnapshot.getRef().removeValue();
+                    }
+                }
+                if(mEditingAppointment){
+                    saveAppointmentToClientAppFB(mSaveItem);
+                }
+                deleteAppointmentFromDatabase(mDeleteItem);
+            }
 
-        //check if editing old appointment
-        if(editingAppointment){
-            //editing, save new appointment used to replace old appointment
-            saveAppointment(mSaveItem);
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //does nothing
+            }
+        });
+
     }
 
     /*
@@ -776,8 +834,13 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
                 AppointmentQueryHelper.clientKeyDateTimeSelection,
                 new String[]{mUserId, clientKey, appDate, appTime});
 
-        //load appointments to update recycler view
-        loadAppointment();
+        if(mEditingAppointment) {
+            //editing, save new appointment used to replace old appointment
+            saveAppointmentToDatabase(mSaveItem);
+        }else{
+            //load appointments to update recycler view
+            loadAppointment();
+        }
     }
 
 /**************************************************************************************************/
