@@ -32,8 +32,8 @@ import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
+import me.makeachoice.gymratpta.view.dialog.AppointmentDialog;
 import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
-import me.makeachoice.gymratpta.view.dialog.ScheduleAppointmentDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -117,7 +117,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     private AppointmentItem mSaveItem;
 
 
-    private ScheduleAppointmentDialog mAppDialog;
+    private AppointmentDialog mAppDialog;
     private DeleteWarningDialog mWarningDialog;
 
     //mTouchCallback - helper class that enables drag-and-drop and swipe to dismiss functionality to recycler
@@ -213,7 +213,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
  *      void initializeEmptyText() - textView used when recycler is empty
  *      void initializeAdapter() - adapter used by recycler component
  *      void initializeRecycler() - initialize recycler component
- *      ScheduleAppointmentDialog initializeScheduleDialog - initialize appointment scheduling dialog
+ *      AppointmentDialog initializeScheduleDialog - initialize appointment scheduling dialog
  */
 /**************************************************************************************************/
     /*
@@ -318,16 +318,16 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     }
 
     /*
-     * ScheduleAppointmentDialog initializeScheduleDialog - initialize appointment scheduling dialog
+     * AppointmentDialog initializeScheduleDialog - initialize appointment scheduling dialog
      */
-    private ScheduleAppointmentDialog initializeScheduleDialog(AppointmentItem item){
+    private AppointmentDialog initializeScheduleDialog(AppointmentItem item){
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
         //create dialog
-        mAppDialog = new ScheduleAppointmentDialog();
+        mAppDialog = new AppointmentDialog();
         mAppDialog.setDialogValues(mActivity, mUserId, item);
-        mAppDialog.setOnSavedListener(new ScheduleAppointmentDialog.OnSaveClickListener() {
+        mAppDialog.setOnSavedListener(new AppointmentDialog.OnSaveClickListener() {
             @Override
             public void onSaveClicked(AppointmentItem appItem) {
                 onSaveAppointment(appItem);

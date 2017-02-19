@@ -29,11 +29,11 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.CLIENT_ACTIVE;
 
 /**************************************************************************************************/
 /*
- * ScheduleAppointmentDialog is used for scheduling workout session with client
+ * AppointmentDialog is used for scheduling workout session with client
  */
 /**************************************************************************************************/
 
-public class ScheduleAppointmentDialog extends DialogFragment {
+public class AppointmentDialog extends DialogFragment {
 
 /**************************************************************************************************/
 /*
@@ -100,9 +100,9 @@ public class ScheduleAppointmentDialog extends DialogFragment {
  */
 /**************************************************************************************************/
     /*
-     * ScheduleAppointmentDialog - constructor
+     * AppointmentDialog - constructor
      */
-    public ScheduleAppointmentDialog(){}
+    public AppointmentDialog(){}
 
 /**************************************************************************************************/
 
