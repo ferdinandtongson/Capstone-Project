@@ -84,7 +84,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     private ArrayList<ClientCardItem> mData;
 
     //mCreateContextMenuListener - "create context menu" event listener
-    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
+    private static View.OnLongClickListener mOnLongClickListener;
 
     //mIconClickListener - icon event click listener
     private static View.OnClickListener mIconClickListener;
@@ -169,10 +169,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
 
     /*
-     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+     * void setOnLongClickListener(...) - set listener for onLongClick event
      */
-    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
-        mCreateContextMenuListener = listener;
+    public void setOnLongClickListener(View.OnLongClickListener listener){
+        mOnLongClickListener = listener;
     }
 
 /**************************************************************************************************/
@@ -369,8 +369,8 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
         mCardView.setTag(R.string.recycler_tagItem, item);
         mCardView.setCardBackgroundColor(cardColor);
 
-        if(mCreateContextMenuListener != null){
-            mCardView.setOnCreateContextMenuListener(mCreateContextMenuListener);
+        if(mOnLongClickListener != null){
+            mCardView.setOnLongClickListener(mOnLongClickListener);
         }
 
     }
