@@ -60,12 +60,32 @@
         style="@style/GymRat.Dialog.TextView.Button"
         />
 
+    <TextView
+        android:id="@+id/diaSchedule_txtRoutine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/diaSchedule_txtTimeSelect"
+        android:text="@string/dialogSchedule_routine"
+        android:contentDescription="@string/dialogSchedule_routine"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <Spinner
+        android:id="@+id/diaSchedule_spnRoutine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaSchedule_txtRoutine"
+        android:layout_marginTop="2dp"
+        android:spinnerMode="dropdown"
+        style="@style/GymRat.Dialog.Spinner"
+        />
 
     <TextView
         android:id="@+id/diaSchedule_txtSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/diaSchedule_txtTimeSelect"
+        android:layout_below="@id/diaSchedule_spnRoutine"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp"
         android:text="@string/save"
