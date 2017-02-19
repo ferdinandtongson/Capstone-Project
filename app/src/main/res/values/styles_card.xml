@@ -38,15 +38,16 @@
 
     <style name="GymRat.Card.TextView" parent="Theme.AppCompat.Light">
         <item name="android:textColor">@color/textColor_default</item>
+        <item name="android:textSize">@dimen/textSize_normal</item>
     </style>
 
-    <style name="GymRat.Card.TextView.Info" parent="Theme.AppCompat.Light">
+    <style name="GymRat.Card.TextView.Info" parent="GymRat.Card.TextView">
         <item name="android:textSize">@dimen/textSize_small</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_marginEnd">10dp</item>
     </style>
 
-    <style name="GymRat.Card.TextView.Name" parent="Theme.AppCompat.Light">
+    <style name="GymRat.Card.TextView.Name" parent="GymRat.Card.TextView">
         <item name="android:textSize">@dimen/textSize_large</item>
         <item name="android:layout_marginTop">@dimen/card_layoutTop</item>
     </style>

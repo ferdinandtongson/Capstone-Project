@@ -42,8 +42,7 @@
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/cardAppointment_imgProfile"
             android:layout_below="@id/cardAppointment_txtName"
-            android:text="Routine: Some Routine"
-            style="@style/GymRat.Card.TextView.Name"/>
+            style="@style/GymRat.Card.TextView"/>
 
     </RelativeLayout>
 
