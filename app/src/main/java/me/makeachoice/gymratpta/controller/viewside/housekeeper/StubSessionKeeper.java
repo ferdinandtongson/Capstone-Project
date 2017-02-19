@@ -19,10 +19,9 @@ import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientAppFi
 import me.makeachoice.gymratpta.controller.modelside.loader.AppointmentLoader;
 import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
 import me.makeachoice.gymratpta.controller.modelside.query.AppointmentQueryHelper;
-import me.makeachoice.gymratpta.controller.viewside.Helper.CommunicationHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.AppointmentAdapter;
 import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.item.ClientCardItem;
+import me.makeachoice.gymratpta.model.item.client.AppointmentCardItem;
 import me.makeachoice.gymratpta.model.item.client.AppointmentFBItem;
 import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
 import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
@@ -99,7 +98,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 /**************************************************************************************************/
 
     //mData - array of data used by AppointmentAdapter
-    private ArrayList<ClientCardItem> mData;
+    private ArrayList<AppointmentCardItem> mData;
 
     private ArrayList<AppointmentItem> mAppointments;
     private ArrayList<ClientItem> mClients;
@@ -246,16 +245,16 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      */
     private void initializeAdapter() {
         //layout resource file id used by recyclerView adapter
-        int adapterLayoutId = R.layout.card_client;
+        int adapterLayoutId = R.layout.card_appointment;
 
         //create adapter consumed by the recyclerView
         mAdapter = new AppointmentAdapter(mActivity, adapterLayoutId);
 
         //set icon click listener
-        mAdapter.setOnIconClickListener(new View.OnClickListener() {
+        mAdapter.setOnImageClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onIconClicked(view);
+                onProfileImageClicked(view);
             }
         });
 
@@ -272,7 +271,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
             }
         });
 
-        //swap client data into adapter
+        //swap data into adapter
         mAdapter.swapData(mData);
 
         //check if recycler has any data; if not, display "empty" textView
@@ -500,7 +499,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
             //get appointment item from appointment list
             AppointmentItem appItem = mAppointments.get(mAppCount);
 
-            ClientCardItem item = createClientCardItem(appItem, clientItem);
+            AppointmentCardItem item = createAppointmentCardItem(appItem, clientItem);
 
             //add clientCardI item to data list
             mData.add(item);
@@ -518,16 +517,15 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     }
 
     /*
-     * createClientCardItem(...) - create clientCard item consumed by adapter
+     * createAppointmentCardItem(...) - create appointmentCard item consumed by adapter
      */
-    private ClientCardItem createClientCardItem(AppointmentItem appItem, ClientItem clientItem){
-        //create clientCard item used by adapter
-        ClientCardItem item = new ClientCardItem();
+    private AppointmentCardItem createAppointmentCardItem(AppointmentItem appItem, ClientItem clientItem){
+        //create appointmentCard item used by adapter
+        AppointmentCardItem item = new AppointmentCardItem();
         item.clientName = clientItem.clientName;
         item.clientInfo = appItem.appointmentTime;
-        item.clientEmail = clientItem.email;
-        item.clientPhone = clientItem.phone;
         item.profilePic = Uri.parse(clientItem.profilePic);
+        item.routineName = appItem.routineName;
         item.isActive = true;
 
         return item;
@@ -571,33 +569,17 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     /*
      * void onIconClicked(View) - icon clicked
      */
-    private void onIconClicked(View view){
-        //get client card item from icon imageView component
-        ClientCardItem item = (ClientCardItem)view.getTag(R.string.recycler_tagItem);
+    private void onProfileImageClicked(View view){
+        //get appointment card item from icon imageView component
+        AppointmentCardItem item = (AppointmentCardItem)view.getTag(R.string.recycler_tagItem);
 
         //get index position
         int index = (int)view.getTag(R.string.recycler_tagPosition);
 
-        //get icon id
-        int iconId = (int)view.getTag(R.string.recycler_tagId);
-
-        //check which icon was clicked
-        switch(iconId){
-            case AppointmentAdapter.ICON_INFO:
-                //info icon, show client info screen
-                Intent intent = new Intent(mActivity, ClientDetailActivity.class);
-                mBoss.setClient(mClients.get(index));
-                mActivity.startActivity(intent);
-                break;
-            case AppointmentAdapter.ICON_EMAIL:
-                //email icon, show email client selector
-                CommunicationHelper.sendEmail(mActivity, item.clientEmail);
-                break;
-            case AppointmentAdapter.ICON_PHONE:
-                //phone icon, show dialer
-                CommunicationHelper.makeCall(mActivity, item.clientPhone);
-                break;
-        }
+        //info icon, show client info screen
+        Intent intent = new Intent(mActivity, ClientDetailActivity.class);
+        mBoss.setClient(mClients.get(index));
+        mActivity.startActivity(intent);
     }
 
     /*
@@ -696,19 +678,21 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         appointmentFBItem.appointmentTime = saveItem.appointmentTime;
         appointmentFBItem.clientKey = saveItem.clientKey;
         appointmentFBItem.clientName = saveItem.clientName;
+        appointmentFBItem.routineName = saveItem.routineName;
         appointmentFBItem.status = saveItem.status;
 
         //save appointment item to firebase
-        appointmentFB.addAppointmentByDay(mUserId, saveItem.appointmentDay, appointmentFBItem);
+        appointmentFB.addAppointmentByDay(mUserId, saveItem.appointmentDate, appointmentFBItem);
 
         //get client appointment firebase helper instance
         ClientAppFirebaseHelper clientFB = ClientAppFirebaseHelper.getInstance();
 
         //create client appointment firebase item
         ClientAppFBItem clientFBItem = new ClientAppFBItem();
-        clientFBItem.appointmentDate = saveItem.appointmentDay;
+        clientFBItem.appointmentDate = saveItem.appointmentDate;
         clientFBItem.appointmentTime = saveItem.appointmentTime;
         clientFBItem.clientName = saveItem.clientName;
+        clientFBItem.routineName = saveItem.routineName;
         clientFBItem.status = saveItem.status;
 
         //save client appointment to firebase
@@ -753,7 +737,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      */
     private void deleteAppointmentFromFirebase(AppointmentItem deleteItem){
         //create string values used to delete appointment
-        String appDate = deleteItem.appointmentDay;
+        String appDate = deleteItem.appointmentDate;
         String appTime = deleteItem.appointmentTime;
         String clientKey = deleteItem.clientKey;
         String clientName = deleteItem.clientName;
@@ -780,7 +764,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      */
     private void deleteAppointmentFromDatabase(AppointmentItem deleteItem){
         //create string values used to delete appointment
-        String appDate = deleteItem.appointmentDay;
+        String appDate = deleteItem.appointmentDate;
         String appTime = deleteItem.appointmentTime;
         String clientKey = deleteItem.clientKey;
 
