@@ -1,7 +1,9 @@
 package me.makeachoice.gymratpta.utilities;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Usuario on 2/16/2017.
@@ -56,6 +58,22 @@ public class DateTimeHelper {
             return String.valueOf(c);
         else
             return "0" + String.valueOf(c);
+    }
+
+    public static int isTime1AfterTime2(String time1, String time2){
+        String pattern = "HH:mm aa";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        try {
+            Date date1 = sdf.parse(time1);
+            Date date2 = sdf.parse(time2);
+
+            //return 1 if date1 is after date2, return -1 if date1 is before date2
+            return date1.compareTo(date2);
+        } catch (ParseException e){
+            // Exception handling goes here
+        }
+
+        return -1;
     }
 
 }
