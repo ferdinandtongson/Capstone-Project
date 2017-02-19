@@ -1,23 +1,40 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuItem;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.modelside.firebase.client.AppointmentFirebaseHelper;
+import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientAppFirebaseHelper;
+import me.makeachoice.gymratpta.controller.modelside.loader.AppointmentLoader;
+import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
+import me.makeachoice.gymratpta.controller.modelside.query.AppointmentQueryHelper;
 import me.makeachoice.gymratpta.controller.viewside.Helper.CommunicationHelper;
-import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.AppointmentAdapter;
+import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
-import me.makeachoice.gymratpta.model.stubData.SessionStubData;
+import me.makeachoice.gymratpta.model.item.client.AppointmentFBItem;
+import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
+import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
-import me.makeachoice.gymratpta.view.activity.SessionDetailActivity;
+import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
+import me.makeachoice.gymratpta.view.dialog.ScheduleAppointmentDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING_APPOINTMENT;
 
 /**************************************************************************************************/
 /*
@@ -71,30 +88,51 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 
-public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge,
-        RecyclerView.OnCreateContextMenuListener, MyActivity.OnContextItemSelectedListener{
+public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
  * Class Variables:
- *      CONTEXT_MENU_RESCHEDULE - "reschedule" context menu id number
- *      CONTEXT_MENU_CANCEL = "cancel session" context menu id number
- *      ArrayList<ClientCardItem> mData - array of data used by ClientRecyclerAdapter
- *      ClientRecyclerAdapter mAdapter - recycler adapter
+ *      ArrayList<ClientCardItem> mData - array of data used by AppointmentAdapter
+ *      AppointmentAdapter mAdapter - recycler adapter
  */
 /**************************************************************************************************/
 
-    //CONTEXT_MENU_RESCHEDULE - "reschedule" context menu id number
-    private final static int CONTEXT_MENU_RESCHEDULE = 0;
-
-    //CONTEXT_MENU_CANCEL = "cancel session" context menu id number
-    private final static int CONTEXT_MENU_CANCEL = 1;
-
-    //mData - array of data used by ClientRecyclerAdapter
+    //mData - array of data used by AppointmentAdapter
     private ArrayList<ClientCardItem> mData;
 
+    private ArrayList<AppointmentItem> mAppointments;
+    private ArrayList<ClientItem> mClients;
+    private int mAppCount;
+
     //mAdapter - recycler adapter
-    private ClientRecyclerAdapter mAdapter;
+    private AppointmentAdapter mAdapter;
+
+    private String mUserId;
+    private boolean editingAppointment;
+    private AppointmentItem mDeleteItem;
+    private AppointmentItem mSaveItem;
+
+
+    private ScheduleAppointmentDialog mAppDialog;
+    private DeleteWarningDialog mWarningDialog;
+
+    //mTouchCallback - helper class that enables drag-and-drop and swipe to dismiss functionality to recycler
+    private ItemTouchHelper.Callback mTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP |
+            ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                              RecyclerView.ViewHolder target) {
+            //does nothing
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            onAppointmentDeleteRequest(viewHolder.getAdapterPosition());
+        }
+    };
+
 
 /**************************************************************************************************/
 
@@ -146,8 +184,13 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
             openBundle(bundle);
         }
 
-        mActivity.setOnContextItemSelectedListener(this);
-        initializeLayout();
+        mAppointments = new ArrayList<>();
+        mClients = new ArrayList<>();
+
+        //get user id from Boss
+        mUserId = mBoss.getUserId();
+
+        loadAppointment();
     }
 
     /*
@@ -165,17 +208,26 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
  *      void initializeLayout() - initialize ui
  *      void initializeEmptyText() - textView used when recycler is empty
  *      void initializeAdapter() - adapter used by recycler component
+ *      void initializeRecycler() - initialize recycler component
+ *      ScheduleAppointmentDialog initializeScheduleDialog - initialize appointment scheduling dialog
  */
 /**************************************************************************************************/
     /*
      * void initializeLayout() - initialize ui
      */
     private void initializeLayout(){
+
         //initialize "empty" textView used when recycler is empty
         initializeEmptyText();
 
         //initialize adapter used by recycler
         initializeAdapter();
+
+        //initialize recycler
+        initializeRecycler();
+
+        //initialize floating action button
+        initializeFAB();
     }
 
     /*
@@ -196,34 +248,148 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.card_client;
 
-        /*mData = SessionStubData.createData(mActivity);
-
         //create adapter consumed by the recyclerView
-        mAdapter = new ClientRecyclerAdapter(mActivity, adapterLayoutId);
+        mAdapter = new AppointmentAdapter(mActivity, adapterLayoutId);
 
         //set icon click listener
         mAdapter.setOnIconClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iconClicked(view);
+                onIconClicked(view);
             }
         });
 
-        //set create context menu listener
-        mAdapter.setOnCreateContextMenuListener(this);
+        mAdapter.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //get item index
+                int index = (int)view.getTag(R.string.recycler_tagPosition);
+
+                //edit appointment item
+                onEditAppointment(index);
+
+                return false;
+            }
+        });
 
         //swap client data into adapter
         mAdapter.swapData(mData);
 
-        //set adapter in recycler
-        mBasicRecycler.setAdapter(mAdapter);*/
-
         //check if recycler has any data; if not, display "empty" textView
-        checkForEmptyRecycler(mData.isEmpty());
+        updateEmptyText();
     }
 
+    /*
+     * void initializeRecycler() - initialize recycler component
+     */
     private void initializeRecycler(){
-        //mActivity.registerForContextMenu((View)mBasicRecycler);
+        //set adapter
+        mBasicRecycler.setAdapter(mAdapter);
+
+        //create item touch helper
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mTouchCallback);
+
+        //attach helper to recycler, enables drag-and-drop and swipe to dismiss functionality
+        itemTouchHelper.attachToRecyclerView(mBasicRecycler.getRecycler());
+    }
+
+    /*
+     * void initializeFAB() - initialize FAB component
+     */
+    private void initializeFAB(){
+        //get content description string value
+        String description = mActivity.getString(R.string.description_fab_appointment);
+
+        //add content description to FAB
+        mFAB.setContentDescription(description);
+
+        //add listener for onFABClick events
+        setOnClickFABListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //onFABClick event occurred
+                onFabClicked(view);
+            }
+        });
+    }
+
+    /*
+     * ScheduleAppointmentDialog initializeScheduleDialog - initialize appointment scheduling dialog
+     */
+    private ScheduleAppointmentDialog initializeScheduleDialog(AppointmentItem item){
+        //get fragment manager
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+
+        //create dialog
+        mAppDialog = new ScheduleAppointmentDialog();
+        mAppDialog.setDialogValues(mActivity, mUserId, item);
+        mAppDialog.setOnSavedListener(new ScheduleAppointmentDialog.OnSaveClickListener() {
+            @Override
+            public void onSaveClicked(AppointmentItem appItem) {
+                onSaveAppointment(appItem);
+            }
+        });
+
+        mAppDialog.show(fm, "diaScheduleAppointment");
+
+        return mAppDialog;
+    }
+
+    /*
+     * DeleteWarningDialog initializeDialog(...) - delete warning dialog
+     */
+    private DeleteWarningDialog initializeWarningDialog(AppointmentItem deleteItem, ClientItem clientItem) {
+        String strTitle = clientItem.clientName + " @" + mDeleteItem.appointmentTime;
+
+        //get fragment manager
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+
+        //create dialog
+        mWarningDialog = new DeleteWarningDialog();
+
+        //set dialog values
+        mWarningDialog.setDialogValues(mActivity, mUserId, strTitle);
+
+        //set onDismiss listener
+        mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //resetData();
+            }
+        });
+
+        //set onDelete listener
+        mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
+            @Override
+            public void onDelete() {
+                //delete routine
+                deleteAppointment(mDeleteItem);
+
+                //dismiss dialog
+                mWarningDialog.dismiss();
+            }
+        });
+
+
+        //show dialog
+        mWarningDialog.show(fm, "diaDeleteRoutine");
+
+        return mWarningDialog;
+    }
+
+
+    /*
+     * void updateEmptyText() - check if adapter is empty or not then updates empty textView
+     */
+    private void updateEmptyText(){
+        if(mAdapter.getItemCount() > 0){
+            //is not empty
+            isEmptyRecycler(false);
+        }
+        else{
+            //is empty
+            isEmptyRecycler(true);
+        }
     }
 
 /**************************************************************************************************/
@@ -231,7 +397,154 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 /**************************************************************************************************/
 /*
  * Class Methods
+ *      void loadAppointment() - load today's appointment data from database
+ *      void loadClient() - load client data from database
+ *      void onAppointmentsLoaded(Cursor) - appointments from database has been loaded
+ *      void onClientLoaded(Cursor) - client data from database has been loaded
+ *      createClientCardItem(...) - create clientCard item consumed by adapter
+ */
+/**************************************************************************************************/
+    /*
+     * void loadAppointment() - load today's appointment data from database
+     */
+    private void loadAppointment(){
+        //get today's date
+        String strToday = DateTimeHelper.getToday();
+
+        //start loader to get appointment data from database
+        AppointmentLoader.loadAppointmentByDate(mActivity, mUserId, strToday, new AppointmentLoader.OnAppointmentLoadListener() {
+            @Override
+            public void onAppointmentLoadFinished(Cursor cursor){
+                onAppointmentsLoaded(cursor);
+            }
+        });
+    }
+
+    /*
+     * void loadClient() - load client data from database
+     */
+    private void loadClient(){
+        //check appointment count index
+        if(mAppCount < mAppointments.size()){
+            //index less than appointment list size, get appointment item from list
+            AppointmentItem item = mAppointments.get(mAppCount);
+
+            //load client data using client firebase key
+            ClientLoader.loadClientsByFKey(mActivity, mUserId, item.clientKey, new ClientLoader.OnClientLoadListener() {
+                @Override
+                public void onClientLoadFinished(Cursor cursor) {
+                    onClientLoaded(cursor);
+                }
+            });
+        }
+        else{
+            //index is more than appointment list, initialize layout
+            initializeLayout();
+        }
+
+    }
+
+    /*
+     * void onAppointmentsLoaded(Cursor) - appointments from database has been loaded
+     */
+    private void onAppointmentsLoaded(Cursor cursor){
+        //clear appointment list array
+        mAppointments.clear();
+
+        //get number of appointments loaded
+        int count = cursor.getCount();
+
+        //loop through cursor
+        for(int i = 0; i < count; i++){
+            //move cursor to index position
+            cursor.moveToPosition(i);
+
+            //create appointment item from cursor data
+            AppointmentItem item = new AppointmentItem(cursor);
+
+            //add appointment item to list
+            mAppointments.add(item);
+        }
+
+        //destroy loader
+        AppointmentLoader.destroyLoader(mActivity);
+
+        //initialize appointment counter
+        mAppCount = 0;
+
+        //clear data list consumed by recycler
+        mData.clear();
+
+        //clear client list
+        mClients.clear();
+
+        //load client data
+        loadClient();
+    }
+
+    /*
+     * void onClientLoaded(Cursor) - client data from database has been loaded
+     */
+    private void onClientLoaded(Cursor cursor){
+        //check that cursor is Not null or empty
+        if(cursor != null && cursor.getCount() > 0){
+            //move cursor to first index position
+            cursor.moveToFirst();
+
+            //create client item from cursor data
+            ClientItem clientItem = new ClientItem(cursor);
+
+            //add client item to client list
+            mClients.add(clientItem);
+
+            //get appointment item from appointment list
+            AppointmentItem appItem = mAppointments.get(mAppCount);
+
+            ClientCardItem item = createClientCardItem(appItem, clientItem);
+
+            //add clientCardI item to data list
+            mData.add(item);
+
+        }
+
+        //destroy loader
+        ClientLoader.destroyLoader(mActivity);
+
+        //increase appointment index count
+        mAppCount++;
+
+        //load next client
+        loadClient();
+    }
+
+    /*
+     * createClientCardItem(...) - create clientCard item consumed by adapter
+     */
+    private ClientCardItem createClientCardItem(AppointmentItem appItem, ClientItem clientItem){
+        //create clientCard item used by adapter
+        ClientCardItem item = new ClientCardItem();
+        item.clientName = clientItem.clientName;
+        item.clientInfo = appItem.appointmentTime;
+        item.clientEmail = clientItem.email;
+        item.clientPhone = clientItem.phone;
+        item.profilePic = Uri.parse(clientItem.profilePic);
+        item.isActive = true;
+
+        return item;
+    }
+
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Class Methods
  *      void backPressed() - called when Activity.onBackPressed is called
+ *      void onFabClicked(View) - floating action button clicked, open schedule appointment dialog
+ *      void onIconClicked(View) - icon clicked
+ *      void onEditAppointment() - edit appointment item
+ *      void onSaveAppointment(...) - save appointment item
+ *      void onAppointmentDeleteRequest(int) - delete appointment requested
  */
 /**************************************************************************************************/
     /*
@@ -241,61 +554,248 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     public void backPressed(){
     }
 
-    private void iconClicked(View view){
-        Log.d("Choice", "StubSessionKeeper.onIconClicked");
-        ClientCardItem item = (ClientCardItem)view.getTag(R.string.recycler_tagItem);
-        int iconId = (int)view.getTag(R.string.recycler_tagId);
+    /*
+     * void onFabClicked(View) - floating action button clicked, open schedule appointment dialog
+     */
+    private void onFabClicked(View view){
+        //set delete appointment item to null
+        mDeleteItem = null;
 
-        switch(iconId){
-            case ClientRecyclerAdapter.ICON_INFO:
-                //TODO - need to change!!!!!
-                Intent intent = new Intent(mActivity, SessionDetailActivity.class);
-                mActivity.startActivity(intent);
-                break;
-            case ClientRecyclerAdapter.ICON_EMAIL:
-                //TODO - need to put actual client email
-                CommunicationHelper.sendEmail(mActivity, "stubemail@gmail.com");
-                break;
-            case ClientRecyclerAdapter.ICON_PHONE:
-                //TODO - need to put actual client phone number
-                CommunicationHelper.makeCall(mActivity, "5104782282");
-                break;
-        }
-    }
+        //set edit appointment false, creating new appointment
+        editingAppointment = false;
 
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
-        //get clientCardItem
-        ClientCardItem item = (ClientCardItem)v.getTag(R.string.recycler_tagItem);
-
-        //get client name
-        String clientName = (item.clientName);
-
-        //get context menu strings
-        String strReschedule = mActivity.getString(R.string.context_menu_reschedule);
-        String strCancel = mActivity.getString(R.string.context_menu_cancel_session);
-
-        //create context menu
-        menu.setHeaderTitle(clientName);
-        menu.add(0, CONTEXT_MENU_RESCHEDULE, 0, strReschedule);
-        menu.add(0, CONTEXT_MENU_CANCEL, 0, strCancel);
+        //initialize schedule appointment dialog
+        initializeScheduleDialog(null);
     }
 
     /*
-     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+     * void onIconClicked(View) - icon clicked
      */
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case CONTEXT_MENU_RESCHEDULE:
-                Log.d("Choice", "     reschedule");
-                //TODO - need to reschedule session
-                return true;
-            case CONTEXT_MENU_CANCEL:
-                //TODO - need to cancel session
-                return true;
+    private void onIconClicked(View view){
+        //get client card item from icon imageView component
+        ClientCardItem item = (ClientCardItem)view.getTag(R.string.recycler_tagItem);
+
+        //get index position
+        int index = (int)view.getTag(R.string.recycler_tagPosition);
+
+        //get icon id
+        int iconId = (int)view.getTag(R.string.recycler_tagId);
+
+        //check which icon was clicked
+        switch(iconId){
+            case AppointmentAdapter.ICON_INFO:
+                //info icon, show client info screen
+                Intent intent = new Intent(mActivity, ClientDetailActivity.class);
+                mBoss.setClient(mClients.get(index));
+                mActivity.startActivity(intent);
+                break;
+            case AppointmentAdapter.ICON_EMAIL:
+                //email icon, show email client selector
+                CommunicationHelper.sendEmail(mActivity, item.clientEmail);
+                break;
+            case AppointmentAdapter.ICON_PHONE:
+                //phone icon, show dialer
+                CommunicationHelper.makeCall(mActivity, item.clientPhone);
+                break;
         }
-        return false;
     }
+
+    /*
+     * void onEditAppointment() - edit appointment item
+     */
+    private void onEditAppointment(int index){
+        //set edit appointment status flag as true
+        editingAppointment = true;
+
+        //save edit appointment as delete appointment item
+        mDeleteItem = mAppointments.get(index);
+
+        //open schedule appointment dialog
+        initializeScheduleDialog(mDeleteItem);
+    }
+
+    /*
+     * void onSaveAppointment(...) - save appointment item
+     */
+    private void onSaveAppointment(AppointmentItem appointmentItem){
+        //get save appointment item
+        mSaveItem = appointmentItem;
+
+        //dismiss schedule appointment dialog
+        mAppDialog.dismiss();
+
+        //check if editing an old appointment
+        if(editingAppointment){
+            //yes, delete old appointment (new appointment will be saved after deletion)
+            deleteAppointment(mDeleteItem);
+        }
+        else{
+            //no, save new appointment
+            saveAppointment(mSaveItem);
+        }
+    }
+
+    /*
+     * void onAppointmentDeleteRequest(int) - delete appointment requested
+     */
+    private void onAppointmentDeleteRequest(int index){
+        //get clientItem
+        ClientItem clientItem = mClients.get(index);
+
+        //get appointment item to be deleted
+        mDeleteItem = mAppointments.get(index);
+
+        //get user shared preference
+        SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
+
+        //get user preference to want to receive deletion warning
+        boolean showWarning = prefs.getBoolean(PREF_DELETE_WARNING_APPOINTMENT, true);
+
+        //check status
+        if(showWarning){
+            //wants warning, show "delete warning" dialog
+            initializeWarningDialog(mDeleteItem, clientItem);
+        }
+        else{
+            //no warning, delete routine
+            deleteAppointment(mDeleteItem);
+        }
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Save Methods
+ *      void saveAppointment(AppointmentItem) - save appointment item
+ *      void saveAppointmentToFirebase(AppointmentItem) - save appointment to firebase
+ *      void saveAppointmentToDatabase(...) - save appointment to local database
+ */
+/**************************************************************************************************/
+    /*
+     * void saveAppointment(AppointmentItem) - save appointment item
+     */
+    private void saveAppointment(AppointmentItem saveItem){
+        //save to firebase
+        saveAppointmentToFirebase(saveItem);
+
+        //save to local database
+        saveAppointmentToDatabase(saveItem);
+
+    }
+
+    /*
+     * void saveAppointmentToFirebase(AppointmentItem) - save appointment to firebase
+     */
+    private void saveAppointmentToFirebase(AppointmentItem saveItem){
+        //get appointment firebase helper instance
+        AppointmentFirebaseHelper appointmentFB = AppointmentFirebaseHelper.getInstance();
+
+        //create appointment firebase item
+        AppointmentFBItem appointmentFBItem = new AppointmentFBItem();
+        appointmentFBItem.appointmentTime = saveItem.appointmentTime;
+        appointmentFBItem.clientKey = saveItem.clientKey;
+        appointmentFBItem.clientName = saveItem.clientName;
+        appointmentFBItem.status = saveItem.status;
+
+        //save appointment item to firebase
+        appointmentFB.addAppointmentByDay(mUserId, saveItem.appointmentDay, appointmentFBItem);
+
+        //get client appointment firebase helper instance
+        ClientAppFirebaseHelper clientFB = ClientAppFirebaseHelper.getInstance();
+
+        //create client appointment firebase item
+        ClientAppFBItem clientFBItem = new ClientAppFBItem();
+        clientFBItem.appointmentDate = saveItem.appointmentDay;
+        clientFBItem.appointmentTime = saveItem.appointmentTime;
+        clientFBItem.clientName = saveItem.clientName;
+        clientFBItem.status = saveItem.status;
+
+        //save client appointment to firebase
+        clientFB.addClientAppByClientKey(mUserId, saveItem.clientKey, clientFBItem);
+    }
+
+    /*
+     * void saveAppointmentToDatabase(...) - save appointment to local database
+     */
+    private void saveAppointmentToDatabase(AppointmentItem saveItem){
+        //get uri value for routine name table
+        Uri uriValue = Contractor.AppointmentEntry.CONTENT_URI;
+
+        //appointment is new, add appointment to database
+        Uri uri = mActivity.getContentResolver().insert(uriValue, saveItem.getContentValues());
+
+        //load appointments to refresh recycler view
+        loadAppointment();
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Delete Methods
+ *      void deleteAppointment(AppointmentItem) - delete appointment
+ *      void deleteAppointmentFromFirebase(...) - delete appointment from firebase
+ *      void deleteAppointmentFromDatabase(...) - delete appointment data from database
+ */
+/**************************************************************************************************/
+    /*
+     * void deleteAppointment(AppointmentItem) - delete appointment
+     */
+    private void deleteAppointment(AppointmentItem deleteItem){
+        deleteAppointmentFromFirebase(deleteItem);
+        deleteAppointmentFromDatabase(deleteItem);
+
+    }
+
+    /*
+     * void deleteAppointmentFromFirebase(...) - delete appointment from firebase
+     */
+    private void deleteAppointmentFromFirebase(AppointmentItem deleteItem){
+        //create string values used to delete appointment
+        String appDate = deleteItem.appointmentDay;
+        String appTime = deleteItem.appointmentTime;
+        String clientKey = deleteItem.clientKey;
+        String clientName = deleteItem.clientName;
+
+        //get appointment firebase helper instance
+        AppointmentFirebaseHelper appointmentFB = AppointmentFirebaseHelper.getInstance();
+        //delete appointment from firebase
+        appointmentFB.deleteAppointment(mUserId, appDate, clientName, appTime);
+
+        //get client appointment firebase helper
+        ClientAppFirebaseHelper clientFB = ClientAppFirebaseHelper.getInstance();
+        //delete client appointment from firebase
+        clientFB.deleteAppointment(mUserId, clientKey, appDate, appTime);
+
+        //check if editing old appointment
+        if(editingAppointment){
+            //editing, save new appointment used to replace old appointment
+            saveAppointment(mSaveItem);
+        }
+    }
+
+    /*
+     * void deleteAppointmentFromDatabase(...) - delete appointment data from database
+     */
+    private void deleteAppointmentFromDatabase(AppointmentItem deleteItem){
+        //create string values used to delete appointment
+        String appDate = deleteItem.appointmentDay;
+        String appTime = deleteItem.appointmentTime;
+        String clientKey = deleteItem.clientKey;
+
+        //get uri value from appointment table
+        Uri uri = Contractor.AppointmentEntry.CONTENT_URI;
+
+        //remove appointment from database
+        int appointmentDeleted = mActivity.getContentResolver().delete(uri,
+                AppointmentQueryHelper.clientKeyDateTimeSelection,
+                new String[]{mUserId, clientKey, appDate, appTime});
+
+        //load appointments to update recycler view
+        loadAppointment();
+    }
+
 /**************************************************************************************************/
 
 }
