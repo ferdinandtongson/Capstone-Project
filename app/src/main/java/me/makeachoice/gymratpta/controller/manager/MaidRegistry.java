@@ -137,9 +137,9 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
-    public void initializeClientScheduleMaid(String maidKey, int layoutId){
+    public void initializeClientScheduleMaid(String maidKey, int layoutId, ClientItem item){
         //create maid
-        ClientScheduleMaid maid = new ClientScheduleMaid(maidKey, layoutId);
+        ClientScheduleMaid maid = new ClientScheduleMaid(maidKey, layoutId, item);
 
         //register maid
         registerMaid(maidKey, maid);
