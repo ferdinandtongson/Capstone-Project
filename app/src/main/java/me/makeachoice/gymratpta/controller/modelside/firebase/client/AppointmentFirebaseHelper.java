@@ -1,14 +1,19 @@
 package me.makeachoice.gymratpta.controller.modelside.firebase.client;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.model.item.client.AppointmentFBItem;
+
+import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 /**************************************************************************************************/
 /*
@@ -107,11 +112,38 @@ public class AppointmentFirebaseHelper {
 
 /**************************************************************************************************/
 /*
- * Set Data Methods
+ * Delete Data Methods
  */
 /**************************************************************************************************/
 
+    public void deleteAppointment(String userId, String appointmentDay, String clientName, String appointmentTime){
+        DatabaseReference ref = getAppointmentReferenceByDay(userId, appointmentDay);
+
+        Query appointmentQuery = ref.orderByChild(CHILD_CLIENT_NAME).equalTo(clientName);
+
+        final String appTime = appointmentTime;
+
+        appointmentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    AppointmentFBItem appointment = postSnapshot.getValue(AppointmentFBItem.class);
+                    if(appointment.appointmentTime.equals(appTime)){
+                        postSnapshot.getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+
+    }
+
 /**************************************************************************************************/
+
 
 /**************************************************************************************************/
 /*
