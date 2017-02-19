@@ -222,10 +222,6 @@ public class GymRatProvider extends ContentProvider {
         return returnUri;
     }
 
-    public void insertFirebase(Uri uri, ContentValues values){
-
-    }
-
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
