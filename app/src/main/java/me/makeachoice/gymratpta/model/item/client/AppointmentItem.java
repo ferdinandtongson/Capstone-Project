@@ -22,7 +22,7 @@ public class AppointmentItem extends AppointmentFBItem {
 
     public String uid;
     public String fkey;
-    public String appointmentDay;
+    public String appointmentDate;
 
 /**************************************************************************************************/
 
@@ -38,16 +38,26 @@ public class AppointmentItem extends AppointmentFBItem {
         appointmentTime = item.appointmentTime;
         clientKey = item.clientKey;
         clientName = item.clientName;
+        routineName = item.routineName;
+        status = item.status;
+    }
+
+    public AppointmentItem(ClientAppFBItem item){
+        appointmentDate = item.appointmentDate;
+        appointmentTime = item.appointmentTime;
+        clientName = item.clientName;
+        routineName = item.routineName;
         status = item.status;
     }
 
     public AppointmentItem(Cursor cursor){
         uid = cursor.getString(AppointmentColumns.INDEX_UID);
         fkey = cursor.getString(AppointmentColumns.INDEX_FKEY);
-        appointmentDay = cursor.getString(AppointmentColumns.INDEX_APPOINTMENT_DATE);
+        appointmentDate = cursor.getString(AppointmentColumns.INDEX_APPOINTMENT_DATE);
         appointmentTime = cursor.getString(AppointmentColumns.INDEX_APPOINTMENT_TIME);
         clientKey = cursor.getString(AppointmentColumns.INDEX_CLIENT_KEY);
         clientName = cursor.getString(AppointmentColumns.INDEX_CLIENT_NAME);
+        routineName = cursor.getString(AppointmentColumns.INDEX_ROUTINE_NAME);
         status = cursor.getString(AppointmentColumns.INDEX_APPOINTMENT_STATUS);
     }
 
@@ -68,10 +78,11 @@ public class AppointmentItem extends AppointmentFBItem {
         ContentValues values = new ContentValues();
         values.put(Contractor.AppointmentEntry.COLUMN_UID, uid);
         values.put(Contractor.AppointmentEntry.COLUMN_FKEY, fkey);
-        values.put(Contractor.AppointmentEntry.COLUMN_APPOINTMENT_DATE, appointmentDay);
+        values.put(Contractor.AppointmentEntry.COLUMN_APPOINTMENT_DATE, appointmentDate);
         values.put(Contractor.AppointmentEntry.COLUMN_APPOINTMENT_TIME, appointmentTime);
         values.put(Contractor.AppointmentEntry.COLUMN_CLIENT_KEY, clientKey);
         values.put(Contractor.AppointmentEntry.COLUMN_CLIENT_NAME, clientName);
+        values.put(Contractor.AppointmentEntry.COLUMN_ROUTINE_NAME, routineName);
         values.put(Contractor.AppointmentEntry.COLUMN_APPOINTMENT_STATUS, status);
 
         return values;

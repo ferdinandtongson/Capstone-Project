@@ -9,6 +9,7 @@ public class ClientAppFBItem {
     public String appointmentDate;
     public String appointmentTime;
     public String clientName;
+    public String routineName;
     public String status;
 
 }
