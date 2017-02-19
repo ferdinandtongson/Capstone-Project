@@ -1,0 +1,39 @@
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceCardView"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/card_activeBackground"
+    style="@style/GymRat.Card">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/cardClientApp_txtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/GymRat.Card.TextView.Info"/>
+
+        <TextView
+            android:id="@+id/cardClientApp_txtDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/GymRat.Card.TextView.Name"/>
+
+        <TextView
+            android:id="@+id/cardClientApp_txtRoutine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_below="@id/cardClientApp_txtDate"
+            style="@style/GymRat.Card.TextView"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
