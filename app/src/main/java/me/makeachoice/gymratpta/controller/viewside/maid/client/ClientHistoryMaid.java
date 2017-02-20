@@ -11,8 +11,6 @@ import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardStateViewPager;
-import me.makeachoice.gymratpta.model.item.ClientCardItem;
-import me.makeachoice.gymratpta.model.stubData.SessionStubData;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
 /**************************************************************************************************/
@@ -147,7 +145,7 @@ public class ClientHistoryMaid extends MyMaid implements BasicFragment.Bridge {
         int count = mPageTitles.size();
 
         //initialize maids
-        for(int i = 0; i < count; i++){
+        /*for(int i = 0; i < count; i++){
             //get exercise list
             ArrayList<ClientCardItem> clients = SessionStubData.createData(mFragment.getContext());
 
@@ -157,8 +155,8 @@ public class ClientHistoryMaid extends MyMaid implements BasicFragment.Bridge {
             MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
             //initialize maid
-            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, clients);
-        }
+            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, userId, clients);
+        }*/
 
     }
 
