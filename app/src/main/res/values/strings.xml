@@ -100,7 +100,12 @@
     <string name="dialogSchedule_client" translatable="false">@string/client</string>
     <string name="dialogSchedule_time" translatable="false">@string/session_time</string>
     <string name="dialogSchedule_routine" translatable="false">@string/routine</string>
-    <string name="dialogSchedule_no_routine_selected" translatable="true">- None Selected -</string>
+    <string name="dialogSchedule_no_routine_selected" translatable="true">@string/msg_none_selected</string>
+    <!-- dialog: client appointment -->
+    <string name="dialogClientApp_date" translatable="false">@string/date</string>
+    <string name="dialogClientApp_time" translatable="false">@string/time</string>
+    <string name="dialogClientApp_routine" translatable="false">@string/routine</string>
+    <string name="dialogClientApp_no_routine_selected" translatable="true">@string/msg_none_selected</string>
 
     <!-- spinner: client status -->
     <string-array name="client_status">
@@ -133,6 +138,7 @@
     <string name="contact_info" translatable="true">Contact Info</string>
     <string name="contacts_list" translatable="true">Contacts List</string>
     <string name="core" translatable="true">Core</string>
+    <string name="date" translatable="true">Date</string>
     <string name="delete" translatable="true">Delete</string>
     <string name="distance" translatable="true">Distance</string>
     <string name="edit" translatable="true">Edit</string>
