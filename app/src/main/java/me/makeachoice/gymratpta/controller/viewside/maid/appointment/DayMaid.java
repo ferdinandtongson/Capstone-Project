@@ -142,6 +142,7 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
     }
 
     private MyActivity mActivity;
+    private ArrayList<String> mDates;
 
     private void loadData(){
         //get user shared preference
@@ -150,18 +151,25 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
         //get user preference to want to receive deletion warning
         int numberOfDays = prefs.getInt(PREF_DAY_MAX, 30);
 
-        mPageTitles = new ArrayList();
+        mPageTitles = new ArrayList<>();
+        mDates = new ArrayList<>();
 
         // Start date
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
         Calendar c = Calendar.getInstance();
-        String today = sdf.format(c.getTime());
-        mPageTitles.add(today);
+        String day = sdf.format(c.getTime());
+        String appointmentDate = dateFormat.format(c.getTime());
+
+        mPageTitles.add(day);
+        mDates.add(appointmentDate);
 
         for(int i = 0; i < numberOfDays; i++){
             c.add(Calendar.DATE, 1);
-            String day = sdf.format(c.getTime());
+            day = sdf.format(c.getTime());
+            appointmentDate = dateFormat.format(c.getTime());
             mPageTitles.add(day);
+            mDates.add(appointmentDate);
         }
 
         //initialize maids used by viewPager
@@ -180,8 +188,7 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
 
         //initialize maids
         for(int i = 0; i < count; i++){
-            //get exercise list
-            ArrayList<ClientCardItem> clients = SessionStubData.createData(mFragment.getContext());
+            String strDate = mDates.get(i);
 
             //create unique maid id numbers using a base number
             String maidKey = MaidRegistry.MAID_DAY_VP + i;
@@ -189,7 +196,7 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
             MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
             //initialize maid
-            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, mUserId, clients);
+            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, mUserId, strDate, i);
         }
 
     }
