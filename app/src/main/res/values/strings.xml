@@ -61,8 +61,9 @@
     <string name="emptyRecycler_addExercise" translatable="false">@string/add_exercise</string>
     <string name="emptyRecycler_addRoutine" translatable="false">@string/add_routine</string>
     <string name="emptyRecycler_addRoutineExercise" translatable="false">@string/add_routine_exercise</string>
-    <string name="emptyRecylcer_noContacts" translatable="false">@string/msg_no_contacts</string>
+    <string name="emptyRecycler_noContacts" translatable="false">@string/msg_no_contacts</string>
     <string name="emptyRecycler_noSessions" translatable="false">@string/no_sessions</string>
+    <string name="emptyRecycler_noNotes" translatable="false">@string/no_notes</string>
 
     <!-- recycler tags -->
     <string name="recycler_tagPosition" translatable="false">tag_position</string>
@@ -106,6 +107,27 @@
     <string name="dialogClientApp_time" translatable="false">@string/time</string>
     <string name="dialogClientApp_routine" translatable="false">@string/routine</string>
     <string name="dialogClientApp_no_routine_selected" translatable="true">@string/msg_none_selected</string>
+
+    <!-- measurements -->
+    <string name="measurement_detail_last" translatable="true">Last</string>
+    <string name="measurement_detail_pre" translatable="true">Pre</string>
+    <string name="measurement_detail_weight" translatable="true">Weight</string>
+    <string name="measurement_detail_body_fat" translatable="true">Body Fat %</string>
+    <string name="measurement_detail_bmi" translatable="true">BMI</string>
+    <string name="measurement_detail_neck" translatable="true">Neck</string>
+    <string name="measurement_detail_chest" translatable="true">Chest</string>
+    <string name="measurement_detail_rbicep" translatable="true">Right Bicep</string>
+    <string name="measurement_detail_lbicep" translatable="true">Left Bicep</string>
+    <string name="measurement_detail_waist" translatable="true">Waist</string>
+    <string name="measurement_detail_navel" translatable="true">At Navel</string>
+    <string name="measurement_detail_hips" translatable="true">Hips</string>
+    <string name="measurement_detail_rthigh" translatable="true">Right Thigh</string>
+    <string name="measurement_detail_lthigh" translatable="true">Left Thigh</string>
+    <string name="measurement_detail_rcalf" translatable="true">Right Calf</string>
+    <string name="measurement_detail_lcalf" translatable="true">Left Calf</string>
+    <string name="measurement_detail_delta_pre" translatable="true">Δ Pre</string>
+    <string name="measurement_detail_delta_start" translatable="true">Δ Start</string>
+
 
     <!-- spinner: client status -->
     <string-array name="client_status">
@@ -153,6 +175,7 @@
     <string name="gym_rat" translatable="true">Gym Rat</string>
     <string name="last" translatable="true">Last</string>
     <string name="legs" translatable="true">Legs</string>
+    <string name="no_notes" translatable="true">No Notes</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="none" translatable="true">None</string>
     <string name="notes" translatable="true">Notes</string>
