@@ -252,7 +252,7 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
      */
     private void initializeEmptyView(){
         //get "empty" message
-        String msg = mRootView.getResources().getString(R.string.emptyRecylcer_noContacts);
+        String msg = mRootView.getResources().getString(R.string.emptyRecycler_noContacts);
 
         //get textView component
         mTxtEmpty = (TextView)mRootView.findViewById(R.id.choiceEmptyView);
