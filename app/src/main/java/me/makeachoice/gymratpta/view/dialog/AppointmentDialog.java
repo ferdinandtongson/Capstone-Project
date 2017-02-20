@@ -56,9 +56,6 @@ public class AppointmentDialog extends DialogFragment {
     //mRoutineIndex - routine spinner index used if editing a previous client appointment item
     private int mRoutineIndex;
 
-    //mEditApmtItem - client appointment item being edited
-    private AppointmentItem mEditApmtItem;
-
     //mSaveApmtItem - client appointment item to save
     private AppointmentItem mSaveApmtItem;
 
@@ -140,9 +137,6 @@ public class AppointmentDialog extends DialogFragment {
         //initialize appointment item to save
         initializeSaveItem(item);
 
-        //save appointment item being edited
-        initializeEditItem(item);
-
         if(item == null){
             //set client spinner selected index
             mClientIndex = 0;
@@ -150,32 +144,6 @@ public class AppointmentDialog extends DialogFragment {
             //set routine spinner selected index
             mRoutineIndex = 0;
         }
-    }
-
-    /*
-     * void initializeEditItem(...) - initialize client appointment item being edited
-     */
-    private void initializeEditItem(AppointmentItem item){
-        //check if appointment item is null
-        if(item == null){
-            //is null, create new client appointment
-            mEditApmtItem = new AppointmentItem();
-
-            //add empty values for appointment item
-            mEditApmtItem.uid = mUserId;
-            mEditApmtItem.fkey = "";
-            mEditApmtItem.appointmentDate = DateTimeHelper.getToday();
-            mEditApmtItem.appointmentTime = "";
-            mEditApmtItem.clientKey = "";
-            mEditApmtItem.clientName = "";
-            mEditApmtItem.routineName = mNoneSelected;
-            mEditApmtItem.status = "";
-        }
-        else{
-            //save appointment item to buffer, item being edited
-            mEditApmtItem = item;
-        }
-
     }
 
     /*
@@ -307,7 +275,7 @@ public class AppointmentDialog extends DialogFragment {
         mTxtTimeSelected = (TextView)mRootView.findViewById(R.id.diaSchedule_txtTimeSelect);
 
         //get appointment time selected string value
-        String strTime = getTimeSelected();
+        String strTime = mSaveApmtItem.appointmentTime;
 
         //set text to current time
         mTxtTimeSelected.setText(strTime);
@@ -416,21 +384,6 @@ public class AppointmentDialog extends DialogFragment {
         spnRoutine.setSelection(mRoutineIndex);
     }
 
-    /*
-     * String getTimeSelected() - get appointment time selected
-     */
-    private String getTimeSelected(){
-        //check if appointment is being edited
-        if(!mEditApmtItem.appointmentTime.isEmpty()){
-            //get appointment time
-            return mEditApmtItem.appointmentTime;
-        }
-        else{
-            //new appointment, get current time
-            return DateTimeHelper.getCurrentTime();
-        }
-    }
-
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -460,7 +413,7 @@ public class AppointmentDialog extends DialogFragment {
      */
     private void onClientDataLoaded(Cursor cursor){
         //get client name from client appointment item
-        String selectedClient = mEditApmtItem.clientName;
+        String selectedClient = mSaveApmtItem.clientName;
 
         //get size of cursor
         int count = cursor.getCount();
@@ -511,7 +464,7 @@ public class AppointmentDialog extends DialogFragment {
 
     private void onRoutineNameDataLoaded(Cursor cursor){
         //get routine name from client appointment item
-        String selectedRoutine = mEditApmtItem.routineName;
+        String selectedRoutine = mSaveApmtItem.routineName;
 
         //get size of cursor
         int count = cursor.getCount();
@@ -532,8 +485,8 @@ public class AppointmentDialog extends DialogFragment {
 
             //check if client name is equal to client appointment item name
             if(selectedRoutine.equals(routine)){
-                //match, set spinner selected index
-                mRoutineIndex = i;
+                //match, set spinner selected index, need to add 1 because of "- None Selected -"
+                mRoutineIndex = i + 1;
             }
         }
 
