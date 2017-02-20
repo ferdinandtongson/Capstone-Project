@@ -78,7 +78,9 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
     private boolean mEditingAppointment;
     private AppointmentItem mDeleteItem;
     private AppointmentItem mSaveItem;
+    private boolean mRefreshOnDismiss;
 
+    private AppointmentLoader mAppointmentLoader;
     private ClientAppointmentDialog mAppDialog;
     private DeleteWarningDialog mWarningDialog;
 
@@ -160,6 +162,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         mData = new ArrayList<>();
         mEditingAppointment = false;
 
+        mAppointmentLoader = new AppointmentLoader(mActivity, mUserId);
         loadAppointment();
     }
 
@@ -297,6 +300,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
      */
     private DeleteWarningDialog initializeWarningDialog(AppointmentItem deleteItem, ClientItem clientItem) {
         String strTitle = clientItem.clientName + " @" + mDeleteItem.appointmentTime;
+        mRefreshOnDismiss = true;
 
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
@@ -311,7 +315,9 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                //resetData();
+                if(mRefreshOnDismiss){
+                    loadAppointment();
+                }
             }
         });
 
@@ -319,6 +325,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
             @Override
             public void onDelete() {
+                mRefreshOnDismiss = false;
                 //delete routine
                 deleteAppointment(mDeleteItem);
 
@@ -367,7 +374,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         Log.d("Choice", "ClientScheduleMaid.loadAppointment");
 
         //start loader to get appointment data from database
-        AppointmentLoader.loadAppointmentByClientKey(mActivity, mClientItem.uid, mClientItem.fkey,
+        mAppointmentLoader.loadAppointmentByClientKey(mClientItem.fkey,
                 new AppointmentLoader.OnAppointmentLoadListener() {
             @Override
             public void onAppointmentLoadFinished(Cursor cursor){
@@ -405,7 +412,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         }
 
         //destroy loader
-        AppointmentLoader.destroyLoader(mActivity);
+        mAppointmentLoader.destroyLoader();
         prepareFragment();
     }
 
