@@ -115,8 +115,10 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     private boolean mEditingAppointment;
     private AppointmentItem mDeleteItem;
     private AppointmentItem mSaveItem;
+    private boolean mRefreshOnDismiss;
 
-
+    private AppointmentLoader mAppointmentLoader;
+    private ClientLoader mClientLoader;
     private AppointmentDialog mAppDialog;
     private DeleteWarningDialog mWarningDialog;
 
@@ -158,7 +160,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         //flag used to determine which menu items is selected in drawer component
         mBottomNavSelectedItemId = R.id.nav_sessions;
 
-        mData = new ArrayList();
+        mData = new ArrayList<>();
     }
 
 /**************************************************************************************************/
@@ -193,6 +195,9 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 
         //get user id from Boss
         mUserId = mBoss.getUserId();
+
+        mAppointmentLoader = new AppointmentLoader(mActivity, mUserId);
+        mClientLoader = new ClientLoader(mActivity, mUserId);
 
         loadAppointment();
     }
@@ -344,6 +349,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
      */
     private DeleteWarningDialog initializeWarningDialog(AppointmentItem deleteItem, ClientItem clientItem) {
         String strTitle = clientItem.clientName + " @" + mDeleteItem.appointmentTime;
+        mRefreshOnDismiss = true;
 
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
@@ -358,7 +364,9 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                //resetData();
+                if(mRefreshOnDismiss){
+                    loadAppointment();
+                }
             }
         });
 
@@ -366,6 +374,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
             @Override
             public void onDelete() {
+                mRefreshOnDismiss = false;
                 //delete routine
                 deleteAppointment(mDeleteItem);
 
@@ -380,7 +389,6 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 
         return mWarningDialog;
     }
-
 
     /*
      * void updateEmptyText() - check if adapter is empty or not then updates empty textView
@@ -416,7 +424,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         String strToday = DateTimeHelper.getToday();
 
         //start loader to get appointment data from database
-        AppointmentLoader.loadAppointmentByDate(mActivity, mUserId, strToday, new AppointmentLoader.OnAppointmentLoadListener() {
+        mAppointmentLoader.loadAppointmentByDate(strToday, new AppointmentLoader.OnAppointmentLoadListener() {
             @Override
             public void onAppointmentLoadFinished(Cursor cursor){
                 onAppointmentsLoaded(cursor);
@@ -434,7 +442,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
             AppointmentItem item = mAppointments.get(mAppCount);
 
             //load client data using client firebase key
-            ClientLoader.loadClientsByFKey(mActivity, mUserId, item.clientKey, new ClientLoader.OnClientLoadListener() {
+            mClientLoader.loadClientsByFKey(item.clientKey, new ClientLoader.OnClientLoadListener() {
                 @Override
                 public void onClientLoadFinished(Cursor cursor) {
                     onClientLoaded(cursor);
@@ -471,7 +479,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         }
 
         //destroy loader
-        AppointmentLoader.destroyLoader(mActivity);
+        mAppointmentLoader.destroyLoader();
 
         //initialize appointment counter
         mAppCount = 0;
@@ -512,7 +520,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         }
 
         //destroy loader
-        ClientLoader.destroyLoader(mActivity);
+        mClientLoader.destroyLoader();
 
         //increase appointment index count
         mAppCount++;
