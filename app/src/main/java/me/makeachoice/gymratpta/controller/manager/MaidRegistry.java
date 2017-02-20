@@ -97,25 +97,25 @@ public class MaidRegistry extends MyMaidRegistry {
  */
 /**************************************************************************************************/
 
-    public void initializeDayMaid(String maidKey, int layoutId){
+    public void initializeDayMaid(String maidKey, int layoutId, String userId){
         //create maid
-        DayMaid maid = new DayMaid(maidKey, layoutId);
+        DayMaid maid = new DayMaid(maidKey, layoutId, userId);
 
         //register maid
         registerMaid(maidKey, maid);
     }
 
-    public void initializeDayViewPagerMaid(String maidKey, int layoutId, ArrayList<ClientCardItem> clients){
+    public void initializeDayViewPagerMaid(String maidKey, int layoutId, String userId, ArrayList<ClientCardItem> clients){
         //create maid
-        DayViewPagerMaid maid = new DayViewPagerMaid(maidKey, layoutId, clients);
+        DayViewPagerMaid maid = new DayViewPagerMaid(maidKey, layoutId, userId, clients);
 
         //register maid
         registerMaid(maidKey, maid);
     }
 
-    public void initializeWeekMaid(String maidKey, int layoutId){
+    public void initializeWeekMaid(String maidKey, int layoutId, String userId){
         //create maid
-        WeekMaid maid = new WeekMaid(maidKey, layoutId);
+        WeekMaid maid = new WeekMaid(maidKey, layoutId, userId);
 
         //register maid
         registerMaid(maidKey, maid);

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
-import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ClientRecyclerAdapter;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.AppointmentAdapter;
 import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
@@ -41,6 +41,7 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
 /**************************************************************************************************/
 
     private ArrayList<ClientCardItem> mData;
+    private String mUserId;
 
 /**************************************************************************************************/
 
@@ -52,7 +53,7 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
     /*
      * DayViewPagerMaid(...) - constructor
      */
-    public DayViewPagerMaid(String maidKey, int layoutId, ArrayList<ClientCardItem> clients){
+    public DayViewPagerMaid(String maidKey, int layoutId, String userId, ArrayList<ClientCardItem> clients){
         //get maidKey
         mMaidKey = maidKey;
 
@@ -61,6 +62,8 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
 
         //get exercise list
         mData = clients;
+
+        mUserId = userId;
     }
 
 /**************************************************************************************************/
@@ -130,13 +133,13 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
         initializeAdapter();
     }
 
-    private ClientRecyclerAdapter mAdapter;
+    private AppointmentAdapter mAdapter;
     private void initializeAdapter() {
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.card_client;
 
         //create adapter consumed by the recyclerView
-        //mAdapter = new ClientRecyclerAdapter(mLayout.getContext(), adapterLayoutId);
+        //mAdapter = new AppointmentAdapter(mLayout.getContext(), adapterLayoutId);
         //mAdapter.swapData(mData);
 
         //mBasicRecycler.setAdapter(mAdapter);

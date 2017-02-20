@@ -49,6 +49,8 @@ public class WeekMaid extends MyMaid implements BasicFragment.Bridge{
     //mPageTitles - list of titles used by viewPager tabLayout
     ArrayList<String> mPageTitles;
 
+    private String mUserId;
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -59,12 +61,14 @@ public class WeekMaid extends MyMaid implements BasicFragment.Bridge{
     /*
      * WeekMaid(...) - constructor
      */
-    public WeekMaid(String maidKey, int layoutId){
+    public WeekMaid(String maidKey, int layoutId, String userId){
         //get maidKey
         mMaidKey = maidKey;
 
         //fragment layout id number
         mLayoutId = layoutId;
+
+        mUserId = userId;
     }
 
 /**************************************************************************************************/
@@ -194,7 +198,7 @@ public class WeekMaid extends MyMaid implements BasicFragment.Bridge{
             MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
             //initialize maid
-            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, clients);
+            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, mUserId, clients);
         }
 
     }
