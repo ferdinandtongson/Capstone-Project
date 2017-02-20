@@ -105,9 +105,9 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
-    public void initializeDayViewPagerMaid(String maidKey, int layoutId, String userId, ArrayList<ClientCardItem> clients){
+    public void initializeDayViewPagerMaid(String maidKey, int layoutId, String userId, String appointmentDate, int counter){
         //create maid
-        DayViewPagerMaid maid = new DayViewPagerMaid(maidKey, layoutId, userId, clients);
+        DayViewPagerMaid maid = new DayViewPagerMaid(maidKey, layoutId, userId, appointmentDate, counter);
 
         //register maid
         registerMaid(maidKey, maid);
