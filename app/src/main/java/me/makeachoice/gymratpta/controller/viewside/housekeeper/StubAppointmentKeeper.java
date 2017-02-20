@@ -3,6 +3,7 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 import android.os.Bundle;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.AppointmentNav;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
@@ -62,6 +63,7 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
  */
 /**************************************************************************************************/
 
+    private String mUserId;
 
 /**************************************************************************************************/
 
@@ -109,8 +111,18 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
             openBundle(bundle);
         }
 
-        //initialize layout
-        initializeLayout();
+        mBoss.initializeFirebaseAuth(new Boss.OnSignedInListener() {
+            @Override
+            public void onSignedIn(String userId) {
+                //get user id from Boss
+                mUserId = mBoss.getUserId();
+
+                //initialize layout
+                initializeLayout();
+
+            }
+        });
+
     }
 
     /*
@@ -150,8 +162,8 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
 
         //viewPager layout used by exercise maid
         int pagerId = R.layout.viewpager;
-        maidRegistry.initializeDayMaid(MaidRegistry.MAID_DAY, pagerId);
-        maidRegistry.initializeWeekMaid(MaidRegistry.MAID_WEEK, pagerId);
+        maidRegistry.initializeDayMaid(MaidRegistry.MAID_DAY, pagerId, mUserId);
+        maidRegistry.initializeWeekMaid(MaidRegistry.MAID_WEEK, pagerId, mUserId);
     }
 
     /*
