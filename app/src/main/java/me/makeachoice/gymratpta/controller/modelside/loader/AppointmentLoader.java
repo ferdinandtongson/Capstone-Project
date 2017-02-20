@@ -37,22 +37,36 @@ public class AppointmentLoader {
 /**************************************************************************************************/
 
     //mActivity - activity context
-    private static MyActivity mActivity;
+    private MyActivity mActivity;
 
     //mUserId - user id number taken from firebase authentication
-    private static String mUserId;
+    private String mUserId;
 
     //mAppointmentDate - appointment date value
-    private static String mAppointmentDate;
+    private String mAppointmentDate;
 
     //mClientKey - client key value
-    private static String mClientKey;
+    private String mClientKey;
 
     //mListener - listens for when appointment data is loaded
-    private static OnAppointmentLoadListener mListener;
+    private OnAppointmentLoadListener mListener;
     public interface OnAppointmentLoadListener{
         //notifies listener appointment data has finished loading
         public void onAppointmentLoadFinished(Cursor cursor);
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Constructor
+ */
+/**************************************************************************************************/
+
+    public AppointmentLoader(MyActivity activity, String userId){
+        mActivity = activity;
+        mUserId = userId;
+
     }
 
 /**************************************************************************************************/
@@ -69,21 +83,15 @@ public class AppointmentLoader {
     /*
      * void loadAppointment(...) - start loader to load appointment data from database
      */
-    public static void loadAppointment(MyActivity activity, String userId, OnAppointmentLoadListener listener){
+    public void loadAppointment(OnAppointmentLoadListener listener){
         //load appointments using default loader id
-        loadAppointment(activity, userId, LOADER_APPOINTMENT, listener);
+        loadAppointment(LOADER_APPOINTMENT, listener);
     }
 
     /*
      * void loadAppointment(...) - start loader to load appointment data from database
      */
-    public static void loadAppointment(MyActivity activity, String userId, int loaderId, OnAppointmentLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
-
+    public void loadAppointment(int loaderId, OnAppointmentLoadListener listener){
         //get listener
         mListener = listener;
 
@@ -125,23 +133,15 @@ public class AppointmentLoader {
     /*
      * void loadAppointmentByDay(...) - start loader to load appointment data from database by date
      */
-    public static void loadAppointmentByDate(MyActivity activity, String userId, String appointmentDate,
-                                             OnAppointmentLoadListener listener){
+    public void loadAppointmentByDate(String appointmentDate, OnAppointmentLoadListener listener){
         //load appointment using default loader id
-        loadAppointmentByDate(activity, userId, appointmentDate, LOADER_APPOINTMENT, listener);
+        loadAppointmentByDate(appointmentDate, LOADER_APPOINTMENT, listener);
     }
 
     /*
      * void loadAppointmentByDay(...) - start loader to load appointment data from database by date
      */
-    public static void loadAppointmentByDate(MyActivity activity, String userId, String appointmentDate,
-                                           int loaderId, OnAppointmentLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
-
+    public void loadAppointmentByDate(String appointmentDate, int loaderId, OnAppointmentLoadListener listener){
         //get date
         mAppointmentDate = appointmentDate;
 
@@ -186,24 +186,16 @@ public class AppointmentLoader {
     /*
      * void loadAppointmentByClientKey(...) - start loader to load appointment data from database by clientKey
      */
-    public static void loadAppointmentByClientKey(MyActivity activity, String userId, String clientKey,
-                                             OnAppointmentLoadListener listener){
+    public void loadAppointmentByClientKey(String clientKey, OnAppointmentLoadListener listener){
         //load appointment using default loader id
-        loadAppointmentByClientKey(activity, userId, clientKey, LOADER_APPOINTMENT, listener);
+        loadAppointmentByClientKey(clientKey, LOADER_APPOINTMENT, listener);
     }
 
 
     /*
      * void loadAppointmentByClientKey(...) - start loader to load appointment data from database by clientKey
      */
-    public static void loadAppointmentByClientKey(MyActivity activity, String userId, String clientKey,
-                                             int loaderId, OnAppointmentLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
-
+    public void loadAppointmentByClientKey(String clientKey, int loaderId, OnAppointmentLoadListener listener){
         //get client key
         mClientKey = clientKey;
 
@@ -248,17 +240,17 @@ public class AppointmentLoader {
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity){
+    public void destroyLoader(){
         //destroy loader using default loader exercise id
-        destroyLoader(activity, LOADER_CLIENT);
+        destroyLoader(LOADER_CLIENT);
     }
 
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity, int loaderId){
+    public void destroyLoader(int loaderId){
         //destroy loader
-        activity.getSupportLoaderManager().destroyLoader(loaderId);
+        mActivity.getSupportLoaderManager().destroyLoader(loaderId);
     }
 
 /**************************************************************************************************/
