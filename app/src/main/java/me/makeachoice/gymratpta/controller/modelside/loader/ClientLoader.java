@@ -37,25 +37,40 @@ public class ClientLoader {
 /**************************************************************************************************/
 
     //mActivity - activity context
-    private static MyActivity mActivity;
+    private MyActivity mActivity;
 
     //mUserId - user id number taken from firebase authentication
-    private static String mUserId;
+    private String mUserId;
 
     //mStatus - client status value
-    private static String mStatus;
+    private String mStatus;
 
     //mFKey - client fkey value
-    private static String mFKey;
+    private String mFKey;
 
     //mListener - listens for when client data is loaded
-    private static OnClientLoadListener mListener;
+    private OnClientLoadListener mListener;
     public interface OnClientLoadListener{
         //notifies listener client data has finished loading
         public void onClientLoadFinished(Cursor cursor);
     }
 
 /**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Constructor
+ */
+/**************************************************************************************************/
+
+    public ClientLoader(MyActivity activity, String userId){
+        mActivity = activity;
+        mUserId = userId;
+
+    }
+
+/**************************************************************************************************/
+
 
 /**************************************************************************************************/
 /*
@@ -68,21 +83,15 @@ public class ClientLoader {
     /*
      * void loadClient(...) - start loader to load client data from database
      */
-    public static void loadClients(MyActivity activity, String userId, OnClientLoadListener listener){
+    public void loadClients(OnClientLoadListener listener){
         //load exercise using default loader exercise id
-        loadClients(activity, userId, LOADER_CLIENT, listener);
+        loadClients(LOADER_CLIENT, listener);
     }
 
     /*
      * void loadClients(...) - start loader to load client data from database
      */
-    public static void loadClients(MyActivity activity, String userId, int loaderId, OnClientLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
-
+    public void loadClients(int loaderId, OnClientLoadListener listener){
         //get listener
         mListener = listener;
 
@@ -125,23 +134,15 @@ public class ClientLoader {
     /*
      * void loadClientsByStatus(...) - start loader to load client data from database by status
      */
-    public static void loadClientsByStatus(MyActivity activity, String userId, String status,
-                                           OnClientLoadListener listener){
+    public void loadClientsByStatus(String status, OnClientLoadListener listener){
         //load exercise using default loader exercise id
-        loadClientsByStatus(activity, userId, status, LOADER_CLIENT, listener);
+        loadClientsByStatus(status, LOADER_CLIENT, listener);
     }
 
     /*
      * void loadClientsByStatus(...) - start loader to load client data from database by status
      */
-    public static void loadClientsByStatus(MyActivity activity, String userId, String status,
-                                           int loaderId, OnClientLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
-
+    public void loadClientsByStatus(String status, int loaderId, OnClientLoadListener listener){
         //get status
         mStatus = status;
 
@@ -186,24 +187,16 @@ public class ClientLoader {
     /*
      * void loadClientsByFKey(...) - start loader to load client data from database by fkey
      */
-    public static void loadClientsByFKey(MyActivity activity, String userId, String fkey,
-                                           OnClientLoadListener listener){
+    public void loadClientsByFKey(String fkey, OnClientLoadListener listener){
         //load exercise using default loader exercise id
-        loadClientsByFKey(activity, userId, fkey, LOADER_CLIENT, listener);
+        loadClientsByFKey(fkey, LOADER_CLIENT, listener);
     }
 
 
     /*
      * void loadClientsByFKey(...) - start loader to load client data from database by fkey
      */
-    public static void loadClientsByFKey(MyActivity activity, String userId, String fkey,
-                                           int loaderId, OnClientLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
-
+    public void loadClientsByFKey(String fkey, int loaderId, OnClientLoadListener listener){
         //get fkey
         mFKey = fkey;
 
@@ -248,17 +241,17 @@ public class ClientLoader {
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity){
+    public void destroyLoader(){
         //destroy loader using default loader exercise id
-        destroyLoader(activity, LOADER_CLIENT);
+        destroyLoader(LOADER_CLIENT);
     }
 
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity, int loaderId){
+    public void destroyLoader(int loaderId){
         //destroy loader
-        activity.getSupportLoaderManager().destroyLoader(loaderId);
+        mActivity.getSupportLoaderManager().destroyLoader(loaderId);
     }
 
 /**************************************************************************************************/
