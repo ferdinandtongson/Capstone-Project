@@ -1,7 +1,5 @@
 package me.makeachoice.gymratpta.controller.modelside.firebase.client;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -12,8 +10,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.model.item.client.AppointmentFBItem;
-
-import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 /**************************************************************************************************/
 /*
