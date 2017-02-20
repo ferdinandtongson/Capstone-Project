@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <TextView android:id="@+id/diaClientApp_txtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        style="@style/GymRat.Dialog.TextView.Large"
+        />
+
+
+    <View
+        android:id="@+id/line01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/diaClientApp_txtName"
+        android:background="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/diaClientApp_txtDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/line01"
+        android:text="@string/dialogClientApp_date"
+        android:contentDescription="@string/dialogClientApp_date"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <TextView android:id="@+id/diaClientApp_txtDateSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaClientApp_txtDate"
+        style="@style/GymRat.Dialog.TextView.Button"
+        />
+
+    <TextView
+        android:id="@+id/diaClientApp_txtTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/diaClientApp_txtDateSelect"
+        android:text="@string/dialogClientApp_time"
+        android:contentDescription="@string/dialogClientApp_time"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <TextView android:id="@+id/diaClientApp_txtTimeSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaClientApp_txtTime"
+        style="@style/GymRat.Dialog.TextView.Button"
+        />
+
+    <TextView
+        android:id="@+id/diaClientApp_txtRoutine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/diaClientApp_txtTimeSelect"
+        android:text="@string/dialogClientApp_routine"
+        android:contentDescription="@string/dialogClientApp_routine"
+        style="@style/GymRat.Dialog.TextView"
+        />
+
+    <Spinner
+        android:id="@+id/diaClientApp_spnRoutine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaClientApp_txtRoutine"
+        android:layout_marginTop="2dp"
+        android:spinnerMode="dropdown"
+        style="@style/GymRat.Dialog.Spinner"
+        />
+
+    <TextView
+        android:id="@+id/diaClientApp_txtSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaClientApp_spnRoutine"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/save"
+        style="@style/GymRat.Dialog.TextView.Button"
+        />
+
+</RelativeLayout>
