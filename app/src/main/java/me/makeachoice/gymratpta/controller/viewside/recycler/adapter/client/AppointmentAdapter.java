@@ -67,12 +67,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     //mData - an array list of item data consumed by the adapter
     private ArrayList<AppointmentCardItem> mData;
 
-    //mCreateContextMenuListener - "create context menu" event listener
+    //mOnLongClickListener - list item onLongClick event listener
     private static View.OnLongClickListener mOnLongClickListener;
 
     //mImageClickListener - profile image event click listener
     private static View.OnClickListener mImageClickListener;
 
+    //mOnClickListener - list item onClick event listener
+    private static View.OnClickListener mOnClickListener;
 
 /**************************************************************************************************/
 
@@ -141,22 +143,30 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 /**************************************************************************************************/
 /*
  * Set Listener Methods:
- *      void setOnIconClickListener(View.OnClickListener) - set listener for image icon click events
- *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+ *      void setOnImageClickListener(View.OnClickListener) - set listener for image profile onClick event
+ *      void setOnLongClickListener(...) - set listener for list item onLongClick event
+ *      void setOnClickListener(...) - set listener for list item onClick event
  */
 /**************************************************************************************************/
     /*
-     * void setOnImageClickListener(View.OnClickListener) - set listener for image icon click events
+     * void setOnImageClickListener(View.OnClickListener) - set listener for image profile onClick event
      */
     public void setOnImageClickListener(View.OnClickListener listener){
         mImageClickListener = listener;
     }
 
     /*
-     * void setOnLongClickListener(...) - set listener for onLongClick event
+     * void setOnLongClickListener(...) - set listener for list item onLongClick event
      */
     public void setOnLongClickListener(View.OnLongClickListener listener){
         mOnLongClickListener = listener;
+    }
+
+    /*
+     * void setOnClickListener(...) - set listener for list item onClick event
+     */
+    public void setOnClickListener(View.OnClickListener listener){
+        mOnClickListener = listener;
     }
 
 /**************************************************************************************************/
@@ -348,6 +358,10 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         if(mOnLongClickListener != null){
             mCardView.setOnLongClickListener(mOnLongClickListener);
+        }
+
+        if(mOnClickListener != null){
+            mCardView.setOnClickListener(mOnClickListener);
         }
 
     }
