@@ -9,12 +9,12 @@ import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayViewPage
 import me.makeachoice.gymratpta.controller.viewside.maid.appointment.WeekMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistoryMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientInfoMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientNotesMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientScheduleMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPagerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineDetailMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
-import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionNotesMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionNotesViewPagerMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionRoutineMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsMaid;
@@ -145,6 +145,14 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
+    public void initializeClientNotesMaid(String maidKey, int layoutId, String userId, ClientItem item){
+        //create maid
+        ClientNotesMaid maid = new ClientNotesMaid(maidKey, layoutId, userId, item);
+
+        //register maid
+        registerMaid(maidKey, maid);
+    }
+
     public void initializeClientHistoryMaid(String maidKey, int layoutId){
         //create maid
         ClientHistoryMaid maid = new ClientHistoryMaid(maidKey, layoutId);
@@ -221,14 +229,6 @@ public class MaidRegistry extends MyMaidRegistry {
     public void initializeSessionStatsMaid(String maidKey, int layoutId){
         //create maid
         SessionStatsMaid maid = new SessionStatsMaid(maidKey, layoutId);
-
-        //register maid
-        registerMaid(maidKey, maid);
-    }
-
-    public void initializeSessionNotesMaid(String maidKey, int layoutId){
-        //create maid
-        SessionNotesMaid maid = new SessionNotesMaid(maidKey, layoutId);
 
         //register maid
         registerMaid(maidKey, maid);
