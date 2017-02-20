@@ -23,6 +23,34 @@ public class DateTimeHelper {
         return dateFormat.format(cal.getTime());
     }
 
+    public static int getCurrentYear(){
+        Calendar cal = Calendar.getInstance();
+
+        return cal.get(Calendar.YEAR);
+    }
+
+    public static int getCurrentMonth(){
+        Calendar cal = Calendar.getInstance();
+
+        return cal.get(Calendar.MONTH);
+    }
+
+    public static int getCurrentDayOfMonth(){
+        Calendar cal = Calendar.getInstance();
+
+        return cal.get(Calendar.DAY_OF_MONTH);
+    }
+
+
+    public static String getDate(int year, int month, int dayOfMonth){
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, dayOfMonth);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
+
+        return dateFormat.format(cal.getTime());
+    }
+
     public static int getCurrentHour(){
         Calendar cal = Calendar.getInstance();
 
