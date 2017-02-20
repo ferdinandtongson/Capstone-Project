@@ -68,6 +68,8 @@ public class AppointmentDialog extends DialogFragment {
     //mRoutineNames - list of routine names
     private ArrayList<String> mRoutineNames;
 
+    private ClientLoader mClientLoader;
+
     //mRootView - root view component containing dialog child components
     private View mRootView;
 
@@ -133,6 +135,8 @@ public class AppointmentDialog extends DialogFragment {
 
         //initialize routine name list buffer
         mRoutineNames = new ArrayList<>();
+
+        mClientLoader = new ClientLoader(mActivity, mUserId);
 
         //initialize appointment item to save
         initializeSaveItem(item);
@@ -398,7 +402,7 @@ public class AppointmentDialog extends DialogFragment {
      */
     private void loadClients(){
         //load client data with only clients with an Active status
-        ClientLoader.loadClientsByStatus(mActivity, mUserId, CLIENT_ACTIVE, new ClientLoader.OnClientLoadListener() {
+        mClientLoader.loadClientsByStatus(CLIENT_ACTIVE, new ClientLoader.OnClientLoadListener() {
             @Override
             public void onClientLoadFinished(Cursor cursor) {
                 //client data has been loaded
@@ -443,7 +447,7 @@ public class AppointmentDialog extends DialogFragment {
 
         }
 
-        ClientLoader.destroyLoader(mActivity);
+        mClientLoader.destroyLoader();
 
         loadRoutines();
     }
