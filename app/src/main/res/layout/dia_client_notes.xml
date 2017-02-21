@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/diaNotes_txtDateTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        style="@style/GymRat.Dialog.TextView.Small"
+        />
+
+    <Spinner
+        android:id="@+id/diaNotes_spnNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaNotes_txtDateTime"
+        android:layout_marginTop="2dp"
+        style="@style/GymRat.Dialog.Spinner"
+        />
+
+    <View
+        android:id="@+id/line01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/diaNotes_spnNotes"
+        android:background="@color/white"/>
+
+
+    <RelativeLayout
+        android:id="@+id/diaNotes_relNotes"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/line01"
+        android:paddingTop="3dp"
+        android:background="@drawable/bg_white"
+        >
+        <!--
+        android:background="#40FFFFFF"
+        -->
+
+        <ScrollView
+            android:id="@+id/diaNotes_scrNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:fillViewport="true">
+
+            <TextView android:id="@+id/diaNotes_txtNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                style="@style/GymRat.Dialog.TextView"
+                />
+
+        </ScrollView>
+
+        <EditText
+            android:id="@+id/diaNotes_edtNotes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:background="@color/white"
+            style="@style/GymRat.Dialog.TextView"
+            />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/diaNotes_txtSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaNotes_relNotes"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"
+        android:text="@string/save"
+        style="@style/GymRat.Dialog.TextView.Button.Small"
+        />
+
+    <TextView
+        android:id="@+id/diaNotes_txtCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/diaNotes_txtSave"
+        android:layout_below="@id/diaNotes_relNotes"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/cancel"
+        style="@style/GymRat.Dialog.TextView.Button.Small"
+        />
+
+</RelativeLayout>
