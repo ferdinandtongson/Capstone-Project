@@ -17,10 +17,9 @@ import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPa
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineDetailMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionNotesViewPagerMaid;
-import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionRoutineMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientRoutineMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsViewPagerMaid;
-import me.makeachoice.gymratpta.model.item.ClientCardItem;
 import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
@@ -60,7 +59,7 @@ public class MaidRegistry extends MyMaidRegistry {
     public static final String MAID_ROUTINE_DETAIL = "RoutineDetailMaid";
 
     //Session screen maids
-    public static final String MAID_SESSION_ROUTINE = "SessionRoutineMaid";
+    public static final String MAID_SESSION_ROUTINE = "ClientRoutineMaid";
     public static final String MAID_SESSION_STATS = "SessionStatsMaid";
     public static final String MAID_SESSION_NOTES = "SessionNotesMaid";
     public static final String MAID_SESSION_STATS_VP = "SessionStatsViewPagerMaid";
@@ -165,6 +164,17 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
+    public void initializeClientRoutineMaid(String maidKey, int layoutId, String userId, ClientItem item,
+                                            AppointmentItem appItem){
+        //create maid
+        ClientRoutineMaid maid = new ClientRoutineMaid(maidKey, layoutId, userId, item, appItem);
+
+        //register maid
+        registerMaid(maidKey, maid);
+    }
+
+
+
     public void initializeClientHistoryMaid(String maidKey, int layoutId){
         //create maid
         ClientHistoryMaid maid = new ClientHistoryMaid(maidKey, layoutId);
@@ -173,13 +183,13 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
-    public void initializeClientHistoryViewPagerMaid(String maidKey, int layoutId, ArrayList<ClientCardItem> clients){
+    /*public void initializeClientHistoryViewPagerMaid(String maidKey, int layoutId, ArrayList<ClientCardItem> clients){
         //create maid
         //DayViewPagerMaid maid = new DayViewPagerMaid(maidKey, layoutId, clients);
 
         //register maid
         //registerMaid(maidKey, maid);
-    }
+    }*/
 
 /**************************************************************************************************/
 
@@ -229,14 +239,6 @@ public class MaidRegistry extends MyMaidRegistry {
  * Session Maids:
  */
 /**************************************************************************************************/
-
-    public void initializeSessionRoutineMaid(String maidKey, int layoutId){
-        //create maid
-        SessionRoutineMaid maid = new SessionRoutineMaid(maidKey, layoutId);
-
-        //register maid
-        registerMaid(maidKey, maid);
-    }
 
     public void initializeSessionStatsMaid(String maidKey, int layoutId){
         //create maid
