@@ -71,4 +71,39 @@ public class TableHelper {
             Contractor.AppointmentEntry.COLUMN_CLIENT_NAME + " TEXT, " +
             Contractor.AppointmentEntry.COLUMN_ROUTINE_NAME + " TEXT, " +
             Contractor.AppointmentEntry.COLUMN_APPOINTMENT_STATUS + " TEXT);";
+
+    public final static String SQL_CREATE_NOTES_TABLE = "CREATE TABLE " + Contractor.NotesEntry.TABLE_NAME + " (" +
+            Contractor.NotesEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.NotesEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.NotesEntry.COLUMN_CLIENT_KEY + " TEXT, " +
+            Contractor.NotesEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
+            Contractor.NotesEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
+            Contractor.NotesEntry.COLUMN_MODIFIED_DATE + " TEXT, " +
+            Contractor.NotesEntry.COLUMN_SUBJECTIVE_NOTES + " TEXT, " +
+            Contractor.NotesEntry.COLUMN_OBJECTIVE_NOTES + " TEXT, " +
+            Contractor.NotesEntry.COLUMN_ASSESSMENT_NOTES+ " TEXT, " +
+            Contractor.NotesEntry.COLUMN_PLAN_NOTES + " TEXT);";
+
+    public final static String SQL_CREATE_STATS_TABLE = "CREATE TABLE " + Contractor.StatsEntry.TABLE_NAME + " (" +
+            Contractor.StatsEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.StatsEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.StatsEntry.COLUMN_CLIENT_KEY + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
+            Contractor.StatsEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
+            Contractor.StatsEntry.COLUMN_MODIFIED_DATE + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_WEIGHT + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_BODY_FAT + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_BMI + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_NECK + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_CHEST + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_RBICEP + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_LBICEP + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_WAIST + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_NAVAL + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_HIPS + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_RTHIGH + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_LTHIGH + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_RCALF + " TEXT, " +
+            Contractor.StatsEntry.COLUMN_STAT_LCALF + " TEXT);";
+
 }
