@@ -196,6 +196,7 @@ public class NotesDialog extends DialogFragment {
         mTxtSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mSoapNotes.set(mOldIndex, mEdtNotes.getText().toString());
                 mOnSaveListener.onSaveNotes(mSoapNotes);
             }
         });
