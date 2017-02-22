@@ -1,0 +1,103 @@
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceCardView"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/card_activeBackground"
+    style="@style/GymRat.Card"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView android:id="@+id/cardNotes_txtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:textSize="10sp"
+            android:textColor="@color/black"
+            />
+
+        <TextView android:id="@+id/cardNotes_txtDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:layout_below="@id/cardNotes_txtTime"
+            android:layout_alignParentEnd="true"
+            style="@style/GymRat.Card.TextView"
+            />
+
+
+    <RelativeLayout
+        android:id="@+id/relSoapBrief"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cardNotes_txtDate"
+        style="@style/GymRat.Card.InsideFrame"
+        >
+
+            <TextView
+                android:id="@+id/cardNotes_txtSubjective"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="start"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:text="Subjective"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+
+            <TextView android:id="@+id/cardNotes_txtObjective"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/cardNotes_txtSubjective"
+                android:gravity="start"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:text="Objective"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+
+            <TextView android:id="@+id/cardNotes_txtAssessment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/cardNotes_txtObjective"
+                android:gravity="start"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:text="Assessment"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+
+            <TextView android:id="@+id/cardNotes_txtPlan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/cardNotes_txtAssessment"
+                android:gravity="start"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:text="Plan"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
