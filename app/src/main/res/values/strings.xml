@@ -135,6 +135,14 @@
         <item>@string/retired</item>
     </string-array>
 
+    <!-- spinner: SOAP -->
+    <string-array name="soap_notes">
+        <item>@string/subjective</item>
+        <item>@string/objective</item>
+        <item>@string/assessment</item>
+        <item>@string/plan</item>
+    </string-array>
+
     <!-- dictionary -->
     <string name="activate" translatable="true">Activate</string>
     <string name="active" translatable="true">Active</string>
@@ -145,6 +153,7 @@
     <string name="add_routine_exercise" translatable="true">Add Routine Exercise</string>
     <string name="appointments" translatable="true">Appointments</string>
     <string name="arms" translatable="true">Arms</string>
+    <string name="assessment" translatable="true">Assessment</string>
     <string name="back" translatable="true">Back</string>
     <string name="cancel" translatable="true">Cancel</string>
     <string name="cancel_session" translatable="true">Cancel Session</string>
@@ -179,9 +188,11 @@
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="none" translatable="true">None</string>
     <string name="notes" translatable="true">Notes</string>
+    <string name="objective" translatable="true">Objective</string>
     <string name="permission_request" translatable="true">Permission Request</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="phone" translatable="true">Phone</string>
+    <string name="plan" translatable="true">Plan</string>
     <string name="quick_help" translatable="true">Quick Help</string>
     <string name="reps" translatable="true">Reps</string>
     <string name="reschedule" translatable="true">Reschedule</string>
@@ -200,6 +211,7 @@
     <string name="shoulders" translatable="true">Shoulders</string>
     <string name="start" translatable="true">Start</string>
     <string name="stats" translatable="true">Stats</string>
+    <string name="subjective" translatable="true">Subjective</string>
     <string name="time" translatable="true">Time</string>
     <string name="today" translatable="true">Today</string>
     <string name="training_info" translatable="true">Training Info</string>
