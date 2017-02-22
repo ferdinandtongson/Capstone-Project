@@ -21,6 +21,11 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_DATE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_EXERCISE_WITH_ORDER_NUMBER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME;
@@ -32,9 +37,11 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.dbUriMatcher;
 
-/**
- * Created by Usuario on 2/6/2017.
+/**************************************************************************************************/
+/*
+ *  UriTypeHelper helps identify the uri type by the uri
  */
+/**************************************************************************************************/
 
 public class UriTypeHelper {
 
@@ -95,6 +102,16 @@ public class UriTypeHelper {
                 return Contractor.AppointmentEntry.CONTENT_TYPE;
             case APPOINTMENT_WITH_FKEY:
                 return Contractor.AppointmentEntry.CONTENT_ITEM_TYPE;
+            case NOTES:
+                return Contractor.NotesEntry.CONTENT_TYPE;
+            case NOTES_WITH_UID:
+                return Contractor.NotesEntry.CONTENT_TYPE;
+            case NOTES_WITH_CLIENT_KEY:
+                return Contractor.NotesEntry.CONTENT_TYPE;
+            case NOTES_WITH_DATE:
+                return Contractor.NotesEntry.CONTENT_TYPE;
+            case NOTES_WITH_DATE_TIME:
+                return Contractor.NotesEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
