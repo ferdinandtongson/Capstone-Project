@@ -64,6 +64,7 @@
     <string name="emptyRecycler_noContacts" translatable="false">@string/msg_no_contacts</string>
     <string name="emptyRecycler_noSessions" translatable="false">@string/no_sessions</string>
     <string name="emptyRecycler_noNotes" translatable="false">@string/no_notes</string>
+    <string name="emptyRecycler_noStats" translatable="false">@string/no_stats</string>
 
     <!-- recycler tags -->
     <string name="recycler_tagPosition" translatable="false">tag_position</string>
@@ -186,6 +187,7 @@
     <string name="legs" translatable="true">Legs</string>
     <string name="no_notes" translatable="true">No Notes</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
+    <string name="no_stats" translatable="true">No Stats</string>
     <string name="none" translatable="true">None</string>
     <string name="notes" translatable="true">Notes</string>
     <string name="objective" translatable="true">Objective</string>
