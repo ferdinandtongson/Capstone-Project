@@ -149,10 +149,20 @@ public class NotesFirebaseHelper {
         ref.addListenerForSingleValueEvent(mEventListener);
     }
 
-    public void requestNotesDataByClientKey(String userId, String appointmentDay, String orderBy,
+    public void requestNotesDataByClientKey(String userId, String clientKey, String orderBy, OnDataLoadedListener listener){
+        //get reference
+        DatabaseReference ref = getNotesReferenceByClientKey(userId, clientKey);
+
+        mOnDataLoadedListener = listener;
+
+        //add event listener to reference
+        ref.orderByChild(orderBy).addListenerForSingleValueEvent(mEventListener);
+    }
+
+    public void requestNotesDataByDate(String userId, String clientKey, String appointmentDay, String orderBy,
                                                 OnDataLoadedListener listener){
         //get reference
-        DatabaseReference ref = getNotesReferenceByClientKey(userId, appointmentDay);
+        DatabaseReference ref = getNotesReferenceByDate(userId, clientKey, appointmentDay);
 
         mOnDataLoadedListener = listener;
 
