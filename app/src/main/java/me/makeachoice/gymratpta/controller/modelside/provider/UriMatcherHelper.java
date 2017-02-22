@@ -51,6 +51,12 @@ public class UriMatcherHelper {
     public static final int NOTES_WITH_DATE = 803;
     public static final int NOTES_WITH_DATE_TIME = 804;
 
+    public static final int STATS = 900;
+    public static final int STATS_WITH_UID = 901;
+    public static final int STATS_WITH_CLIENT_KEY = 902;
+    public static final int STATS_WITH_DATE = 903;
+    public static final int STATS_WITH_DATE_TIME = 904;
+
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
     static UriMatcher buildUriMatcher() {
@@ -89,6 +95,7 @@ public class UriMatcherHelper {
         addUriRoutineName(matcher, authority);
         addUriAppointment(matcher, authority);
         addUriNotes(matcher, authority);
+        addUriStats(matcher, authority);
 
         return matcher;
     }
@@ -209,4 +216,25 @@ public class UriMatcherHelper {
 
     }
 
+    private static void addUriStats(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/clientStats/
+        matcher.addURI(authority, Contractor.PATH_STATS, STATS);
+
+        //"content://CONTENT_AUTHORITY/clientStats/[uid]
+        String uidPath = Contractor.PATH_STATS + "/*";
+        matcher.addURI(authority, uidPath, STATS_WITH_UID);
+
+        //"content://CONTENT_AUTHORITY/clientStats/[uid]/client_key/[clientKey]
+        String clientKeyPath = Contractor.PATH_STATS + "/*/" + Contractor.StatsEntry.COLUMN_CLIENT_KEY + "/*";
+        matcher.addURI(authority, clientKeyPath, STATS_WITH_CLIENT_KEY);
+
+        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/appointment_date/[appointmentDate]
+        String datePath = Contractor.PATH_STATS + "/*/*/"  + Contractor.StatsEntry.COLUMN_APPOINTMENT_DATE + "/*";
+        matcher.addURI(authority, datePath, STATS_WITH_DATE);
+
+        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
+        String timePath = Contractor.PATH_STATS + "/*/*/*/"  + Contractor.StatsEntry.COLUMN_APPOINTMENT_TIME + "/*";
+        matcher.addURI(authority, timePath, STATS_WITH_DATE_TIME);
+
+    }
 }
