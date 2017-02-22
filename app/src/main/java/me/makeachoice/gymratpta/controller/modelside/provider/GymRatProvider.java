@@ -21,13 +21,16 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 import me.makeachoice.gymratpta.controller.modelside.query.AppointmentQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.CategoryQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.ExerciseQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.query.NotesQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.RoutineNameQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.RoutineQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.query.StatsQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
@@ -50,6 +53,11 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_DATE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_EXERCISE_WITH_ORDER_NUMBER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME;
@@ -57,6 +65,11 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_ROUTINE_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.dbUriMatcher;
@@ -168,6 +181,30 @@ public class GymRatProvider extends ContentProvider {
             case APPOINTMENT_WITH_FKEY:
                 retCursor = AppointmentQueryHelper.getAppointmentByFKey(mOpenHelper, uri, projection, sortOrder);
                 break;
+            case NOTES_WITH_UID:
+                retCursor = NotesQueryHelper.getNotesByUId(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case NOTES_WITH_CLIENT_KEY:
+                retCursor = NotesQueryHelper.getNotesByClientKey(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case NOTES_WITH_DATE:
+                retCursor = NotesQueryHelper.getNotesByDate(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case NOTES_WITH_DATE_TIME:
+                retCursor = NotesQueryHelper.getNotesByDateTime(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case STATS_WITH_UID:
+                retCursor = StatsQueryHelper.getStatsByUId(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case STATS_WITH_CLIENT_KEY:
+                retCursor = StatsQueryHelper.getStatsByClientKey(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case STATS_WITH_DATE:
+                retCursor = StatsQueryHelper.getStatsByDate(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case STATS_WITH_DATE_TIME:
+                retCursor = StatsQueryHelper.getStatsByDateTime(mOpenHelper, uri, projection, sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -211,6 +248,12 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case APPOINTMENT:
                 returnUri = AppointmentQueryHelper.insertAppointment(db, values);
+                break;
+            case NOTES:
+                returnUri = NotesQueryHelper.insertNotes(db, values);
+                break;
+            case STATS:
+                returnUri = StatsQueryHelper.insertStats(db, values);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -258,6 +301,12 @@ public class GymRatProvider extends ContentProvider {
             case APPOINTMENT:
                 rowsDeleted = AppointmentQueryHelper.deleteAppointment(db, uri, selection, selectionArgs);
                 break;
+            case NOTES:
+                rowsDeleted = NotesQueryHelper.deleteNotes(db, uri, selection, selectionArgs);
+                break;
+            case STATS:
+                rowsDeleted = StatsQueryHelper.deleteStats(db, uri, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -297,6 +346,12 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case APPOINTMENT:
                 rowsUpdated = AppointmentQueryHelper.updateAppointment(db, uri, values, selection, selectionArgs);
+                break;
+            case NOTES:
+                rowsUpdated = NotesQueryHelper.updateNotes(db, uri, values, selection, selectionArgs);
+                break;
+            case STATS:
+                rowsUpdated = StatsQueryHelper.updateStats(db, uri, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
