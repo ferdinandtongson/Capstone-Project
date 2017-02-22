@@ -114,6 +114,7 @@ public class Boss extends MyBoss {
     //mAuthStateListener - firebase authentication listener
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    public static int LOADER_STATS = 200;
     public static int LOADER_NOTES = 300;
     public static int LOADER_APPOINTMENT = 400;
     public static int LOADER_CLIENT = 500;
@@ -195,6 +196,8 @@ public class Boss extends MyBoss {
         dbHelper.dropTable(db, Contractor.ExerciseEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.RoutineEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.RoutineNameEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.NotesEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.StatsEntry.TABLE_NAME);
 
         db.close();
 
@@ -298,8 +301,9 @@ public class Boss extends MyBoss {
                         //debug count used to prevent multiple userSignIn calls, known bug
                         userSignIn();
                     }
-                    Log.d("Choice", "     user: " + user.getDisplayName());
-                    saveUser(user);
+                    else{
+                        saveUser(user);
+                    }
 
                 }
             }
