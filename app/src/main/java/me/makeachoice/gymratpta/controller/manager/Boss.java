@@ -80,6 +80,7 @@ import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 import me.makeachoice.gymratpta.model.item.UserItem;
+import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
@@ -113,16 +114,24 @@ public class Boss extends MyBoss {
     //mAuthStateListener - firebase authentication listener
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    public static int LOADER_NOTES = 300;
+    public static int LOADER_APPOINTMENT = 400;
+    public static int LOADER_CLIENT = 500;
     public static int LOADER_CATEGORY = 600;
     public static int LOADER_EXERCISE_BASE = 700;
     public static int LOADER_ROUTINE = 800;
     public static int LOADER_ROUTINE_NAME = 900;
 
-    public static String PREF_CLIENT_STATUS = "clientStatus";
-    public static String PREF_SESSION_STATUS = "sessionStatus";
-    public static String PREF_DAY_MAX = "dayMax";
-    public static String PREF_SET_MAX = "setMax";
-    public static String PREF_DELETE_WARNING = "deleteWarning";
+    public static String PREF_CLIENT_STATUS = "clientStatus"; //status of client (Active, Retired)
+    public static String PREF_SESSION_STATUS = "sessionStatus"; //status of session (Pending, Canceled, Rescheduled, Complete)
+    public static String PREF_DAY_MAX = "dayMax"; //maximum number of appointment days (30, 60, 90)
+    public static String PREF_SET_MAX = "setMax"; //maximum number of sets in an exercise (10)
+    public static String PREF_TIME_BUFFER = "timeBuffer"; //buffer time between appointments
+    public static String PREF_DELETE_WARNING = "deleteWarning"; //show (or not) delete dialog warning
+    public static String PREF_DELETE_WARNING_APPOINTMENT = "deleteWarningAppointment"; //show (or not) delete dialog warning for appointments
+
+    public static String CLIENT_ACTIVE = "Active";
+    public static String CLIENT_RETIRED = "Retired";
 
     public static String EXTRA_ROUTINE_UPDATE = "update";
 
@@ -156,7 +165,7 @@ public class Boss extends MyBoss {
             dropAllTables();
         }
 
-        initializeFirebaseAuth();
+        //initializeFirebaseAuth();
 
         //initialize database
         initDatabase();
@@ -181,6 +190,7 @@ public class Boss extends MyBoss {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         dbHelper.dropTable(db, Contractor.UserEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.ClientEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.AppointmentEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.CategoryEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.ExerciseEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.RoutineEntry.TABLE_NAME);
@@ -237,6 +247,7 @@ public class Boss extends MyBoss {
         editor.putInt(PREF_DAY_MAX, 60); //number of days that can be scrolled - 30, 60, 90
         editor.putInt(PREF_SET_MAX, 7); //maximum number of sets
         editor.putBoolean(PREF_DELETE_WARNING, true); //show delete warning dialog
+        editor.putBoolean(PREF_DELETE_WARNING_APPOINTMENT, true); //show delete warning dialog
         editor.commit();
 
     }
@@ -259,10 +270,16 @@ public class Boss extends MyBoss {
 
 /**************************************************************************************************/
 
+    public OnSignedInListener mSignedInListener;
+    public interface OnSignedInListener{
+        void onSignedIn(String userId);
+    }
+
     /*
      * void initializeFirebaseAuth() - initialize Firebase authentication
      */
-    private void initializeFirebaseAuth(){
+    public void initializeFirebaseAuth(OnSignedInListener listener){
+        mSignedInListener = listener;
         Log.d("Choice", "Boss.initializeFirebaseAuth");
         mAuthCounter = 0;
         //get authentication instance
@@ -315,6 +332,8 @@ public class Boss extends MyBoss {
     private void saveUser(FirebaseUser user){
         Log.d("Choice", "Boss.saveUser");
         mCurrentUser = saveUserItem(user);
+        mSignedInListener.onSignedIn(mCurrentUser.uid);
+
 
         Uri uriValue = Contractor.UserEntry.buildUserByUID(user.getUid());
         Cursor cursor = getContentResolver().query(uriValue, UserColumns.PROJECTION, null, null, null);
@@ -385,14 +404,16 @@ public class Boss extends MyBoss {
     }
 
     public String getUserId(){
-        return mCurrentUser.uid;
+        if(mCurrentUser != null){
+            return mCurrentUser.uid;
+        }
+        return "";
     }
 
     private ClientItem mCurrentClient;
     public void setClient(ClientItem item){
         mCurrentClient = item;
     }
-
     public ClientItem getClient(){ return mCurrentClient; }
 
 
@@ -400,7 +421,9 @@ public class Boss extends MyBoss {
     public RoutineDetailItem getRoutineDetail(){ return mRoutineDetailItem; }
     public void setRoutineDetailItem(RoutineDetailItem item){ mRoutineDetailItem = item; }
     
-    
+    private AppointmentItem mAppointmentItem;
+    public AppointmentItem getAppointmentItem(){ return mAppointmentItem; }
+    public void setAppointmentItem(AppointmentItem item){ mAppointmentItem = item; }
     
     
     
