@@ -33,6 +33,11 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_ROUTINE_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.dbUriMatcher;
@@ -112,6 +117,16 @@ public class UriTypeHelper {
                 return Contractor.NotesEntry.CONTENT_TYPE;
             case NOTES_WITH_DATE_TIME:
                 return Contractor.NotesEntry.CONTENT_ITEM_TYPE;
+            case STATS:
+                return Contractor.StatsEntry.CONTENT_TYPE;
+            case STATS_WITH_UID:
+                return Contractor.StatsEntry.CONTENT_TYPE;
+            case STATS_WITH_CLIENT_KEY:
+                return Contractor.StatsEntry.CONTENT_TYPE;
+            case STATS_WITH_DATE:
+                return Contractor.StatsEntry.CONTENT_TYPE;
+            case STATS_WITH_DATE_TIME:
+                return Contractor.StatsEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
