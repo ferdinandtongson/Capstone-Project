@@ -283,7 +283,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //get client hashMap
         mClientMap = mAdapter.getClientMap();
 
-        checkCursorCount(cursor);
+        updateEmptyText(cursor);
     }
 
     /*
@@ -303,16 +303,20 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         return dia;
     }
 
-    private void checkCursorCount(Cursor cursor){
-        if(cursor != null){
-            //check if recycler has any data; if not, display "empty" textView
-            checkForEmptyRecycler(cursor.getCount());
+    /*
+     * void updateEmptyText() - check if adapter is empty or not then updates empty textView
+     */
+    private void updateEmptyText(Cursor cursor){
+        if(cursor != null && cursor.getCount() > 0){
+            //is not empty
+            isEmptyRecycler(false);
         }
         else{
-            checkForEmptyRecycler(true);
+            //is empty
+            isEmptyRecycler(true);
         }
-
     }
+
 
 /**************************************************************************************************/
 
@@ -397,7 +401,7 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
             @Override
             public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
                 Log.d("Choice", "ClientKeeper.onLoadFinished: " + cursor.getCount());
-                checkCursorCount(cursor);
+                updateEmptyText(cursor);
 
                 //client cursor loaded, initialize layout
                 mAdapter.setCursor(cursor);
