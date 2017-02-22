@@ -32,6 +32,7 @@ import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
+import me.makeachoice.gymratpta.view.activity.SessionDetailActivity;
 import me.makeachoice.gymratpta.view.dialog.AppointmentDialog;
 import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
@@ -134,7 +135,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            onAppointmentDeleteRequest(viewHolder.getAdapterPosition());
+            onDeleteAppointment(viewHolder.getAdapterPosition());
         }
     };
 
@@ -278,6 +279,17 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
                 onEditAppointment(index);
 
                 return false;
+            }
+        });
+
+        mAdapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //get item index
+                int index = (int)view.getTag(R.string.recycler_tagPosition);
+
+                //onClick event
+                onItemClicked(index);
             }
         });
 
@@ -552,7 +564,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
  * Class Methods
  *      void backPressed() - called when Activity.onBackPressed is called
  *      void onFabClicked(View) - floating action button clicked, open schedule appointment dialog
- *      void onIconClicked(View) - icon clicked
+ *      void onProfileImageClicked(View) - profile image clicked, open client info screen
  *      void onEditAppointment() - edit appointment item
  *      void onSaveAppointment(...) - save appointment item
  *      void onAppointmentDeleteRequest(int) - delete appointment requested
@@ -580,7 +592,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     }
 
     /*
-     * void onIconClicked(View) - icon clicked
+     * void onProfileImageClicked(View) - profile image clicked, open client info screen
      */
     private void onProfileImageClicked(View view){
         //get appointment card item from icon imageView component
@@ -631,9 +643,9 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     }
 
     /*
-     * void onAppointmentDeleteRequest(int) - delete appointment requested
+     * void onDeleteAppointment(int) - delete appointment requested
      */
-    private void onAppointmentDeleteRequest(int index){
+    private void onDeleteAppointment(int index){
         //set editing old appointment flag, false
         mEditingAppointment = false;
         
@@ -658,6 +670,18 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
             //no warning, delete routine
             deleteAppointment(mDeleteItem);
         }
+    }
+
+    private void onItemClicked(int index){
+        //get appointment card item from icon imageView component
+        AppointmentItem appItem = mAppointments.get(index);
+
+        //info icon, show client info screen
+        Intent intent = new Intent(mActivity, SessionDetailActivity.class);
+        mBoss.setClient(mClients.get(index));
+        mBoss.setAppointmentItem(appItem);
+        mActivity.startActivity(intent);
+
     }
 
 /**************************************************************************************************/
