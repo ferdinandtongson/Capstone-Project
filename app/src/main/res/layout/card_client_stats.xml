@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceCardView"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/card_activeBackground"
+    style="@style/GymRat.Card">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <TextView android:id="@+id/cardStats_txtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:textSize="10sp"
+            android:textColor="@color/black"
+            />
+
+        <TextView android:id="@+id/cardStats_txtDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:layout_below="@id/cardStats_txtTime"
+            android:layout_alignParentEnd="true"
+            style="@style/GymRat.Card.TextView"
+            />
+
+
+        <RelativeLayout
+            android:id="@+id/cardStats_relNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardStats_txtDate"
+            android:paddingTop="3dp"
+            android:background="#40FFFFFF"
+            >
+
+            <!-- Measurement Title -->
+            <TextView
+                android:id="@+id/cardStats_txtLast"
+                android:layout_height="wrap_content"
+                android:text="@string/measurement_detail_last"
+                style="@style/GymRatTheme.Measure.History.Text.Title.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtLast"
+                android:text="@string/measurement_detail_delta_pre"
+                style="@style/GymRatTheme.Measure.History.Text.Title"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtChangeLast"
+                android:text="@string/measurement_detail_delta_start"
+                style="@style/GymRatTheme.Measure.History.Text.Title"/>
+
+            <!-- Measurement Weight -->
+            <TextView
+                android:id="@+id/cardStats_txtWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtLast"
+                android:text="@string/measurement_detail_weight"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtWeightLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtLast"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtWeightChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtWeightLast"
+                android:layout_below="@id/cardStats_txtLast"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtWeightChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtWeightChangeLast"
+                android:layout_below="@id/cardStats_txtLast"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement Body Fat -->
+            <TextView
+                android:id="@+id/cardStats_txtBodyFat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtWeight"
+                android:text="@string/measurement_detail_body_fat"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtBodyFatLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtWeight"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtBodyFatChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtBodyFatLast"
+                android:layout_below="@id/cardStats_txtWeight"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtBodyFatChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtBodyFatChangeLast"
+                android:layout_below="@id/cardStats_txtWeight"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement BMI -->
+            <TextView
+                android:id="@+id/cardStats_txtBMI"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtBodyFat"
+                android:text="@string/measurement_detail_bmi"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtBMILast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtBodyFat"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtBMIChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtBMILast"
+                android:layout_below="@id/cardStats_txtBodyFat"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtBMIChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtBMIChangeLast"
+                android:layout_below="@id/cardStats_txtBodyFat"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <View
+                android:id="@+id/cardStats_line01"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/cardStats_txtBMIChangeStart"
+                android:background="@android:color/darker_gray"/>
+
+            <!-- Measurement Neck -->
+            <TextView
+                android:id="@+id/cardStats_txtNeck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_line01"
+                android:text="@string/measurement_detail_neck"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtNeckLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_line01"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtNeckChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtNeckLast"
+                android:layout_below="@id/cardStats_line01"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtNeckChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtNeckChangeLast"
+                android:layout_below="@id/cardStats_line01"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement Chest -->
+            <TextView
+                android:id="@+id/cardStats_txtChest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtNeck"
+                android:text="@string/measurement_detail_chest"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtChestLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtNeck"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtChestChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtChestLast"
+                android:layout_below="@id/cardStats_txtNeck"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtChestChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtChestChangeLast"
+                android:layout_below="@id/cardStats_txtNeck"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement RBicep -->
+            <TextView
+                android:id="@+id/cardStats_txtRBicep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtChest"
+                android:text="@string/measurement_detail_rbicep"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRBicepLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtChest"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRBicepChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtRBicepLast"
+                android:layout_below="@id/cardStats_txtChest"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRBicepChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtRBicepChangeLast"
+                android:layout_below="@id/cardStats_txtChest"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement LBicep -->
+            <TextView
+                android:id="@+id/cardStats_txtLBicep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtRBicep"
+                android:text="@string/measurement_detail_lbicep"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLBicepLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtRBicep"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLBicepChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtLBicepLast"
+                android:layout_below="@id/cardStats_txtRBicep"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLBicepChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtLBicepChangeLast"
+                android:layout_below="@id/cardStats_txtRBicep"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <View
+                android:id="@+id/cardStats_line02"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/cardStats_txtLBicep"
+                android:background="@android:color/darker_gray"/>
+
+            <!-- Measurement Waist -->
+            <TextView
+                android:id="@+id/cardStats_txtWaist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_line02"
+                android:text="@string/measurement_detail_waist"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtWaistLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_line02"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtWaistChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtWaistLast"
+                android:layout_below="@id/cardStats_line02"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtWaistChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtWaistChangeLast"
+                android:layout_below="@id/cardStats_line02"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement Naval -->
+            <TextView
+                android:id="@+id/cardStats_txtNaval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtWaist"
+                android:text="@string/measurement_detail_navel"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtNavalLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtWaist"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtNavalChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtNavalLast"
+                android:layout_below="@id/cardStats_txtWaist"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtNavalChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtNavalChangeLast"
+                android:layout_below="@id/cardStats_txtWaist"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement Hips -->
+            <TextView
+                android:id="@+id/cardStats_txtHips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtNaval"
+                android:text="@string/measurement_detail_hips"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtHipsLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtNaval"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtHipsChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtHipsLast"
+                android:layout_below="@id/cardStats_txtNaval"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtHipsChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtHipsChangeLast"
+                android:layout_below="@id/cardStats_txtNaval"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <View
+                android:id="@+id/cardStats_line03"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/cardStats_txtHips"
+                android:background="@android:color/darker_gray"/>
+
+            <!-- Measurement RThigh -->
+            <TextView
+                android:id="@+id/cardStats_txtRThigh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_line03"
+                android:text="@string/measurement_detail_rthigh"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRThighLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_line03"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRThighChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtRThighLast"
+                android:layout_below="@id/cardStats_line03"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRThighChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtRThighChangeLast"
+                android:layout_below="@id/cardStats_line03"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement LThigh -->
+            <TextView
+                android:id="@+id/cardStats_txtLThigh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtRThigh"
+                android:text="@string/measurement_detail_lthigh"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLThighLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtRThigh"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLThighChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtLThighLast"
+                android:layout_below="@id/cardStats_txtRThigh"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLThighChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtLThighChangeLast"
+                android:layout_below="@id/cardStats_txtRThigh"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement RCalf -->
+            <TextView
+                android:id="@+id/cardStats_txtRCalf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtLThigh"
+                android:text="@string/measurement_detail_rcalf"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRCalfLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtLThigh"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRCalfChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtRCalfLast"
+                android:layout_below="@id/cardStats_txtLThigh"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtRCalfChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtRCalfChangeLast"
+                android:layout_below="@id/cardStats_txtLThigh"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <!-- Measurement LCalf -->
+            <TextView
+                android:id="@+id/cardStats_txtLCalf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtRCalf"
+                android:text="@string/measurement_detail_lcalf"
+                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLCalfLast"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardStats_txtRCalf"
+                android:text="1000"
+                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLCalfChangeLast"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtLCalfLast"
+                android:layout_below="@id/cardStats_txtRCalf"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+            <TextView
+                android:id="@+id/cardStats_txtLCalfChangeStart"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cardStats_txtLCalfChangeLast"
+                android:layout_below="@id/cardStats_txtRCalf"
+                android:text="100%"
+                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
