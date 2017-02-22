@@ -48,6 +48,8 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_EXERCISE_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_ROUTINE_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_ROUTINE_NAME_TABLE);
+        sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_NOTES_TABLE);
+        sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_STATS_TABLE);
     }
 
     @Override
@@ -59,6 +61,8 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ExerciseEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.RoutineEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.RoutineNameEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.NotesEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.StatsEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 
