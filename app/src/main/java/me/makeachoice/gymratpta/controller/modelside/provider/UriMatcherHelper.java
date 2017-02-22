@@ -45,6 +45,11 @@ public class UriMatcherHelper {
     public static final int APPOINTMENT_WITH_CLIENT_KEY = 703;
     public static final int APPOINTMENT_WITH_FKEY = 704;
 
+    public static final int NOTES = 800;
+    public static final int NOTES_WITH_UID = 801;
+    public static final int NOTES_WITH_CLIENT_KEY = 802;
+    public static final int NOTES_WITH_DATE = 803;
+    public static final int NOTES_WITH_DATE_TIME = 804;
 
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
@@ -83,6 +88,7 @@ public class UriMatcherHelper {
         addUriRoutine(matcher, authority);
         addUriRoutineName(matcher, authority);
         addUriAppointment(matcher, authority);
+        addUriNotes(matcher, authority);
 
         return matcher;
     }
@@ -178,6 +184,28 @@ public class UriMatcherHelper {
         //"content://CONTENT_AUTHORITY/appointment/[uid]/fkey/[fkey]
         String keyPath = Contractor.PATH_APPOINTMENT + "/*/" + Contractor.AppointmentEntry.COLUMN_FKEY + "/*";
         matcher.addURI(authority, keyPath, APPOINTMENT_WITH_FKEY);
+
+    }
+
+    private static void addUriNotes(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/clientNotes/
+        matcher.addURI(authority, Contractor.PATH_NOTES, NOTES);
+
+        //"content://CONTENT_AUTHORITY/clientNotes/[uid]
+        String uidPath = Contractor.PATH_NOTES + "/*";
+        matcher.addURI(authority, uidPath, NOTES_WITH_UID);
+
+        //"content://CONTENT_AUTHORITY/clientNotes/[uid]/client_key/[clientKey]
+        String clientKeyPath = Contractor.PATH_NOTES + "/*/" + Contractor.NotesEntry.COLUMN_CLIENT_KEY + "/*";
+        matcher.addURI(authority, clientKeyPath, NOTES_WITH_CLIENT_KEY);
+
+        //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/appointment_date/[appointmentDate]
+        String datePath = Contractor.PATH_NOTES + "/*/*/"  + Contractor.NotesEntry.COLUMN_APPOINTMENT_DATE + "/*";
+        matcher.addURI(authority, datePath, NOTES_WITH_DATE);
+
+        //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
+        String timePath = Contractor.PATH_NOTES + "/*/*/*/"  + Contractor.NotesEntry.COLUMN_APPOINTMENT_TIME + "/*";
+        matcher.addURI(authority, timePath, NOTES_WITH_DATE_TIME);
 
     }
 
