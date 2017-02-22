@@ -6,6 +6,8 @@ import android.util.Log;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.SessionDetailNav;
+import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -65,6 +67,9 @@ public class StubSessionDetailKeeper extends GymRatBaseKeeper {
  */
 /**************************************************************************************************/
 
+    private String mUserId;
+    private ClientItem mClientItem;
+    private AppointmentItem mAppointmentItem;
 
 /**************************************************************************************************/
 
@@ -111,6 +116,11 @@ public class StubSessionDetailKeeper extends GymRatBaseKeeper {
             openBundle(bundle);
         }
 
+        //get user id from Boss
+        mUserId = mBoss.getUserId();
+        mClientItem = mBoss.getClient();
+        mAppointmentItem = mBoss.getAppointmentItem();
+
         initializeLayout();
     }
 
@@ -155,7 +165,8 @@ public class StubSessionDetailKeeper extends GymRatBaseKeeper {
 
         int pagerId = R.layout.viewpager;
         maidRegistry.initializeSessionStatsMaid(MaidRegistry.MAID_SESSION_STATS, pagerId);
-        maidRegistry.initializeSessionNotesMaid(MaidRegistry.MAID_SESSION_NOTES, pagerId);
+        maidRegistry.initializeClientNotesMaid(MaidRegistry.MAID_SESSION_NOTES, recyclerId, mUserId,
+                mClientItem, mAppointmentItem);
     }
 
     /*
