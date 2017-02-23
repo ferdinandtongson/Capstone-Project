@@ -106,4 +106,16 @@ public class TableHelper {
             Contractor.StatsEntry.COLUMN_STAT_RCALF + " TEXT, " +
             Contractor.StatsEntry.COLUMN_STAT_LCALF + " TEXT);";
 
+    public final static String SQL_CREATE_CLIENT_ROUTINE_TABLE = "CREATE TABLE " + Contractor.ClientRoutineEntry.TABLE_NAME + " (" +
+            Contractor.ClientRoutineEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.ClientRoutineEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.ClientRoutineEntry.COLUMN_CLIENT_KEY + " TEXT, " +
+            Contractor.ClientRoutineEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
+            Contractor.ClientRoutineEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
+            Contractor.ClientRoutineEntry.COLUMN_CATEGORY + " TEXT, " +
+            Contractor.ClientRoutineEntry.COLUMN_EXERCISE + " TEXT, " +
+            Contractor.ClientRoutineEntry.COLUMN_ORDER_NUMBER + " INTEGER, " +
+            Contractor.ClientRoutineEntry.COLUMN_NUM_OF_SETS + " INTEGER);";
+
+
 }
