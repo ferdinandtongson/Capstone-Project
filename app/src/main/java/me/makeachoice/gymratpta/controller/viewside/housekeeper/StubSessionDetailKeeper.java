@@ -1,7 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
@@ -156,15 +155,15 @@ public class StubSessionDetailKeeper extends GymRatBaseKeeper {
      * void initializeMaid() - initialize DayMaid and WeekMaid
      */
     private void initializeMaid(){
-        Log.d("Choice", "SessionDetail.initializeMaid");
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         //viewPager layout used by exercise maid
         int recyclerId = R.layout.standard_recycler_fab;
-        maidRegistry.initializeSessionRoutineMaid(MaidRegistry.MAID_SESSION_ROUTINE, recyclerId);
+        maidRegistry.initializeClientRoutineMaid(MaidRegistry.MAID_SESSION_ROUTINE, recyclerId, mUserId,
+                mClientItem, mAppointmentItem);
 
-        int pagerId = R.layout.viewpager;
-        maidRegistry.initializeSessionStatsMaid(MaidRegistry.MAID_SESSION_STATS, pagerId);
+        maidRegistry.initializeClientStatsMaid(MaidRegistry.MAID_SESSION_STATS, recyclerId, mUserId,
+                mClientItem, mAppointmentItem);
         maidRegistry.initializeClientNotesMaid(MaidRegistry.MAID_SESSION_NOTES, recyclerId, mUserId,
                 mClientItem, mAppointmentItem);
     }
