@@ -23,8 +23,10 @@ import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.modelside.firebase.client.AppointmentFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientAppFirebaseHelper;
+import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientRoutineFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.loader.AppointmentLoader;
 import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
+import me.makeachoice.gymratpta.controller.modelside.loader.RoutineLoader;
 import me.makeachoice.gymratpta.controller.modelside.query.AppointmentQueryHelper;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.AppointmentAdapter;
@@ -34,6 +36,8 @@ import me.makeachoice.gymratpta.model.item.client.AppointmentFBItem;
 import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
 import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
+import me.makeachoice.gymratpta.model.item.client.ClientRoutineItem;
+import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
 import me.makeachoice.gymratpta.view.dialog.AppointmentDialog;
 import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
@@ -77,6 +81,7 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
 
     private ArrayList<AppointmentItem> mAppointments;
     private ArrayList<ClientItem> mClients;
+    private ArrayList<RoutineItem> mExercises;
     private int mAppCount;
 
     //mAdapter - recycler adapter
@@ -175,6 +180,7 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
 
         mAppointments = new ArrayList<>();
         mClients = new ArrayList<>();
+        mExercises = new ArrayList<>();
         mEditingAppointment = false;
 
         mAppointmentLoader = new AppointmentLoader(mActivity, mUserId);
@@ -314,8 +320,8 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
         mAppDialog.setDialogValues(mActivity, mUserId, item);
         mAppDialog.setOnSavedListener(new AppointmentDialog.OnSaveClickListener() {
             @Override
-            public void onSaveClicked(AppointmentItem appItem) {
-                onSaveAppointment(appItem);
+            public void onSaveClicked(AppointmentItem appItem, ArrayList<RoutineItem> exercises) {
+                onSaveAppointment(appItem, exercises);
             }
         });
 
@@ -435,7 +441,6 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
             //index is more than appointment list, initialize layout
             prepareFragment();
         }
-
     }
 
     /*
@@ -587,7 +592,13 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
     /*
      * void onSaveAppointment(...) - save appointment item
      */
-    private void onSaveAppointment(AppointmentItem appointmentItem){
+    private void onSaveAppointment(AppointmentItem appointmentItem, ArrayList<RoutineItem> exercises){
+        //clear routine exercise list
+        mExercises.clear();
+
+        //save new routine exercise list
+        mExercises = exercises;
+
         //get save appointment item
         mSaveItem = appointmentItem;
 
@@ -601,7 +612,7 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
         }
         else{
             //no, save new appointment
-            saveAppointment(mSaveItem);
+            saveAppointment(mSaveItem, mExercises);
         }
     }
 
@@ -640,23 +651,30 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
 /**************************************************************************************************/
 /*
  * Save Methods
- *      void saveAppointment(AppointmentItem) - save appointment item
+ *      void saveAppointment(...) - save appointment
  *      void saveAppointmentToFirebase(AppointmentItem) - save appointment to firebase
  *      void saveAppointmentToAppointmentFB(AppointmentItem) - save appointment to appointment firebase
  *      void saveAppointmentToClientAppFB(AppointmentItem) - save appointment to client appointment firebase
  *      void saveAppointmentToDatabase(...) - save appointment to local database
  */
-    /**************************************************************************************************/
+/**************************************************************************************************/
     /*
-     * void saveAppointment(AppointmentItem) - save appointment item
+     * void saveAppointment(AppointmentItem) - save appointment
      */
-    private void saveAppointment(AppointmentItem saveItem){
+    private void saveAppointment(AppointmentItem saveItem, ArrayList<RoutineItem> exercises){
         //save to firebase
         saveAppointmentToFirebase(saveItem);
+
+        //save to firebase
+        saveExercisesToFirebase(saveItem, exercises);
 
         //save to local database
         saveAppointmentToDatabase(saveItem);
 
+        saveExercisesToDatabase(saveItem, exercises);
+
+        //load appointments to refresh recycler view
+        loadAppointment();
     }
 
     /*
@@ -718,9 +736,30 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
 
         //appointment is new, add appointment to database
         Uri uri = mActivity.getContentResolver().insert(uriValue, saveItem.getContentValues());
+    }
 
-        //load appointments to refresh recycler view
-        loadAppointment();
+   private void saveExercisesToFirebase(AppointmentItem appItem, ArrayList<RoutineItem> exercises){
+        //get client routine firebase helper instance
+        ClientRoutineFirebaseHelper routineFB = ClientRoutineFirebaseHelper.getInstance();
+
+        //save client appointment to firebase
+        routineFB.addRoutineDataByDateTime(mUserId, appItem.clientKey, appItem.appointmentDate,
+                appItem.appointmentTime, exercises);
+
+    }
+
+    private void saveExercisesToDatabase(AppointmentItem saveItem, ArrayList<RoutineItem> exercises){
+        //get uri value for routine name table
+        Uri uriValue = Contractor.ClientRoutineEntry.CONTENT_URI;
+
+        int count = exercises.size();
+        for(int i = 0; i < count; i++){
+            RoutineItem exercise = exercises.get(i);
+            ClientRoutineItem item = new ClientRoutineItem(saveItem, exercise);
+
+            //appointment is new, add appointment to database
+            Uri uri = mActivity.getContentResolver().insert(uriValue, item.getContentValues());
+        }
     }
 
 /**************************************************************************************************/
@@ -737,8 +776,34 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
      * void deleteAppointment(AppointmentItem) - delete appointment
      */
     private void deleteAppointment(AppointmentItem deleteItem){
-        deleteAppointmentFromFirebase(deleteItem);
+        deleteRoutineExercises(deleteItem);
     }
+
+    private void deleteRoutineExercises(AppointmentItem deleteItem){
+        //create string values used to delete appointment
+        String appDate = deleteItem.appointmentDate;
+        final String appTime = deleteItem.appointmentTime;
+        String clientKey = deleteItem.clientKey;
+
+        //get client routine firebase helper
+        ClientRoutineFirebaseHelper routineFB = ClientRoutineFirebaseHelper.getInstance();
+
+
+        //delete client routine from firebase
+        routineFB.deleteClientRoutine(mUserId, clientKey, appDate, appTime, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                deleteAppointmentFromFirebase(mDeleteItem);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
     /*
      * void deleteAppointmentFromFirebase(...) - delete appointment from firebase
@@ -765,6 +830,7 @@ public class DayViewPagerMaid extends GymRatRecyclerMaid implements BasicFragmen
 
                 if(mEditingAppointment){
                     saveAppointmentToAppointmentFB(mSaveItem);
+                    saveExercisesToFirebase(mSaveItem,mExercises);
                 }
             }
 
