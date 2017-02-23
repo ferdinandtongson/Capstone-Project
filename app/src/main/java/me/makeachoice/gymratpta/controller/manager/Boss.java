@@ -122,6 +122,7 @@ public class Boss extends MyBoss {
     public static int LOADER_EXERCISE_BASE = 700;
     public static int LOADER_ROUTINE = 800;
     public static int LOADER_ROUTINE_NAME = 900;
+    public static int LOADER_CLIENT_ROUTINE = 1000;
 
     public static String PREF_CLIENT_STATUS = "clientStatus"; //status of client (Active, Retired)
     public static String PREF_SESSION_STATUS = "sessionStatus"; //status of session (Pending, Canceled, Rescheduled, Complete)
@@ -198,6 +199,7 @@ public class Boss extends MyBoss {
         dbHelper.dropTable(db, Contractor.RoutineNameEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.NotesEntry.TABLE_NAME);
         dbHelper.dropTable(db, Contractor.StatsEntry.TABLE_NAME);
+        dbHelper.dropTable(db, Contractor.ClientRoutineEntry.TABLE_NAME);
 
         db.close();
 
