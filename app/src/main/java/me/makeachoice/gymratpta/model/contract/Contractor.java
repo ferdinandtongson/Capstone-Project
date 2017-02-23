@@ -7,6 +7,7 @@ import android.text.format.Time;
 
 import me.makeachoice.gymratpta.model.contract.client.AppointmentColumns;
 import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
+import me.makeachoice.gymratpta.model.contract.client.ClientRoutineColumns;
 import me.makeachoice.gymratpta.model.contract.client.NotesColumns;
 import me.makeachoice.gymratpta.model.contract.client.StatsColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
@@ -46,6 +47,7 @@ public class Contractor {
     public static final String PATH_CLIENT = "client";
     public static final String PATH_STATS = "clientStats";
     public static final String PATH_NOTES = "clientNotes";
+    public static final String PATH_CLIENT_ROUTINE = "clientRoutine";
     public static final String PATH_CATEGORY = "category";
     public static final String PATH_EXERCISE = "exercise";
     public static final String PATH_ROUTINE = "routine";
@@ -240,7 +242,7 @@ public class Contractor {
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
         public static Uri buildNotesByDateTime(String uid, String clientKey, String appointmentDate, String appointmentTime) {
             return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).appendPath(appointmentDate).
-                    appendPath(uid).appendPath(COLUMN_APPOINTMENT_TIME).appendPath(appointmentTime).build();
+                    appendPath(COLUMN_APPOINTMENT_TIME).appendPath(appointmentTime).build();
         }
 
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/....
@@ -316,7 +318,7 @@ public class Contractor {
         //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
         public static Uri buildStatsByDateTime(String uid, String clientKey, String appointmentDate, String appointmentTime) {
             return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).appendPath(appointmentDate).
-                    appendPath(uid).appendPath(COLUMN_APPOINTMENT_TIME).appendPath(appointmentTime).build();
+                    appendPath(COLUMN_APPOINTMENT_TIME).appendPath(appointmentTime).build();
         }
 
         //"content://CONTENT_AUTHORITY/clientStats/[uid]/....
@@ -350,6 +352,66 @@ public class Contractor {
         }
 
         //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
+        public static String getTimeFromDateTimeUri(Uri uri) {
+            return uri.getPathSegments().get(5);
+        }
+    }
+
+    /*
+     * ClientRoutineEntry - client routine
+     */
+    public static class ClientRoutineEntry extends ClientRoutineColumns implements BaseColumns {
+
+        public static Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLIENT_ROUTINE).build();
+
+        public static String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT_ROUTINE;
+        public static String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT_ROUTINE;
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[_id]
+        public static Uri buildClientRoutineUri(long id) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]
+        public static Uri buildClientRoutineByUID(String uid) {
+            return CONTENT_URI.buildUpon().appendPath(uid).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/client_key/[clientKey]
+        public static Uri buildClientRoutineByClientKey(String uid, String clientKey) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CLIENT_KEY).appendPath(clientKey).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
+        public static Uri buildClientRoutineByDateTime(String uid, String clientKey, String appointmentDate, String appointmentTime) {
+            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).appendPath(appointmentDate).
+                    appendPath(COLUMN_APPOINTMENT_TIME).appendPath(appointmentTime).build();
+        }
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/....
+        public static String getUIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/client_key/[clientKey]
+        public static String getClientKeyFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
+        public static String getClientKeyFromDateTimeUri(Uri uri) {
+            return uri.getPathSegments().get(2);
+        }
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
+        public static String getDateFromDateTimeUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
         public static String getTimeFromDateTimeUri(Uri uri) {
             return uri.getPathSegments().get(5);
         }
