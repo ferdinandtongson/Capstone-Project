@@ -13,6 +13,10 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_STATUS;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_UID;
@@ -126,6 +130,14 @@ public class UriTypeHelper {
             case STATS_WITH_DATE:
                 return Contractor.StatsEntry.CONTENT_TYPE;
             case STATS_WITH_DATE_TIME:
+                return Contractor.StatsEntry.CONTENT_ITEM_TYPE;
+            case CLIENT_ROUTINE:
+                return Contractor.StatsEntry.CONTENT_TYPE;
+            case CLIENT_ROUTINE_WITH_UID:
+                return Contractor.StatsEntry.CONTENT_TYPE;
+            case CLIENT_ROUTINE_WITH_CLIENT_KEY:
+                return Contractor.StatsEntry.CONTENT_TYPE;
+            case CLIENT_ROUTINE_WITH_DATE_TIME:
                 return Contractor.StatsEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

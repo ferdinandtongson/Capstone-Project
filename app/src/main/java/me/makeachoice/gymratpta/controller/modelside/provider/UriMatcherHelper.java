@@ -57,6 +57,11 @@ public class UriMatcherHelper {
     public static final int STATS_WITH_DATE = 903;
     public static final int STATS_WITH_DATE_TIME = 904;
 
+    public static final int CLIENT_ROUTINE = 1000;
+    public static final int CLIENT_ROUTINE_WITH_UID = 1001;
+    public static final int CLIENT_ROUTINE_WITH_CLIENT_KEY = 1002;
+    public static final int CLIENT_ROUTINE_WITH_DATE_TIME = 1003;
+
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
     static UriMatcher buildUriMatcher() {
@@ -96,6 +101,7 @@ public class UriMatcherHelper {
         addUriAppointment(matcher, authority);
         addUriNotes(matcher, authority);
         addUriStats(matcher, authority);
+        addUriClientRoutine(matcher, authority);
 
         return matcher;
     }
@@ -237,4 +243,23 @@ public class UriMatcherHelper {
         matcher.addURI(authority, timePath, STATS_WITH_DATE_TIME);
 
     }
+
+    private static void addUriClientRoutine(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/clientRoutine/
+        matcher.addURI(authority, Contractor.PATH_CLIENT_ROUTINE, CLIENT_ROUTINE);
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]
+        String uidPath = Contractor.PATH_CLIENT_ROUTINE + "/*";
+        matcher.addURI(authority, uidPath, CLIENT_ROUTINE_WITH_UID);
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/client_key/[clientKey]
+        String clientKeyPath = Contractor.PATH_CLIENT_ROUTINE + "/*/" + Contractor.ClientRoutineEntry.COLUMN_CLIENT_KEY + "/*";
+        matcher.addURI(authority, clientKeyPath, CLIENT_ROUTINE_WITH_CLIENT_KEY);
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
+        String timePath = Contractor.PATH_CLIENT_ROUTINE + "/*/*/*/"  + Contractor.ClientRoutineEntry.COLUMN_APPOINTMENT_TIME + "/*";
+        matcher.addURI(authority, timePath, CLIENT_ROUTINE_WITH_DATE_TIME);
+
+    }
+
 }
