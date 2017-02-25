@@ -118,7 +118,7 @@ public class ClientExerciseFirebaseHelper {
         ref.setValue(item);
     }
 
-    public void getClientExerciseReferenceByTimestamp(String userId, String clientKey, String timestamp,
+    public void adClientExerciseReferenceByTimestamp(String userId, String clientKey, String timestamp,
                                                      ClientExerciseFBItem item){
 
         DatabaseReference ref = getClientExerciseReferenceByTimestamp(userId, clientKey, timestamp);
