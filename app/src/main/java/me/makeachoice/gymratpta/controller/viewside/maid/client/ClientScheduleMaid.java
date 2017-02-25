@@ -25,6 +25,7 @@ import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientAppFi
 import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientRoutineFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.loader.AppointmentLoader;
 import me.makeachoice.gymratpta.controller.modelside.query.AppointmentQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.query.ClientRoutineQueryHelper;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.ClientAppAdapter;
 import me.makeachoice.gymratpta.model.contract.Contractor;
@@ -675,7 +676,6 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //get client routine firebase helper
         ClientRoutineFirebaseHelper routineFB = ClientRoutineFirebaseHelper.getInstance();
 
-
         //delete client routine from firebase
         routineFB.deleteClientRoutine(mUserId, clientKey, appDate, appTime, new ValueEventListener() {
             @Override
@@ -769,9 +769,30 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
                 AppointmentQueryHelper.clientKeyDateTimeSelection,
                 new String[]{mUserId, clientKey, appDate, appTime});
 
+        deleteClientRoutineFromDatabase(deleteItem);
+    }
+
+    /*
+     * void deleteClientRoutineFromDatabase(...) - delete client routine data from database
+     */
+    private void deleteClientRoutineFromDatabase(AppointmentItem deleteItem){
+        //create string values used to delete appointment
+        String appDate = deleteItem.appointmentDate;
+        String appTime = deleteItem.appointmentTime;
+        String clientKey = deleteItem.clientKey;
+
+        //get uri value from appointment table
+        Uri uri = Contractor.ClientRoutineEntry.CONTENT_URI;
+
+        //remove client routine from database
+        int clientRoutineDeleted = mActivity.getContentResolver().delete(uri,
+                ClientRoutineQueryHelper.clientKeyDateTimeSelection,
+                new String[]{mUserId, clientKey, appDate, appTime});
+
         if(mEditingAppointment) {
             //editing, save new appointment used to replace old appointment
             saveAppointmentToDatabase(mSaveItem);
+            saveExercisesToDatabase(mSaveItem, mExercises);
         }else{
             //load appointments to update recycler view
             loadAppointment();
