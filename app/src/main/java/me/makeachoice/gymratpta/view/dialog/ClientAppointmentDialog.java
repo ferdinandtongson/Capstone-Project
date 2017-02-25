@@ -486,15 +486,14 @@ public class ClientAppointmentDialog extends DialogFragment {
  */
 /**************************************************************************************************/
     private void onRoutineSelected(int index){
+        mExercises.clear();
+
         //save routine data to save appointment item
         mSaveApmtItem.routineName = mRoutineNames.get(index);
 
         if(index != 0){
             mSpnRoutine.setEnabled(false);
             loadRoutine(mSaveApmtItem.routineName);
-        }
-        else{
-            mExercises.clear();
         }
     }
 
