@@ -172,6 +172,17 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
 
 /**************************************************************************************************/
 
+/**************************************************************************************************/
+/*
+ * Public Methods:
+ *      View getToolbarNavigationIcon() - gets toolbar navigation icon view component
+ *      void setTitle(...) - set toolbar title and subtitle
+ *      void setSubtitle(...) - set toolbar subtitle with default title value
+ */
+/**************************************************************************************************/
+    /*
+     * View getToolbarNavigationIcon() - gets toolbar navigation icon view component
+     */
     public View getToolbarNavigationIcon(){
         //check if contentDescription previously was set
         boolean hadContentDescription = TextUtils.isEmpty(mToolbar.getNavigationContentDescription());
@@ -198,4 +209,27 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
             mToolbar.setNavigationContentDescription(null);
         return navIcon;
     }
+
+    /*
+     * void setTitle(...) - set toolbar title and subtitle
+     */
+    public void setTitle(String title, String subtitle){
+        //set title and subtitle of toolbar, can only be called after setSupportActionBar()
+        setTitle(title, subtitle);
+
+    }
+
+    /*
+     * void setSubtitle(...) - set toolbar subtitle with default title value
+     */
+    public void setSubtitle(String subtitle){
+        String title = mActivity.getResources().getString(DEFAULT_TITLE_ID);
+
+        //set title and subtitle of toolbar, can only be called after setSupportActionBar()
+        setTitle(title, subtitle);
+
+    }
+
+/**************************************************************************************************/
+
 }
