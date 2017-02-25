@@ -11,6 +11,19 @@ import java.util.Date;
 
 public class DateTimeHelper {
 
+    public static long getTimestamp(String strDate, String strTime){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyy hh:mm aa");
+        try {
+            Date date = (Date)dateFormat.parse(strDate + " " + strTime);
+
+            return date.getTime();
+        } catch (ParseException e){
+            // Exception handling goes here
+        }
+        return -1;
+    }
+
     public static String getToday(){
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
