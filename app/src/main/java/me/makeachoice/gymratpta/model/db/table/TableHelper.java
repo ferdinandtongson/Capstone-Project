@@ -117,5 +117,19 @@ public class TableHelper {
             Contractor.ClientRoutineEntry.COLUMN_ORDER_NUMBER + " INTEGER, " +
             Contractor.ClientRoutineEntry.COLUMN_NUM_OF_SETS + " INTEGER);";
 
+    public final static String SQL_CREATE_CLIENT_EXERCISE_TABLE = "CREATE TABLE " + Contractor.ClientExerciseEntry.TABLE_NAME + " (" +
+            Contractor.ClientExerciseEntry._ID + " INTEGER PRIMARY KEY," +
+            Contractor.ClientExerciseEntry.COLUMN_UID + " TEXT NOT NULL, " +
+            Contractor.ClientExerciseEntry.COLUMN_CLIENT_KEY + " TEXT, " +
+            Contractor.ClientExerciseEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
+            Contractor.ClientExerciseEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
+            Contractor.ClientExerciseEntry.COLUMN_CATEGORY + " TEXT, " +
+            Contractor.ClientExerciseEntry.COLUMN_EXERCISE + " TEXT, " +
+            Contractor.ClientExerciseEntry.COLUMN_ORDER_NUMBER + " INTEGER, " +
+            Contractor.ClientExerciseEntry.COLUMN_SET_NUMBER + " INTEGER, " +
+            Contractor.ClientExerciseEntry.COLUMN_PRIMARY_LABEL + " TEXT, " +
+            Contractor.ClientExerciseEntry.COLUMN_PRIMARY_VALUE + " TEXT, " +
+            Contractor.ClientExerciseEntry.COLUMN_SECONDARY_LABEL + " TEXT, " +
+            Contractor.ClientExerciseEntry.COLUMN_SECONDARY_VALUE + " TEXT);";
 
 }
