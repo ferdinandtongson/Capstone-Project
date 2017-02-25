@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +25,7 @@ import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientRouti
 import me.makeachoice.gymratpta.controller.modelside.loader.AppointmentLoader;
 import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
 import me.makeachoice.gymratpta.controller.modelside.query.AppointmentQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.query.ClientRoutineQueryHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.AppointmentAdapter;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.item.client.AppointmentCardItem;
@@ -340,9 +342,9 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
     }
 
     /*
-     * AppointmentDialog initializeScheduleDialog - initialize appointment scheduling dialog
+     * AppointmentDialog initializeAppointmentDialog - initialize appointment scheduling dialog
      */
-    private AppointmentDialog initializeScheduleDialog(AppointmentItem item){
+    private AppointmentDialog initializeAppointmentDialog(AppointmentItem item){
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
@@ -356,7 +358,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
             }
         });
 
-        mAppDialog.show(fm, "diaScheduleAppointment");
+        mAppDialog.show(fm, "diaAppointmentDialog");
 
         return mAppDialog;
     }
@@ -593,7 +595,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         mEditingAppointment = false;
 
         //initialize schedule appointment dialog
-        initializeScheduleDialog(null);
+        initializeAppointmentDialog(null);
     }
 
     /*
@@ -623,7 +625,7 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
         mDeleteItem = mAppointments.get(index);
 
         //open schedule appointment dialog
-        initializeScheduleDialog(mDeleteItem);
+        initializeAppointmentDialog(mDeleteItem);
     }
 
     /*
@@ -809,6 +811,9 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
             //appointment is new, add appointment to database
             Uri uri = mActivity.getContentResolver().insert(uriValue, item.getContentValues());
         }
+
+        loadAppointment();
+
     }
 
 /**************************************************************************************************/
@@ -933,9 +938,30 @@ public class StubSessionKeeper extends GymRatRecyclerKeeper implements MyActivit
                 AppointmentQueryHelper.clientKeyDateTimeSelection,
                 new String[]{mUserId, clientKey, appDate, appTime});
 
+        deleteClientRoutineFromDatabase(deleteItem);
+    }
+
+    /*
+     * void deleteClientRoutineFromDatabase(...) - delete client routine data from database
+     */
+    private void deleteClientRoutineFromDatabase(AppointmentItem deleteItem){
+        //create string values used to delete appointment
+        String appDate = deleteItem.appointmentDate;
+        String appTime = deleteItem.appointmentTime;
+        String clientKey = deleteItem.clientKey;
+
+        //get uri value from appointment table
+        Uri uri = Contractor.ClientRoutineEntry.CONTENT_URI;
+
+        //remove client routine from database
+        int clientRoutineDeleted = mActivity.getContentResolver().delete(uri,
+                ClientRoutineQueryHelper.clientKeyDateTimeSelection,
+                new String[]{mUserId, clientKey, appDate, appTime});
+
         if(mEditingAppointment) {
             //editing, save new appointment used to replace old appointment
             saveAppointmentToDatabase(mSaveItem);
+            saveExercisesToDatabase(mSaveItem, mExercises);
         }else{
             //load appointments to update recycler view
             loadAppointment();
