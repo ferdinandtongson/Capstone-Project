@@ -8,16 +8,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- *  TODO - add activity description
- */
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
- * TODO - add activity description,
- * the HouseKeeper does most of the work and has a bridge interface to most of the Lifecycle events
- * that happen in MyActivity (ie. onStart, onStop, etc). So all the activity needs to do is get a
- * HouseKeeper. The main purpose for this class is so that it's registered to AndroidManifest
+ * ScheduleActivity displays daily and weekly client schedule that the personal trainer has.
  *
  * MyActivity Class Variables
  *      Bridge mBridge - class implementing Bridge interface
@@ -40,10 +31,9 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  *      void setOptionsMenuBridge(OptionsMenuBridge) - add bridge communication to options events
  *
  */
-
 /**************************************************************************************************/
 
-public class AppointmentActivity extends MyActivity {
+public class ScheduleActivity extends MyActivity {
 
 /**************************************************************************************************/
 /*
