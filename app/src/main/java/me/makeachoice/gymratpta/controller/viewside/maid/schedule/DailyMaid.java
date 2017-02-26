@@ -1,4 +1,4 @@
-package me.makeachoice.gymratpta.controller.viewside.maid.appointment;
+package me.makeachoice.gymratpta.controller.viewside.maid.schedule;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -6,25 +6,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardStateViewPager;
-import me.makeachoice.gymratpta.model.item.ClientCardItem;
-import me.makeachoice.gymratpta.model.stubData.SessionStubData;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
-import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DAY_MAX;
 
 /**************************************************************************************************/
 /*
- * TODO - add description
+ * DailyMaid manages the ViewPager and the creation of the DayViewMaids that display the daily schedule
+ * of the personal trainer
+ *
  * Variables from MyMaid:
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
@@ -41,7 +39,7 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DAY_MAX;
  */
 /**************************************************************************************************/
 
-public class DayMaid extends MyMaid implements BasicFragment.Bridge{
+public class DailyMaid extends MyMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -49,28 +47,33 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
  */
 /**************************************************************************************************/
 
+    //mUserId - user id taken from firebase authentication
+    private String mUserId;
+
     //mPageTitles - list of titles used by viewPager tabLayout
     ArrayList<String> mPageTitles;
 
-    private String mUserId;
+    //mDatestamps - list of datestamps
+    private ArrayList<Long> mDatestamps;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * DayMaid - constructor
+ * DailyMaid - constructor
  */
 /**************************************************************************************************/
     /*
-     * DayMaid(...) - constructor
+     * DailyMaid(...) - constructor
      */
-    public DayMaid(String maidKey, int layoutId, String userId){
+    public DailyMaid(String maidKey, int layoutId, String userId){
         //get maidKey
         mMaidKey = maidKey;
 
         //fragment layout id number
         mLayoutId = layoutId;
 
+        //user id take from firebase authentication
         mUserId = userId;
     }
 
@@ -106,7 +109,8 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
-        mActivity = (MyActivity)mFragment.getActivity();
+        mPageTitles = new ArrayList<>();
+        mDatestamps = new ArrayList<>();
 
         //prepare fragment components
         prepareFragment();
@@ -127,68 +131,69 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
 /*
  * Class Methods:
  *      void prepareFragment(View) - prepare components and data to be displayed by fragment
- *      void initializeRecycler() - initialize recycler to display exercise items
- *      EditAddDialog initializeDialog(...) - create exercise edit/add dialog
+ *      void initializeArrays() - initialize title and datestamp buffer array
+ *      void initializeVPMaids() - initialize maids used by viewPager component
+ *      void initializeViewPager() - initialize viewPager component
  */
 /**************************************************************************************************/
     /*
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment(){
-        //load category and exercise data
-        loadData();
+        //initialize daily titles
+        initializeTitles();
 
+        //initialize maids used by viewPager
+        initializeVPMaids();
 
+        //initialize viewPager component
+        initializeViewPager();
     }
 
-    private MyActivity mActivity;
-    private ArrayList<String> mDates;
+    /*
+     * void initializeArrays() - initialize title and datestamp buffer array
+     */
+    private void initializeTitles(){
+        //clear array buffers
+        mPageTitles.clear();
+        mDatestamps.clear();
 
-    private void loadData(){
         //get user shared preference
         SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
 
         //get user preference to want to receive deletion warning
         int numberOfDays = prefs.getInt(PREF_DAY_MAX, 30);
 
-        mPageTitles = new ArrayList<>();
-        mDates = new ArrayList<>();
 
         // Start date
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
-        Calendar c = Calendar.getInstance();
-        String day = sdf.format(c.getTime());
-        String appointmentDate = dateFormat.format(c.getTime());
+        String day;
+        long datestamp;
 
-        mPageTitles.add(day);
-        mDates.add(appointmentDate);
-
+        //loop through number of days
         for(int i = 0; i < numberOfDays; i++){
-            c.add(Calendar.DATE, 1);
-            day = sdf.format(c.getTime());
-            appointmentDate = dateFormat.format(c.getTime());
+            //get "MMM dd" value
+            day = DateTimeHelper.getMonthDayFromToday(i);
             mPageTitles.add(day);
-            mDates.add(appointmentDate);
+
+            //get datestamp
+            datestamp = DateTimeHelper.getDatestamp(i);
+            mDatestamps.add(datestamp);
         }
-
-        //initialize maids used by viewPager
-        initializeVPMaids();
-
-        //initialize view pager
-        new StandardStateViewPager(mFragment, mPageTitles, MaidRegistry.MAID_DAY_VP);
     }
 
+    /*
+     * void initializeVPMaids() - initialize maids used by viewPager component
+     */
     private void initializeVPMaids(){
         //layout resource id maid will use to create fragment
-        //int layoutId = R.layout.standard_recycler_fab;
         int layoutId = R.layout.standard_recycler_fab;
 
+        //get number of pages to create
         int count = mPageTitles.size();
 
         //initialize maids
         for(int i = 0; i < count; i++){
-            String strDate = mDates.get(i);
+            long datestamp = mDatestamps.get(i);
 
             //create unique maid id numbers using a base number
             String maidKey = MaidRegistry.MAID_DAY_VP + i;
@@ -196,9 +201,17 @@ public class DayMaid extends MyMaid implements BasicFragment.Bridge{
             MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
             //initialize maid
-            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, mUserId, strDate, i);
+            maidRegistry.initializeDayViewMaid(maidKey, layoutId, mUserId, datestamp, i);
         }
 
+    }
+
+    /*
+     * void initializeViewPager() - initialize viewPager component
+     */
+    private void initializeViewPager(){
+        //initialize view pager
+        new StandardStateViewPager(mFragment, mPageTitles, MaidRegistry.MAID_DAY_VP);
     }
 
 
