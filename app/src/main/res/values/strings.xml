@@ -170,6 +170,7 @@
     <string name="contact_info" translatable="true">Contact Info</string>
     <string name="contacts_list" translatable="true">Contacts List</string>
     <string name="core" translatable="true">Core</string>
+    <string name="daily" translatable="true">Daily</string>
     <string name="date" translatable="true">Date</string>
     <string name="delete" translatable="true">Delete</string>
     <string name="distance" translatable="true">Distance</string>
@@ -217,6 +218,7 @@
     <string name="time" translatable="true">Time</string>
     <string name="today" translatable="true">Today</string>
     <string name="training_info" translatable="true">Training Info</string>
+    <string name="weekly" translatable="true">Weekly</string>
     <string name="weight" translatable="true">Weight</string>
 
 </resources>
