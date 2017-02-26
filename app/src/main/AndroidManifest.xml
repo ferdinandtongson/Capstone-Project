@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/ChoiceTheme.Activity">
 
-        <activity android:name=".view.activity.AppointmentActivity"
+        <activity android:name=".view.activity.ScheduleActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
 
         <activity android:name=".view.activity.ClientActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".view.activity.AppointmentActivity"/>
+            android:parentActivityName=".view.activity.ScheduleActivity"/>
 
         <activity android:name=".view.activity.ClientDetailActivity"
             android:launchMode="singleTask"
@@ -30,7 +30,7 @@
 
         <activity android:name=".view.activity.SessionActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".view.activity.AppointmentActivity"/>
+            android:parentActivityName=".view.activity.ScheduleActivity"/>
 
         <activity android:name=".view.activity.SessionDetailActivity"
             android:launchMode="singleTask"
@@ -38,7 +38,7 @@
 
         <activity android:name=".view.activity.ExerciseActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".view.activity.AppointmentActivity"/>
+            android:parentActivityName=".view.activity.ScheduleActivity"/>
 
         <activity android:name=".view.activity.RoutineDetailActivity"
             android:launchMode="singleTask"
