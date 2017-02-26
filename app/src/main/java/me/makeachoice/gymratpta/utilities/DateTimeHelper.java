@@ -1,15 +1,73 @@
 package me.makeachoice.gymratpta.utilities;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import static me.makeachoice.gymratpta.R.string.date;
 
 /**
  * Created by Usuario on 2/16/2017.
  */
 
 public class DateTimeHelper {
+
+    public static String getMonthDayFromToday(int addDays){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
+
+        //get today's date
+        cal.getTime();
+
+        //add number of days to date
+        cal.add(Calendar.DATE, addDays);
+
+        return dateFormat.format(cal.getTime());
+    }
+
+    public static String getDatestamp(int addDays){
+        Log.d("Choice", "DateTimeHelper.getDateStamp");
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        //get today's date
+        cal.getTime();
+
+        //add number of days to date
+        cal.add(Calendar.DATE, addDays);
+
+        return dateFormat.format(cal.getTime());
+    }
+
+    public static long getDatestamp(String strDate){
+       SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyy");
+        try {
+            Date date = (Date)dateFormat.parse(strDate);
+
+            return date.getTime();
+        } catch (ParseException e){
+            // Exception handling goes here
+        }
+        return -1;
+    }
+
+    public static String convertDatestampToDate(String datestamp){
+        SimpleDateFormat stampFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyy");
+
+        try {
+            Date date = (Date)stampFormat.parse(datestamp);
+
+
+            return dateFormat.format(date.getTime());
+        } catch (ParseException e){
+            // Exception handling goes here
+        }
+        return "";
+    }
 
     public static long getTimestamp(String strDate, String strTime){
         Calendar cal = Calendar.getInstance();
@@ -32,7 +90,7 @@ public class DateTimeHelper {
 
     public static String getCurrentTime(){
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         return dateFormat.format(cal.getTime());
     }
 
@@ -76,20 +134,23 @@ public class DateTimeHelper {
         return cal.get(Calendar.MINUTE);
     }
 
-    public static String convert24Hour(int hour, int minute){
-        String marker;
-        String strHour;
-        if(hour < 12){
-            marker = "AM";
-            strHour = pad(hour);
-        }
-        else{
-            marker = "PM";
-            hour = hour - 12;
-            strHour = pad(hour);
+    public static String getTime(int hour, int minute){
+
+        String strTime = pad(hour) + ":" + pad(minute);
+        return strTime;
+    }
+
+    public static String convert24Hour(String strTime){
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+        try {
+            SimpleDateFormat convertFormat = new SimpleDateFormat("hh:mm aa");
+            Date parseDate = (Date)sdf.parse(strTime);
+            return convertFormat.format(parseDate);
+        } catch (ParseException e){
+            // Exception handling goes here
         }
 
-        String strTime = strHour + ":" + pad(minute) + " " + marker;
         return strTime;
     }
 
