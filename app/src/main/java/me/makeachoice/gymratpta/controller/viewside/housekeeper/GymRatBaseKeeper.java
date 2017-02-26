@@ -3,7 +3,6 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -180,7 +179,6 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
     public void activityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == REQUEST_CODE_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Log.d("Choice", "GymRatBaseKeeper.activityResult - user signed in");
                 //user is signed in, initialize navigation components
                 //initializeNavigation();
                 return;
@@ -242,7 +240,6 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
             public void onClick(View view) {
                 //react to click
                 mHomeDrawer.openDrawer();
-
             }
         });
 
