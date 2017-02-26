@@ -2,11 +2,11 @@ package me.makeachoice.gymratpta.controller.viewside.maid;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.gymratpta.view.fragment.MyFragment;
+import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
@@ -38,6 +38,9 @@ public abstract class MyMaid {
     //mFragment - fragment being maintained by the Maid
     protected MyFragment mFragment;
 
+    //mActivity - activity context
+    protected MyActivity mActivity;
+
 /**************************************************************************************************/
 /*
  * MyFragment Bridge Implementation:
@@ -55,6 +58,7 @@ public abstract class MyMaid {
      */
     public void activityCreated(Bundle bundle){
         //Activity.onCreate() completed
+        mActivity = (MyActivity)mFragment.getActivity();
     }
 
     /*
