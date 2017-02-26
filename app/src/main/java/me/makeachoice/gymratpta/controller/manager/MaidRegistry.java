@@ -1,12 +1,10 @@
 package me.makeachoice.gymratpta.controller.manager;
 
-import java.util.ArrayList;
-
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.StubMaid;
-import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayMaid;
-import me.makeachoice.gymratpta.controller.viewside.maid.appointment.DayViewPagerMaid;
-import me.makeachoice.gymratpta.controller.viewside.maid.appointment.WeekMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DailyMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DayViewMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.schedule.WeeklyMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistoryMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientInfoMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientNotesMaid;
@@ -17,7 +15,7 @@ import me.makeachoice.gymratpta.controller.viewside.maid.exercise.ExerciseViewPa
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineDetailMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionNotesViewPagerMaid;
-import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientRoutineMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsViewPagerMaid;
 import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
@@ -42,9 +40,9 @@ public class MaidRegistry extends MyMaidRegistry {
     private static MaidRegistry instance = null;
 
     //Appointment Screen maids
-    public static final String MAID_DAY = "DayMaid";
-    public static final String MAID_WEEK = "WeekMaid";
-    public static final String MAID_DAY_VP = "DayViewPagerMaid";
+    public static final String MAID_DAY = "DailyMaid";
+    public static final String MAID_WEEK = "WeeklyMaid";
+    public static final String MAID_DAY_VP = "DayViewMaid";
 
     //Client Screen maids
     public static final String MAID_CLIENT_INFO = "ClientInfoMaid";
@@ -59,7 +57,7 @@ public class MaidRegistry extends MyMaidRegistry {
     public static final String MAID_ROUTINE_DETAIL = "RoutineDetailMaid";
 
     //Session screen maids
-    public static final String MAID_SESSION_ROUTINE = "ClientRoutineMaid";
+    public static final String MAID_SESSION_ROUTINE = "ClientExerciseMaid";
     public static final String MAID_SESSION_STATS = "SessionStatsMaid";
     public static final String MAID_SESSION_NOTES = "SessionNotesMaid";
     public static final String MAID_SESSION_STATS_VP = "SessionStatsViewPagerMaid";
@@ -94,29 +92,29 @@ public class MaidRegistry extends MyMaidRegistry {
 
 /**************************************************************************************************/
 /*
- * Appointment Maids:
+ * Schedul Maids:
  */
 /**************************************************************************************************/
 
-    public void initializeDayMaid(String maidKey, int layoutId, String userId){
+    public void initializeDailyMaid(String maidKey, int layoutId, String userId){
         //create maid
-        DayMaid maid = new DayMaid(maidKey, layoutId, userId);
+        DailyMaid maid = new DailyMaid(maidKey, layoutId, userId);
 
         //register maid
         registerMaid(maidKey, maid);
     }
 
-    public void initializeDayViewPagerMaid(String maidKey, int layoutId, String userId, String appointmentDate, int counter){
+    public void initializeDayViewMaid(String maidKey, int layoutId, String userId, long datestamp, int counter){
         //create maid
-        DayViewPagerMaid maid = new DayViewPagerMaid(maidKey, layoutId, userId, appointmentDate, counter);
+        DayViewMaid maid = new DayViewMaid(maidKey, layoutId, userId, datestamp, counter);
 
         //register maid
         registerMaid(maidKey, maid);
     }
 
-    public void initializeWeekMaid(String maidKey, int layoutId, String userId){
+    public void initializeWeeklyMaid(String maidKey, int layoutId, String userId){
         //create maid
-        WeekMaid maid = new WeekMaid(maidKey, layoutId, userId);
+        WeeklyMaid maid = new WeeklyMaid(maidKey, layoutId, userId);
 
         //register maid
         registerMaid(maidKey, maid);
@@ -167,7 +165,7 @@ public class MaidRegistry extends MyMaidRegistry {
     public void initializeClientRoutineMaid(String maidKey, int layoutId, String userId, ClientItem item,
                                             AppointmentItem appItem){
         //create maid
-        ClientRoutineMaid maid = new ClientRoutineMaid(maidKey, layoutId, userId, item, appItem);
+        ClientExerciseMaid maid = new ClientExerciseMaid(maidKey, layoutId, userId, item, appItem);
 
         //register maid
         registerMaid(maidKey, maid);
@@ -185,7 +183,7 @@ public class MaidRegistry extends MyMaidRegistry {
 
     /*public void initializeClientHistoryViewPagerMaid(String maidKey, int layoutId, ArrayList<ClientCardItem> clients){
         //create maid
-        //DayViewPagerMaid maid = new DayViewPagerMaid(maidKey, layoutId, clients);
+        //DayViewMaid maid = new DayViewMaid(maidKey, layoutId, clients);
 
         //register maid
         //registerMaid(maidKey, maid);
