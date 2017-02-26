@@ -3,11 +3,8 @@ package me.makeachoice.gymratpta.controller.modelside.provider;
 import android.net.Uri;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_CLIENT_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_DAY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.APPOINTMENT_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_NAME;
@@ -15,8 +12,8 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_CLIENT_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_DATE_TIME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_EXERCISE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_CLIENT_KEY;
@@ -42,6 +39,9 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_NAME_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_ROUTINE_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_UID;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_CLIENT_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE;
@@ -108,14 +108,12 @@ public class UriTypeHelper {
                 return Contractor.RoutineNameEntry.CONTENT_TYPE;
             case ROUTINE_NAME_WITH_NAME:
                 return Contractor.RoutineNameEntry.CONTENT_ITEM_TYPE;
-            case APPOINTMENT:
-                return Contractor.AppointmentEntry.CONTENT_TYPE;
-            case APPOINTMENT_WITH_DAY:
-                return Contractor.AppointmentEntry.CONTENT_TYPE;
-            case APPOINTMENT_WITH_CLIENT_KEY:
-                return Contractor.AppointmentEntry.CONTENT_TYPE;
-            case APPOINTMENT_WITH_FKEY:
-                return Contractor.AppointmentEntry.CONTENT_ITEM_TYPE;
+            case SCHEDULE:
+                return ScheduleContract.CONTENT_TYPE;
+            case SCHEDULE_WITH_TIMESTAMP:
+                return ScheduleContract.CONTENT_TYPE;
+            case SCHEDULE_WITH_CLIENT_KEY:
+                return ScheduleContract.CONTENT_TYPE;
             case NOTES:
                 return Contractor.NotesEntry.CONTENT_TYPE;
             case NOTES_WITH_UID:
@@ -152,8 +150,8 @@ public class UriTypeHelper {
                 return Contractor.ClientExerciseEntry.CONTENT_TYPE;
             case CLIENT_EXERCISE_WITH_EXERCISE:
                 return Contractor.ClientExerciseEntry.CONTENT_TYPE;
-            case CLIENT_EXERCISE_WITH_DATE_TIME:
-                return Contractor.ClientExerciseEntry.CONTENT_ITEM_TYPE;
+            case CLIENT_EXERCISE_WITH_TIMESTAMP:
+                return Contractor.ClientExerciseEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

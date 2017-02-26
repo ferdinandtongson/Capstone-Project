@@ -3,6 +3,8 @@ package me.makeachoice.gymratpta.controller.modelside.provider;
 import android.content.UriMatcher;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.MyContractor;
+import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 
 /**
  * Created by Usuario on 2/2/2017.
@@ -39,11 +41,10 @@ public class UriMatcherHelper {
     public static final int ROUTINE_NAME_WITH_UID = 601;
     public static final int ROUTINE_NAME_WITH_NAME = 602;
 
-    public static final int APPOINTMENT = 700;
-    public static final int APPOINTMENT_WITH_UID = 701;
-    public static final int APPOINTMENT_WITH_DAY = 702;
-    public static final int APPOINTMENT_WITH_CLIENT_KEY = 703;
-    public static final int APPOINTMENT_WITH_FKEY = 704;
+    public static final int SCHEDULE = 700;
+    public static final int SCHEDULE_WITH_UID = 701;
+    public static final int SCHEDULE_WITH_TIMESTAMP = 702;
+    public static final int SCHEDULE_WITH_CLIENT_KEY = 703;
 
     public static final int NOTES = 800;
     public static final int NOTES_WITH_UID = 801;
@@ -66,7 +67,7 @@ public class UriMatcherHelper {
     public static final int CLIENT_EXERCISE_WITH_UID = 1101;
     public static final int CLIENT_EXERCISE_WITH_CLIENT_KEY = 1102;
     public static final int CLIENT_EXERCISE_WITH_EXERCISE = 1103;
-    public static final int CLIENT_EXERCISE_WITH_DATE_TIME = 1104;
+    public static final int CLIENT_EXERCISE_WITH_TIMESTAMP = 1104;
 
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
@@ -147,8 +148,8 @@ public class UriMatcherHelper {
         String fkeyPath = Contractor.PATH_EXERCISE + "/*/" + Contractor.ExerciseEntry.COLUMN_FKEY + "/*";
         matcher.addURI(authority, fkeyPath, EXERCISE_WITH_FKEY);
 
-        //"content://CONTENT_AUTHORITY/exercise/[uid]/[categoryKey]/exercise_name/[exerciseName]
-        String namePath = Contractor.PATH_EXERCISE + "/*/*/" + Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + "/*";
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/exercise_name/[exerciseName]
+        String namePath = Contractor.PATH_EXERCISE + "/*/" + Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + "/*";
         matcher.addURI(authority, namePath, EXERCISE_WITH_NAME);
 
     }
@@ -187,23 +188,19 @@ public class UriMatcherHelper {
 
     private static void addUriAppointment(UriMatcher matcher, String authority){
         //"content://CONTENT_AUTHORITY/appointment/
-        matcher.addURI(authority, Contractor.PATH_APPOINTMENT, APPOINTMENT);
+        matcher.addURI(authority, MyContractor.PATH_SCHEDULE, SCHEDULE);
 
         //"content://CONTENT_AUTHORITY/appointment/[uid]
-        String uidPath = Contractor.PATH_APPOINTMENT + "/*";
-        matcher.addURI(authority, uidPath, APPOINTMENT_WITH_UID);
+        String uidPath = MyContractor.PATH_SCHEDULE + "/*";
+        matcher.addURI(authority, uidPath, SCHEDULE_WITH_UID);
 
-        //"content://CONTENT_AUTHORITY/appointment/[uid]/appointment_date/[appointmentDay]
-        String dayPath = Contractor.PATH_APPOINTMENT + "/*/" + Contractor.AppointmentEntry.COLUMN_APPOINTMENT_DATE + "/*";
-        matcher.addURI(authority, dayPath, APPOINTMENT_WITH_DAY);
+        //"content://CONTENT_AUTHORITY/appointment/[uid]/timestamp/[timestamp]
+        String dayPath = MyContractor.PATH_SCHEDULE + "/*/" + ScheduleContract.COLUMN_TIMESTAMP + "/*";
+        matcher.addURI(authority, dayPath, SCHEDULE_WITH_TIMESTAMP);
 
         //"content://CONTENT_AUTHORITY/appointment/[uid]/client_key/[clientKey]
-        String clientKeyPath = Contractor.PATH_APPOINTMENT + "/*/" + Contractor.AppointmentEntry.COLUMN_CLIENT_KEY + "/*";
-        matcher.addURI(authority, clientKeyPath, APPOINTMENT_WITH_CLIENT_KEY);
-
-        //"content://CONTENT_AUTHORITY/appointment/[uid]/fkey/[fkey]
-        String keyPath = Contractor.PATH_APPOINTMENT + "/*/" + Contractor.AppointmentEntry.COLUMN_FKEY + "/*";
-        matcher.addURI(authority, keyPath, APPOINTMENT_WITH_FKEY);
+        String clientKeyPath = MyContractor.PATH_SCHEDULE + "/*/" + ScheduleContract.COLUMN_CLIENT_KEY + "/*";
+        matcher.addURI(authority, clientKeyPath, SCHEDULE_WITH_CLIENT_KEY);
 
     }
 
@@ -285,9 +282,9 @@ public class UriMatcherHelper {
         String exercisePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/"  + Contractor.ClientExerciseEntry.COLUMN_EXERCISE + "/*";
         matcher.addURI(authority, exercisePath, CLIENT_EXERCISE_WITH_EXERCISE);
 
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        String timePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/*/"  + Contractor.ClientExerciseEntry.COLUMN_APPOINTMENT_TIME + "/*";
-        matcher.addURI(authority, timePath, CLIENT_EXERCISE_WITH_DATE_TIME);
+        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/timestamp/[timestamp]
+        String timePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/"  + Contractor.ClientExerciseEntry.COLUMN_TIMESTAMP + "/*";
+        matcher.addURI(authority, timePath, CLIENT_EXERCISE_WITH_TIMESTAMP);
 
     }
 }
