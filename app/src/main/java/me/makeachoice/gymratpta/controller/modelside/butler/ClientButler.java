@@ -2,7 +2,6 @@ package me.makeachoice.gymratpta.controller.modelside.butler;
 
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
 import me.makeachoice.gymratpta.model.item.client.AppointmentCardItem;
