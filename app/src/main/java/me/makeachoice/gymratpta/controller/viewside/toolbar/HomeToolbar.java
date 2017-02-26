@@ -3,6 +3,7 @@ package me.makeachoice.gymratpta.controller.viewside.toolbar;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -211,18 +212,18 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
     }
 
     /*
-     * void setTitle(...) - set toolbar title and subtitle
+     * void setGymRatToolbarTitle(...) - set toolbar title and subtitle
      */
-    public void setTitle(String title, String subtitle){
+    public void setGymRatToolbarTitle(String title, String subtitle){
         //set title and subtitle of toolbar, can only be called after setSupportActionBar()
         setTitle(title, subtitle);
 
     }
 
     /*
-     * void setSubtitle(...) - set toolbar subtitle with default title value
+     * void setGymRatToolbarSubtitle(...) - set toolbar subtitle with default title value
      */
-    public void setSubtitle(String subtitle){
+    public void setGymRatToolbarSubtitle(String subtitle){
         String title = mActivity.getResources().getString(DEFAULT_TITLE_ID);
 
         //set title and subtitle of toolbar, can only be called after setSupportActionBar()
