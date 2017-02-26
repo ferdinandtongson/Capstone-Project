@@ -6,21 +6,21 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.client.AppointmentColumns;
+import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
-import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_APPOINTMENT;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_SCHEDULE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT;
 
 /**************************************************************************************************/
 /*
- * AppointmentLoader loads appointment data from database
+ * ScheduleLoader loads appointment data from database
  */
 /**************************************************************************************************/
 
-public class AppointmentLoader {
+public class ScheduleLoader {
 
 /**************************************************************************************************/
 /*
@@ -30,9 +30,9 @@ public class AppointmentLoader {
  *      String mAppointmentDate - appointment date value
  *      String mClientKey - client key value
  *
- *      OnAppointmentLoadListener mListener - listens for when appointment data is loaded
- *      interface OnAppointmentLoadListener:
- *          onAppointmentLoadFinished(Cursor) - notifies listener appointment data has finished loading
+ *      OnScheduleLoadListener mListener - listens for when schedule data is loaded
+ *      interface OnScheduleLoadListener:
+ *          onScheduleLoadFinished(Cursor) - notifies listener schedule data has finished loading
  */
 /**************************************************************************************************/
 
@@ -42,17 +42,17 @@ public class AppointmentLoader {
     //mUserId - user id number taken from firebase authentication
     private String mUserId;
 
-    //mAppointmentDate - appointment date value
-    private String mAppointmentDate;
+    //mTimestamp - appointment timestamp value
+    private String mTimestamp;
 
     //mClientKey - client key value
     private String mClientKey;
 
-    //mListener - listens for when appointment data is loaded
-    private OnAppointmentLoadListener mListener;
-    public interface OnAppointmentLoadListener{
-        //notifies listener appointment data has finished loading
-        public void onAppointmentLoadFinished(Cursor cursor);
+    //mListener - listens for when schedule data is loaded
+    private OnScheduleLoadListener mListener;
+    public interface OnScheduleLoadListener{
+        //notifies listener schedule data has finished loading
+        public void onScheduleLoadFinished(Cursor cursor);
     }
 
 /**************************************************************************************************/
@@ -63,7 +63,7 @@ public class AppointmentLoader {
  */
 /**************************************************************************************************/
 
-    public AppointmentLoader(MyActivity activity, String userId){
+    public ScheduleLoader(MyActivity activity, String userId){
         mActivity = activity;
         mUserId = userId;
 
@@ -74,24 +74,24 @@ public class AppointmentLoader {
 /**************************************************************************************************/
 /*
  * Public Methods
- *      void loadAppointment(...) - start loader to load appointment data from database
- *      void loadAppointmentByDay(...) - start loader to load appointment data from database by date
- *      void loadAppointmentByClientKey(...) - start loader to load appointment data from database by clientKey
+ *      void loadSchedule(...) - start loader to load schedule data from database
+ *      void loadScheduleByTimestamp(...) - start loader to load schedule data from database by timestamp
+ *      void loadScheduleByClientKey(...) - start loader to load schedule data from database by clientKey
  *      void destroyLoader(...) - destroy loader and any data managed by the loader
  */
 /**************************************************************************************************/
     /*
-     * void loadAppointment(...) - start loader to load appointment data from database
+     * void loadSchedule(...) - start loader to load schedule data from database
      */
-    public void loadAppointment(OnAppointmentLoadListener listener){
-        //load appointments using default loader id
-        loadAppointment(LOADER_APPOINTMENT, listener);
+    public void loadSchedule(OnScheduleLoadListener listener){
+        //load schedule using default loader id
+        loadSchedule(LOADER_SCHEDULE, listener);
     }
 
     /*
-     * void loadAppointment(...) - start loader to load appointment data from database
+     * void loadSchedule(...) - start loader to load schedule data from database
      */
-    public void loadAppointment(int loaderId, OnAppointmentLoadListener listener){
+    public void loadSchedule(int loaderId, OnScheduleLoadListener listener){
         //get listener
         mListener = listener;
 
@@ -102,16 +102,16 @@ public class AppointmentLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.AppointmentEntry.buildAppointmentByUID(mUserId);
+                        Uri uri = ScheduleContract.buildScheduleByUID(mUserId);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                AppointmentColumns.PROJECTION,
+                                me.makeachoice.gymratpta.model.contract.client.ScheduleContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.AppointmentEntry.SORT_ORDER_DATE_TIME);
+                                ScheduleContract.SORT_ORDER_TIMESTAMP);
                     }
 
                     @Override
@@ -119,7 +119,7 @@ public class AppointmentLoader {
                         //make sure listener is not NULL
                         if(mListener != null){
                             //notify listener that data has finished loading
-                            mListener.onAppointmentLoadFinished(cursor);
+                            mListener.onScheduleLoadFinished(cursor);
                         }
                     }
 
@@ -131,19 +131,19 @@ public class AppointmentLoader {
     }
 
     /*
-     * void loadAppointmentByDay(...) - start loader to load appointment data from database by date
+     * void loadScheduleByTimestamp(...) - start loader to load schedule data from database by timestamp
      */
-    public void loadAppointmentByDate(String appointmentDate, OnAppointmentLoadListener listener){
-        //load appointment using default loader id
-        loadAppointmentByDate(appointmentDate, LOADER_APPOINTMENT, listener);
+    public void loadScheduleByTimestamp(String timestamp, OnScheduleLoadListener listener){
+        //load schedule using default loader id
+        loadScheduleByTimestamp(timestamp, LOADER_SCHEDULE, listener);
     }
 
     /*
-     * void loadAppointmentByDay(...) - start loader to load appointment data from database by date
+     * void loadScheduleByTimestamp(...) - start loader to load schedule data from database by timestamp
      */
-    public void loadAppointmentByDate(String appointmentDate, int loaderId, OnAppointmentLoadListener listener){
+    public void loadScheduleByTimestamp(String timestamp, int loaderId, OnScheduleLoadListener listener){
         //get date
-        mAppointmentDate = appointmentDate;
+        mTimestamp = timestamp;
 
         //get listener
         mListener = listener;
@@ -155,16 +155,17 @@ public class AppointmentLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.AppointmentEntry.buildAppointmentByDate(mUserId, mAppointmentDate);
+                        Uri uri = ScheduleContract.buildScheduleByTimestamp(mUserId, mTimestamp);
+                        Log.d("Choice", "     uri: " + uri.toString());
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                AppointmentColumns.PROJECTION,
+                                ScheduleContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.AppointmentEntry.SORT_ORDER_TIME_CLIENT);
+                                ScheduleContract.SORT_ORDER_TIME_CLIENT);
                     }
 
                     @Override
@@ -172,7 +173,7 @@ public class AppointmentLoader {
                         //make sure listener is not NULL
                         if(mListener != null){
                             //notify listener that client data has finished loading
-                            mListener.onAppointmentLoadFinished(cursor);
+                            mListener.onScheduleLoadFinished(cursor);
                         }
                     }
 
@@ -184,18 +185,18 @@ public class AppointmentLoader {
     }
 
     /*
-     * void loadAppointmentByClientKey(...) - start loader to load appointment data from database by clientKey
+     * void loadScheduleByClientKey(...) - start loader to load schedule data from database by clientKey
      */
-    public void loadAppointmentByClientKey(String clientKey, OnAppointmentLoadListener listener){
-        //load appointment using default loader id
-        loadAppointmentByClientKey(clientKey, LOADER_APPOINTMENT, listener);
+    public void loadScheduleByClientKey(String clientKey, OnScheduleLoadListener listener){
+        //load schedule using default loader id
+        loadScheduleByClientKey(clientKey, LOADER_SCHEDULE, listener);
     }
 
 
     /*
-     * void loadAppointmentByClientKey(...) - start loader to load appointment data from database by clientKey
+     * void loadScheduleByClientKey(...) - start loader to load schedule data from database by clientKey
      */
-    public void loadAppointmentByClientKey(String clientKey, int loaderId, OnAppointmentLoadListener listener){
+    public void loadScheduleByClientKey(String clientKey, int loaderId, OnScheduleLoadListener listener){
         //get client key
         mClientKey = clientKey;
 
@@ -209,16 +210,16 @@ public class AppointmentLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.AppointmentEntry.buildAppointmentByClientKey(mUserId, mClientKey);
+                        Uri uri = ScheduleContract.buildScheduleByClientKey(mUserId, mClientKey);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                AppointmentColumns.PROJECTION,
+                                me.makeachoice.gymratpta.model.contract.client.ScheduleContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.AppointmentEntry.SORT_ORDER_DATE_TIME);
+                                ScheduleContract.SORT_ORDER_TIMESTAMP);
                     }
 
                     @Override
@@ -226,7 +227,7 @@ public class AppointmentLoader {
                         //make sure listener is not NULL
                         if(mListener != null){
                             //notify listener that client data has finished loading
-                            mListener.onAppointmentLoadFinished(cursor);
+                            mListener.onScheduleLoadFinished(cursor);
                         }
                     }
 

@@ -9,15 +9,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import me.makeachoice.gymratpta.model.item.client.AppointmentFBItem;
+import me.makeachoice.gymratpta.model.item.client.ScheduleFBItem;
 
 /**************************************************************************************************/
 /*
- * AppointmentFirebaseHelper helps in adding and requesting client appointment data to and from firebase
+ * ScheduleFirebaseHelper helps in adding and requesting schedule appointment data to and from firebase
  */
 /**************************************************************************************************/
 
-public class AppointmentFirebaseHelper {
+public class ScheduleFirebaseHelper {
 
 /**************************************************************************************************/
 /*
@@ -25,6 +25,7 @@ public class AppointmentFirebaseHelper {
  */
 /**************************************************************************************************/
 
+    public final static String CHILD_APPOINTMENT_DATE = "appointmentDate";
     public final static String CHILD_APPOINTMENT_TIME = "appointmentTime";
     public final static String CHILD_CLIENT_KEY = "clientKey";
     public final static String CHILD_CLIENT_NAME = "clientName";
@@ -32,7 +33,7 @@ public class AppointmentFirebaseHelper {
     public final static String CHILD_STATUS = "status";
 
     //PARENT - parent director
-    private final static String PARENT = "appointment";
+    private final static String PARENT = "userSchedule";
 
     //mFireDB - firebase instance
     private FirebaseDatabase mFireDB;
@@ -54,16 +55,16 @@ public class AppointmentFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    private static AppointmentFirebaseHelper instance = null;
+    private static ScheduleFirebaseHelper instance = null;
 
-    public static AppointmentFirebaseHelper getInstance() {
+    public static ScheduleFirebaseHelper getInstance() {
         if(instance == null) {
-            instance = new AppointmentFirebaseHelper();
+            instance = new ScheduleFirebaseHelper();
         }
         return instance;
     }
 
-    private AppointmentFirebaseHelper(){
+    private ScheduleFirebaseHelper(){
 
         mFireDB = FirebaseDatabase.getInstance();
     }
@@ -76,12 +77,12 @@ public class AppointmentFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public DatabaseReference getAppointmentReference(String userId){
+    public DatabaseReference getScheduleReference(String userId){
         return mFireDB.getReference().child(PARENT).child(userId);
     }
 
-    private DatabaseReference getAppointmentReferenceByDay(String userId, String appointmentDay){
-        return getAppointmentReference(userId).child(appointmentDay);
+    private DatabaseReference getScheduleReferenceByTimestamp(String userId, String timestamp){
+        return getScheduleReference(userId).child(timestamp);
     }
 
 /**************************************************************************************************/
@@ -92,16 +93,16 @@ public class AppointmentFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addAppointmentDataByDay(String userId, String appointmentDay, ArrayList<AppointmentFBItem> appointments){
-        int count = appointments.size();
+    public void addScheduleDataByTimestamp(String userId, String timestamp, ArrayList<ScheduleFBItem> schedule){
+        int count = schedule.size();
         for(int i = 0; i < count; i++){
-            addAppointmentByDay(userId, appointmentDay, appointments.get(i));
+            addScheduleByTimestamp(userId, timestamp, schedule.get(i));
         }
 
     }
 
-    public void addAppointmentByDay(String userId, String appointmentDay, AppointmentFBItem item){
-        DatabaseReference ref = getAppointmentReferenceByDay(userId, appointmentDay);
+    public void addScheduleByTimestamp(String userId, String timestamp, ScheduleFBItem item){
+        DatabaseReference ref = getScheduleReferenceByTimestamp(userId, timestamp);
         ref.push().setValue(item);
     }
 
@@ -113,13 +114,10 @@ public class AppointmentFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteAppointment(String userId, String appointmentDay, String clientName,
-                                  String appointmentTime, ValueEventListener listener){
-        DatabaseReference ref = getAppointmentReferenceByDay(userId, appointmentDay);
+    public void deleteSchedule(String userId, String timestamp, String clientName, ValueEventListener listener){
+        DatabaseReference ref = getScheduleReferenceByTimestamp(userId, timestamp);
 
         Query appointmentQuery = ref.orderByChild(CHILD_CLIENT_NAME).equalTo(clientName);
-
-        final String appTime = appointmentTime;
 
         appointmentQuery.addListenerForSingleValueEvent(listener);
 
@@ -127,27 +125,16 @@ public class AppointmentFirebaseHelper {
 
 /**************************************************************************************************/
 
-
 /**************************************************************************************************/
 /*
  * Request Data Methods
  */
 /**************************************************************************************************/
 
-    public void requestAppointmentDataByDate(String userId, String appointmentDate, OnDataLoadedListener listener){
-        //get reference
-        DatabaseReference ref = getAppointmentReferenceByDay(userId, appointmentDate);
-
-        mOnDataLoadedListener = listener;
-
-        //add event listener to reference
-        ref.addListenerForSingleValueEvent(mEventListener);
-    }
-
-    public void requestAppointmentDataByDate(String userId, String appointmentDate, String orderBy,
+    public void requestScheduleDataByTimestamp(String userId, String timestamp, String orderBy,
                                                 OnDataLoadedListener listener){
         //get reference
-        DatabaseReference ref = getAppointmentReferenceByDay(userId, appointmentDate);
+        DatabaseReference ref = getScheduleReferenceByTimestamp(userId, timestamp);
 
         mOnDataLoadedListener = listener;
 
