@@ -4,7 +4,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.MenuItem;
 
 import me.makeachoice.gymratpta.R;
@@ -17,12 +16,11 @@ import static me.makeachoice.gymratpta.R.id.bottom_nav_item2;
 
 /**************************************************************************************************/
 /*
- * ExerciseNav - helps manage bottom navigation bars used by activities
+ * ScheduleNav - helps manage bottom navigation bars used by activities
  */
-
 /**************************************************************************************************/
 
-public class AppointmentNav extends MyBottomNav implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class ScheduleNav extends MyBottomNav implements BottomNavigationView.OnNavigationItemSelectedListener{
 
 /**************************************************************************************************/
 /*
@@ -30,19 +28,24 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
  */
 /**************************************************************************************************/
 
-    private final static int DEFAULT_MENU_ID = R.menu.bottom_nav_appointment_menu;
+    private final static int DEFAULT_MENU_ID = R.menu.bottom_nav_schedule;
+
+    private OnNavSelectedListener mListener;
+    public interface OnNavSelectedListener{
+        public void onNavSelected(int navId);
+    }
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * BottomNavigationView - constructor
+ * ScheduleNav - constructor
  */
 /**************************************************************************************************/
     /*
-     * BottomNavigationView - constructor
+     * ScheduleNav - constructor
      */
-    public AppointmentNav(MyActivity activity){
+    public ScheduleNav(MyActivity activity){
         //get activity
         mActivity = activity;
 
@@ -52,7 +55,7 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
         initializeNavigation(DEFAULT_MENU_ID);
     }
 
-    public AppointmentNav(MyActivity activity, int bottomId, int menuId){
+    public ScheduleNav(MyActivity activity, int bottomId, int menuId){
         //get activity
         mActivity = activity;
 
@@ -70,18 +73,23 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
         onNavigationItemSelected(mNav.getMenu().getItem(0));
     }
 
+    public void setOnNavSelectedListener(OnNavSelectedListener listener){
+        mListener = listener;
+    }
+
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * Select Item Methods
- *      void setOnItemSelectedListener(OnNavigationItemSelectedListener) - listener for item select events
- *      void checkItem(int) - mark menu item as checked
- *      void uncheckAll() - mark all menu items as unchecked
+ *      boolean onNavigationItemSelected(MenuItem) - bottom navigation item selection event
+ *      void loadFragment(MyMaid) - load appropriate fragment requested by user
  */
 /**************************************************************************************************/
-
+    /*
+     * boolean onNavigationItemSelected(MenuItem) - bottom navigation item selection event
+     */
     public boolean onNavigationItemSelected(MenuItem item){
         int itemId = item.getItemId();
         uncheckAll();
@@ -99,6 +107,10 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
                 break;
             default:
                 maid = null;
+        }
+
+        if(mListener != null){
+            mListener.onNavSelected(itemId);
         }
 
         //load fragment
@@ -126,7 +138,6 @@ public class AppointmentNav extends MyBottomNav implements BottomNavigationView.
         //commit fragment transaction
         fragmentTransaction.commit();
     }
-
 
 /**************************************************************************************************/
 

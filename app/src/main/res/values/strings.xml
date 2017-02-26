@@ -23,8 +23,8 @@
     <string name="drawer_menu_help" translatable="false">@string/help</string>
 
     <!-- bottom nav: Appointment -->
-    <string name="bottom_nav_appointment_day" translatable="true">@string/for_the_day</string>
-    <string name="bottom_nav_appointment_week" translatable="true">@string/for_the_week</string>
+    <string name="bottom_nav_schedule_daily" translatable="true">@string/schedule_daily</string>
+    <string name="bottom_nav_schedule_weekly" translatable="true">@string/schedule_weekly</string>
     <!-- bottom nav: client detail -->
     <string name="bottom_nav_menu_client_info" translatable="false">@string/info</string>
     <string name="bottom_nav_menu_client_schedule" translatable="false">@string/schedule</string>
@@ -178,8 +178,6 @@
     <string name="email" translatable="true">Email</string>
     <string name="exercise" translatable="true">Exercise</string>
     <string name="exercises" translatable="true">Exercises</string>
-    <string name="for_the_day" translatable="true">For the Day</string>
-    <string name="for_the_week" translatable="true">For the Week</string>
     <string name="help" translatable="true">Help</string>
     <string name="history" translatable="true">History</string>
     <string name="info" translatable="true">Info</string>
@@ -205,6 +203,8 @@
     <string name="routines" translatable="true">Routines</string>
     <string name="save" translatable="true">Save</string>
     <string name="schedule" translatable="true">Schedule</string>
+    <string name="schedule_daily" translatable="true">Daily Schedule</string>
+    <string name="schedule_weekly" translatable="true">Weekly Schedule</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
     <string name="session_time" translatable="true">Session Time</string>
     <string name="sessions" translatable="true">Sessions</string>
