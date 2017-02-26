@@ -39,11 +39,58 @@
         <item name="android:textSize">@dimen/textSize_small</item>
     </style>
 
+    <style name="GymRat.Dialog.EditText" parent="GymRat.Dialog.TextView.Large">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginEnd">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:background">@drawable/bg_white</item>
+    </style>
+
     <style name="GymRat.Dialog.Spinner" parent="Theme.AppCompat.Light">
         <item name="android:paddingTop">@dimen/spinner_padding</item>
         <item name="android:paddingBottom">@dimen/spinner_padding</item>
         <item name="android:background">@drawable/spinner_border_arrow</item>
     </style>
 
+    <style name="GymRat.Dialog.Exercise.Text" parent="Theme.AppCompat.Light">
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_width">45dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="GymRat.Dialog.Exercise.Text.Title" parent="GymRat.Dialog.Exercise.Text">
+        <item name="android:background">@drawable/bg_blue</item>
+    </style>
+
+    <style name="GymRat.Dialog.Exercise.Text.Edit.Primary" parent="GymRat.Dialog.Exercise.Text">
+        <item name="android:layout_marginStart">62dp</item>
+        <item name="android:textColorHint">@color/darkgray</item>
+        <item name="android:background">@drawable/bg_white</item>
+    </style>
+
+    <style name="GymRat.Dialog.Exercise.Text.Edit" parent="GymRat.Dialog.Exercise.Text">
+        <item name="android:textColorHint">@color/darkgray</item>
+        <item name="android:background">@drawable/bg_white</item>
+    </style>
+
+    <style name="GymRat.Dialog.Exercise.Text.Set" parent="GymRat.Dialog.Exercise.Text">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:background">@drawable/bg_blue</item>
+    </style>
+
+    <style name="GymRat.Dialog.Exercise.Text.Data" parent="GymRat.Dialog.Exercise.Text">
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:background">@drawable/bg_blue</item>
+    </style>
+
+    <style name="GymRat.Dialog.Exercise.Text.Separator" parent="GymRat.Dialog.Exercise.Text">
+        <item name="android:padding">2dp</item>
+    </style>
 
 </resources>
