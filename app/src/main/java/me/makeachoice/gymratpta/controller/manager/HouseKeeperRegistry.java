@@ -1,13 +1,13 @@
 package me.makeachoice.gymratpta.controller.manager;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.viewside.housekeeper.SessionKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubAppointmentKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubClientDetailKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubClientKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubExerciseKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubRoutineDetailKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubSessionDetailKeeper;
-import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubSessionKeeper;
 import me.makeachoice.library.android.base.controller.manager.MyHouseKeeperRegistry;
 
 /**************************************************************************************************/
@@ -40,7 +40,7 @@ public class HouseKeeperRegistry extends MyHouseKeeperRegistry {
 
     public static String KEEPER_CLIENT = "Keeper Client";
     public static String KEEPER_CLIENT_DETAIL = "Keeper Client Detail";
-    public static String KEEPER_APPOINTMENT = "Keeper Appointment";
+    public static String KEEPER_SCHEDULE = "Keeper Schedule";
     public static String KEEPER_SESSION = "Keeper Session";
     public static String KEEPER_SESSION_DETAIL = "Keeper Session Detail";
     public static String KEEPER_EXERCISE = "Keeper Exercise";
@@ -89,9 +89,9 @@ public class HouseKeeperRegistry extends MyHouseKeeperRegistry {
         registerHouseKeeper(KEEPER_CLIENT_DETAIL, clientDetailKeeper);
 
         StubAppointmentKeeper appointmentKeeper = new StubAppointmentKeeper(R.layout.activity_bottom_nav);
-        registerHouseKeeper(KEEPER_APPOINTMENT, appointmentKeeper);
+        registerHouseKeeper(KEEPER_SCHEDULE, appointmentKeeper);
 
-        StubSessionKeeper sessionKeeper = new StubSessionKeeper(R.layout.activity_recycler);
+        SessionKeeper sessionKeeper = new SessionKeeper(R.layout.activity_recycler);
         registerHouseKeeper(KEEPER_SESSION, sessionKeeper);
 
         StubSessionDetailKeeper sessionDetailKeeper = new StubSessionDetailKeeper(R.layout.activity_bottom_nav);

@@ -57,7 +57,7 @@ public class ScheduleActivity extends MyActivity {
 
         try {
             //check if HouseKeeper is implementing interface
-            mBridge = (Bridge) mBoss.requestHouseKeeper(HouseKeeperRegistry.KEEPER_APPOINTMENT);
+            mBridge = (Bridge) mBoss.requestHouseKeeper(HouseKeeperRegistry.KEEPER_SCHEDULE);
         } catch (ClassCastException e) {
             throw new ClassCastException("HouseKeeper must implement Bridge interface");
         }
