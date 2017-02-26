@@ -121,6 +121,12 @@ public class BasicFragment extends MyFragment {
         return mLayout;
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        mBridge.start();
+    }
+
     /*
      * void onSaveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
      */

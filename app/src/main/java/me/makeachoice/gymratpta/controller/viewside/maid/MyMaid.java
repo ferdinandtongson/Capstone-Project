@@ -61,6 +61,10 @@ public abstract class MyMaid {
         mActivity = (MyActivity)mFragment.getActivity();
     }
 
+    public void start(){
+
+    }
+
     /*
      * void destroyView() - called when fragment is being removed
      */

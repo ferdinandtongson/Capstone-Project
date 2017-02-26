@@ -52,6 +52,8 @@ public abstract class MyFragment extends Fragment {
         //called by onActivityCreated() in fragment lifecycle, Activity.onCreate() completed
         void activityCreated(Bundle bundle);
 
+        void start();
+
         //called by onDestroyView() in fragment lifecycle, fragment is being removed
         void destroyView();
 
