@@ -21,6 +21,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.db.table.TableHelper;
 
 
@@ -43,7 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("Choice", "DBHelper.onCreate");
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_USER_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CLIENT_TABLE);
-        sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_APPOINTMENT_TABLE);
+        sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_SCHEDULE_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CATEGORY_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_EXERCISE_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_ROUTINE_TABLE);
@@ -51,13 +52,14 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_NOTES_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_STATS_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CLIENT_ROUTINE_TABLE);
+        sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CLIENT_EXERCISE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.UserEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ClientEntry.TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.AppointmentEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScheduleContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.CategoryEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ExerciseEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.RoutineEntry.TABLE_NAME);
@@ -65,6 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.NotesEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.StatsEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ClientRoutineEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ClientExerciseEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 

@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.model.db.table;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 
 /**************************************************************************************************/
 /*
@@ -61,16 +62,16 @@ public class TableHelper {
             Contractor.RoutineNameEntry.COLUMN_UID + " TEXT NOT NULL, " +
             Contractor.RoutineNameEntry.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL);";
 
-    public final static String SQL_CREATE_APPOINTMENT_TABLE = "CREATE TABLE " + Contractor.AppointmentEntry.TABLE_NAME + " (" +
-            Contractor.AppointmentEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.AppointmentEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.AppointmentEntry.COLUMN_FKEY + " TEXT, " +
-            Contractor.AppointmentEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
-            Contractor.AppointmentEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
-            Contractor.AppointmentEntry.COLUMN_CLIENT_KEY + " TEXT NOT NULL, " +
-            Contractor.AppointmentEntry.COLUMN_CLIENT_NAME + " TEXT, " +
-            Contractor.AppointmentEntry.COLUMN_ROUTINE_NAME + " TEXT, " +
-            Contractor.AppointmentEntry.COLUMN_APPOINTMENT_STATUS + " TEXT);";
+    public final static String SQL_CREATE_SCHEDULE_TABLE = "CREATE TABLE " + ScheduleContract.TABLE_NAME + " (" +
+            ScheduleContract._ID + " INTEGER PRIMARY KEY," +
+            ScheduleContract.COLUMN_UID + " TEXT NOT NULL, " +
+            ScheduleContract.COLUMN_TIMESTAMP + " TEXT, " +
+            ScheduleContract.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
+            ScheduleContract.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
+            ScheduleContract.COLUMN_CLIENT_KEY + " TEXT NOT NULL, " +
+            ScheduleContract.COLUMN_CLIENT_NAME + " TEXT, " +
+            ScheduleContract.COLUMN_ROUTINE_NAME + " TEXT, " +
+            ScheduleContract.COLUMN_APPOINTMENT_STATUS + " TEXT);";
 
     public final static String SQL_CREATE_NOTES_TABLE = "CREATE TABLE " + Contractor.NotesEntry.TABLE_NAME + " (" +
             Contractor.NotesEntry._ID + " INTEGER PRIMARY KEY," +
@@ -121,6 +122,7 @@ public class TableHelper {
             Contractor.ClientExerciseEntry._ID + " INTEGER PRIMARY KEY," +
             Contractor.ClientExerciseEntry.COLUMN_UID + " TEXT NOT NULL, " +
             Contractor.ClientExerciseEntry.COLUMN_CLIENT_KEY + " TEXT, " +
+            Contractor.ClientExerciseEntry.COLUMN_TIMESTAMP + " INTEGER, " +
             Contractor.ClientExerciseEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
             Contractor.ClientExerciseEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
             Contractor.ClientExerciseEntry.COLUMN_CATEGORY + " TEXT, " +
