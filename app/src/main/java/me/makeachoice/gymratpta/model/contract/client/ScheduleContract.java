@@ -54,7 +54,7 @@ public class ScheduleContract extends MyContractor implements BaseColumns {
     public static final String SORT_ORDER_DATE_TIME = COLUMN_TIMESTAMP + " ASC, " +  COLUMN_APPOINTMENT_TIME + " ASC";
 
     //sort order by date, time and client
-    public static final String SORT_ORDER_TIME_CLIENT = SORT_ORDER_DATE_TIME + ", " + COLUMN_CLIENT_NAME;
+    public static final String SORT_ORDER_TIME_CLIENT = SORT_ORDER_DATE_TIME + ", " + COLUMN_CLIENT_NAME + " ASC";
 
 /**************************************************************************************************/
 
@@ -122,6 +122,12 @@ public class ScheduleContract extends MyContractor implements BaseColumns {
         return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CLIENT_KEY).appendPath(clientKey).build();
     }
 
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/timestamp/[startDate]/[endDate]
+    public static Uri buildScheduleByRange(String uid, String startDate, String endDate) {
+        return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_TIMESTAMP).
+                appendPath(startDate).appendPath(endDate).build();
+    }
+
     //"content://CONTENT_AUTHORITY/userSchedule/[uid]/....
     public static String getUIdFromUri(Uri uri) {
         return uri.getPathSegments().get(1);
@@ -136,6 +142,17 @@ public class ScheduleContract extends MyContractor implements BaseColumns {
     public static String getClientKeyFromUri(Uri uri) {
         return uri.getPathSegments().get(3);
     }
+
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/timestamp/[startDate]/[endDate]
+    public static String getStarDateFromRangeUri(Uri uri) {
+        return uri.getPathSegments().get(3);
+    }
+
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/timestamp/[startDate]/[endDate]
+    public static String getEndDateFromRangeUri(Uri uri) {
+        return uri.getPathSegments().get(4);
+    }
+
 
 /**************************************************************************************************/
 

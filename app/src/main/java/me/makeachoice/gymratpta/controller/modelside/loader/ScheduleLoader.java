@@ -48,6 +48,12 @@ public class ScheduleLoader {
     //mClientKey - client key value
     private String mClientKey;
 
+    //mStartRange - start date of range of dates
+    private String mStartRange;
+
+    //mEndRange - end date of range of dates
+    private String mEndRange;
+
     //mListener - listens for when schedule data is loaded
     private OnScheduleLoadListener mListener;
     public interface OnScheduleLoadListener{
@@ -220,6 +226,54 @@ public class ScheduleLoader {
                                 null,
                                 null,
                                 ScheduleContract.SORT_ORDER_TIMESTAMP);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //make sure listener is not NULL
+                        if(mListener != null){
+                            //notify listener that client data has finished loading
+                            mListener.onScheduleLoadFinished(cursor);
+                        }
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                        //does nothing
+                    }
+                });
+    }
+
+    /*
+     * void loadScheduleByRange(...) - start loader to load schedule data from database by range of dates
+     */
+    public void loadScheduleByRange(String[] range, int loaderId, OnScheduleLoadListener listener){
+        //get start date
+        mStartRange = range[0];
+
+        //get end date
+        mEndRange = range[1];
+
+        //get listener
+        mListener = listener;
+
+        //initializes loader
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+                    Log.d("Choice", "ScheduleLoader.loadScheduleByRange");
+                        //request cursor from local database
+                        Uri uri = ScheduleContract.buildScheduleByRange(mUserId, mStartRange, mEndRange);
+                    Log.d("Choice", "     uri: " + uri.toString());
+                        //get cursor
+                        return new CursorLoader(
+                                mActivity,
+                                uri,
+                                me.makeachoice.gymratpta.model.contract.client.ScheduleContract.PROJECTION,
+                                null,
+                                null,
+                                ScheduleContract.SORT_ORDER_TIME_CLIENT);
                     }
 
                     @Override
