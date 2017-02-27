@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.model.item.client.AppointmentCardItem;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
 /**************************************************************************************************/
@@ -374,8 +375,8 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
         mTxtName.setText(item.clientName);
         mTxtName.setContentDescription(item.clientName);
 
-        mTxtInfo.setText(item.clientInfo);
-        mTxtInfo.setContentDescription(item.clientInfo);
+        mTxtInfo.setText(DateTimeHelper.convert24Hour(item.clientInfo));
+        mTxtInfo.setContentDescription(DateTimeHelper.convert24Hour(item.clientInfo));
 
         mTxtRoutine.setText(item.routineName);
         mTxtRoutine.setContentDescription(item.routineName);
