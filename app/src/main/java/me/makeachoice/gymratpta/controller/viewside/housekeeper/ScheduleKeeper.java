@@ -5,8 +5,11 @@ import android.os.Bundle;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
-import me.makeachoice.gymratpta.controller.viewside.bottomnav.AppointmentNav;
+import me.makeachoice.gymratpta.controller.viewside.bottomnav.ScheduleNav;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static me.makeachoice.gymratpta.R.id.bottom_nav_item1;
+import static me.makeachoice.gymratpta.R.id.bottom_nav_item2;
 
 /**************************************************************************************************/
 /*
@@ -19,9 +22,9 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- * AppointmentKeeper is responsible for maintaining the Appointment screen. It is directly responsible
+ * ScheduleKeeper is responsible for maintaining the Schedule screen. It is directly responsible
  * for handling toolbar and drawer events (see GymRatBaseKeeper), bottom navigation events (see
- * AppointmentNav) and the creation of DayMaid and WeekMaid.
+ * ScheduleNav) and the creation of DailyMaid and WeeklyMaid.
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -55,7 +58,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  */
 /**************************************************************************************************/
 
-public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivity.Bridge {
+public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridge {
 
 /**************************************************************************************************/
 /*
@@ -64,21 +67,28 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
 /**************************************************************************************************/
 
     private String mUserId;
+    private String mStrSchedule;
+    private String mStrDaily;
+    private String mStrWeekly;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * StubAppointmentKeeper - constructor
+ * ScheduleKeeper - constructor
  */
 /**************************************************************************************************/
     /*
-     * StubAppointmentKeeper - constructor
+     * ScheduleKeeper - constructor
      */
-    public StubAppointmentKeeper(int layoutId){
+    public ScheduleKeeper(int layoutId){
 
         //get layout id
         mActivityLayoutId = layoutId;
+
+        mStrSchedule = mActivity.getString(R.string.schedule);
+        mStrDaily = mActivity.getString(R.string.daily);
+        mStrWeekly = mActivity.getString(R.string.weekly);
 
         mToolbarMenuId = R.menu.toolbar_menu;
         mBottomNavSelectedItemId = R.id.nav_appointments;
@@ -139,7 +149,7 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
 /*
  * Layout Initialization Methods:
  *      void initializeLayout() - initialize maids and bottom navigation
- *      void initializeMaid() - initialize DayMaid and WeekMaid
+ *      void initializeMaid() - initialize DailyMaid and WeeklyMaid
  *      void initializeBottomNavigation - initialize bottom navigation for the appointment screen
  */
 /**************************************************************************************************/
@@ -155,15 +165,15 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
     }
 
     /*
-     * void initializeMaid() - initialize DayMaid and WeekMaid
+     * void initializeMaid() - initialize DailyMaid and WeeklyMaid
      */
     private void initializeMaid(){
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         //viewPager layout used by exercise maid
         int pagerId = R.layout.viewpager;
-        maidRegistry.initializeDayMaid(MaidRegistry.MAID_DAY, pagerId, mUserId);
-        maidRegistry.initializeWeekMaid(MaidRegistry.MAID_WEEK, pagerId, mUserId);
+        maidRegistry.initializeDailyMaid(MaidRegistry.MAID_DAY, pagerId, mUserId);
+        maidRegistry.initializeWeeklyMaid(MaidRegistry.MAID_WEEK, pagerId, mUserId);
     }
 
     /*
@@ -172,7 +182,13 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
     private void initializeBottomNavigation(){
 
         //create bottom navigator
-        new AppointmentNav(mActivity);
+        ScheduleNav appointmentNav = new ScheduleNav(mActivity);
+        appointmentNav.setOnNavSelectedListener(new ScheduleNav.OnNavSelectedListener() {
+            @Override
+            public void onNavSelected(int navId) {
+                onBottomNavigationSelected(navId);
+            }
+        });
     }
 
 /**************************************************************************************************/
@@ -190,9 +206,18 @@ public class StubAppointmentKeeper extends GymRatBaseKeeper implements MyActivit
     public void backPressed(){
     }
 
+    public void onBottomNavigationSelected(int navId){
+        switch (navId) {
+            case bottom_nav_item1: // 0 - scheduled appointments for a day
+                mHomeToolbar.setGymRatToolbarTitle(mStrSchedule, mStrDaily);
+                break;
+            case bottom_nav_item2: // 1 - scheduled appointments for a week
+                mHomeToolbar.setGymRatToolbarTitle(mStrSchedule, mStrWeekly);
+                break;
+        }
+
+    }
+
 /**************************************************************************************************/
-
-
-
 
 }
