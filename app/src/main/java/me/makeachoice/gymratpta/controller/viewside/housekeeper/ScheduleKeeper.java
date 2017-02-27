@@ -86,10 +86,6 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
         //get layout id
         mActivityLayoutId = layoutId;
 
-        mStrSchedule = mActivity.getString(R.string.schedule);
-        mStrDaily = mActivity.getString(R.string.daily);
-        mStrWeekly = mActivity.getString(R.string.weekly);
-
         mToolbarMenuId = R.menu.toolbar_menu;
         mBottomNavSelectedItemId = R.id.nav_appointments;
 
@@ -120,6 +116,10 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
             //open bundle to set saved instance states
             openBundle(bundle);
         }
+
+        mStrSchedule = mActivity.getString(R.string.schedule);
+        mStrDaily = mActivity.getString(R.string.daily);
+        mStrWeekly = mActivity.getString(R.string.weekly);
 
         mBoss.initializeFirebaseAuth(new Boss.OnSignedInListener() {
             @Override
@@ -157,6 +157,9 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
      * void initializeLayout() - initialize maids and bottom navigation
      */
     private void initializeLayout(){
+
+        mHomeToolbar.setGymRatToolbarTitle(mStrSchedule, mStrDaily);
+
         //initialize maids
         initializeMaid();
 
