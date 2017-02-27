@@ -45,6 +45,7 @@ public class UriMatcherHelper {
     public static final int SCHEDULE_WITH_UID = 701;
     public static final int SCHEDULE_WITH_TIMESTAMP = 702;
     public static final int SCHEDULE_WITH_CLIENT_KEY = 703;
+    public static final int SCHEDULE_WITH_RANGE = 704;
 
     public static final int NOTES = 800;
     public static final int NOTES_WITH_UID = 801;
@@ -105,7 +106,7 @@ public class UriMatcherHelper {
         addUriExercise(matcher, authority);
         addUriRoutine(matcher, authority);
         addUriRoutineName(matcher, authority);
-        addUriAppointment(matcher, authority);
+        addUriSchedule(matcher, authority);
         addUriNotes(matcher, authority);
         addUriStats(matcher, authority);
         addUriClientRoutine(matcher, authority);
@@ -186,22 +187,25 @@ public class UriMatcherHelper {
 
     }
 
-    private static void addUriAppointment(UriMatcher matcher, String authority){
-        //"content://CONTENT_AUTHORITY/appointment/
+    private static void addUriSchedule(UriMatcher matcher, String authority){
+        //"content://CONTENT_AUTHORITY/userSchedule/
         matcher.addURI(authority, MyContractor.PATH_SCHEDULE, SCHEDULE);
 
-        //"content://CONTENT_AUTHORITY/appointment/[uid]
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]
         String uidPath = MyContractor.PATH_SCHEDULE + "/*";
         matcher.addURI(authority, uidPath, SCHEDULE_WITH_UID);
 
-        //"content://CONTENT_AUTHORITY/appointment/[uid]/timestamp/[timestamp]
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/timestamp/[timestamp]
         String dayPath = MyContractor.PATH_SCHEDULE + "/*/" + ScheduleContract.COLUMN_TIMESTAMP + "/*";
         matcher.addURI(authority, dayPath, SCHEDULE_WITH_TIMESTAMP);
 
-        //"content://CONTENT_AUTHORITY/appointment/[uid]/client_key/[clientKey]
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/client_key/[clientKey]
         String clientKeyPath = MyContractor.PATH_SCHEDULE + "/*/" + ScheduleContract.COLUMN_CLIENT_KEY + "/*";
         matcher.addURI(authority, clientKeyPath, SCHEDULE_WITH_CLIENT_KEY);
 
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/timestamp/[startDate]/[endDate]
+        String rangePath = MyContractor.PATH_SCHEDULE + "/*/" + ScheduleContract.COLUMN_TIMESTAMP + "/*/*";
+        matcher.addURI(authority, rangePath, SCHEDULE_WITH_RANGE);
     }
 
     private static void addUriNotes(UriMatcher matcher, String authority){

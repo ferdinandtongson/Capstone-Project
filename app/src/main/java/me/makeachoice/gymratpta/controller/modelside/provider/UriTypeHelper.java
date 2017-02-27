@@ -41,6 +41,7 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_RANGE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_CLIENT_KEY;
@@ -113,6 +114,8 @@ public class UriTypeHelper {
             case SCHEDULE_WITH_TIMESTAMP:
                 return ScheduleContract.CONTENT_TYPE;
             case SCHEDULE_WITH_CLIENT_KEY:
+                return ScheduleContract.CONTENT_TYPE;
+            case SCHEDULE_WITH_RANGE:
                 return ScheduleContract.CONTENT_TYPE;
             case NOTES:
                 return Contractor.NotesEntry.CONTENT_TYPE;
