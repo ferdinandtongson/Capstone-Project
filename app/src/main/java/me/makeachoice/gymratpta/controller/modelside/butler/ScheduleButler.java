@@ -21,11 +21,11 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
 /*
- *  ScheduleDayButler assists in loading, saving and deleting appointment schedules to database and firebase
+ *  ScheduleButler assists in loading, saving and deleting appointment schedules to database and firebase
  */
 /**************************************************************************************************/
 
-public class ScheduleDayButler {
+public class ScheduleButler {
 
 /**************************************************************************************************/
 /*
@@ -80,7 +80,7 @@ public class ScheduleDayButler {
  */
 /**************************************************************************************************/
 
-    public ScheduleDayButler(MyActivity activity, String userId){
+    public ScheduleButler(MyActivity activity, String userId){
         mActivity = activity;
         mUserId = userId;
 
@@ -140,8 +140,26 @@ public class ScheduleDayButler {
 
         //destroy loader
         mScheduleLoader.destroyLoader(mLoaderId);
-
     }
+
+    /*
+     * void loadRangeSchedule() - load schedule data for given week from database
+     */
+    public void loadRangeSchedule(int loaderId, String[] dateRange, OnScheduleLoadedListener listener){
+        mLoaderId = loaderId;
+        mLoadListener = listener;
+
+        //start loader to get schedule data from database
+        mScheduleLoader.loadScheduleByRange(dateRange, mLoaderId,
+                new ScheduleLoader.OnScheduleLoadListener() {
+                    @Override
+                    public void onScheduleLoadFinished(Cursor cursor){
+                        onScheduleLoaded(cursor);
+                    }
+                });
+    }
+
+
 
 /**************************************************************************************************/
 
