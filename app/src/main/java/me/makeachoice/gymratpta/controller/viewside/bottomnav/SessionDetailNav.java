@@ -4,7 +4,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.MenuItem;
 
 import me.makeachoice.gymratpta.R;
@@ -31,6 +30,11 @@ public class SessionDetailNav extends MyBottomNav implements BottomNavigationVie
 /**************************************************************************************************/
 
     private final static int DEFAULT_MENU_ID = R.menu.bottom_nav_session_detail_menu;
+
+    private ScheduleNav.OnNavSelectedListener mListener;
+    public interface OnNavSelectedListener{
+        public void onNavSelected(int navId);
+    }
 
 /**************************************************************************************************/
 
@@ -70,6 +74,10 @@ public class SessionDetailNav extends MyBottomNav implements BottomNavigationVie
         onNavigationItemSelected(mNav.getMenu().getItem(0));
     }
 
+    public void setOnNavSelectedListener(ScheduleNav.OnNavSelectedListener listener){
+        mListener = listener;
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -104,6 +112,10 @@ public class SessionDetailNav extends MyBottomNav implements BottomNavigationVie
                 maid = null;
         }
 
+        if(mListener != null){
+            mListener.onNavSelected(itemId);
+        }
+
         //load fragment
         loadFragment(maid);
 
@@ -114,7 +126,6 @@ public class SessionDetailNav extends MyBottomNav implements BottomNavigationVie
      * void loadFragment(MyMaid) - load appropriate fragment requested by user
      */
     private void loadFragment(MyMaid maid) {
-        Log.d("Choice", "     load Fragment: " + maid.toString());
         //get fragment manger
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
 
