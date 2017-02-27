@@ -20,8 +20,7 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DAY_MAX;
 
 /**************************************************************************************************/
 /*
- * DailyMaid manages the ViewPager and the creation of the DayViewMaids that display the daily schedule
- * of the personal trainer
+ * DailyMaid manages the ViewPager and the creation of the DayViewMaids that display schedule of the day
  *
  * Variables from MyMaid:
  *      mMaidKey - key string of instance Maid
@@ -51,10 +50,10 @@ public class DailyMaid extends MyMaid implements BasicFragment.Bridge{
     private String mUserId;
 
     //mPageTitles - list of titles used by viewPager tabLayout
-    ArrayList<String> mPageTitles;
+    private ArrayList<String> mPageTitles;
 
     //mDatestamps - list of datestamps
-    private ArrayList<Long> mDatestamps;
+    private ArrayList<String> mDatestamps;
 
 /**************************************************************************************************/
 
@@ -109,6 +108,7 @@ public class DailyMaid extends MyMaid implements BasicFragment.Bridge{
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
+        //initialize buffers
         mPageTitles = new ArrayList<>();
         mDatestamps = new ArrayList<>();
 
@@ -167,7 +167,7 @@ public class DailyMaid extends MyMaid implements BasicFragment.Bridge{
 
         // Start date
         String day;
-        long datestamp;
+        String datestamp;
 
         //loop through number of days
         for(int i = 0; i < numberOfDays; i++){
@@ -193,7 +193,7 @@ public class DailyMaid extends MyMaid implements BasicFragment.Bridge{
 
         //initialize maids
         for(int i = 0; i < count; i++){
-            long datestamp = mDatestamps.get(i);
+            String datestamp = mDatestamps.get(i);
 
             //create unique maid id numbers using a base number
             String maidKey = MaidRegistry.MAID_DAY_VP + i;
