@@ -3,6 +3,7 @@ package me.makeachoice.gymratpta.controller.modelside.provider;
 import android.net.Uri;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
@@ -118,15 +119,15 @@ public class UriTypeHelper {
             case SCHEDULE_WITH_RANGE:
                 return ScheduleContract.CONTENT_TYPE;
             case NOTES:
-                return Contractor.NotesEntry.CONTENT_TYPE;
+                return NotesContract.CONTENT_TYPE;
             case NOTES_WITH_UID:
-                return Contractor.NotesEntry.CONTENT_TYPE;
+                return NotesContract.CONTENT_TYPE;
             case NOTES_WITH_CLIENT_KEY:
-                return Contractor.NotesEntry.CONTENT_TYPE;
+                return NotesContract.CONTENT_TYPE;
             case NOTES_WITH_DATE:
-                return Contractor.NotesEntry.CONTENT_TYPE;
+                return NotesContract.CONTENT_TYPE;
             case NOTES_WITH_DATE_TIME:
-                return Contractor.NotesEntry.CONTENT_ITEM_TYPE;
+                return NotesContract.CONTENT_ITEM_TYPE;
             case STATS:
                 return Contractor.StatsEntry.CONTENT_TYPE;
             case STATS_WITH_UID:

@@ -4,6 +4,7 @@ import android.content.UriMatcher;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.MyContractor;
+import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 
 /**
@@ -217,15 +218,15 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, NOTES_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/client_key/[clientKey]
-        String clientKeyPath = Contractor.PATH_NOTES + "/*/" + Contractor.NotesEntry.COLUMN_CLIENT_KEY + "/*";
+        String clientKeyPath = Contractor.PATH_NOTES + "/*/" + NotesContract.COLUMN_CLIENT_KEY + "/*";
         matcher.addURI(authority, clientKeyPath, NOTES_WITH_CLIENT_KEY);
 
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/appointment_date/[appointmentDate]
-        String datePath = Contractor.PATH_NOTES + "/*/*/"  + Contractor.NotesEntry.COLUMN_APPOINTMENT_DATE + "/*";
+        String datePath = Contractor.PATH_NOTES + "/*/*/"  + NotesContract.COLUMN_APPOINTMENT_DATE + "/*";
         matcher.addURI(authority, datePath, NOTES_WITH_DATE);
 
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        String timePath = Contractor.PATH_NOTES + "/*/*/*/"  + Contractor.NotesEntry.COLUMN_APPOINTMENT_TIME + "/*";
+        String timePath = Contractor.PATH_NOTES + "/*/*/*/"  + NotesContract.COLUMN_APPOINTMENT_TIME + "/*";
         matcher.addURI(authority, timePath, NOTES_WITH_DATE_TIME);
 
     }
