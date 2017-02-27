@@ -3,6 +3,8 @@ package me.makeachoice.gymratpta.controller.modelside.butler;
 import android.database.Cursor;
 import android.net.Uri;
 
+import java.util.HashMap;
+
 import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
 import me.makeachoice.gymratpta.model.item.client.AppointmentCardItem;
 import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
@@ -47,6 +49,11 @@ public class ClientButler {
         public void onClientLoaded(ClientItem clientItem, AppointmentCardItem cardItem);
     }
 
+    private OnAllClientsLoadedListener mAllListener;
+    public interface OnAllClientsLoadedListener{
+        public void onAllClientsLoaded(HashMap<String,ClientItem> clientMap);
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -59,7 +66,6 @@ public class ClientButler {
         mActivity = activity;
         mUserId = userId;
 
-        //mScheduleList = new ArrayList<>();
         mClientLoader = new ClientLoader(mActivity, mUserId);
     }
 
@@ -86,6 +92,40 @@ public class ClientButler {
                 onClientLoaded(cursor);
             }
         });
+    }
+
+    public void loadAllClients(int loaderId, OnAllClientsLoadedListener listener){
+        mLoaderId = loaderId;
+        mAllListener = listener;
+
+        //load client data
+        mClientLoader.loadClients(mLoaderId, new ClientLoader.OnClientLoadListener() {
+            @Override
+            public void onClientLoadFinished(Cursor cursor) {
+                onAllClientsLoaded(cursor);
+            }
+        });
+    }
+
+    private void onAllClientsLoaded(Cursor cursor){
+        HashMap<String,ClientItem> clientMap = new HashMap<>();
+
+        if(cursor != null && cursor.getCount() > 0){
+            int count = cursor.getCount();
+
+            for(int i = 0; i < count; i++){
+                cursor.moveToPosition(i);
+                ClientItem item = new ClientItem(cursor);
+
+                clientMap.put(item.clientName, item);
+
+            }
+        }
+
+        mAllListener.onAllClientsLoaded(clientMap);
+
+        mClientLoader.destroyLoader(mLoaderId);
+
     }
 
     /*
@@ -117,7 +157,7 @@ public class ClientButler {
     /*
      * createAppointmentCardItem(...) - create appointmentCard item consumed by adapter
      */
-    private AppointmentCardItem createAppointmentCardItem(ScheduleItem appItem, ClientItem clientItem){
+    public AppointmentCardItem createAppointmentCardItem(ScheduleItem appItem, ClientItem clientItem){
         //create appointmentCard item used by adapter
         AppointmentCardItem item = new AppointmentCardItem();
         item.clientName = clientItem.clientName;
