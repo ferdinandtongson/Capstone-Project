@@ -2,7 +2,6 @@ package me.makeachoice.gymratpta.controller.viewside.maid.schedule;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -327,7 +326,7 @@ public class WeekViewMaid extends GymRatRecyclerMaid implements BasicFragment.Br
         String oldDate = "";
 
         //date taken from scheduleList item
-        String scheduleDate = "";
+        String scheduleDate;
 
         //loop through until endDate is reached
         while(!currentDate.equals(endDate) && debugIndex < 20){
