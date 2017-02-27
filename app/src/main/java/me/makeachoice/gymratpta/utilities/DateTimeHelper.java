@@ -29,7 +29,6 @@ public class DateTimeHelper {
     }
 
     public static String getDatestamp(int addDays){
-        Log.d("Choice", "DateTimeHelper.getDateStamp");
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -38,6 +37,22 @@ public class DateTimeHelper {
 
         //add number of days to date
         cal.add(Calendar.DATE, addDays);
+
+        return dateFormat.format(cal.getTime());
+    }
+
+    public static String getDatestamp(Date date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        return dateFormat.format(date);
+    }
+
+    public static String getDatestamp(Date date, int addDay){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, addDay);
 
         return dateFormat.format(cal.getTime());
     }
@@ -178,4 +193,31 @@ public class DateTimeHelper {
         return -1;
     }
 
+
+
+
+    public static Date getStartOfWeek(int addWeek){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, addWeek);
+
+        return calendar.getTime();
+    }
+
+    public static Date getEndOfWeek(int addWeek){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, addWeek);
+
+        calendar.add(Calendar.DATE, 6);
+
+        return calendar.getTime();
+    }
+
+    public static String convertWeekRange(Date startOfWeek, Date endOfWeek){
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd");
+
+        String startDateInStr = formatter.format(startOfWeek);
+        String endDateInString = formatter.format(endOfWeek);
+
+        return startDateInStr + " - " + endDateInString;
+    }
 }
