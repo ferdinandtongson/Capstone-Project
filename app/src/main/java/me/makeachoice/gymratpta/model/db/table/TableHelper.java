@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.model.db.table;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 
 /**************************************************************************************************/
@@ -73,17 +74,18 @@ public class TableHelper {
             ScheduleContract.COLUMN_ROUTINE_NAME + " TEXT, " +
             ScheduleContract.COLUMN_APPOINTMENT_STATUS + " TEXT);";
 
-    public final static String SQL_CREATE_NOTES_TABLE = "CREATE TABLE " + Contractor.NotesEntry.TABLE_NAME + " (" +
-            Contractor.NotesEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.NotesEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.NotesEntry.COLUMN_CLIENT_KEY + " TEXT, " +
-            Contractor.NotesEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
-            Contractor.NotesEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
-            Contractor.NotesEntry.COLUMN_MODIFIED_DATE + " TEXT, " +
-            Contractor.NotesEntry.COLUMN_SUBJECTIVE_NOTES + " TEXT, " +
-            Contractor.NotesEntry.COLUMN_OBJECTIVE_NOTES + " TEXT, " +
-            Contractor.NotesEntry.COLUMN_ASSESSMENT_NOTES+ " TEXT, " +
-            Contractor.NotesEntry.COLUMN_PLAN_NOTES + " TEXT);";
+    public final static String SQL_CREATE_NOTES_TABLE = "CREATE TABLE " + NotesContract.TABLE_NAME + " (" +
+            NotesContract._ID + " INTEGER PRIMARY KEY," +
+            NotesContract.COLUMN_UID + " TEXT NOT NULL, " +
+            NotesContract.COLUMN_CLIENT_KEY + " TEXT, " +
+            NotesContract.COLUMN_TIMESTAMP + " TEXT, " +
+            NotesContract.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
+            NotesContract.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
+            NotesContract.COLUMN_MODIFIED_DATE + " TEXT, " +
+            NotesContract.COLUMN_SUBJECTIVE_NOTES + " TEXT, " +
+            NotesContract.COLUMN_OBJECTIVE_NOTES + " TEXT, " +
+            NotesContract.COLUMN_ASSESSMENT_NOTES+ " TEXT, " +
+            NotesContract.COLUMN_PLAN_NOTES + " TEXT);";
 
     public final static String SQL_CREATE_STATS_TABLE = "CREATE TABLE " + Contractor.StatsEntry.TABLE_NAME + " (" +
             Contractor.StatsEntry._ID + " INTEGER PRIMARY KEY," +
