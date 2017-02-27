@@ -1,0 +1,28 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/choiceCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    style="@style/ChoiceTheme.Activity">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/choiceRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="7dp"
+        android:focusable="true"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <TextView
+        android:id="@+id/choiceEmptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="24sp"
+        />
+
+</android.support.design.widget.CoordinatorLayout>
