@@ -1,26 +1,23 @@
-package me.makeachoice.gymratpta.controller.viewside.maid.appointment;
+package me.makeachoice.gymratpta.controller.viewside.maid.schedule;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardStateViewPager;
-import me.makeachoice.gymratpta.model.item.ClientCardItem;
-import me.makeachoice.gymratpta.model.stubData.SessionStubData;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
 /**************************************************************************************************/
 /*
- * TODO - add description
+ * WeeklyMaid manages the viewPager and the creation of WeekViewMaid that displays the schedule of the week
  * Variables from MyMaid:
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
@@ -38,7 +35,7 @@ import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
 /**************************************************************************************************/
 
-public class WeekMaid extends MyMaid implements BasicFragment.Bridge{
+public class WeeklyMaid extends MyMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
@@ -46,28 +43,36 @@ public class WeekMaid extends MyMaid implements BasicFragment.Bridge{
  */
 /**************************************************************************************************/
 
-    //mPageTitles - list of titles used by viewPager tabLayout
-    ArrayList<String> mPageTitles;
-
+    //mUserId - user id taken from firebase authentication
     private String mUserId;
+
+    //mPageTitles - list of titles used by viewPager tabLayout
+    private ArrayList<String> mPageTitles;
+
+    private String[][] mDateRange;
+    private ArrayList<Date> mStartDates;
+
+    //mDatestamps - list of datestamps
+    //private ArrayList<String> mDatestamps;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * WeekMaid - constructor
+ * WeeklyMaid - constructor
  */
 /**************************************************************************************************/
     /*
-     * WeekMaid(...) - constructor
+     * WeeklyMaid(...) - constructor
      */
-    public WeekMaid(String maidKey, int layoutId, String userId){
+    public WeeklyMaid(String maidKey, int layoutId, String userId){
         //get maidKey
         mMaidKey = maidKey;
 
         //fragment layout id number
         mLayoutId = layoutId;
 
+        //user id take from firebase authentication
         mUserId = userId;
     }
 
@@ -103,6 +108,10 @@ public class WeekMaid extends MyMaid implements BasicFragment.Bridge{
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
+        //initialize buffers
+        mPageTitles = new ArrayList<>();
+        mStartDates = new ArrayList<>();
+
         //prepare fragment components
         prepareFragment();
     }
@@ -130,78 +139,74 @@ public class WeekMaid extends MyMaid implements BasicFragment.Bridge{
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment(){
-        //load category and exercise data
-        loadData();
+        //initialize daily titles
+        initializeTitles();
 
         //initialize maids used by viewPager
         initializeVPMaids();
 
-        //initialize view pager
-        new StandardStateViewPager(mFragment, mPageTitles, MaidRegistry.MAID_DAY_VP);
+        //initialize viewPager component
+        initializeViewPager();
     }
 
-    private void loadData(){
-        mPageTitles = new ArrayList();
+    /*
+     * void initializeArrays() - initialize title and datestamp buffer array
+     */
+    private void initializeTitles(){
+        //clear array buffers
+        mPageTitles.clear();
 
-        // Start date
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
-        Calendar c = Calendar.getInstance();
-        int week = c.get(Calendar.WEEK_OF_YEAR);
-        int year = c.get(Calendar.YEAR);
-        mPageTitles.add(getStartEndOFWeek(week, year));
+        //get number of weeks to display
+        int numberOfWeeks = 52;
 
-        for(int i = 0; i < 52; i++){
-            c.add(Calendar.WEEK_OF_YEAR, 1);
-            week = c.get(Calendar.WEEK_OF_YEAR);
-            year = c.get(Calendar.YEAR);
-            mPageTitles.add(getStartEndOFWeek(week, year));
+        mDateRange = new String[numberOfWeeks][2];
+
+        Date startDate;
+        Date endDate;
+        for(int i = 0; i < numberOfWeeks; i++){
+            startDate = DateTimeHelper.getStartOfWeek(i);
+            endDate = DateTimeHelper.getEndOfWeek(i);
+
+            mDateRange[i][0] = DateTimeHelper.getDatestamp(startDate);
+            mDateRange[i][1] = DateTimeHelper.getDatestamp(endDate);
+            mStartDates.add(startDate);
+            mPageTitles.add(DateTimeHelper.convertWeekRange(startDate, endDate));
         }
-
     }
 
-    private String getStartEndOFWeek(int enterWeek, int enterYear){
-        //enterWeek is week number
-        //enterYear is year
-        String startEndWeek;
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.WEEK_OF_YEAR, enterWeek);
-        calendar.set(Calendar.YEAR, enterYear);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd"); // PST`
-        Date startDate = calendar.getTime();
-        String startDateInStr = formatter.format(startDate);
-        startEndWeek = startDateInStr + " - ";
-
-        calendar.add(Calendar.DATE, 6);
-        Date endDate = calendar.getTime();
-        String endDateInString = formatter.format(endDate);
-
-        return startDateInStr + " - " + endDateInString;
-    }
-
+    /*
+     * void initializeVPMaids() - initialize maids used by viewPager component
+     */
     private void initializeVPMaids(){
         //layout resource id maid will use to create fragment
-        //int layoutId = R.layout.standard_recycler_fab;
         int layoutId = R.layout.standard_recycler_fab;
 
+        //get number of pages to create
         int count = mPageTitles.size();
 
         //initialize maids
         for(int i = 0; i < count; i++){
-            //get exercise list
-            ArrayList<ClientCardItem> clients = SessionStubData.createData(mFragment.getContext());
 
             //create unique maid id numbers using a base number
-            String maidKey = MaidRegistry.MAID_DAY_VP + i;
+            String maidKey = MaidRegistry.MAID_WEEK_VP + i;
 
             MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
             //initialize maid
-            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, mUserId, clients);
+            maidRegistry.initializeWeekViewMaid(maidKey, layoutId, mUserId, mDateRange[i],
+                    mStartDates.get(i), i);
         }
 
     }
+
+    /*
+     * void initializeViewPager() - initialize viewPager component
+     */
+    private void initializeViewPager(){
+        //initialize view pager
+        new StandardStateViewPager(mFragment, mPageTitles, MaidRegistry.MAID_WEEK_VP);
+    }
+
 
 /**************************************************************************************************/
 
