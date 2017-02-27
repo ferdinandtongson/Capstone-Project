@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
@@ -62,10 +61,11 @@ public class ScheduleQueryHelper {
                     ScheduleContract.COLUMN_APPOINTMENT_DATE + " = ? AND " +
                     ScheduleContract.COLUMN_APPOINTMENT_TIME + " = ? ";
 
-    //"query selection - userSchedule.uid AND between ? and ?";
+    //query selection - userSchedule.uid = ? AND appointment_date between ? and ?
     public static final String dateRangeSelection =
             ScheduleContract.TABLE_NAME+
-                    "." + ScheduleContract.COLUMN_UID + " = ? AND BETWEEN ? AND ?";
+                    "." + ScheduleContract.COLUMN_UID + " = ? AND " + ScheduleContract.COLUMN_TIMESTAMP +
+                    " BETWEEN ? AND ?";
 
 /**************************************************************************************************/
 
@@ -143,18 +143,18 @@ public class ScheduleQueryHelper {
      * Cursor getScheduleByRange(...) - get schedule by range
      */
     public static Cursor getScheduleByRange(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
-        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/datestamp/[date1]/[date2]
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/timestamp/[startDate]/[endDate]
         String uid = ScheduleContract.getUIdFromUri(uri);
-        String date1 = ScheduleContract.getClientKeyFromUri(uri);
-        String date2 = "";
+        String startDate = ScheduleContract.getStarDateFromRangeUri(uri);
+        String endDate = ScheduleContract.getEndDateFromRangeUri(uri);
 
         //query from table
         return ScheduleQueryHelper.scheduleQueryBuilder.query(
                 dbHelper.getReadableDatabase(),
                 projection,
-                //query selection - userSchedule.uid AND between ? and ?";
-                ScheduleQueryHelper.clientKeySelection,
-                new String[]{uid, date1, date2},
+                //query selection - userSchedule.uid = ? AND between ? and ?
+                ScheduleQueryHelper.dateRangeSelection,
+                new String[]{uid, startDate, endDate},
                 null,
                 null,
                 sortOrder
