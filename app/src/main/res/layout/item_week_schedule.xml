@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choiceItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="10dp"
+    style="@style/GymRat.Item"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/itemWeek_imgProfile"
+        style="@style/GymRat.Item.ImageView.Profile.Normal"
+        />
+
+    <TextView
+        android:id="@+id/itemWeek_txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/item_marginStart_profileGap"
+        android:layout_toEndOf="@id/itemWeek_imgProfile"
+        android:gravity="center_vertical"
+        style="@style/GymRat.Item.TextView.Large"
+        />
+
+    <TextView
+        android:id="@+id/itemWeek_txtTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/item_marginStart_profileGap"
+        android:layout_toEndOf="@id/itemWeek_imgProfile"
+        android:layout_below="@id/itemWeek_txtName"
+        style="@style/GymRat.Item.TextView"
+        />
+
+    <TextView
+        android:id="@+id/itemWeek_txtDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        style="@style/GymRat.Item.TextView.Large"
+        />
+
+
+
+</RelativeLayout>
