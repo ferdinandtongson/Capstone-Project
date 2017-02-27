@@ -1,9 +1,12 @@
 package me.makeachoice.gymratpta.controller.manager;
 
+import java.util.Date;
+
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.StubMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DailyMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DayViewMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.schedule.WeekViewMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.WeeklyMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistoryMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientInfoMaid;
@@ -18,7 +21,7 @@ import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionNotesVie
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientExerciseMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.session.SessionStatsViewPagerMaid;
-import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
+import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
@@ -43,6 +46,7 @@ public class MaidRegistry extends MyMaidRegistry {
     public static final String MAID_DAY = "DailyMaid";
     public static final String MAID_WEEK = "WeeklyMaid";
     public static final String MAID_DAY_VP = "DayViewMaid";
+    public static final String MAID_WEEK_VP = "WeekViewMaid";
 
     //Client Screen maids
     public static final String MAID_CLIENT_INFO = "ClientInfoMaid";
@@ -104,7 +108,7 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
-    public void initializeDayViewMaid(String maidKey, int layoutId, String userId, long datestamp, int counter){
+    public void initializeDayViewMaid(String maidKey, int layoutId, String userId, String datestamp, int counter){
         //create maid
         DayViewMaid maid = new DayViewMaid(maidKey, layoutId, userId, datestamp, counter);
 
@@ -119,6 +123,16 @@ public class MaidRegistry extends MyMaidRegistry {
         //register maid
         registerMaid(maidKey, maid);
     }
+
+    public void initializeWeekViewMaid(String maidKey, int layoutId, String userId, String[] dateRange,
+                                       Date startDate, int counter){
+        //create maid
+        WeekViewMaid maid = new WeekViewMaid(maidKey, layoutId, userId, dateRange, startDate, counter);
+
+        //register maid
+        registerMaid(maidKey, maid);
+    }
+
 
 /**************************************************************************************************/
 
@@ -145,7 +159,7 @@ public class MaidRegistry extends MyMaidRegistry {
     }
 
     public void initializeClientNotesMaid(String maidKey, int layoutId, String userId, ClientItem item,
-                                          AppointmentItem appItem){
+                                          ScheduleItem appItem){
         //create maid
         ClientNotesMaid maid = new ClientNotesMaid(maidKey, layoutId, userId, item, appItem);
 
@@ -154,7 +168,7 @@ public class MaidRegistry extends MyMaidRegistry {
     }
 
     public void initializeClientStatsMaid(String maidKey, int layoutId, String userId, ClientItem item,
-                                          AppointmentItem appItem){
+                                          ScheduleItem appItem){
         //create maid
         ClientStatsMaid maid = new ClientStatsMaid(maidKey, layoutId, userId, item, appItem);
 
@@ -163,7 +177,7 @@ public class MaidRegistry extends MyMaidRegistry {
     }
 
     public void initializeClientRoutineMaid(String maidKey, int layoutId, String userId, ClientItem item,
-                                            AppointmentItem appItem){
+                                            ScheduleItem appItem){
         //create maid
         ClientExerciseMaid maid = new ClientExerciseMaid(maidKey, layoutId, userId, item, appItem);
 
