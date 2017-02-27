@@ -25,6 +25,7 @@ public class NotesFirebaseHelper {
  */
 /**************************************************************************************************/
 
+    public final static String CHILD_APPOINTMENT_DATE = "appointmentDate";
     public final static String CHILD_APPOINTMENT_TIME = "appointmentTime";
     public final static String CHILD_MODIFIED_DATE = "modifiedDate";
     public final static String CHILD_SUBJECTIVE_NOTES = "subjectiveNotes";
@@ -85,9 +86,9 @@ public class NotesFirebaseHelper {
         return getNotesReference(userId).child(clientKey);
     }
 
-    private DatabaseReference getNotesReferenceByDate(String userId, String clientKey,
-                                                                 String appointmentDate){
-        return getNotesReference(userId).child(clientKey).child(appointmentDate);
+    private DatabaseReference getNotesReferenceByTimestamp(String userId, String clientKey,
+                                                                 String timestamp){
+        return getNotesReference(userId).child(clientKey).child(timestamp);
     }
 
 /**************************************************************************************************/
@@ -98,18 +99,18 @@ public class NotesFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addNotesDataByDate(String userId, String clientKey, String appointmentDate,
+    public void addNotesDataByTimestamp(String userId, String clientKey, String appointmentDate,
                                               ArrayList<NotesFBItem> notes){
         int count = notes.size();
         for(int i = 0; i < count; i++){
-            addNotesByDate(userId, clientKey, appointmentDate, notes.get(i));
+            addNotesByTimestamp(userId, clientKey, appointmentDate, notes.get(i));
         }
 
     }
 
-    public void addNotesByDate(String userId, String clientKey, String appointmentDate, NotesFBItem item){
-        DatabaseReference ref = getNotesReferenceByDate(userId, clientKey, appointmentDate);
-        ref.push().setValue(item);
+    public void addNotesByTimestamp(String userId, String clientKey, String timestamp, NotesFBItem item){
+        DatabaseReference ref = getNotesReferenceByTimestamp(userId, clientKey, timestamp);
+        ref.setValue(item);
     }
 
 /**************************************************************************************************/
@@ -122,11 +123,9 @@ public class NotesFirebaseHelper {
 
     public void deleteNotes(String userId, String clientKey, String appointmentDate,
                                   String appointmentTime, ValueEventListener listener){
-        DatabaseReference ref = getNotesReferenceByDate(userId, clientKey, appointmentDate);
+        DatabaseReference ref = getNotesReferenceByTimestamp(userId, clientKey, appointmentDate);
 
         Query notesQuery = ref.orderByChild(CHILD_APPOINTMENT_TIME).equalTo(appointmentTime);
-
-        final String appTime = appointmentTime;
 
         notesQuery.addListenerForSingleValueEvent(listener);
     }
@@ -159,10 +158,10 @@ public class NotesFirebaseHelper {
         ref.orderByChild(orderBy).addListenerForSingleValueEvent(mEventListener);
     }
 
-    public void requestNotesDataByDate(String userId, String clientKey, String appointmentDay, String orderBy,
+    public void requestNotesDataByTimestamp(String userId, String clientKey, String timestamp, String orderBy,
                                                 OnDataLoadedListener listener){
         //get reference
-        DatabaseReference ref = getNotesReferenceByDate(userId, clientKey, appointmentDay);
+        DatabaseReference ref = getNotesReferenceByTimestamp(userId, clientKey, timestamp);
 
         mOnDataLoadedListener = listener;
 
