@@ -41,6 +41,18 @@
         <item name="android:textSize">@dimen/textSize_normal</item>
     </style>
 
+    <style name="GymRat.Card.TextView.Time" parent="GymRat.Card.TextView">
+        <item name="android:textSize">@dimen/textSize_xsmall</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+    </style>
+
+    <style name="GymRat.Card.TextView.Date" parent="GymRat.Card.TextView">
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginEnd">15dp</item>
+    </style>
+
     <style name="GymRat.Card.TextView.Info" parent="GymRat.Card.TextView">
         <item name="android:textSize">@dimen/textSize_small</item>
         <item name="android:layout_alignParentEnd">true</item>
@@ -67,6 +79,36 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:background">@drawable/bg_blue</item>
+    </style>
+
+    <style name="GymRat.Card.TextView.Measure.Label" parent="GymRat.Card.TextView">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:textSize">@dimen/textSize_xsmall</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="GymRat.Card.TextView.Measure.Stat" parent="GymRat.Card.TextView">
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginStart">7dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="GymRat.Card.TextView.Measure.Data" parent="GymRat.Card.TextView">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginStart">100dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAlignment">viewEnd</item>
+        <item name="android:background">@color/powderBlueish_60</item>
+    </style>
+
+    <style name="GymRat.Card.TextView.Measure.Data.Change" parent="GymRat.Card.TextView">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginStart">25dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:background">@color/powderBlueish_60</item>
     </style>
 
 </resources>
