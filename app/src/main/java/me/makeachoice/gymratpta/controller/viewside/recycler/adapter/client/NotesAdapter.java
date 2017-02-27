@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.model.item.client.NotesItem;
+import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
 /**************************************************************************************************/
 /*
@@ -48,6 +49,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     //mItemLayoutId - item/card layout resource id
     private int mItemLayoutId;
 
+    //mCurrentColor - background current card color
+    private static int mCurrentColor;
+
+    //mOldColor - background card color used for old notes
+    private static int mOldColor;
+
+    private static int mActiveIndex;
+
     //mData - an array list of item data consumed by the adapter
     private ArrayList<NotesItem> mData;
 
@@ -74,6 +83,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
+
+        //get colors used as card background color
+        mCurrentColor = DeprecatedUtility.getColor(mContext, R.color.card_activeBackground);
+        mOldColor = DeprecatedUtility.getColor(mContext, R.color.lightgray);
 
         //initialize data array
         mData = new ArrayList<>();
@@ -134,6 +147,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
      */
     public void setOnClickListener(View.OnClickListener listener){
         mOnClickListener = listener;
+    }
+
+    public void setActiveIndex(int index){
+        mActiveIndex = index;
     }
 
 /**************************************************************************************************/
@@ -315,13 +332,20 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         mCardView.setTag(R.string.recycler_tagPosition, position);
         mCardView.setTag(R.string.recycler_tagItem, item);
 
-        if(mOnLongClickListener != null){
-            mCardView.setOnLongClickListener(mOnLongClickListener);
+        if(position == mActiveIndex){
+            mCardView.setCardBackgroundColor(mCurrentColor);
+        }
+        else{
+            mCardView.setCardBackgroundColor(mOldColor);
+            if(mOnLongClickListener != null){
+                mCardView.setOnLongClickListener(mOnLongClickListener);
+            }
         }
 
         if(mOnClickListener != null){
             mCardView.setOnClickListener(mOnClickListener);
         }
+
     }
 
     /*
