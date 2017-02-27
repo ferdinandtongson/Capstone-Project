@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 /**************************************************************************************************/
@@ -33,33 +33,33 @@ public class NotesQueryHelper {
         //initialize notesQueryBuilder
         notesQueryBuilder = new SQLiteQueryBuilder();
         //set builder to query notes table
-        notesQueryBuilder.setTables(Contractor.NotesEntry.TABLE_NAME);
+        notesQueryBuilder.setTables(NotesContract.TABLE_NAME);
     }
 
     //query selection - notes.uid = ?
     public static final String uidSelection =
-            Contractor.NotesEntry.TABLE_NAME + "." + Contractor.NotesEntry.COLUMN_UID + " = ? ";
+            NotesContract.TABLE_NAME + "." + NotesContract.COLUMN_UID + " = ? ";
 
     //query selection - notes.uid = ? AND client_key = ?
     public static final String clientKeySelection =
-            Contractor.NotesEntry.TABLE_NAME+
-                    "." + Contractor.NotesEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.NotesEntry.COLUMN_CLIENT_KEY + " = ? ";
+            NotesContract.TABLE_NAME+
+                    "." + NotesContract.COLUMN_UID + " = ? AND " +
+                    NotesContract.COLUMN_CLIENT_KEY + " = ? ";
 
-    //query selection - notes.uid = ? AND client_key = ? AND appointment_date = ?
+    //query selection - notes.uid = ? AND client_key = ? AND timestamp = ?
     public static final String dateSelection =
-            Contractor.NotesEntry.TABLE_NAME+
-                    "." + Contractor.NotesEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.NotesEntry.COLUMN_CLIENT_KEY + " = ? AND " +
-                    Contractor.NotesEntry.COLUMN_APPOINTMENT_DATE + " = ? ";
+            NotesContract.TABLE_NAME+
+                    "." + NotesContract.COLUMN_UID + " = ? AND " +
+                    NotesContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    NotesContract.COLUMN_TIMESTAMP + " = ? ";
 
     //query selection - notes.uid = ? AND client_key = ? AND appointment_date = ? AND appointment_time = ?
     public static final String clientKeyDateTimeSelection =
-            Contractor.NotesEntry.TABLE_NAME+
-                    "." + Contractor.NotesEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.NotesEntry.COLUMN_CLIENT_KEY + " = ? AND " +
-                    Contractor.NotesEntry.COLUMN_APPOINTMENT_DATE + " = ? AND " +
-                    Contractor.NotesEntry.COLUMN_APPOINTMENT_TIME + " = ? ";
+            NotesContract.TABLE_NAME+
+                    "." + NotesContract.COLUMN_UID + " = ? AND " +
+                    NotesContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    NotesContract.COLUMN_APPOINTMENT_DATE + " = ? AND " +
+                    NotesContract.COLUMN_APPOINTMENT_TIME + " = ? ";
 
 
 /**************************************************************************************************/
@@ -78,7 +78,7 @@ public class NotesQueryHelper {
      */
     public static Cursor getNotesByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]
-        String uid = Contractor.NotesEntry.getUIdFromUri(uri);
+        String uid = NotesContract.getUIdFromUri(uri);
 
         //query from user table
         return NotesQueryHelper.notesQueryBuilder.query(
@@ -98,8 +98,8 @@ public class NotesQueryHelper {
      */
     public static Cursor getNotesByClientKey(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/client_key/[clientKey]
-        String uid = Contractor.NotesEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.NotesEntry.getClientKeyFromUri(uri);
+        String uid = NotesContract.getUIdFromUri(uri);
+        String clientKey = NotesContract.getClientKeyFromUri(uri);
 
         //query from table
         return NotesQueryHelper.notesQueryBuilder.query(
@@ -119,9 +119,9 @@ public class NotesQueryHelper {
      */
     public static Cursor getNotesByDate(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/[appointmentDate]
-        String uid = Contractor.NotesEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.NotesEntry.getClientKeyFromDateUri(uri);
-        String appointmentDate = Contractor.NotesEntry.getDateFromDateUri(uri);
+        String uid = NotesContract.getUIdFromUri(uri);
+        String clientKey = NotesContract.getClientKeyFromDateUri(uri);
+        String appointmentDate = NotesContract.getDateFromDateUri(uri);
 
         //query from table
         return NotesQueryHelper.notesQueryBuilder.query(
@@ -141,10 +141,10 @@ public class NotesQueryHelper {
      */
     public static Cursor getNotesByDateTime(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/[appointmentDate]/[appointmentTime]
-        String uid = Contractor.NotesEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.NotesEntry.getClientKeyFromDateTimeUri(uri);
-        String appointmentDate = Contractor.NotesEntry.getDateFromDateTimeUri(uri);
-        String appointmentTime = Contractor.NotesEntry.getTimeFromDateTimeUri(uri);
+        String uid = NotesContract.getUIdFromUri(uri);
+        String clientKey = NotesContract.getClientKeyFromDateTimeUri(uri);
+        String appointmentDate = NotesContract.getDateFromDateTimeUri(uri);
+        String appointmentTime = NotesContract.getTimeFromDateTimeUri(uri);
 
         //query from table
         return NotesQueryHelper.notesQueryBuilder.query(
@@ -175,7 +175,7 @@ public class NotesQueryHelper {
     public static Uri insertNotes(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.NotesEntry.TABLE_NAME, null, values);
+            _id = db.insert(NotesContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
             if(mSQLException instanceof SQLiteConstraintException){
@@ -186,7 +186,7 @@ public class NotesQueryHelper {
             throw mSQLException;
         }
 
-        return Contractor.NotesEntry.buildNotesUri(_id);
+        return NotesContract.buildNotesUri(_id);
     }
 
     /*
@@ -200,7 +200,7 @@ public class NotesQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.NotesEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(NotesContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -216,7 +216,7 @@ public class NotesQueryHelper {
                                         String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.NotesEntry.TABLE_NAME, values, whereClause, whereArgs);
+            rowsUpdated = db.update(NotesContract.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;

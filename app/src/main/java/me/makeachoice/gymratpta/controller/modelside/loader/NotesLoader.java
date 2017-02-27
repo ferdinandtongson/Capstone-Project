@@ -8,7 +8,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.client.NotesColumns;
+import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_NOTES;
@@ -55,7 +55,7 @@ public class NotesLoader {
     private OnNotesLoadListener mListener;
     public interface OnNotesLoadListener{
         //notifies listener notes data has finished loading
-        public void onNotesLoadFinished(Cursor cursor);
+        void onNotesLoadFinished(Cursor cursor);
     }
 
 /**************************************************************************************************/
@@ -105,16 +105,16 @@ public class NotesLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.NotesEntry.buildNotesByUID(mUserId);
+                        Uri uri = NotesContract.buildNotesByUID(mUserId);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                NotesColumns.PROJECTION,
+                                NotesContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.NotesEntry.SORT_ORDER_DATE_TIME);
+                                NotesContract.SORT_ORDER_DATE_TIME);
                     }
 
                     @Override
@@ -156,16 +156,16 @@ public class NotesLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.NotesEntry.buildNotesByClientKey(mUserId, mClientKey);
+                        Uri uri = NotesContract.buildNotesByClientKey(mUserId, mClientKey);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                NotesColumns.PROJECTION,
+                                NotesContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.NotesEntry.SORT_ORDER_DATE_TIME);
+                                NotesContract.SORT_ORDER_DATE_TIME);
                     }
 
                     @Override
@@ -214,17 +214,17 @@ public class NotesLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.NotesEntry.buildNotesByDateTime(mUserId, mClientKey,
+                        Uri uri = NotesContract.buildNotesByDateTime(mUserId, mClientKey,
                                 mAppointmentDate, mAppointmentTime);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                NotesColumns.PROJECTION,
+                                NotesContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.NotesEntry.SORT_ORDER_DATE_TIME);
+                                NotesContract.SORT_ORDER_DATE_TIME);
                     }
 
                     @Override
