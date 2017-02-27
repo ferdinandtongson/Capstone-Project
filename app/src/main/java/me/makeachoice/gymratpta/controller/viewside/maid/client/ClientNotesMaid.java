@@ -1,39 +1,31 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.client;
 
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.firebase.client.NotesFirebaseHelper;
-import me.makeachoice.gymratpta.controller.modelside.loader.NotesLoader;
-import me.makeachoice.gymratpta.controller.modelside.query.NotesQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.butler.NotesButler;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.NotesAdapter;
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
+import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
-import me.makeachoice.gymratpta.model.item.client.NotesFBItem;
 import me.makeachoice.gymratpta.model.item.client.NotesItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.view.dialog.NotesDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_NOTES;
+
 /**************************************************************************************************/
 /*
- * TODO - add description
- * TODO - need to prevent addition of soap notes for same session
+ * ClientNotesMaid display a list of SOAP notes of a given client
+ *
  * Variables from MyMaid:
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
@@ -60,14 +52,23 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
     private String mUserId;
     private MyActivity mActivity;
     private ClientItem mClientItem;
-    private AppointmentItem mAppointmentItem;
     private NotesItem mSaveItem;
 
     private ArrayList<NotesItem> mData;
     private NotesAdapter mAdapter;
+    private int mActiveNoteIndex;
 
     private boolean mEditingNotes;
-    private NotesLoader mNotesLoader;
+    private NotesButler mNotesButler;
+
+    private NotesButler.OnLoadedListener mOnLoadListener =
+            new NotesButler.OnLoadedListener() {
+                @Override
+                public void onLoaded(ArrayList<NotesItem> notesList) {
+                    onNotesLoaded(notesList);
+                }
+            };
+
 
 /**************************************************************************************************/
 
@@ -80,7 +81,7 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
      * ClientNotesMaid(...) - constructor
      */
     public ClientNotesMaid(String maidKey, int layoutId, String userId, ClientItem clientItem,
-                           AppointmentItem appItem){
+                           ScheduleItem scheduleItem){
         //get maidKey
         mMaidKey = maidKey;
 
@@ -91,10 +92,30 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
 
         mClientItem = clientItem;
 
-        mAppointmentItem = appItem;
-
         mEditingNotes = false;
+
+        mActiveNoteIndex = -1;
+
+        createSaveNote(scheduleItem);
     }
+
+    /*
+     * void createSaveNote(ScheduleItem) - creates a blank NotesItem used for the current session if needed
+     */
+    private void createSaveNote(ScheduleItem appItem){
+        mSaveItem = new NotesItem();
+        mSaveItem.uid = mUserId;
+        mSaveItem.clientKey = mClientItem.fkey;
+        mSaveItem.timestamp = appItem.datestamp + " " + appItem.appointmentTime;
+        mSaveItem.appointmentDate = appItem.appointmentDate;
+        mSaveItem.appointmentTime = appItem.appointmentTime;
+        mSaveItem.modifiedDate = appItem.appointmentDate;
+        mSaveItem.subjectiveNotes = "";
+        mSaveItem.objectiveNotes = "";
+        mSaveItem.assessmentNotes = "";
+        mSaveItem.planNotes = "";
+    }
+
 
 /**************************************************************************************************/
 
@@ -131,11 +152,13 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
         mActivity = (MyActivity)mFragment.getActivity();
 
         mData = new ArrayList<>();
-        mNotesLoader = new NotesLoader(mActivity, mUserId, mClientItem.fkey);
+        mNotesButler = new NotesButler(mActivity, mUserId, mClientItem.fkey);
 
-        loadNotes();
-        //mData = NotesStubData.createData(mActivity);
-        //prepareFragment();
+    }
+
+    public void start(){
+        super.start();
+        mNotesButler.loadNotes(LOADER_NOTES, mOnLoadListener);
     }
 
     /*
@@ -166,8 +189,6 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
         initializeAdapter();
 
         initializeRecycler();
-
-        initializeFAB();
     }
 
     /*
@@ -190,6 +211,7 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
 
         //create adapter consumed by the recyclerView
         mAdapter = new NotesAdapter(mFragment.getActivity(), adapterLayoutId);
+        mAdapter.setActiveIndex(mActiveNoteIndex);
 
         mAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,26 +252,6 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
     }
 
     /*
-     * void initializeFAB() - initialize FAB component
-     */
-    private void initializeFAB(){
-        //get content description string value
-        String description = mFragment.getString(R.string.description_fab_appointment);
-
-        //add content description to FAB
-        mFAB.setContentDescription(description);
-
-        //add listener for onFABClick events
-        setOnClickFABListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //onFABClick event occurred
-                onFabClicked(view);
-            }
-        });
-    }
-
-    /*
      * NotesDialog initializeNotesDialog - initialize client notes dialog
      */
     private NotesDialog initializeNotesDialog(int mode, NotesItem item){
@@ -281,7 +283,7 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
             mNotesDialog.setCancelable(true);
         }
 
-        mNotesDialog.show(fm, "diaScheduleAppointment");
+        mNotesDialog.show(fm, "diaNotes");
 
         return mNotesDialog;
     }
@@ -314,43 +316,42 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
     /*
      * void loadNotes() - load client notes data from database
      */
-    private void loadNotes(){
-        //start loader to get appointment data from database
-        mNotesLoader.loadNotesByClientKey(new NotesLoader.OnNotesLoadListener() {
-            @Override
-            public void onNotesLoadFinished(Cursor cursor) {
-                onNotesLoaded(cursor);
-            }
-        });
-    }
+    private void onNotesLoaded(ArrayList<NotesItem> notesList){
 
-    /*
-     * void onNotesLoaded(Cursor) - notes from database has been loaded
-     */
-    private void onNotesLoaded(Cursor cursor){
-        //clear notes list array
         mData.clear();
+        mActiveNoteIndex = -1;
 
-        //get number of notes loaded
-        int count = cursor.getCount();
+        //get number of saved client notes
+        int count = notesList.size();
 
-        //loop through cursor
+        //loop through notes
         for(int i = 0; i < count; i++){
-            //move cursor to index position
-            cursor.moveToPosition(i);
+            //get note item
+            NotesItem item = notesList.get(i);
 
-            //create notes item from cursor data
-            NotesItem item = new NotesItem(cursor);
-
-            //add notes item to list
-            mData.add(item);
+            //check if note item is equal to appointment schedule timestamp
+            if(item.timestamp.equals(mSaveItem.timestamp)){
+                //save index of item in list as active
+                mActiveNoteIndex = i;
+                //exit loop
+                i = count;
+            }
         }
 
-        //destroy loader
-        mNotesLoader.destroyLoader();
+        //check if active index was found
+        if(mActiveNoteIndex == -1){
+            //no active index, add blank notes object to data list
+            mData.add(mSaveItem);
+            //set active index to blank notes object
+            mActiveNoteIndex = 0;
+        }
+
+        //add saved client notes
+        mData.addAll(notesList);
 
         //load client data
         prepareFragment();
+
     }
 
 /**************************************************************************************************/
@@ -358,33 +359,12 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
 /**************************************************************************************************/
 /*
  * Class Methods
- *      void onFabClicked(View) - floating action button clicked, open schedule appointment dialog
- *      void onProfileImageClicked(View) - profile image clicked, open client info screen
- *      void onEditAppointment() - edit appointment item
- *      void onSaveAppointment(...) - save appointment item
- *      void onAppointmentDeleteRequest(int) - delete appointment requested
+ *      void onEditNotes() - edit notes item
+ *      void onItemClicked(int) - notes item click event occurred, display notes dialog
+ *      void onNotesCanceled() - dialog cancel onClick event
+ *      void onNotesSaved(ArrayList<String>) - dialog save onClick event
  */
 /**************************************************************************************************/
-    /*
-     * void onFabClicked(View) - floating action button clicked, open schedule appointment dialog
-     */
-    private void onFabClicked(View view){
-        mEditingNotes = true;
-
-        mSaveItem = new NotesItem();
-        mSaveItem.uid = mUserId;
-        mSaveItem.clientKey = mClientItem.fkey;
-        mSaveItem.appointmentDate = mAppointmentItem.appointmentDate;
-        mSaveItem.appointmentTime = mAppointmentItem.appointmentTime;
-        mSaveItem.modifiedDate = mAppointmentItem.appointmentDate;
-        mSaveItem.subjectiveNotes = "";
-        mSaveItem.objectiveNotes = "";
-        mSaveItem.assessmentNotes = "";
-        mSaveItem.planNotes = "";
-
-        initializeNotesDialog(NotesDialog.MODE_ADD, mSaveItem);
-    }
-
     /*
      * void onEditNotes() - edit notes item
      */
@@ -396,17 +376,30 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
         initializeNotesDialog(NotesDialog.MODE_EDIT, mSaveItem);
     }
 
-
+    /*
+     * void onItemClicked(int) - notes item click event occurred, display notes dialog
+     */
     private void onItemClicked(int index){
         NotesItem item = mData.get(index);
 
-        initializeNotesDialog(NotesDialog.MODE_READ, item);
+        if(index == mActiveNoteIndex){
+            initializeNotesDialog(NotesDialog.MODE_EDIT, item);
+        }
+        else{
+            initializeNotesDialog(NotesDialog.MODE_READ, item);
+        }
     }
 
+    /*
+     * void onNotesCanceled() - dialog cancel onClick event
+     */
     private void onNotesCanceled(){
         mNotesDialog.dismiss();
     }
 
+    /*
+     * void onNotesSaved(ArrayList<String>) - dialog save onClick event
+     */
     private void onNotesSaved(ArrayList<String> notes){
         mSaveItem.subjectiveNotes = notes.get(0);
         mSaveItem.objectiveNotes = notes.get(1);
@@ -431,55 +424,18 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
 /*
  * Save Methods
  *      void saveNotes(NotesItem) - save notes item
- *      void saveAppointmentToFirebase(NotesItem) - save notes to firebase
- *      void saveAppointmentToDatabase(...) - save notes to local database
  */
 /**************************************************************************************************/
     /*
      * void saveNotes(NotesItem) - save notes item
      */
     private void saveNotes(NotesItem saveItem){
-        //save to firebase
-        saveNotesToFirebase(saveItem);
-
-        //save to local database
-        saveNotesToDatabase(saveItem);
-
-    }
-
-    /*
-     * void saveNotesToFirebase(NotesItem) - save notes to firebase
-     */
-    private void saveNotesToFirebase(NotesItem saveItem){
-        //get notes firebase helper instance
-        NotesFirebaseHelper notesFB = NotesFirebaseHelper.getInstance();
-
-        //create notes firebase item
-        NotesFBItem notesFBItem = new NotesFBItem();
-        notesFBItem.appointmentTime = saveItem.appointmentTime;
-        notesFBItem.modifiedDate = saveItem.modifiedDate;
-        notesFBItem.subjectiveNotes = saveItem.subjectiveNotes;
-        notesFBItem.objectiveNotes = saveItem.objectiveNotes;
-        notesFBItem.assessmentNotes = saveItem.assessmentNotes;
-        notesFBItem.planNotes = saveItem.planNotes;
-
-        //save notes item to firebase
-        notesFB.addNotesByDate(mUserId, saveItem.clientKey, saveItem.appointmentDate, notesFBItem);
-
-    }
-
-    /*
-     * void saveNotesToDatabase(...) - save notes to local database
-     */
-    private void saveNotesToDatabase(NotesItem saveItem){
-        //get uri value for routine name table
-        Uri uriValue = Contractor.NotesEntry.CONTENT_URI;
-
-        //appointment is new, add notes to database
-        Uri uri = mActivity.getContentResolver().insert(uriValue, saveItem.getContentValues());
-
-        //load notes to refresh recycler view
-        loadNotes();
+        mNotesButler.saveNotes(saveItem, new NotesButler.OnSavedListener() {
+            @Override
+            public void onSaved() {
+                mNotesButler.loadNotes(LOADER_NOTES, mOnLoadListener);
+            }
+        });
     }
 
 /**************************************************************************************************/
@@ -488,77 +444,33 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
 /*
  * Delete Methods
  *      void deleteNotes(NotesItem) - delete notes
- *      void deleteNotesFromFirebase(...) - delete notes from firebase
- *      void deleteNotesFromDatabase(...) - delete notes data from database
+ *      void onNotesDeleted() - notes have been deleted from database
  */
 /**************************************************************************************************/
     /*
      * void deleteNotes(NotesItem) - delete notes
      */
     private void deleteNotes(NotesItem deleteItem){
-        deleteNotesFromFirebase(deleteItem);
-    }
-
-    /*
-     * void deleteNotesFromFirebase(...) - delete notes from firebase
-     */
-    private void deleteNotesFromFirebase(NotesItem deleteItem){
-        //create string values used to delete notes
-        String clientKey = deleteItem.clientKey;
-        String appDate = deleteItem.appointmentDate;
-        final String appTime = deleteItem.appointmentTime;
-
-        //get notes firebase helper instance
-        NotesFirebaseHelper notesFB = NotesFirebaseHelper.getInstance();
-        //delete notes from firebase
-        notesFB.deleteNotes(mUserId, clientKey, appDate, appTime, new ValueEventListener() {
+        mNotesButler.deleteNotes(deleteItem, new NotesButler.OnDeletedListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    NotesFBItem notes = postSnapshot.getValue(NotesFBItem.class);
-                    if(notes.appointmentTime.equals(appTime)){
-                        postSnapshot.getRef().removeValue();
-                    }
-                }
-
-                if(mEditingNotes){
-                    saveNotesToFirebase(mSaveItem);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //does nothing
+            public void onDeleted() {
+                onNotesDeleted();
             }
         });
-
-        deleteNotesFromDatabase(mSaveItem);
     }
 
     /*
-     * void deleteNotesFromDatabase(...) - delete notes data from database
+     * void onNotesDeleted() - notes have been deleted from database
      */
-    private void deleteNotesFromDatabase(NotesItem deleteItem){
-        //create string values used to delete notes
-        String clientKey = deleteItem.clientKey;
-        String appDate = deleteItem.appointmentDate;
-        String appTime = deleteItem.appointmentTime;
-
-        //get uri value from notes table
-        Uri uri = Contractor.NotesEntry.CONTENT_URI;
-
-        //remove notes from database
-        int notesDeleted = mActivity.getContentResolver().delete(uri,
-                NotesQueryHelper.clientKeyDateTimeSelection,
-                new String[]{mUserId, clientKey, appDate, appTime});
-
+    private void onNotesDeleted(){
         if(mEditingNotes) {
             //editing, save new notes used to replace old notes
-            saveNotesToDatabase(mSaveItem);
+            saveNotes(mSaveItem);
         }else{
             //load notes to update recycler view
-            loadNotes();
+            mNotesButler.loadNotes(LOADER_NOTES, mOnLoadListener);
         }
+
     }
 
 /**************************************************************************************************/
