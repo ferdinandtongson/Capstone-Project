@@ -1,11 +1,9 @@
 package me.makeachoice.gymratpta.model.item.client;
 
-/**
- * Created by Usuario on 2/21/2017.
- */
 
 public class StatsFBItem {
 
+    public String appointmentDate;
     public String appointmentTime;
     public String modifiedDate;
     public double statWeight;
@@ -16,7 +14,7 @@ public class StatsFBItem {
     public double statRBicep;
     public double statLBicep;
     public double statWaist;
-    public double statNaval;
+    public double statNavel;
     public double statHips;
     public double statRThigh;
     public double statLThigh;
