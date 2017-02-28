@@ -10,27 +10,19 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <TextView android:id="@+id/cardStats_txtTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="15dp"
-            android:layout_alignParentEnd="true"
-            android:textSize="10sp"
-            android:textColor="@color/black"
+            style="@style/GymRat.Card.TextView.Time"
             />
 
         <TextView android:id="@+id/cardStats_txtDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
             android:layout_below="@id/cardStats_txtTime"
-            android:layout_alignParentEnd="true"
-            style="@style/GymRat.Card.TextView"
+            style="@style/GymRat.Card.TextView.Date"
             />
 
 
@@ -39,62 +31,62 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/cardStats_txtDate"
-            android:paddingTop="3dp"
-            android:background="#40FFFFFF"
+            style="@style/GymRat.Card.InsideFrame"
             >
 
             <!-- Measurement Title -->
             <TextView
-                android:id="@+id/cardStats_txtLast"
+                android:id="@+id/cardStats_txtStat"
                 android:layout_height="wrap_content"
-                android:text="@string/measurement_detail_last"
-                style="@style/GymRatTheme.Measure.History.Text.Title.Start"/>
+                android:layout_marginStart="100dp"
+                android:text="@string/stats"
+                style="@style/GymRat.Card.TextView.Measure.Label"/>
 
             <TextView
-                android:id="@+id/cardStats_txtChangeLast"
+                android:id="@+id/cardStats_txtPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtLast"
+                android:layout_marginStart="25dp"
+                android:layout_toEndOf="@id/cardStats_txtStat"
                 android:text="@string/measurement_detail_delta_pre"
-                style="@style/GymRatTheme.Measure.History.Text.Title"/>
+                style="@style/GymRat.Card.TextView.Measure.Label"/>
 
             <TextView
                 android:id="@+id/cardStats_txtChangeStart"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtChangeLast"
+                android:layout_marginStart="25dp"
+                android:layout_toEndOf="@id/cardStats_txtPrevious"
                 android:text="@string/measurement_detail_delta_start"
-                style="@style/GymRatTheme.Measure.History.Text.Title"/>
+                style="@style/GymRat.Card.TextView.Measure.Label"/>
 
             <!-- Measurement Weight -->
             <TextView
                 android:id="@+id/cardStats_txtWeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/cardStats_txtLast"
+                android:layout_below="@id/cardStats_txtStat"
                 android:text="@string/measurement_detail_weight"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_weight"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtWeightLast"
+                android:id="@+id/cardStats_txtWeightStat"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/cardStats_txtLast"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                android:layout_below="@id/cardStats_txtStat"
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtWeightChangeLast"
+                android:id="@+id/cardStats_txtWeightPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtWeightLast"
-                android:layout_below="@id/cardStats_txtLast"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                android:layout_toEndOf="@id/cardStats_txtWeightStat"
+                android:layout_below="@id/cardStats_txtStat"
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtWeightChangeStart"
+                android:id="@+id/cardStats_txtWeightFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtWeightChangeLast"
-                android:layout_below="@id/cardStats_txtLast"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                android:layout_toEndOf="@id/cardStats_txtWeightPrevious"
+                android:layout_below="@id/cardStats_txtStat"
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement Body Fat -->
             <TextView
@@ -103,30 +95,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtWeight"
                 android:text="@string/measurement_detail_body_fat"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_body_fat"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtBodyFatLast"
+                android:id="@+id/cardStats_txtBodyFatStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtWeight"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtBodyFatChangeLast"
+                android:id="@+id/cardStats_txtBodyFatPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtBodyFatLast"
+                android:layout_toEndOf="@id/cardStats_txtBodyFatStat"
                 android:layout_below="@id/cardStats_txtWeight"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtBodyFatChangeStart"
+                android:id="@+id/cardStats_txtBodyFatFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtBodyFatChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtBodyFatPrevious"
                 android:layout_below="@id/cardStats_txtWeight"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement BMI -->
             <TextView
@@ -135,40 +125,38 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtBodyFat"
                 android:text="@string/measurement_detail_bmi"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_bmi"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtBMILast"
+                android:id="@+id/cardStats_txtBMIStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtBodyFat"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtBMIChangeLast"
+                android:id="@+id/cardStats_txtBMIPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtBMILast"
+                android:layout_toEndOf="@id/cardStats_txtBMIStat"
                 android:layout_below="@id/cardStats_txtBodyFat"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtBMIChangeStart"
+                android:id="@+id/cardStats_txtBMIFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtBMIChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtBMIPrevious"
                 android:layout_below="@id/cardStats_txtBodyFat"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <View
                 android:id="@+id/cardStats_line01"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="7dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="5dp"
-                android:layout_below="@id/cardStats_txtBMIChangeStart"
+                android:layout_below="@id/cardStats_txtBMIFirst"
                 android:background="@android:color/darker_gray"/>
 
             <!-- Measurement Neck -->
@@ -178,30 +166,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_line01"
                 android:text="@string/measurement_detail_neck"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_neck"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtNeckLast"
+                android:id="@+id/cardStats_txtNeckStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_line01"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtNeckChangeLast"
+                android:id="@+id/cardStats_txtNeckPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtNeckLast"
+                android:layout_toEndOf="@id/cardStats_txtNeckStat"
                 android:layout_below="@id/cardStats_line01"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtNeckChangeStart"
+                android:id="@+id/cardStats_txtNeckFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtNeckChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtNeckPrevious"
                 android:layout_below="@id/cardStats_line01"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement Chest -->
             <TextView
@@ -210,30 +196,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtNeck"
                 android:text="@string/measurement_detail_chest"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_chest"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtChestLast"
+                android:id="@+id/cardStats_txtChestStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtNeck"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtChestChangeLast"
+                android:id="@+id/cardStats_txtChestPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtChestLast"
+                android:layout_toEndOf="@id/cardStats_txtChestStat"
                 android:layout_below="@id/cardStats_txtNeck"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtChestChangeStart"
+                android:id="@+id/cardStats_txtChestFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtChestChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtChestPrevious"
                 android:layout_below="@id/cardStats_txtNeck"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement RBicep -->
             <TextView
@@ -242,30 +226,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtChest"
                 android:text="@string/measurement_detail_rbicep"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_rbicep"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRBicepLast"
+                android:id="@+id/cardStats_txtRBicepStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtChest"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRBicepChangeLast"
+                android:id="@+id/cardStats_txtRBicepPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtRBicepLast"
+                android:layout_toEndOf="@id/cardStats_txtRBicepStat"
                 android:layout_below="@id/cardStats_txtChest"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRBicepChangeStart"
+                android:id="@+id/cardStats_txtRBicepFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtRBicepChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtRBicepPrevious"
                 android:layout_below="@id/cardStats_txtChest"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement LBicep -->
             <TextView
@@ -274,37 +256,35 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtRBicep"
                 android:text="@string/measurement_detail_lbicep"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_lbicep"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLBicepLast"
+                android:id="@+id/cardStats_txtLBicepStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtRBicep"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLBicepChangeLast"
+                android:id="@+id/cardStats_txtLBicepPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtLBicepLast"
+                android:layout_toEndOf="@id/cardStats_txtLBicepStat"
                 android:layout_below="@id/cardStats_txtRBicep"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLBicepChangeStart"
+                android:id="@+id/cardStats_txtLBicepFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtLBicepChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtLBicepPrevious"
                 android:layout_below="@id/cardStats_txtRBicep"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <View
                 android:id="@+id/cardStats_line02"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="7dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="5dp"
                 android:layout_below="@id/cardStats_txtLBicep"
@@ -317,101 +297,95 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_line02"
                 android:text="@string/measurement_detail_waist"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_waist"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtWaistLast"
+                android:id="@+id/cardStats_txtWaistStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_line02"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtWaistChangeLast"
+                android:id="@+id/cardStats_txtWaistPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtWaistLast"
+                android:layout_toEndOf="@id/cardStats_txtWaistStat"
                 android:layout_below="@id/cardStats_line02"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtWaistChangeStart"
+                android:id="@+id/cardStats_txtWaistFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtWaistChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtWaistPrevious"
                 android:layout_below="@id/cardStats_line02"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
-            <!-- Measurement Naval -->
+            <!-- Measurement Navel -->
             <TextView
-                android:id="@+id/cardStats_txtNaval"
+                android:id="@+id/cardStats_txtNavel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtWaist"
                 android:text="@string/measurement_detail_navel"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_navel"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtNavalLast"
+                android:id="@+id/cardStats_txtNavelStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtWaist"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtNavalChangeLast"
+                android:id="@+id/cardStats_txtNavelPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtNavalLast"
+                android:layout_toEndOf="@id/cardStats_txtNavelStat"
                 android:layout_below="@id/cardStats_txtWaist"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtNavalChangeStart"
+                android:id="@+id/cardStats_txtNavelFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtNavalChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtNavelPrevious"
                 android:layout_below="@id/cardStats_txtWaist"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement Hips -->
             <TextView
                 android:id="@+id/cardStats_txtHips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/cardStats_txtNaval"
+                android:layout_below="@id/cardStats_txtNavel"
                 android:text="@string/measurement_detail_hips"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_hips"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtHipsLast"
+                android:id="@+id/cardStats_txtHipsStat"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/cardStats_txtNaval"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                android:layout_below="@id/cardStats_txtNavel"
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtHipsChangeLast"
+                android:id="@+id/cardStats_txtHipsPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtHipsLast"
-                android:layout_below="@id/cardStats_txtNaval"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                android:layout_toEndOf="@id/cardStats_txtHipsStat"
+                android:layout_below="@id/cardStats_txtNavel"
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtHipsChangeStart"
+                android:id="@+id/cardStats_txtHipsFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtHipsChangeLast"
-                android:layout_below="@id/cardStats_txtNaval"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                android:layout_toEndOf="@id/cardStats_txtHipsPrevious"
+                android:layout_below="@id/cardStats_txtNavel"
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <View
                 android:id="@+id/cardStats_line03"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="7dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="5dp"
                 android:layout_below="@id/cardStats_txtHips"
@@ -424,30 +398,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_line03"
                 android:text="@string/measurement_detail_rthigh"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_rthigh"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRThighLast"
+                android:id="@+id/cardStats_txtRThighStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_line03"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRThighChangeLast"
+                android:id="@+id/cardStats_txtRThighPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtRThighLast"
+                android:layout_toEndOf="@id/cardStats_txtRThighStat"
                 android:layout_below="@id/cardStats_line03"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRThighChangeStart"
+                android:id="@+id/cardStats_txtRThighFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtRThighChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtRThighPrevious"
                 android:layout_below="@id/cardStats_line03"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement LThigh -->
             <TextView
@@ -456,30 +428,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtRThigh"
                 android:text="@string/measurement_detail_lthigh"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_lthigh"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLThighLast"
+                android:id="@+id/cardStats_txtLThighStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtRThigh"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLThighChangeLast"
+                android:id="@+id/cardStats_txtLThighPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtLThighLast"
+                android:layout_toEndOf="@id/cardStats_txtLThighStat"
                 android:layout_below="@id/cardStats_txtRThigh"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLThighChangeStart"
+                android:id="@+id/cardStats_txtLThighFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtLThighChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtLThighPrevious"
                 android:layout_below="@id/cardStats_txtRThigh"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement RCalf -->
             <TextView
@@ -488,30 +458,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtLThigh"
                 android:text="@string/measurement_detail_rcalf"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_rcalf"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRCalfLast"
+                android:id="@+id/cardStats_txtRCalfStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtLThigh"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRCalfChangeLast"
+                android:id="@+id/cardStats_txtRCalfPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtRCalfLast"
+                android:layout_toEndOf="@id/cardStats_txtRCalfStat"
                 android:layout_below="@id/cardStats_txtLThigh"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtRCalfChangeStart"
+                android:id="@+id/cardStats_txtRCalfFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtRCalfChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtRCalfPrevious"
                 android:layout_below="@id/cardStats_txtLThigh"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <!-- Measurement LCalf -->
             <TextView
@@ -520,30 +488,28 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtRCalf"
                 android:text="@string/measurement_detail_lcalf"
-                style="@style/GymRatTheme.Measure.History.Text.Name"/>
+                android:contentDescription="@string/measurement_detail_lcalf"
+                style="@style/GymRat.Card.TextView.Measure.Stat"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLCalfLast"
+                android:id="@+id/cardStats_txtLCalfStat"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardStats_txtRCalf"
-                android:text="1000"
-                style="@style/GymRatTheme.Measure.History.Text.Data.Start"/>
+                style="@style/GymRat.Card.TextView.Measure.Data"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLCalfChangeLast"
+                android:id="@+id/cardStats_txtLCalfPrevious"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtLCalfLast"
+                android:layout_toEndOf="@id/cardStats_txtLCalfStat"
                 android:layout_below="@id/cardStats_txtRCalf"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
             <TextView
-                android:id="@+id/cardStats_txtLCalfChangeStart"
+                android:id="@+id/cardStats_txtLCalfFirst"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardStats_txtLCalfChangeLast"
+                android:layout_toEndOf="@id/cardStats_txtLCalfPrevious"
                 android:layout_below="@id/cardStats_txtRCalf"
-                android:text="100%"
-                style="@style/GymRatTheme.Measure.History.Text.Data"/>
+                style="@style/GymRat.Card.TextView.Measure.Data.Change"/>
 
         </RelativeLayout>
 
