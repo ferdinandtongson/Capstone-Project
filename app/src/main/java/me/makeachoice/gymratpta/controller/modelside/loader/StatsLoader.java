@@ -8,7 +8,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.client.StatsColumns;
+import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_STATS;
@@ -105,16 +105,16 @@ public class StatsLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.StatsEntry.buildStatsByUID(mUserId);
+                        Uri uri = StatsContract.buildStatsByUID(mUserId);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                StatsColumns.PROJECTION,
+                                StatsContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.NotesEntry.SORT_ORDER_DATE_TIME);
+                                StatsContract.SORT_ORDER_DATE_TIME);
                     }
 
                     @Override
@@ -156,16 +156,16 @@ public class StatsLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.StatsEntry.buildStatsByClientKey(mUserId, mClientKey);
+                        Uri uri = StatsContract.buildStatsByClientKey(mUserId, mClientKey);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                StatsColumns.PROJECTION,
+                                StatsContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.StatsEntry.SORT_ORDER_DATE_TIME);
+                                StatsContract.SORT_ORDER_DATE_TIME);
                     }
 
                     @Override
@@ -214,17 +214,17 @@ public class StatsLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.StatsEntry.buildStatsByDateTime(mUserId, mClientKey,
+                        Uri uri = StatsContract.buildStatsByDateTime(mUserId, mClientKey,
                                 mAppointmentDate, mAppointmentTime);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                StatsColumns.PROJECTION,
+                                StatsContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.StatsEntry.SORT_ORDER_DATE_TIME);
+                                StatsContract.SORT_ORDER_DATE_TIME);
                     }
 
                     @Override
