@@ -14,6 +14,7 @@
     <dimen name="viewpager_paddingEnd">20dp</dimen>
 
     <!-- text size -->
+    <dimen name="textSize_xsmall">10sp</dimen>
     <dimen name="textSize_small">12sp</dimen>
     <dimen name="textSize_normal">16sp</dimen>
     <dimen name="textSize_large">20sp</dimen>
