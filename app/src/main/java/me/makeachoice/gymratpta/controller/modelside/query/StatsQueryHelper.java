@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 /**************************************************************************************************/
@@ -33,33 +34,33 @@ public class StatsQueryHelper {
         //initialize statsQueryBuilder
         statsQueryBuilder = new SQLiteQueryBuilder();
         //set builder to query stats table
-        statsQueryBuilder.setTables(Contractor.StatsEntry.TABLE_NAME);
+        statsQueryBuilder.setTables(StatsContract.TABLE_NAME);
     }
 
     //query selection - stats.uid = ?
     public static final String uidSelection =
-            Contractor.StatsEntry.TABLE_NAME + "." + Contractor.StatsEntry.COLUMN_UID + " = ? ";
+            StatsContract.TABLE_NAME + "." + StatsContract.COLUMN_UID + " = ? ";
 
     //query selection - stats.uid = ? AND client_key = ?
     public static final String clientKeySelection =
-            Contractor.StatsEntry.TABLE_NAME+
-                    "." + Contractor.StatsEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.StatsEntry.COLUMN_CLIENT_KEY + " = ? ";
+            StatsContract.TABLE_NAME+
+                    "." + StatsContract.COLUMN_UID + " = ? AND " +
+                    StatsContract.COLUMN_CLIENT_KEY + " = ? ";
 
-    //query selection - stats.uid = ? AND client_key = ? AND appointment_date = ?
-    public static final String dateSelection =
-            Contractor.StatsEntry.TABLE_NAME+
-                    "." + Contractor.StatsEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.StatsEntry.COLUMN_CLIENT_KEY + " = ? AND " +
-                    Contractor.StatsEntry.COLUMN_APPOINTMENT_DATE + " = ? ";
+    //query selection - stats.uid = ? AND client_key = ? AND timestamp = ?
+    public static final String timestampSelection =
+            StatsContract.TABLE_NAME+
+                    "." + StatsContract.COLUMN_UID + " = ? AND " +
+                    StatsContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    StatsContract.COLUMN_TIMESTAMP + " = ? ";
 
     //query selection - stats.uid = ? AND client_key = ? AND appointment_date = ? AND appointment_time = ?
     public static final String clientKeyDateTimeSelection =
-            Contractor.StatsEntry.TABLE_NAME+
-                    "." + Contractor.StatsEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.StatsEntry.COLUMN_CLIENT_KEY + " = ? AND " +
-                    Contractor.StatsEntry.COLUMN_APPOINTMENT_DATE + " = ? AND " +
-                    Contractor.StatsEntry.COLUMN_APPOINTMENT_TIME + " = ? ";
+            StatsContract.TABLE_NAME+
+                    "." + StatsContract.COLUMN_UID + " = ? AND " +
+                    StatsContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    StatsContract.COLUMN_APPOINTMENT_DATE + " = ? AND " +
+                    StatsContract.COLUMN_APPOINTMENT_TIME + " = ? ";
 
 
 /**************************************************************************************************/
@@ -78,13 +79,13 @@ public class StatsQueryHelper {
      */
     public static Cursor getStatsByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientStats/[uid]
-        String uid = Contractor.StatsEntry.getUIdFromUri(uri);
+        String uid = StatsContract.getUIdFromUri(uri);
 
         //query from user table
         return StatsQueryHelper.statsQueryBuilder.query(
                 dbHelper.getReadableDatabase(),
                 projection,
-                //query selection - notes.uid = ?
+                //query selection - clientStats.uid = ?
                 StatsQueryHelper.uidSelection,
                 new String[]{uid},
                 null,
@@ -94,18 +95,18 @@ public class StatsQueryHelper {
     }
 
     /*
-     * Cursor getStatsByClientKey(...) - get notes by client key
+     * Cursor getStatsByClientKey(...) - get stats by client key
      */
     public static Cursor getStatsByClientKey(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientStats/[uid]/client_key/[clientKey]
-        String uid = Contractor.StatsEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.StatsEntry.getClientKeyFromUri(uri);
+        String uid = StatsContract.getUIdFromUri(uri);
+        String clientKey = StatsContract.getClientKeyFromUri(uri);
 
         //query from table
         return StatsQueryHelper.statsQueryBuilder.query(
                 dbHelper.getReadableDatabase(),
                 projection,
-                //query selection - notes.uid = ? AND client_key = ?
+                //query selection - clientStats.uid = ? AND client_key = ?
                 StatsQueryHelper.clientKeySelection,
                 new String[]{uid, clientKey},
                 null,
@@ -115,20 +116,20 @@ public class StatsQueryHelper {
     }
 
     /*
-     * Cursor getStatsByDate(...) - get notes by date
+     * Cursor getStatsByTimestamp(...) - get stats by timestamp
      */
-    public static Cursor getStatsByDate(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]
-        String uid = Contractor.StatsEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.StatsEntry.getClientKeyFromDateUri(uri);
-        String appointmentDate = Contractor.StatsEntry.getDateFromDateUri(uri);
+    public static Cursor getStatsByTimestamp(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
+        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/timestamp/[timestamp]
+        String uid = StatsContract.getUIdFromUri(uri);
+        String clientKey = StatsContract.getClientKeyFromTimestampUri(uri);
+        String appointmentDate = StatsContract.getTimestampFromTimestampUri(uri);
 
         //query from table
         return StatsQueryHelper.statsQueryBuilder.query(
                 dbHelper.getReadableDatabase(),
                 projection,
-                //query selection - notes.uid = ? AND client_key = ? AND appointment_date = ?
-                StatsQueryHelper.dateSelection,
+                //query selection - clientStats.uid = ? AND client_key = ? AND timestamp = ?
+                StatsQueryHelper.timestampSelection,
                 new String[]{uid, clientKey, appointmentDate},
                 null,
                 null,
@@ -137,20 +138,20 @@ public class StatsQueryHelper {
     }
 
     /*
-     * Cursor getStatsByDateTime(...) - get notes by date and time
+     * Cursor getStatsByDateTime(...) - get stats by date and time
      */
     public static Cursor getStatsByDateTime(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/[appointmentTime]
-        String uid = Contractor.StatsEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.StatsEntry.getClientKeyFromDateTimeUri(uri);
-        String appointmentDate = Contractor.StatsEntry.getDateFromDateTimeUri(uri);
-        String appointmentTime = Contractor.StatsEntry.getTimeFromDateTimeUri(uri);
+        String uid = StatsContract.getUIdFromUri(uri);
+        String clientKey = StatsContract.getClientKeyFromDateTimeUri(uri);
+        String appointmentDate = StatsContract.getDateFromDateTimeUri(uri);
+        String appointmentTime = StatsContract.getTimeFromDateTimeUri(uri);
 
         //query from table
         return StatsQueryHelper.statsQueryBuilder.query(
                 dbHelper.getReadableDatabase(),
                 projection,
-                //query selection - notes.uid = ? AND client_key = ? AND appointment_date = ? AND appointment_time = ?
+                //query selection - clientStats.uid = ? AND client_key = ? AND appointment_date = ? AND appointment_time = ?
                 StatsQueryHelper.clientKeyDateTimeSelection,
                 new String[]{uid, clientKey, appointmentDate, appointmentTime},
                 null,
@@ -175,7 +176,7 @@ public class StatsQueryHelper {
     public static Uri insertStats(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.StatsEntry.TABLE_NAME, null, values);
+            _id = db.insert(StatsContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
             if(mSQLException instanceof SQLiteConstraintException){
@@ -186,7 +187,7 @@ public class StatsQueryHelper {
             throw mSQLException;
         }
 
-        return Contractor.StatsEntry.buildStatsUri(_id);
+        return StatsContract.buildStatsUri(_id);
     }
 
     /*
@@ -200,7 +201,7 @@ public class StatsQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.StatsEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(StatsContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -216,7 +217,7 @@ public class StatsQueryHelper {
                                   String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.StatsEntry.TABLE_NAME, values, whereClause, whereArgs);
+            rowsUpdated = db.update(StatsContract.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
