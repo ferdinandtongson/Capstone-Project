@@ -121,10 +121,10 @@ public class NotesContract extends MyContractor implements BaseColumns {
         return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CLIENT_KEY).appendPath(clientKey).build();
     }
 
-    //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/appointment_date/[appointmentDate]
-    public static Uri buildNotesByDate(String uid, String clientKey, String appointmentDate) {
+    //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/timestamp/[timestamp]
+    public static Uri buildNotesByTimestamp(String uid, String clientKey, String timestamp) {
         return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).
-                appendPath(uid).appendPath(COLUMN_APPOINTMENT_DATE).appendPath(appointmentDate).build();
+                appendPath(uid).appendPath(COLUMN_TIMESTAMP).appendPath(timestamp).build();
     }
 
     //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
@@ -143,13 +143,13 @@ public class NotesContract extends MyContractor implements BaseColumns {
         return uri.getPathSegments().get(3);
     }
 
-    //content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/appointment_date/[appointmentDate]
-    public static String getClientKeyFromDateUri(Uri uri) {
+    //content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/timestamp/[timestamp]
+    public static String getClientKeyFromTimestampUri(Uri uri) {
         return uri.getPathSegments().get(2);
     }
 
-    //content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/appointment_date/[appointmentDate]
-    public static String getDateFromDateUri(Uri uri) {
+    //content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/timestamp/[timestamp]
+    public static String getDateFromTimestampUri(Uri uri) {
         return uri.getPathSegments().get(4);
     }
 
