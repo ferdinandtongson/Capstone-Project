@@ -3,6 +3,7 @@ package me.makeachoice.gymratpta.model.db.table;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
+import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 
 /**************************************************************************************************/
 /*
@@ -87,27 +88,28 @@ public class TableHelper {
             NotesContract.COLUMN_ASSESSMENT_NOTES+ " TEXT, " +
             NotesContract.COLUMN_PLAN_NOTES + " TEXT);";
 
-    public final static String SQL_CREATE_STATS_TABLE = "CREATE TABLE " + Contractor.StatsEntry.TABLE_NAME + " (" +
-            Contractor.StatsEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.StatsEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.StatsEntry.COLUMN_CLIENT_KEY + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
-            Contractor.StatsEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
-            Contractor.StatsEntry.COLUMN_MODIFIED_DATE + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_WEIGHT + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_BODY_FAT + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_BMI + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_NECK + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_CHEST + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_RBICEP + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_LBICEP + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_WAIST + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_NAVAL + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_HIPS + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_RTHIGH + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_LTHIGH + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_RCALF + " TEXT, " +
-            Contractor.StatsEntry.COLUMN_STAT_LCALF + " TEXT);";
+    public final static String SQL_CREATE_STATS_TABLE = "CREATE TABLE " + StatsContract.TABLE_NAME + " (" +
+            StatsContract._ID + " INTEGER PRIMARY KEY," +
+            StatsContract.COLUMN_UID + " TEXT NOT NULL, " +
+            StatsContract.COLUMN_CLIENT_KEY + " TEXT, " +
+            StatsContract.COLUMN_TIMESTAMP + " TEXT, " +
+            StatsContract.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
+            StatsContract.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
+            StatsContract.COLUMN_MODIFIED_DATE + " TEXT, " +
+            StatsContract.COLUMN_STAT_WEIGHT + " INTEGER, " +
+            StatsContract.COLUMN_STAT_BODY_FAT + " INTEGER, " +
+            StatsContract.COLUMN_STAT_BMI + " INTEGER, " +
+            StatsContract.COLUMN_STAT_NECK + " INTEGER, " +
+            StatsContract.COLUMN_STAT_CHEST + " INTEGER, " +
+            StatsContract.COLUMN_STAT_RBICEP + " INTEGER, " +
+            StatsContract.COLUMN_STAT_LBICEP + " INTEGER, " +
+            StatsContract.COLUMN_STAT_WAIST + " INTEGER, " +
+            StatsContract.COLUMN_STAT_NAVEL + " INTEGER, " +
+            StatsContract.COLUMN_STAT_HIPS + " INTEGER, " +
+            StatsContract.COLUMN_STAT_RTHIGH + " INTEGER, " +
+            StatsContract.COLUMN_STAT_LTHIGH + " INTEGER, " +
+            StatsContract.COLUMN_STAT_RCALF + " INTEGER, " +
+            StatsContract.COLUMN_STAT_LCALF + " INTEGER);";
 
     public final static String SQL_CREATE_CLIENT_ROUTINE_TABLE = "CREATE TABLE " + Contractor.ClientRoutineEntry.TABLE_NAME + " (" +
             Contractor.ClientRoutineEntry._ID + " INTEGER PRIMARY KEY," +

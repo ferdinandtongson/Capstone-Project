@@ -23,6 +23,7 @@ import android.util.Log;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
+import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.db.table.TableHelper;
 
 
@@ -66,7 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.RoutineEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.RoutineNameEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + NotesContract.TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.StatsEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + StatsContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ClientRoutineEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.ClientExerciseEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
