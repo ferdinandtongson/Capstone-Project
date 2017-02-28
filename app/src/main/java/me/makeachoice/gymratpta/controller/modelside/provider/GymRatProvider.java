@@ -60,8 +60,8 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_CLIENT_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_DATE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_EXERCISE_WITH_ORDER_NUMBER;
@@ -77,8 +77,8 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_CLIENT_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
@@ -197,8 +197,8 @@ public class GymRatProvider extends ContentProvider {
             case NOTES_WITH_CLIENT_KEY:
                 retCursor = NotesQueryHelper.getNotesByClientKey(mOpenHelper, uri, projection, sortOrder);
                 break;
-            case NOTES_WITH_DATE:
-                retCursor = NotesQueryHelper.getNotesByDate(mOpenHelper, uri, projection, sortOrder);
+            case NOTES_WITH_TIMESTAMP:
+                retCursor = NotesQueryHelper.getNotesByTimestamp(mOpenHelper, uri, projection, sortOrder);
                 break;
             case NOTES_WITH_DATE_TIME:
                 retCursor = NotesQueryHelper.getNotesByDateTime(mOpenHelper, uri, projection, sortOrder);
@@ -209,8 +209,8 @@ public class GymRatProvider extends ContentProvider {
             case STATS_WITH_CLIENT_KEY:
                 retCursor = StatsQueryHelper.getStatsByClientKey(mOpenHelper, uri, projection, sortOrder);
                 break;
-            case STATS_WITH_DATE:
-                retCursor = StatsQueryHelper.getStatsByDate(mOpenHelper, uri, projection, sortOrder);
+            case STATS_WITH_TIMESTAMP:
+                retCursor = StatsQueryHelper.getStatsByTimestamp(mOpenHelper, uri, projection, sortOrder);
                 break;
             case STATS_WITH_DATE_TIME:
                 retCursor = StatsQueryHelper.getStatsByDateTime(mOpenHelper, uri, projection, sortOrder);
