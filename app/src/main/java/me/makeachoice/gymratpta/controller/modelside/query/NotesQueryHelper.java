@@ -47,7 +47,7 @@ public class NotesQueryHelper {
                     NotesContract.COLUMN_CLIENT_KEY + " = ? ";
 
     //query selection - notes.uid = ? AND client_key = ? AND timestamp = ?
-    public static final String dateSelection =
+    public static final String timestampSelection =
             NotesContract.TABLE_NAME+
                     "." + NotesContract.COLUMN_UID + " = ? AND " +
                     NotesContract.COLUMN_CLIENT_KEY + " = ? AND " +
@@ -115,20 +115,20 @@ public class NotesQueryHelper {
     }
 
     /*
-     * Cursor getNotesByDate(...) - get notes by date
+     * Cursor getNotesByTimestamp(...) - get notes by timestamp
      */
-    public static Cursor getNotesByDate(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
+    public static Cursor getNotesByTimestamp(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/[appointmentDate]
         String uid = NotesContract.getUIdFromUri(uri);
-        String clientKey = NotesContract.getClientKeyFromDateUri(uri);
-        String appointmentDate = NotesContract.getDateFromDateUri(uri);
+        String clientKey = NotesContract.getClientKeyFromTimestampUri(uri);
+        String appointmentDate = NotesContract.getDateFromTimestampUri(uri);
 
         //query from table
         return NotesQueryHelper.notesQueryBuilder.query(
                 dbHelper.getReadableDatabase(),
                 projection,
                 //query selection - notes.uid = ? AND client_key = ? AND appointment_date = ?
-                NotesQueryHelper.dateSelection,
+                NotesQueryHelper.timestampSelection,
                 new String[]{uid, clientKey, appointmentDate},
                 null,
                 null,
