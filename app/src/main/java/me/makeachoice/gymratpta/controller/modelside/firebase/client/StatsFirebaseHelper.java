@@ -9,14 +9,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import me.makeachoice.gymratpta.model.item.client.NotesFBItem;
 import me.makeachoice.gymratpta.model.item.client.StatsFBItem;
 
-import static me.makeachoice.gymratpta.R.string.notes;
-
-/**
- * Created by Usuario on 2/21/2017.
- */
 
 public class StatsFirebaseHelper {
 
@@ -26,6 +20,7 @@ public class StatsFirebaseHelper {
  */
 /**************************************************************************************************/
 
+    public final static String CHILD_APPOINTMENT_DATE = "appointmentDate";
     public final static String CHILD_APPOINTMENT_TIME = "appointmentTime";
     public final static String CHILD_MODIFIED_DATE = "modifiedDate";
     public final static String CHILD_STAT_WEIGHT = "statWeight";
@@ -96,9 +91,9 @@ public class StatsFirebaseHelper {
         return getStatsReference(userId).child(clientKey);
     }
 
-    private DatabaseReference getStatsReferenceByDate(String userId, String clientKey,
-                                                      String appointmentDate){
-        return getStatsReference(userId).child(clientKey).child(appointmentDate);
+    private DatabaseReference getStatsReferenceByTimestamp(String userId, String clientKey,
+                                                      String timestamp){
+        return getStatsReference(userId).child(clientKey).child(timestamp);
     }
 
 /**************************************************************************************************/
@@ -109,17 +104,17 @@ public class StatsFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addStatsDataByDate(String userId, String clientKey, String appointmentDate,
+    public void addStatsDataByTimestamp(String userId, String clientKey, String timestamp,
                                    ArrayList<StatsFBItem> stats){
         int count = stats.size();
         for(int i = 0; i < count; i++){
-            addStatsByDate(userId, clientKey, appointmentDate, stats.get(i));
+            addStatsByTimestamp(userId, clientKey, timestamp, stats.get(i));
         }
 
     }
 
-    public void addStatsByDate(String userId, String clientKey, String appointmentDate, StatsFBItem item){
-        DatabaseReference ref = getStatsReferenceByDate(userId, clientKey, appointmentDate);
+    public void addStatsByTimestamp(String userId, String clientKey, String timestamp, StatsFBItem item){
+        DatabaseReference ref = getStatsReferenceByTimestamp(userId, clientKey, timestamp);
         ref.push().setValue(item);
     }
 
@@ -131,13 +126,11 @@ public class StatsFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteStats(String userId, String clientKey, String appointmentDate,
+    public void deleteStats(String userId, String clientKey, String timestamp,
                             String appointmentTime, ValueEventListener listener){
-        DatabaseReference ref = getStatsReferenceByDate(userId, clientKey, appointmentDate);
+        DatabaseReference ref = getStatsReferenceByTimestamp(userId, clientKey, timestamp);
 
         Query statsQuery = ref.orderByChild(CHILD_APPOINTMENT_TIME).equalTo(appointmentTime);
-
-        final String appTime = appointmentTime;
 
         statsQuery.addListenerForSingleValueEvent(listener);
     }
@@ -160,10 +153,10 @@ public class StatsFirebaseHelper {
         ref.addListenerForSingleValueEvent(mEventListener);
     }
 
-    public void requestStatsDataByClientKey(String userId, String appointmentDay, String orderBy,
+    public void requestStatsDataByTimestamp(String userId, String clientKey, String timestamp, String orderBy,
                                             OnDataLoadedListener listener){
         //get reference
-        DatabaseReference ref = getStatsReferenceByClientKey(userId, appointmentDay);
+        DatabaseReference ref = getStatsReferenceByTimestamp(userId, clientKey, timestamp);
 
         mOnDataLoadedListener = listener;
 
