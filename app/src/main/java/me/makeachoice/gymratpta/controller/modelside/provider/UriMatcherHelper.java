@@ -6,6 +6,7 @@ import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.MyContractor;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
+import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 
 /**
  * Created by Usuario on 2/2/2017.
@@ -51,13 +52,13 @@ public class UriMatcherHelper {
     public static final int NOTES = 800;
     public static final int NOTES_WITH_UID = 801;
     public static final int NOTES_WITH_CLIENT_KEY = 802;
-    public static final int NOTES_WITH_DATE = 803;
+    public static final int NOTES_WITH_TIMESTAMP = 803;
     public static final int NOTES_WITH_DATE_TIME = 804;
 
     public static final int STATS = 900;
     public static final int STATS_WITH_UID = 901;
     public static final int STATS_WITH_CLIENT_KEY = 902;
-    public static final int STATS_WITH_DATE = 903;
+    public static final int STATS_WITH_TIMESTAMP = 903;
     public static final int STATS_WITH_DATE_TIME = 904;
 
     public static final int CLIENT_ROUTINE = 1000;
@@ -211,44 +212,44 @@ public class UriMatcherHelper {
 
     private static void addUriNotes(UriMatcher matcher, String authority){
         //"content://CONTENT_AUTHORITY/clientNotes/
-        matcher.addURI(authority, Contractor.PATH_NOTES, NOTES);
+        matcher.addURI(authority, NotesContract.PATH_NOTES, NOTES);
 
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]
-        String uidPath = Contractor.PATH_NOTES + "/*";
+        String uidPath = NotesContract.PATH_NOTES + "/*";
         matcher.addURI(authority, uidPath, NOTES_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/client_key/[clientKey]
-        String clientKeyPath = Contractor.PATH_NOTES + "/*/" + NotesContract.COLUMN_CLIENT_KEY + "/*";
+        String clientKeyPath = NotesContract.PATH_NOTES + "/*/" + NotesContract.COLUMN_CLIENT_KEY + "/*";
         matcher.addURI(authority, clientKeyPath, NOTES_WITH_CLIENT_KEY);
 
-        //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/appointment_date/[appointmentDate]
-        String datePath = Contractor.PATH_NOTES + "/*/*/"  + NotesContract.COLUMN_APPOINTMENT_DATE + "/*";
-        matcher.addURI(authority, datePath, NOTES_WITH_DATE);
+        //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/timestamp/[timestamp]
+        String datePath = NotesContract.PATH_NOTES + "/*/*/"  + NotesContract.COLUMN_TIMESTAMP + "/*";
+        matcher.addURI(authority, datePath, NOTES_WITH_TIMESTAMP);
 
         //"content://CONTENT_AUTHORITY/clientNotes/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        String timePath = Contractor.PATH_NOTES + "/*/*/*/"  + NotesContract.COLUMN_APPOINTMENT_TIME + "/*";
+        String timePath = NotesContract.PATH_NOTES + "/*/*/*/"  + NotesContract.COLUMN_APPOINTMENT_TIME + "/*";
         matcher.addURI(authority, timePath, NOTES_WITH_DATE_TIME);
 
     }
 
     private static void addUriStats(UriMatcher matcher, String authority){
         //"content://CONTENT_AUTHORITY/clientStats/
-        matcher.addURI(authority, Contractor.PATH_STATS, STATS);
+        matcher.addURI(authority, StatsContract.PATH_STATS, STATS);
 
         //"content://CONTENT_AUTHORITY/clientStats/[uid]
-        String uidPath = Contractor.PATH_STATS + "/*";
+        String uidPath = StatsContract.PATH_STATS + "/*";
         matcher.addURI(authority, uidPath, STATS_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/clientStats/[uid]/client_key/[clientKey]
-        String clientKeyPath = Contractor.PATH_STATS + "/*/" + Contractor.StatsEntry.COLUMN_CLIENT_KEY + "/*";
+        String clientKeyPath = StatsContract.PATH_STATS + "/*/" + StatsContract.COLUMN_CLIENT_KEY + "/*";
         matcher.addURI(authority, clientKeyPath, STATS_WITH_CLIENT_KEY);
 
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/appointment_date/[appointmentDate]
-        String datePath = Contractor.PATH_STATS + "/*/*/"  + Contractor.StatsEntry.COLUMN_APPOINTMENT_DATE + "/*";
-        matcher.addURI(authority, datePath, STATS_WITH_DATE);
+        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/timestamp/[timestamp]
+        String datePath = StatsContract.PATH_STATS + "/*/*/"  + StatsContract.COLUMN_TIMESTAMP + "/*";
+        matcher.addURI(authority, datePath, STATS_WITH_TIMESTAMP);
 
         //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        String timePath = Contractor.PATH_STATS + "/*/*/*/"  + Contractor.StatsEntry.COLUMN_APPOINTMENT_TIME + "/*";
+        String timePath = StatsContract.PATH_STATS + "/*/*/*/"  + StatsContract.COLUMN_APPOINTMENT_TIME + "/*";
         matcher.addURI(authority, timePath, STATS_WITH_DATE_TIME);
 
     }

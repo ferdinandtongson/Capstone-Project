@@ -5,6 +5,7 @@ import android.net.Uri;
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
+import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_FKEY;
@@ -30,8 +31,8 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.EXERCISE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_CLIENT_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_DATE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.NOTES_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_EXERCISE_WITH_ORDER_NUMBER;
@@ -46,8 +47,8 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_CLIENT_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.STATS_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.USER_WITH_KEY;
@@ -124,20 +125,20 @@ public class UriTypeHelper {
                 return NotesContract.CONTENT_TYPE;
             case NOTES_WITH_CLIENT_KEY:
                 return NotesContract.CONTENT_TYPE;
-            case NOTES_WITH_DATE:
+            case NOTES_WITH_TIMESTAMP:
                 return NotesContract.CONTENT_TYPE;
             case NOTES_WITH_DATE_TIME:
                 return NotesContract.CONTENT_ITEM_TYPE;
             case STATS:
-                return Contractor.StatsEntry.CONTENT_TYPE;
+                return StatsContract.CONTENT_TYPE;
             case STATS_WITH_UID:
-                return Contractor.StatsEntry.CONTENT_TYPE;
+                return StatsContract.CONTENT_TYPE;
             case STATS_WITH_CLIENT_KEY:
-                return Contractor.StatsEntry.CONTENT_TYPE;
-            case STATS_WITH_DATE:
-                return Contractor.StatsEntry.CONTENT_TYPE;
+                return StatsContract.CONTENT_TYPE;
+            case STATS_WITH_TIMESTAMP:
+                return StatsContract.CONTENT_TYPE;
             case STATS_WITH_DATE_TIME:
-                return Contractor.StatsEntry.CONTENT_ITEM_TYPE;
+                return StatsContract.CONTENT_ITEM_TYPE;
             case CLIENT_ROUTINE:
                 return Contractor.ClientRoutineEntry.CONTENT_TYPE;
             case CLIENT_ROUTINE_WITH_UID:
