@@ -3,12 +3,13 @@ package me.makeachoice.gymratpta.model.item.client;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.client.StatsColumns;
+import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 
-/**
- * Created by Usuario on 2/21/2017.
+/**************************************************************************************************/
+/*
+ * StatsItem
  */
+/**************************************************************************************************/
 
 public class StatsItem extends StatsFBItem{
 
@@ -20,7 +21,7 @@ public class StatsItem extends StatsFBItem{
 
     public String uid;
     public String clientKey;
-    public String appointmentDate;
+    public String timestamp;
 
 /**************************************************************************************************/
 
@@ -33,6 +34,7 @@ public class StatsItem extends StatsFBItem{
     public StatsItem(){}
 
     public StatsItem(StatsFBItem item){
+        appointmentDate = item.appointmentDate;
         appointmentTime = item.appointmentTime;
         modifiedDate = item.modifiedDate;
         statWeight = item.statWeight;
@@ -43,7 +45,7 @@ public class StatsItem extends StatsFBItem{
         statRBicep = item.statRBicep;
         statLBicep = item.statLBicep;
         statWaist = item.statWaist;
-        statNaval = item.statNaval;
+        statNavel = item.statNavel;
         statHips = item.statHips;
         statRThigh = item.statRThigh;
         statLThigh = item.statLThigh;
@@ -52,25 +54,26 @@ public class StatsItem extends StatsFBItem{
     }
 
     public StatsItem(Cursor cursor){
-        uid = cursor.getString(StatsColumns.INDEX_UID);
-        clientKey = cursor.getString(StatsColumns.INDEX_CLIENT_KEY);
-        appointmentDate = cursor.getString(StatsColumns.INDEX_APPOINTMENT_DATE);
-        appointmentTime = cursor.getString(StatsColumns.INDEX_APPOINTMENT_TIME);
-        modifiedDate = cursor.getString(StatsColumns.INDEX_MODIFIED_DATE);
-        statWeight = cursor.getDouble(StatsColumns.INDEX_STAT_WEIGHT);
-        statBodyFat = cursor.getDouble(StatsColumns.INDEX_STAT_BODY_FAT);
-        statBMI = cursor.getDouble(StatsColumns.INDEX_STAT_BMI);
-        statNeck = cursor.getDouble(StatsColumns.INDEX_STAT_NECK);
-        statChest = cursor.getDouble(StatsColumns.INDEX_STAT_CHEST);
-        statRBicep = cursor.getDouble(StatsColumns.INDEX_STAT_RBICEP);
-        statLBicep = cursor.getDouble(StatsColumns.INDEX_STAT_LBICEP);
-        statWaist = cursor.getDouble(StatsColumns.INDEX_STAT_WAIST);
-        statNaval = cursor.getDouble(StatsColumns.INDEX_STAT_NAVAL);
-        statHips = cursor.getDouble(StatsColumns.INDEX_STAT_HIPS);
-        statRThigh = cursor.getDouble(StatsColumns.INDEX_STAT_RTHIGH);
-        statLThigh = cursor.getDouble(StatsColumns.INDEX_STAT_LTHIGH);
-        statRCalf = cursor.getDouble(StatsColumns.INDEX_STAT_RCALF);
-        statLCalf = cursor.getDouble(StatsColumns.INDEX_STAT_LCALF);
+        uid = cursor.getString(StatsContract.INDEX_UID);
+        clientKey = cursor.getString(StatsContract.INDEX_CLIENT_KEY);
+        timestamp = cursor.getString(StatsContract.INDEX_TIMESTAMP);
+        appointmentDate = cursor.getString(StatsContract.INDEX_APPOINTMENT_DATE);
+        appointmentTime = cursor.getString(StatsContract.INDEX_APPOINTMENT_TIME);
+        modifiedDate = cursor.getString(StatsContract.INDEX_MODIFIED_DATE);
+        statWeight = cursor.getDouble(StatsContract.INDEX_STAT_WEIGHT);
+        statBodyFat = cursor.getDouble(StatsContract.INDEX_STAT_BODY_FAT);
+        statBMI = cursor.getDouble(StatsContract.INDEX_STAT_BMI);
+        statNeck = cursor.getDouble(StatsContract.INDEX_STAT_NECK);
+        statChest = cursor.getDouble(StatsContract.INDEX_STAT_CHEST);
+        statRBicep = cursor.getDouble(StatsContract.INDEX_STAT_RBICEP);
+        statLBicep = cursor.getDouble(StatsContract.INDEX_STAT_LBICEP);
+        statWaist = cursor.getDouble(StatsContract.INDEX_STAT_WAIST);
+        statNavel = cursor.getDouble(StatsContract.INDEX_STAT_NAVEL);
+        statHips = cursor.getDouble(StatsContract.INDEX_STAT_HIPS);
+        statRThigh = cursor.getDouble(StatsContract.INDEX_STAT_RTHIGH);
+        statLThigh = cursor.getDouble(StatsContract.INDEX_STAT_LTHIGH);
+        statRCalf = cursor.getDouble(StatsContract.INDEX_STAT_RCALF);
+        statLCalf = cursor.getDouble(StatsContract.INDEX_STAT_LCALF);
     }
 
 /**************************************************************************************************/
@@ -87,25 +90,26 @@ public class StatsItem extends StatsFBItem{
     public ContentValues getContentValues(){
         // Add a new student record
         ContentValues values = new ContentValues();
-        values.put(Contractor.StatsEntry.COLUMN_UID, uid);
-        values.put(Contractor.StatsEntry.COLUMN_CLIENT_KEY, clientKey);
-        values.put(Contractor.StatsEntry.COLUMN_APPOINTMENT_DATE, appointmentDate);
-        values.put(Contractor.StatsEntry.COLUMN_APPOINTMENT_TIME, appointmentTime);
-        values.put(Contractor.StatsEntry.COLUMN_MODIFIED_DATE, modifiedDate);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_WEIGHT, statWeight);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_BODY_FAT, statBodyFat);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_BMI, statBMI);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_NECK, statNeck);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_CHEST, statChest);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_RBICEP, statRBicep);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_LBICEP, statLBicep);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_WAIST, statWaist);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_NAVAL, statNaval);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_HIPS, statHips);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_RTHIGH, statRThigh);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_LTHIGH, statLThigh);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_RCALF, statRCalf);
-        values.put(Contractor.StatsEntry.COLUMN_STAT_LCALF, statLCalf);
+        values.put(StatsContract.COLUMN_UID, uid);
+        values.put(StatsContract.COLUMN_CLIENT_KEY, clientKey);
+        values.put(StatsContract.COLUMN_TIMESTAMP, timestamp);
+        values.put(StatsContract.COLUMN_APPOINTMENT_DATE, appointmentDate);
+        values.put(StatsContract.COLUMN_APPOINTMENT_TIME, appointmentTime);
+        values.put(StatsContract.COLUMN_MODIFIED_DATE, modifiedDate);
+        values.put(StatsContract.COLUMN_STAT_WEIGHT, statWeight);
+        values.put(StatsContract.COLUMN_STAT_BODY_FAT, statBodyFat);
+        values.put(StatsContract.COLUMN_STAT_BMI, statBMI);
+        values.put(StatsContract.COLUMN_STAT_NECK, statNeck);
+        values.put(StatsContract.COLUMN_STAT_CHEST, statChest);
+        values.put(StatsContract.COLUMN_STAT_RBICEP, statRBicep);
+        values.put(StatsContract.COLUMN_STAT_LBICEP, statLBicep);
+        values.put(StatsContract.COLUMN_STAT_WAIST, statWaist);
+        values.put(StatsContract.COLUMN_STAT_NAVEL, statNavel);
+        values.put(StatsContract.COLUMN_STAT_HIPS, statHips);
+        values.put(StatsContract.COLUMN_STAT_RTHIGH, statRThigh);
+        values.put(StatsContract.COLUMN_STAT_LTHIGH, statLThigh);
+        values.put(StatsContract.COLUMN_STAT_RCALF, statRCalf);
+        values.put(StatsContract.COLUMN_STAT_LCALF, statLCalf);
 
         return values;
     }
