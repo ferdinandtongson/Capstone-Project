@@ -20,7 +20,7 @@ import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
 import me.makeachoice.gymratpta.controller.modelside.loader.RoutineLoader;
 import me.makeachoice.gymratpta.controller.modelside.loader.RoutineNameLoader;
-import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
+import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineNameItem;
@@ -59,7 +59,7 @@ public class AppointmentDialog extends DialogFragment {
     private int mRoutineIndex;
 
     //mSaveApmtItem - client appointment item to save
-    private AppointmentItem mSaveApmtItem;
+    private ScheduleItem mSaveApmtItem;
 
     //mRoutineItem - routine item selected for appointment
     private ArrayList<RoutineItem> mExercises;
@@ -93,7 +93,7 @@ public class AppointmentDialog extends DialogFragment {
     //mSavedListener - notifies listener that the saved button was clicked
     private OnSaveClickListener mSavedListener;
     public interface OnSaveClickListener{
-        public void onSaveClicked(AppointmentItem appItem, ArrayList<RoutineItem> exercises);
+        public void onSaveClicked(ScheduleItem appItem, ArrayList<RoutineItem> exercises);
     }
 
 
@@ -124,7 +124,7 @@ public class AppointmentDialog extends DialogFragment {
     /*
      * void setDialogValues(MyActivity,String) - set dialog values
      */
-    public void setDialogValues(MyActivity activity, String userId, AppointmentItem item){
+    public void setDialogValues(MyActivity activity, String userId, ScheduleItem item){
         //set activity context
         mActivity = activity;
 
@@ -163,15 +163,15 @@ public class AppointmentDialog extends DialogFragment {
     /*
      * void initializeSaveItem(...) - initialize appointment item to be saved
      */
-    private void initializeSaveItem(AppointmentItem item){
+    private void initializeSaveItem(ScheduleItem item){
         //create appointment item to be saved
-        mSaveApmtItem = new AppointmentItem();
+        mSaveApmtItem = new ScheduleItem();
 
         //check if item is null
         if(item == null){
             //if null, new appointment item being created
             mSaveApmtItem.uid = mUserId;
-            mSaveApmtItem.fkey = "";
+            mSaveApmtItem.datestamp = DateTimeHelper.getDatestamp(0);
             mSaveApmtItem.appointmentDate = DateTimeHelper.getToday();
             mSaveApmtItem.appointmentTime = DateTimeHelper.getCurrentTime();
             mSaveApmtItem.clientKey = "";
@@ -182,7 +182,7 @@ public class AppointmentDialog extends DialogFragment {
         else{
             //old appointment item being edited, save values to save item
             mSaveApmtItem.uid = mUserId;
-            mSaveApmtItem.fkey = item.fkey;
+            mSaveApmtItem.datestamp = item.datestamp;
             mSaveApmtItem.appointmentDate = item.appointmentDate;
             mSaveApmtItem.appointmentTime = item.appointmentTime;
             mSaveApmtItem.clientKey = item.clientKey;
@@ -269,17 +269,11 @@ public class AppointmentDialog extends DialogFragment {
      * void initializeDateTextView(View) - initialize date textView component
      */
     private void initializeDateTextView(){
-        //get string "today"
-        String strToday = mActivity.getString(R.string.today);
-
         //get date textView component
         TextView txtDate = (TextView)mRootView.findViewById(R.id.diaSchedule_txtDate);
 
-        //create date string to display
-        strToday = strToday + ", " + DateTimeHelper.getToday();
-
         //set string value
-        txtDate.setText(strToday);
+        txtDate.setText(mSaveApmtItem.appointmentDate);
     }
 
     /*
@@ -293,7 +287,7 @@ public class AppointmentDialog extends DialogFragment {
         String strTime = mSaveApmtItem.appointmentTime;
 
         //set text to current time
-        mTxtTimeSelected.setText(strTime);
+        mTxtTimeSelected.setText(DateTimeHelper.convert24Hour(strTime));
 
         //set onClick listener
         mTxtTimeSelected.setOnClickListener(new View.OnClickListener() {
@@ -609,10 +603,10 @@ public class AppointmentDialog extends DialogFragment {
     private void onTimePickerSet(int selectedHour, int selectedMinute){
 
         //convert time to string value
-        String strTime = DateTimeHelper.convert24Hour(selectedHour, selectedMinute);
+        String strTime = DateTimeHelper.getTime(selectedHour, selectedMinute);
 
         // set current time into textView
-        mTxtTimeSelected.setText(strTime);
+        mTxtTimeSelected.setText(DateTimeHelper.convert24Hour(strTime));
 
         //save time to save appointment item
         mSaveApmtItem.appointmentTime = strTime;
