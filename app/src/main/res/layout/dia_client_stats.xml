@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    >
+
+    <TextView
+        android:id="@+id/diaStats_txtDateTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        style="@style/GymRat.Dialog.TextView.Small"
+        />
+
+    <TextView
+        android:id="@+id/diaStats_txtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaStats_txtDateTime"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:minLines="1"
+        android:text="@string/stats"
+        android:contentDescription="@string/stats"
+        style="@style/GymRat.Dialog.TextView.Large"
+        />
+
+    <View
+        android:id="@+id/line01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/diaStats_txtName"
+        android:background="@color/black"/>
+
+
+    <RelativeLayout
+        android:id="@+id/diaStats_relStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/line01"
+        style="@style/GymRat.Dialog.InsideFrame"
+        >
+
+        <!-- Measurement Title -->
+        <TextView
+            android:id="@+id/diaStats_txtStat"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:text="@string/stats"
+            style="@style/GymRat.Card.TextView.Measure.Label"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtPrevious"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_toEndOf="@id/diaStats_txtStat"
+            android:text="@string/prev"
+            style="@style/GymRat.Card.TextView.Measure.Label"/>
+
+        <!-- Measurement Weight -->
+        <TextView
+            android:id="@+id/diaStats_txtWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtStat"
+            android:text="@string/measurement_detail_weight"
+            android:contentDescription="@string/measurement_detail_weight"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtWeightStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtStat"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtWeightStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtStat"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+
+        <TextView
+            android:id="@+id/diaStats_txtWeightPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtWeightStat"
+            android:layout_below="@id/diaStats_txtStat"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+
+        <!-- Measurement Body Fat -->
+        <TextView
+            android:id="@+id/diaStats_txtBodyFat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtWeight"
+            android:text="@string/measurement_detail_body_fat"
+            android:contentDescription="@string/measurement_detail_body_fat"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtBodyFatStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtWeight"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtBodyFatStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtWeight"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtBodyFatPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtBodyFatStat"
+            android:layout_below="@id/diaStats_txtWeight"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <!-- Measurement BMI -->
+        <TextView
+            android:id="@+id/diaStats_txtBMI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtBodyFat"
+            android:text="@string/measurement_detail_bmi"
+            android:contentDescription="@string/measurement_detail_bmi"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtBMIStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtBodyFat"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtBMIStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtBodyFat"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtBMIPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtBMIStat"
+            android:layout_below="@id/diaStats_txtBodyFat"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <View
+            android:id="@+id/diaStats_line01"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/diaStats_txtBMI"
+            android:background="@android:color/darker_gray"/>
+
+        <!-- Measurement Neck -->
+        <TextView
+            android:id="@+id/diaStats_txtNeck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line01"
+            android:text="@string/measurement_detail_neck"
+            android:contentDescription="@string/measurement_detail_neck"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtNeckStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line01"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtNeckStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line01"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtNeckPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtNeckStat"
+            android:layout_below="@id/diaStats_line01"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <!-- Measurement Chest -->
+        <TextView
+            android:id="@+id/diaStats_txtChest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtNeck"
+            android:text="@string/measurement_detail_chest"
+            android:contentDescription="@string/measurement_detail_chest"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtChestStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtNeck"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtChestStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtNeck"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtChestPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtChestStat"
+            android:layout_below="@id/diaStats_txtNeck"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <!-- Measurement RBicep -->
+        <TextView
+            android:id="@+id/diaStats_txtRBicep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtChest"
+            android:text="@string/measurement_detail_rbicep"
+            android:contentDescription="@string/measurement_detail_rbicep"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtRBicepStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtChest"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtRBicepStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtChest"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtRBicepPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtRBicepStat"
+            android:layout_below="@id/diaStats_txtChest"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <!-- Measurement LBicep -->
+        <TextView
+            android:id="@+id/diaStats_txtLBicep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRBicep"
+            android:text="@string/measurement_detail_lbicep"
+            android:contentDescription="@string/measurement_detail_lbicep"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtLBicepStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRBicep"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtLBicepStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRBicep"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtLBicepPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtLBicepStat"
+            android:layout_below="@id/diaStats_txtRBicep"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+
+        <View
+            android:id="@+id/diaStats_line02"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/diaStats_txtLBicep"
+            android:background="@android:color/darker_gray"/>
+
+        <!-- Measurement Waist -->
+        <TextView
+            android:id="@+id/diaStats_txtWaist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line02"
+            android:text="@string/measurement_detail_waist"
+            android:contentDescription="@string/measurement_detail_waist"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtWaistStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line02"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtWaistStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line02"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtWaistPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtWaistStat"
+            android:layout_below="@id/diaStats_line02"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <!-- Measurement Navel -->
+        <TextView
+            android:id="@+id/diaStats_txtNavel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtWaist"
+            android:text="@string/measurement_detail_navel"
+            android:contentDescription="@string/measurement_detail_navel"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtNavelStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtWaist"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtNavelStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtWaist"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtNavelPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtNavelStat"
+            android:layout_below="@id/diaStats_txtWaist"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <!-- Measurement Hips -->
+        <TextView
+            android:id="@+id/diaStats_txtHips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtNavel"
+            android:text="@string/measurement_detail_hips"
+            android:contentDescription="@string/measurement_detail_hips"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtHipsStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtNavel"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtHipsStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtNavel"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtHipsPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtHipsStat"
+            android:layout_below="@id/diaStats_txtNavel"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <View
+            android:id="@+id/diaStats_line03"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/diaStats_txtHips"
+            android:background="@android:color/darker_gray"/>
+
+        <!-- Measurement RThigh -->
+        <TextView
+            android:id="@+id/diaStats_txtRThigh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line03"
+            android:text="@string/measurement_detail_rthigh"
+            android:contentDescription="@string/measurement_detail_rthigh"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtRThighStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line03"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtRThighStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_line03"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtRThighPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtRThighStat"
+            android:layout_below="@id/diaStats_line03"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <!-- Measurement LThigh -->
+        <TextView
+            android:id="@+id/diaStats_txtLThigh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRThigh"
+            android:text="@string/measurement_detail_lthigh"
+            android:contentDescription="@string/measurement_detail_lthigh"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtLThighStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRThigh"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtLThighStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRThigh"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtLThighPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtLThighStat"
+            android:layout_below="@id/diaStats_txtRThigh"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+
+        <!-- Measurement RCalf -->
+        <TextView
+            android:id="@+id/diaStats_txtRCalf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtLThigh"
+            android:text="@string/measurement_detail_rcalf"
+            android:contentDescription="@string/measurement_detail_rcalf"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtRCalfStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtLThigh"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtRCalfStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtLThigh"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtRCalfPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtRCalfStat"
+            android:layout_below="@id/diaStats_txtLThigh"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+        <!-- Measurement LCalf -->
+        <TextView
+            android:id="@+id/diaStats_txtLCalf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRCalf"
+            android:text="@string/measurement_detail_lcalf"
+            android:contentDescription="@string/measurement_detail_lcalf"
+            style="@style/GymRat.Card.TextView.Measure.Stat"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtLCalfStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRCalf"
+            style="@style/GymRat.Dialog.TextView.Measure.Data"/>
+
+        <EditText
+            android:id="@+id/diaStats_edtLCalfStat"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaStats_txtRCalf"
+            style="@style/GymRat.Dialog.EditText.Measure.Data"/>
+
+        <TextView
+            android:id="@+id/diaStats_txtLCalfPrevious"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaStats_txtLCalfStat"
+            android:layout_below="@id/diaStats_txtRCalf"
+            style="@style/GymRat.Dialog.TextView.Measure.Data.Change"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/diaStats_txtSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaStats_relStats"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/save"
+        style="@style/GymRat.Dialog.TextView.Button.Small"
+        />
+
+    <TextView
+        android:id="@+id/diaStats_txtCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/diaStats_txtSave"
+        android:layout_below="@id/diaStats_relStats"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/cancel"
+        style="@style/GymRat.Dialog.TextView.Button.Small"
+        />
+
+
+</RelativeLayout>
