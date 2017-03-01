@@ -93,4 +93,37 @@
         <item name="android:padding">2dp</item>
     </style>
 
+    <style name="GymRat.Dialog.InsideFrame" parent="Theme.AppCompat.Light">
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@drawable/bg_white</item>
+    </style>
+
+    <style name="GymRat.Dialog.EditText.Measure.Data" parent="GymRat.Card.TextView">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginStart">100dp</item>
+        <item name="android:paddingEnd">2dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColorHint">@color/darkgray</item>
+        <item name="android:background">@drawable/bg_white</item>
+        <item name="android:inputType">numberDecimal</item>
+    </style>
+
+    <style name="GymRat.Dialog.TextView.Measure.Data" parent="GymRat.Card.TextView">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginStart">100dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:background">@color/powderBlueish_60</item>
+    </style>
+
+    <style name="GymRat.Dialog.TextView.Measure.Data.Change" parent="GymRat.Dialog.TextView.Measure.Data">
+        <item name="android:layout_marginStart">25dp</item>
+    </style>
+
 </resources>
