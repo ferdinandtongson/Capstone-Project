@@ -60,6 +60,7 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
 
     private boolean mEditingNotes;
     private NotesButler mNotesButler;
+    private NotesDialog mNotesDialog;
 
     private NotesButler.OnLoadedListener mOnLoadListener =
             new NotesButler.OnLoadedListener() {
@@ -115,7 +116,6 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
         mSaveItem.assessmentNotes = "";
         mSaveItem.planNotes = "";
     }
-
 
 /**************************************************************************************************/
 
@@ -176,8 +176,11 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
 /*
  * Class Methods:
  *      void prepareFragment(View) - prepare components and data to be displayed by fragment
- *      void initializeRecycler() - initialize recycler to display exercise items
- *      EditAddDialog initializeDialog(...) - create exercise edit/add dialog
+ *      void initializeEmptyText() - textView used when recycler is empty
+ *      void initializeAdapter() - adapter used by recycler component
+ *      void initializeRecycler() - initialize recycler component
+ *      NotesDialog initializeNotesDialog - initialize client notes dialog
+ *      void updateEmptyText() - check if adapter is empty or not then updates empty textView
  */
 /**************************************************************************************************/
     /*
@@ -288,8 +291,6 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
         return mNotesDialog;
     }
 
-    private NotesDialog mNotesDialog;
-
     /*
      * void updateEmptyText() - check if adapter is empty or not then updates empty textView
      */
@@ -383,9 +384,11 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
         NotesItem item = mData.get(index);
 
         if(index == mActiveNoteIndex){
+            mEditingNotes = true;
             initializeNotesDialog(NotesDialog.MODE_EDIT, item);
         }
         else{
+            mEditingNotes = false;
             initializeNotesDialog(NotesDialog.MODE_READ, item);
         }
     }
@@ -418,7 +421,6 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
     }
 
 /**************************************************************************************************/
-
 
 /**************************************************************************************************/
 /*
