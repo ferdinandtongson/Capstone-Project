@@ -5,9 +5,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
-import me.makeachoice.gymratpta.model.contract.client.ClientExerciseColumns;
+import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientRoutineColumns;
-import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
@@ -192,77 +191,6 @@ public class Contractor {
         //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
         public static String getTimeFromDateTimeUri(Uri uri) {
             return uri.getPathSegments().get(5);
-        }
-    }
-
-    /*
-     * ClientExerciseEntry - client exercise
-     */
-    public static class ClientExerciseEntry extends ClientExerciseColumns implements BaseColumns {
-
-        public static Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLIENT_EXERCISE).build();
-
-        public static String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT_EXERCISE;
-        public static String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT_EXERCISE;
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[_id]
-        public static Uri buildClientExerciseUri(long id) {
-            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]
-        public static Uri buildClientExerciseByUID(String uid) {
-            return CONTENT_URI.buildUpon().appendPath(uid).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/client_key/[clientKey]
-        public static Uri buildClientExerciseByClientKey(String uid, String clientKey) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CLIENT_KEY).appendPath(clientKey).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/exercise/[exercise]
-        public static Uri buildClientExerciseByExercise(String uid, String clientKey, String exercise) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).
-                    appendPath(COLUMN_EXERCISE).appendPath(exercise).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/timestamp/[timestamp]
-        public static Uri buildClientExerciseByTimeStamp(String uid, String clientKey, String timestamp) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).
-                    appendPath(COLUMN_TIMESTAMP).appendPath(timestamp).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/....
-        public static String getUIdFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/client_key/[clientKey]
-        public static String getClientKeyFromUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/exercise/[exercise]
-        public static String getClientKeyFromExerciseUri(Uri uri) {
-            return uri.getPathSegments().get(2);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/exercise/[exercise]
-        public static String getExerciseFromExerciseUri(Uri uri) {
-            return uri.getPathSegments().get(4);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/timestamp/[timestamp]
-        public static String getClientKeyFromTimestampUri(Uri uri) {
-            return uri.getPathSegments().get(2);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/timestamp/[timestamp]
-        public static String getTimestampFromTimestampUri(Uri uri) {
-            return uri.getPathSegments().get(4);
         }
     }
 
