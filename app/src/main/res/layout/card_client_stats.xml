@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_toEndOf="@id/cardStats_txtStat"
-                android:text="@string/measurement_detail_delta_pre"
+                android:text="@string/prev"
                 style="@style/GymRat.Card.TextView.Measure.Label"/>
 
             <TextView
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_toEndOf="@id/cardStats_txtPrevious"
-                android:text="@string/measurement_detail_delta_start"
+                android:text="@string/first"
                 style="@style/GymRat.Card.TextView.Measure.Label"/>
 
             <!-- Measurement Weight -->
