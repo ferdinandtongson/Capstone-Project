@@ -98,17 +98,12 @@
         <item name="android:layout_marginTop">2dp</item>
         <item name="android:layout_marginStart">100dp</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textAlignment">viewEnd</item>
+        <item name="android:textAlignment">center</item>
         <item name="android:background">@color/powderBlueish_60</item>
     </style>
 
-    <style name="GymRat.Card.TextView.Measure.Data.Change" parent="GymRat.Card.TextView">
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_marginTop">2dp</item>
+    <style name="GymRat.Card.TextView.Measure.Data.Change" parent="GymRat.Card.TextView.Measure.Data">
         <item name="android:layout_marginStart">25dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:background">@color/powderBlueish_60</item>
     </style>
 
 </resources>
