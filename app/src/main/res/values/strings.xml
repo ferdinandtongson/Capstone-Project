@@ -178,6 +178,7 @@
     <string name="email" translatable="true">Email</string>
     <string name="exercise" translatable="true">Exercise</string>
     <string name="exercises" translatable="true">Exercises</string>
+    <string name="first" translatable="true">First</string>
     <string name="help" translatable="true">Help</string>
     <string name="history" translatable="true">History</string>
     <string name="info" translatable="true">Info</string>
@@ -194,6 +195,7 @@
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="phone" translatable="true">Phone</string>
     <string name="plan" translatable="true">Plan</string>
+    <string name="prev" translatable="true">Prev.</string>
     <string name="quick_help" translatable="true">Quick Help</string>
     <string name="reps" translatable="true">Reps</string>
     <string name="reschedule" translatable="true">Reschedule</string>
