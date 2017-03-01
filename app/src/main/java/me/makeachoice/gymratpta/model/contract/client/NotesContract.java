@@ -55,7 +55,7 @@ public class NotesContract extends MyContractor implements BaseColumns {
     public static final String COLUMN_PLAN_NOTES = "plan_notes";
 
     //default sort order
-    public static final String SORT_ORDER_DATE_TIME = COLUMN_TIMESTAMP + " ASC, " + COLUMN_APPOINTMENT_TIME + " ASC";
+    public static final String SORT_ORDER_DATE_TIME = COLUMN_TIMESTAMP + " DESC";
 
 /**************************************************************************************************/
 
