@@ -1,7 +1,7 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.client;
 
-import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,19 +9,37 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.loader.StatsLoader;
+import me.makeachoice.gymratpta.controller.modelside.butler.StatsButler;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.StatsAdapter;
-import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
+import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.client.StatsItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
+import me.makeachoice.gymratpta.view.dialog.StatsDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
-/**
- * Created by Usuario on 2/22/2017.
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_STATS;
+
+/**************************************************************************************************/
+/*
+ * ClientStatsMaid display a list of stats of a given client
+ *
+ * Variables from MyMaid:
+ *      mMaidKey - key string of instance Maid
+ *      int mLayoutId - resource id number of fragment layout
+ *      View mLayout - fragment layout view holding the child views
+ *
+ * Methods from MyMaid:
+ *      void activityCreated() - called when Activity.onCreate() completed
+ *      void destroyView() - called when fragment is being removed
+ *      void detach() - called when fragment is being disassociated from Activity
+ *      void saveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
+ *      String getKey() - get maid key value
+ *      Fragment getFragment() - get new instance fragment
  */
+/**************************************************************************************************/
 
 public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge {
 
@@ -34,14 +52,25 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
     private String mUserId;
     private MyActivity mActivity;
     private ClientItem mClientItem;
-    private AppointmentItem mAppointmentItem;
+    private ScheduleItem mScheduleItem;
     private StatsItem mSaveItem;
+    private StatsItem mDeleteItem;
 
     private ArrayList<StatsItem> mData;
+    private ArrayList<StatsItem> mPrevList;
     private StatsAdapter mAdapter;
 
-    private boolean mEditingStats;
-    private StatsLoader mStatsLoader;
+    private int mActiveStatsIndex;
+
+    private StatsButler mStatsButler;
+
+    private StatsButler.OnLoadedListener mOnLoadListener =
+            new StatsButler.OnLoadedListener() {
+                @Override
+                public void onLoaded(ArrayList<StatsItem> statsList) {
+                    onStatsLoaded(statsList);
+                }
+            };
 
 /**************************************************************************************************/
 
@@ -54,7 +83,7 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
      * ClientStatsMaid(...) - constructor
      */
     public ClientStatsMaid(String maidKey, int layoutId, String userId, ClientItem clientItem,
-                           AppointmentItem appItem){
+                           ScheduleItem scheduleItem){
         //get maidKey
         mMaidKey = maidKey;
 
@@ -64,11 +93,40 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
         mUserId = userId;
 
         mClientItem = clientItem;
+        mScheduleItem = scheduleItem;
 
-        mAppointmentItem = appItem;
-
-        mEditingStats = false;
+        mSaveItem = createStatsItem();
     }
+
+    /*
+     * void createStatsItem() -
+     */
+    private StatsItem createStatsItem(){
+        StatsItem statItem = new StatsItem();
+        statItem.uid = mUserId;
+        statItem.clientKey = mClientItem.fkey;
+        statItem.timestamp = mScheduleItem.datestamp + " " + mScheduleItem.appointmentTime;
+        statItem.appointmentDate = mScheduleItem.appointmentDate;
+        statItem.appointmentTime = mScheduleItem.appointmentTime;
+        statItem.modifiedDate = mScheduleItem.appointmentDate;
+        statItem.statWeight = 0;
+        statItem.statBodyFat = 0;
+        statItem.statBMI = 0;
+        statItem.statNeck = 0;
+        statItem.statChest = 0;
+        statItem.statRBicep = 0;
+        statItem.statLBicep = 0;
+        statItem.statWaist = 0;
+        statItem.statNavel = 0;
+        statItem.statHips = 0;
+        statItem.statRThigh = 0;
+        statItem.statLThigh = 0;
+        statItem.statRCalf = 0;
+        statItem.statLCalf = 0;
+
+        return statItem;
+    }
+
 
 /**************************************************************************************************/
 
@@ -105,16 +163,17 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
         mActivity = (MyActivity)mFragment.getActivity();
 
         mData = new ArrayList<>();
-        StatsItem item = new StatsItem();
-        item.appointmentDate = DateTimeHelper.getToday();
-        item.appointmentTime = DateTimeHelper.getCurrentTime();
-        mData.add(item);
+        mPrevList = new ArrayList<>();
+        mStatsButler = new StatsButler(mActivity, mUserId, mClientItem.fkey);
 
-        mStatsLoader = new StatsLoader(mActivity, mUserId, mClientItem.fkey);
-
-        prepareFragment();
-        //loadStats();
     }
+
+    public void start(){
+        super.start();
+        mStatsButler.loadStats(LOADER_STATS, mOnLoadListener);
+    }
+
+
 
     /*
      * void detach() - fragment is being disassociated from activity
@@ -131,8 +190,11 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
 /*
  * Class Methods:
  *      void prepareFragment(View) - prepare components and data to be displayed by fragment
- *      void initializeRecycler() - initialize recycler to display exercise items
- *      EditAddDialog initializeDialog(...) - create exercise edit/add dialog
+ *      void initializeEmptyText() - textView used when recycler is empty
+ *      void initializeAdapter() - adapter used by recycler component
+ *      void initializeRecycler() - initialize recycler component
+ *      NotesDialog initializeNotesDialog - initialize client notes dialog
+ *      void updateEmptyText() - check if adapter is empty or not then updates empty textView
  */
 /**************************************************************************************************/
     /*
@@ -144,8 +206,6 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
         initializeAdapter();
 
         initializeRecycler();
-
-        initializeFAB();
     }
 
     /*
@@ -167,7 +227,10 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
         int adapterLayoutId = R.layout.card_client_stats;
 
         //create adapter consumed by the recyclerView
-       mAdapter = new StatsAdapter(mFragment.getActivity(), adapterLayoutId);
+        mAdapter = new StatsAdapter(mFragment.getActivity(), adapterLayoutId);
+        mAdapter.setFirstItem(mFirstItem);
+        mAdapter.setPreviousItems(mPrevList);
+        mAdapter.setActiveIndex(mActiveStatsIndex);
 
         mAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,63 +271,43 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
     }
 
     /*
-     * void initializeFAB() - initialize FAB component
+     * StatsDialog initializeStatsDialog - initialize client stats dialog
      */
-    private void initializeFAB(){
-        //get content description string value
-        //String description = mFragment.getString(R.string.description_fab_appointment);
-
-        //add content description to FAB
-        //mFAB.setContentDescription(description);
-
-        //add listener for onFABClick events
-        setOnClickFABListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //onFABClick event occurred
-                onFabClicked(view);
-            }
-        });
-    }
-
-    /*
-     * NotesDialog initializeNotesDialog - initialize client notes dialog
-     */
-    /*private NotesDialog initializeNotesDialog(int mode, NotesItem item){
+    private StatsDialog initializeStatsDialog(int mode, StatsItem item, StatsItem prevItem){
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
         //create dialog
-        mNotesDialog = new NotesDialog();
-        mNotesDialog.setDialogValues(mActivity, mUserId, mode, item);
+        mStatsDialog = new StatsDialog();
+        mStatsDialog.setDialogValues(mActivity, mUserId, mode, item, prevItem);
 
-        if(mode != NotesDialog.MODE_READ){
-            mNotesDialog.setOnSaveListener(new NotesDialog.OnSaveNotesListener() {
+        if(mode != StatsDialog.MODE_READ){
+            mStatsDialog.setOnSaveListener(new StatsDialog.OnSaveListener() {
                 @Override
-                public void onSaveNotes(ArrayList<String> notes) {
-                    onNotesSaved(notes);
+                public void onSave(StatsItem statsItem) {
+                    onStatsSaved(statsItem);
                 }
             });
 
-            mNotesDialog.setOnCancelListener(new View.OnClickListener() {
+            mStatsDialog.setOnCancelListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onNotesCanceled();
+                    onStatsCanceled();
                 }
             });
 
-            mNotesDialog.setCancelable(false);
+            mStatsDialog.setCancelable(false);
         }
         else{
-            mNotesDialog.setCancelable(true);
+            mStatsDialog.setCancelable(true);
         }
 
-        mNotesDialog.show(fm, "diaScheduleAppointment");
+        mStatsDialog.show(fm, "diaStatsDia");
 
-        return mNotesDialog;
+        return mStatsDialog;
     }
 
-    private NotesDialog mNotesDialog;*/
+    private StatsDialog mStatsDialog;
 
     /*
      * void updateEmptyText() - check if adapter is empty or not then updates empty textView
@@ -285,123 +328,192 @@ public class ClientStatsMaid extends GymRatRecyclerMaid implements BasicFragment
 /**************************************************************************************************/
 /*
  * Class Methods
- *      void loadStats() - load client stats data from database
+ *      void onStatsLoaded() - load client stats data from database
  *      void onStatsLoaded(Cursor) - stats from database has been loaded
  */
 /**************************************************************************************************/
     /*
-     * void loadStats() - load client stats data from database
+     * void onStatsLoaded() - load client stats data from database
      */
-    private void loadStats(){
-        //start loader to get appointment data from database
-        mStatsLoader.loadStatsByClientKey(new StatsLoader.OnStatsLoadListener() {
-            @Override
-            public void onStatsLoadFinished(Cursor cursor) {
-                onStatsLoaded(cursor);
-            }
-        });
-    }
+    private void onStatsLoaded(ArrayList<StatsItem> statsList){
+        //list in descending order, get first item
+        mFirstItem = getFirstItem(statsList);
 
-    /*
-     * void onStatsLoaded(Cursor) - stats from database has been loaded
-     */
-    private void onStatsLoaded(Cursor cursor){
-        //clear stats list array
+        //clear list buffers
         mData.clear();
+        mPrevList.clear();
 
-        //get number of stats loaded
-        int count = cursor.getCount();
+        //clear active stat index
+        mActiveStatsIndex = -1;
+        StatsItem prevItem;
+        ArrayList<StatsItem> invertedList = new ArrayList<>();
 
-        //loop through cursor
+        //get number of saved client stats
+        int count = statsList.size();
+
+        //loop through stats
         for(int i = 0; i < count; i++){
-            //move cursor to index position
-            cursor.moveToPosition(i);
+            //get note item, last recorded stat
+            StatsItem item = statsList.get(i);
 
-            //create stats item from cursor data
-            StatsItem item = new StatsItem(cursor);
+            //check if note item is equal to appointment schedule timestamp
+            if(item.timestamp.equals(mSaveItem.timestamp)){
+                //save index of item in list as active
+                mActiveStatsIndex = i;
+            }
 
-            //add stats item to list
-            mData.add(item);
+            //check if list count is 1
+            if(count == 1){
+                //create empty statItem, for previous stat record
+                prevItem = createStatsItem();
+            }
+            else{
+                //get previous stat record index
+                int prevItemIndex = i + 1;
+
+                //check previous stat record index value
+                if(prevItemIndex < count){
+                    //less than stat record size, get previous stat record
+                    prevItem = statsList.get(prevItemIndex);
+                }
+                else{
+                    //greater than list, must be first stat record so no previous record, create empty stat
+                    prevItem = createStatsItem();
+                }
+            }
+            invertedList.add(prevItem);
         }
 
-        //destroy loader
-        mStatsLoader.destroyLoader();
+        int invertCount = invertedList.size() - 1;
+        for(int i = invertCount; i >= 0; i--){
+            mPrevList.add(invertedList.get(i));
+        }
+
+        //check if active index was found
+        if(mActiveStatsIndex == -1){
+            //no active index, add blank notes object to data list
+            mData.add(mSaveItem);
+
+            //check stat list count
+            if(count > 0){
+                //greater than zero, get last stat record (first in list since desc order)
+                mPrevList.add(statsList.get(0));
+            }
+            else{
+                //no records, create empty stat record
+                mPrevList.add(createStatsItem());
+            }
+            //set active index to blank notes object
+            mActiveStatsIndex = 0;
+        }
+
+        //add saved client notes
+        mData.addAll(statsList);
+
 
         //load client data
         prepareFragment();
     }
+
+    private StatsItem mFirstItem;
+
+    private StatsItem getFirstItem(ArrayList<StatsItem> statsList){
+        //list is in descending order, first item is last item in list
+        int count = statsList.size();
+
+        //check if list count is greater than 0
+        if(count > 0){
+            //greater than zero, get last item in list
+            return statsList.get(count - 1);
+        }
+
+        return createStatsItem();
+    }
+
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * Class Methods
- *      void onFabClicked(View) - floating action button clicked, open schedule stats dialog
- *      void onEditAppointment() - edit appointment item
- *      void onSaveAppointment(...) - save appointment item
- *      void onAppointmentDeleteRequest(int) - delete appointment requested
  */
 /**************************************************************************************************/
-    /*
-     * void onFabClicked(View) - floating action button clicked, open schedule stats dialog
-     */
-    private void onFabClicked(View view){
-        mEditingStats = true;
-
-        /*mSaveItem = new NotesItem();
-        mSaveItem.uid = mUserId;
-        mSaveItem.clientKey = mClientItem.fkey;
-        mSaveItem.appointmentDate = mAppointmentItem.appointmentDate;
-        mSaveItem.appointmentTime = mAppointmentItem.appointmentTime;
-        mSaveItem.modifiedDate = mAppointmentItem.appointmentDate;
-        mSaveItem.subjectiveNotes = "";
-        mSaveItem.objectiveNotes = "";
-        mSaveItem.assessmentNotes = "";
-        mSaveItem.planNotes = "";*/
-
-        //initializeNotesDialog(NotesDialog.MODE_ADD, mSaveItem);
-    }
-
-    /*
-     * void onEditStats() - edit stats item
-     */
-    private void onEditStats(int index){
-        mEditingStats = true;
-
-        mSaveItem = mData.get(index);
-
-        //initializeNotesDialog(NotesDialog.MODE_EDIT, mSaveItem);
-    }
 
 
     private void onItemClicked(int index){
         StatsItem item = mData.get(index);
+        StatsItem prevItem = mPrevList.get(index);
 
-        //initializeNotesDialog(NotesDialog.MODE_READ, item);
+        if(index == mActiveStatsIndex){
+            mDeleteItem = item;
+            initializeStatsDialog(StatsDialog.MODE_EDIT, item, prevItem);
+        }
+        else{
+            initializeStatsDialog(StatsDialog.MODE_READ, item, prevItem);
+        }
     }
 
     private void onStatsCanceled(){
-        //mNotesDialog.dismiss();
+        mStatsDialog.dismiss();
     }
 
-    private void onStatsSaved(ArrayList<String> notes){
-        /*mSaveItem.subjectiveNotes = notes.get(0);
-        mSaveItem.objectiveNotes = notes.get(1);
-        mSaveItem.assessmentNotes = notes.get(2);
-        mSaveItem.planNotes = notes.get(3);
+    private void onStatsSaved(StatsItem statsItem){
 
-        if(mEditingNotes){
-            mSaveItem.modifiedDate = DateTimeHelper.getToday();
-            deleteNotes(mSaveItem);
-        }
-        else{
-            saveNotes(mSaveItem);
-        }
+        mSaveItem = statsItem;
+        mSaveItem.modifiedDate = DateTimeHelper.getToday();
+        deleteStats(mDeleteItem);
 
-        mNotesDialog.dismiss();*/
+        mStatsDialog.dismiss();
     }
 
 /**************************************************************************************************/
 
+/**************************************************************************************************/
+/*
+ * Save Methods
+ *      void saveStats(StatsItem) - save stats item
+ */
+/**************************************************************************************************/
+    /*
+     * void saveStats(StatsItem) - save stats item
+     */
+    private void saveStats(StatsItem saveItem){
+        mStatsButler.saveStats(saveItem, new StatsButler.OnSavedListener() {
+            @Override
+            public void onSaved() {
+                mStatsButler.loadStats(LOADER_STATS, mOnLoadListener);
+            }
+        });
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Delete Methods
+ *      void deleteStats(StatsItem) - delete notes
+ *      void onStatsDeleted() - notes have been deleted from database
+ */
+/**************************************************************************************************/
+    /*
+     * void deleteStats(StatsItem) - delete notes
+     */
+    private void deleteStats(StatsItem deleteItem){
+        mStatsButler.deleteStats(deleteItem, new StatsButler.OnDeletedListener() {
+            @Override
+            public void onDeleted() {
+                onStatsDeleted();
+            }
+        });
+    }
+
+    /*
+     * void onStatsDeleted() - notes have been deleted from database
+     */
+    private void onStatsDeleted(){
+        saveStats(mSaveItem);
+    }
+
+/**************************************************************************************************/
 
 }
