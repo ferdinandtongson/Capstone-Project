@@ -2,7 +2,7 @@ package me.makeachoice.gymratpta.controller.manager;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.SessionKeeper;
-import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubAppointmentKeeper;
+import me.makeachoice.gymratpta.controller.viewside.housekeeper.ScheduleKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubClientDetailKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubClientKeeper;
 import me.makeachoice.gymratpta.controller.viewside.housekeeper.StubExerciseKeeper;
@@ -88,8 +88,8 @@ public class HouseKeeperRegistry extends MyHouseKeeperRegistry {
         StubClientDetailKeeper clientDetailKeeper = new StubClientDetailKeeper(R.layout.activity_bottom_nav);
         registerHouseKeeper(KEEPER_CLIENT_DETAIL, clientDetailKeeper);
 
-        StubAppointmentKeeper appointmentKeeper = new StubAppointmentKeeper(R.layout.activity_bottom_nav);
-        registerHouseKeeper(KEEPER_SCHEDULE, appointmentKeeper);
+        ScheduleKeeper scheduleKeeper = new ScheduleKeeper(R.layout.activity_bottom_nav);
+        registerHouseKeeper(KEEPER_SCHEDULE, scheduleKeeper);
 
         SessionKeeper sessionKeeper = new SessionKeeper(R.layout.activity_recycler);
         registerHouseKeeper(KEEPER_SESSION, sessionKeeper);
