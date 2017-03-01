@@ -30,6 +30,8 @@
     <!-- card_client layout -->
     <color name="card_activeBackground">@color/colorAccent</color>
     <color name="card_retiredBackground">@color/silver_90</color>
+    <color name="card_item_activeBackground">@color/colorAccent</color>
+    <color name="card_item_retiredBackground">@color/silver</color>
     <color name="card_profile_outline">@color/profile_outline_default</color>
     <color name="card_defaultBackground">@color/colorAccent</color>
 
