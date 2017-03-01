@@ -7,8 +7,7 @@ import android.provider.BaseColumns;
 import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
 import me.makeachoice.gymratpta.model.contract.client.ClientExerciseColumns;
 import me.makeachoice.gymratpta.model.contract.client.ClientRoutineColumns;
-import me.makeachoice.gymratpta.model.contract.client.NotesContract;
-import me.makeachoice.gymratpta.model.contract.client.StatsColumns;
+import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
@@ -41,10 +40,7 @@ public class Contractor {
     // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
     // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
     public static final String PATH_USER = "user";
-    public static final String PATH_APPOINTMENT = "appointment";
     public static final String PATH_CLIENT = "client";
-    public static final String PATH_STATS = "clientStats";
-    public static final String PATH_NOTES = "clientNotes";
     public static final String PATH_CLIENT_ROUTINE = "clientRoutine";
     public static final String PATH_CLIENT_EXERCISE = "clientExercise";
     public static final String PATH_CATEGORY = "category";
@@ -138,82 +134,6 @@ public class Contractor {
 
     }
 
-
-    /*
-     * StatsEntry - client stats
-     */
-    public static class StatsEntry extends StatsColumns implements BaseColumns {
-
-        public static Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_STATS).build();
-
-        public static String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STATS;
-        public static String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STATS;
-
-        //"content://CONTENT_AUTHORITY/clientStats/[_id]
-        public static Uri buildStatsUri(long id) {
-            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]
-        public static Uri buildStatsByUID(String uid) {
-            return CONTENT_URI.buildUpon().appendPath(uid).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/client_key/[clientKey]
-        public static Uri buildStatsByClientKey(String uid, String clientKey) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CLIENT_KEY).appendPath(clientKey).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/appointment_date/[appointmentDate]
-        public static Uri buildStatsByDate(String uid, String clientKey, String appointmentDate) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).
-                    appendPath(uid).appendPath(COLUMN_APPOINTMENT_DATE).appendPath(appointmentDate).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        public static Uri buildStatsByDateTime(String uid, String clientKey, String appointmentDate, String appointmentTime) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).appendPath(appointmentDate).
-                    appendPath(COLUMN_APPOINTMENT_TIME).appendPath(appointmentTime).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/....
-        public static String getUIdFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/client_key/[clientKey]
-        public static String getClientKeyFromUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
-
-        //content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/appointment_date/[appointmentDate]
-        public static String getClientKeyFromDateUri(Uri uri) {
-            return uri.getPathSegments().get(2);
-        }
-
-        //content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/appointment_date/[appointmentDate]
-        public static String getDateFromDateUri(Uri uri) {
-            return uri.getPathSegments().get(4);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        public static String getClientKeyFromDateTimeUri(Uri uri) {
-            return uri.getPathSegments().get(2);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        public static String getDateFromDateTimeUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
-
-        //"content://CONTENT_AUTHORITY/clientStats/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        public static String getTimeFromDateTimeUri(Uri uri) {
-            return uri.getPathSegments().get(5);
-        }
-    }
 
     /*
      * ClientRoutineEntry - client routine
