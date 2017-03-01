@@ -1,9 +1,12 @@
 package me.makeachoice.gymratpta.model.db.table;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
+import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.contract.client.StatsContract;
+import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 
 /**************************************************************************************************/
 /*
@@ -40,15 +43,15 @@ public class TableHelper {
             Contractor.CategoryEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
             Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
 
-    public final static String SQL_CREATE_EXERCISE_TABLE = "CREATE TABLE " + Contractor.ExerciseEntry.TABLE_NAME + " (" +
-            Contractor.ExerciseEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.ExerciseEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.ExerciseEntry.COLUMN_CATEGORY_KEY + " TEXT NOT NULL, " +
-            Contractor.ExerciseEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
-            Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + " TEXT NOT NULL, " +
-            Contractor.ExerciseEntry.COLUMN_EXERCISE_CATEGORY + " TEXT NOT NULL, " +
-            Contractor.ExerciseEntry.COLUMN_RECORD_PRIMARY + " TEXT, " +
-            Contractor.ExerciseEntry.COLUMN_RECORD_SECONDARY + " TEXT);";
+    public final static String SQL_CREATE_EXERCISE_TABLE = "CREATE TABLE " + ExerciseContract.TABLE_NAME + " (" +
+            ExerciseContract._ID + " INTEGER PRIMARY KEY," +
+            ExerciseContract.COLUMN_UID + " TEXT NOT NULL, " +
+            ExerciseContract.COLUMN_CATEGORY_KEY + " TEXT NOT NULL, " +
+            ExerciseContract.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
+            ExerciseContract.COLUMN_EXERCISE_NAME + " TEXT NOT NULL, " +
+            ExerciseContract.COLUMN_EXERCISE_CATEGORY + " TEXT NOT NULL, " +
+            ExerciseContract.COLUMN_RECORD_PRIMARY + " TEXT, " +
+            ExerciseContract.COLUMN_RECORD_SECONDARY + " TEXT);";
 
     public final static String SQL_CREATE_ROUTINE_TABLE = "CREATE TABLE " + Contractor.RoutineEntry.TABLE_NAME + " (" +
             Contractor.RoutineEntry._ID + " INTEGER PRIMARY KEY," +
@@ -111,31 +114,28 @@ public class TableHelper {
             StatsContract.COLUMN_STAT_RCALF + " INTEGER, " +
             StatsContract.COLUMN_STAT_LCALF + " INTEGER);";
 
-    public final static String SQL_CREATE_CLIENT_ROUTINE_TABLE = "CREATE TABLE " + Contractor.ClientRoutineEntry.TABLE_NAME + " (" +
-            Contractor.ClientRoutineEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.ClientRoutineEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.ClientRoutineEntry.COLUMN_CLIENT_KEY + " TEXT, " +
-            Contractor.ClientRoutineEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
-            Contractor.ClientRoutineEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
-            Contractor.ClientRoutineEntry.COLUMN_CATEGORY + " TEXT, " +
-            Contractor.ClientRoutineEntry.COLUMN_EXERCISE + " TEXT, " +
-            Contractor.ClientRoutineEntry.COLUMN_ORDER_NUMBER + " INTEGER, " +
-            Contractor.ClientRoutineEntry.COLUMN_NUM_OF_SETS + " INTEGER);";
+    public final static String SQL_CREATE_CLIENT_ROUTINE_TABLE = "CREATE TABLE " + ClientRoutineContract.TABLE_NAME + " (" +
+            ClientRoutineContract._ID + " INTEGER PRIMARY KEY," +
+            ClientRoutineContract.COLUMN_UID + " TEXT NOT NULL, " +
+            ClientRoutineContract.COLUMN_CLIENT_KEY + " TEXT, " +
+            ClientRoutineContract.COLUMN_TIMESTAMP + " TEXT, " +
+            ClientRoutineContract.COLUMN_CATEGORY + " TEXT, " +
+            ClientRoutineContract.COLUMN_EXERCISE + " TEXT, " +
+            ClientRoutineContract.COLUMN_ORDER_NUMBER + " INTEGER, " +
+            ClientRoutineContract.COLUMN_NUM_OF_SETS + " INTEGER);";
 
-    public final static String SQL_CREATE_CLIENT_EXERCISE_TABLE = "CREATE TABLE " + Contractor.ClientExerciseEntry.TABLE_NAME + " (" +
-            Contractor.ClientExerciseEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.ClientExerciseEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.ClientExerciseEntry.COLUMN_CLIENT_KEY + " TEXT, " +
-            Contractor.ClientExerciseEntry.COLUMN_TIMESTAMP + " INTEGER, " +
-            Contractor.ClientExerciseEntry.COLUMN_APPOINTMENT_DATE + " TEXT NOT NULL, " +
-            Contractor.ClientExerciseEntry.COLUMN_APPOINTMENT_TIME + " TEXT NOT NULL, " +
-            Contractor.ClientExerciseEntry.COLUMN_CATEGORY + " TEXT, " +
-            Contractor.ClientExerciseEntry.COLUMN_EXERCISE + " TEXT, " +
-            Contractor.ClientExerciseEntry.COLUMN_ORDER_NUMBER + " INTEGER, " +
-            Contractor.ClientExerciseEntry.COLUMN_SET_NUMBER + " INTEGER, " +
-            Contractor.ClientExerciseEntry.COLUMN_PRIMARY_LABEL + " TEXT, " +
-            Contractor.ClientExerciseEntry.COLUMN_PRIMARY_VALUE + " TEXT, " +
-            Contractor.ClientExerciseEntry.COLUMN_SECONDARY_LABEL + " TEXT, " +
-            Contractor.ClientExerciseEntry.COLUMN_SECONDARY_VALUE + " TEXT);";
+    public final static String SQL_CREATE_CLIENT_EXERCISE_TABLE = "CREATE TABLE " + ClientExerciseContract.TABLE_NAME + " (" +
+            ClientExerciseContract._ID + " INTEGER PRIMARY KEY," +
+            ClientExerciseContract.COLUMN_UID + " TEXT NOT NULL, " +
+            ClientExerciseContract.COLUMN_CLIENT_KEY + " TEXT, " +
+            ClientExerciseContract.COLUMN_TIMESTAMP + " TEXT, " +
+            ClientExerciseContract.COLUMN_CATEGORY + " TEXT, " +
+            ClientExerciseContract.COLUMN_EXERCISE + " TEXT, " +
+            ClientExerciseContract.COLUMN_ORDER_NUMBER + " INTEGER, " +
+            ClientExerciseContract.COLUMN_SET_NUMBER + " INTEGER, " +
+            ClientExerciseContract.COLUMN_PRIMARY_LABEL + " TEXT, " +
+            ClientExerciseContract.COLUMN_PRIMARY_VALUE + " TEXT, " +
+            ClientExerciseContract.COLUMN_SECONDARY_LABEL + " TEXT, " +
+            ClientExerciseContract.COLUMN_SECONDARY_VALUE + " TEXT);";
 
 }
