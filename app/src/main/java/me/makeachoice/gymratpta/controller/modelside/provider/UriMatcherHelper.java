@@ -4,9 +4,12 @@ import android.content.UriMatcher;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.MyContractor;
+import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
+import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.contract.client.StatsContract;
+import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 
 /**
  * Created by Usuario on 2/2/2017.
@@ -64,7 +67,7 @@ public class UriMatcherHelper {
     public static final int CLIENT_ROUTINE = 1000;
     public static final int CLIENT_ROUTINE_WITH_UID = 1001;
     public static final int CLIENT_ROUTINE_WITH_CLIENT_KEY = 1002;
-    public static final int CLIENT_ROUTINE_WITH_DATE_TIME = 1003;
+    public static final int CLIENT_ROUTINE_WITH_TIMESTAMP = 1003;
 
     public static final int CLIENT_EXERCISE = 1100;
     public static final int CLIENT_EXERCISE_WITH_UID = 1101;
@@ -144,15 +147,15 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, EXERCISE_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/exercise/[uid]/category_key/[categoryKey]
-        String exerciseKeyPath = Contractor.PATH_EXERCISE + "/*/" + Contractor.ExerciseEntry.COLUMN_CATEGORY_KEY + "/*";
+        String exerciseKeyPath = Contractor.PATH_EXERCISE + "/*/" + ExerciseContract.COLUMN_CATEGORY_KEY + "/*";
         matcher.addURI(authority, exerciseKeyPath, EXERCISE_WITH_CATEGORY_KEY);
 
         //"content://CONTENT_AUTHORITY/exercise/[uid]/fkey/[fkey]
-        String fkeyPath = Contractor.PATH_EXERCISE + "/*/" + Contractor.ExerciseEntry.COLUMN_FKEY + "/*";
+        String fkeyPath = Contractor.PATH_EXERCISE + "/*/" + ExerciseContract.COLUMN_FKEY + "/*";
         matcher.addURI(authority, fkeyPath, EXERCISE_WITH_FKEY);
 
-        //"content://CONTENT_AUTHORITY/exercise/[uid]/exercise_name/[exerciseName]
-        String namePath = Contractor.PATH_EXERCISE + "/*/" + Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + "/*";
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/[categoryKey]/exercise_name/[exerciseName]
+        String namePath = Contractor.PATH_EXERCISE + "/*/*/" + ExerciseContract.COLUMN_EXERCISE_NAME + "/*";
         matcher.addURI(authority, namePath, EXERCISE_WITH_NAME);
 
     }
@@ -263,12 +266,12 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, CLIENT_ROUTINE_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/client_key/[clientKey]
-        String clientKeyPath = Contractor.PATH_CLIENT_ROUTINE + "/*/" + Contractor.ClientRoutineEntry.COLUMN_CLIENT_KEY + "/*";
+        String clientKeyPath = Contractor.PATH_CLIENT_ROUTINE + "/*/" + ClientRoutineContract.COLUMN_CLIENT_KEY + "/*";
         matcher.addURI(authority, clientKeyPath, CLIENT_ROUTINE_WITH_CLIENT_KEY);
 
-        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[appointmentDate]/appointment_time/[appointmentTime]
-        String timePath = Contractor.PATH_CLIENT_ROUTINE + "/*/*/*/"  + Contractor.ClientRoutineEntry.COLUMN_APPOINTMENT_TIME + "/*";
-        matcher.addURI(authority, timePath, CLIENT_ROUTINE_WITH_DATE_TIME);
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/timestamp/[timestamp]
+        String timePath = Contractor.PATH_CLIENT_ROUTINE + "/*/*/"  + ClientRoutineContract.COLUMN_TIMESTAMP + "/*";
+        matcher.addURI(authority, timePath, CLIENT_ROUTINE_WITH_TIMESTAMP);
 
     }
 
@@ -281,15 +284,15 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, CLIENT_EXERCISE_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/clientExercise/[uid]/client_key/[clientKey]
-        String clientKeyPath = Contractor.PATH_CLIENT_EXERCISE + "/*/" + Contractor.ClientExerciseEntry.COLUMN_CLIENT_KEY + "/*";
+        String clientKeyPath = Contractor.PATH_CLIENT_EXERCISE + "/*/" + ClientExerciseContract.COLUMN_CLIENT_KEY + "/*";
         matcher.addURI(authority, clientKeyPath, CLIENT_EXERCISE_WITH_CLIENT_KEY);
 
         //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/exercise/[exercise]
-        String exercisePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/"  + Contractor.ClientExerciseEntry.COLUMN_EXERCISE + "/*";
+        String exercisePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/"  + ClientExerciseContract.COLUMN_EXERCISE + "/*";
         matcher.addURI(authority, exercisePath, CLIENT_EXERCISE_WITH_EXERCISE);
 
         //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/timestamp/[timestamp]
-        String timePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/"  + Contractor.ClientExerciseEntry.COLUMN_TIMESTAMP + "/*";
+        String timePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/"  + ClientExerciseContract.COLUMN_TIMESTAMP + "/*";
         matcher.addURI(authority, timePath, CLIENT_EXERCISE_WITH_TIMESTAMP);
 
     }

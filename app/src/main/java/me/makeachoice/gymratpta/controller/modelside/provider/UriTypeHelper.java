@@ -3,9 +3,12 @@ package me.makeachoice.gymratpta.controller.modelside.provider;
 import android.net.Uri;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
+import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.contract.client.StatsContract;
+import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_FKEY;
@@ -19,7 +22,7 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_CLIENT_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_STATUS;
@@ -88,15 +91,15 @@ public class UriTypeHelper {
             case CATEGORY_WITH_NAME:
                 return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
             case EXERCISE:
-                return Contractor.ExerciseEntry.CONTENT_TYPE;
+                return ExerciseContract.CONTENT_TYPE;
             case EXERCISE_WITH_UID:
-                return Contractor.ExerciseEntry.CONTENT_TYPE;
+                return ExerciseContract.CONTENT_TYPE;
             case EXERCISE_WITH_CATEGORY_KEY:
-                return Contractor.ExerciseEntry.CONTENT_TYPE;
+                return ExerciseContract.CONTENT_TYPE;
             case EXERCISE_WITH_FKEY:
-                return Contractor.ExerciseEntry.CONTENT_ITEM_TYPE;
+                return ExerciseContract.CONTENT_ITEM_TYPE;
             case EXERCISE_WITH_NAME:
-                return Contractor.ExerciseEntry.CONTENT_ITEM_TYPE;
+                return ExerciseContract.CONTENT_ITEM_TYPE;
             case ROUTINE:
                 return Contractor.RoutineEntry.CONTENT_TYPE;
             case ROUTINE_WITH_UID:
@@ -140,23 +143,23 @@ public class UriTypeHelper {
             case STATS_WITH_DATE_TIME:
                 return StatsContract.CONTENT_ITEM_TYPE;
             case CLIENT_ROUTINE:
-                return Contractor.ClientRoutineEntry.CONTENT_TYPE;
+                return ClientRoutineContract.CONTENT_TYPE;
             case CLIENT_ROUTINE_WITH_UID:
-                return Contractor.ClientRoutineEntry.CONTENT_TYPE;
+                return ClientRoutineContract.CONTENT_TYPE;
             case CLIENT_ROUTINE_WITH_CLIENT_KEY:
-                return Contractor.ClientRoutineEntry.CONTENT_TYPE;
-            case CLIENT_ROUTINE_WITH_DATE_TIME:
-                return Contractor.ClientRoutineEntry.CONTENT_ITEM_TYPE;
+                return ClientRoutineContract.CONTENT_TYPE;
+            case CLIENT_ROUTINE_WITH_TIMESTAMP:
+                return ClientRoutineContract.CONTENT_ITEM_TYPE;
             case CLIENT_EXERCISE:
-                return Contractor.ClientExerciseEntry.CONTENT_TYPE;
+                return ClientExerciseContract.CONTENT_TYPE;
             case CLIENT_EXERCISE_WITH_UID:
-                return Contractor.ClientExerciseEntry.CONTENT_TYPE;
+                return ClientExerciseContract.CONTENT_TYPE;
             case CLIENT_EXERCISE_WITH_CLIENT_KEY:
-                return Contractor.ClientExerciseEntry.CONTENT_TYPE;
+                return ClientExerciseContract.CONTENT_TYPE;
             case CLIENT_EXERCISE_WITH_EXERCISE:
-                return Contractor.ClientExerciseEntry.CONTENT_TYPE;
+                return ClientExerciseContract.CONTENT_TYPE;
             case CLIENT_EXERCISE_WITH_TIMESTAMP:
-                return Contractor.ClientExerciseEntry.CONTENT_TYPE;
+                return ClientExerciseContract.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
