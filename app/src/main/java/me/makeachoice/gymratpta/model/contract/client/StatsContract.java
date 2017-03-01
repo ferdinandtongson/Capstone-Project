@@ -84,7 +84,7 @@ public class StatsContract extends MyContractor implements BaseColumns {
     public static final String COLUMN_STAT_LCALF = "stat_lcalf";
 
     //sort by date and time
-    public static final String SORT_ORDER_DATE_TIME = COLUMN_TIMESTAMP + " ASC, " + COLUMN_APPOINTMENT_TIME + " ASC";
+    public static final String SORT_ORDER_DATE_TIME = COLUMN_TIMESTAMP + " DESC";
 
 /**************************************************************************************************/
 
