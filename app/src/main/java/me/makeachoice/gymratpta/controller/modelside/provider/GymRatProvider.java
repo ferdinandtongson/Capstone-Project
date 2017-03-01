@@ -33,7 +33,6 @@ import me.makeachoice.gymratpta.controller.modelside.query.RoutineNameQueryHelpe
 import me.makeachoice.gymratpta.controller.modelside.query.RoutineQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.StatsQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.UserQueryHelper;
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
@@ -48,7 +47,7 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_CLIENT_KEY;
-import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_DATE_TIME;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_FKEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_STATUS;
@@ -221,7 +220,7 @@ public class GymRatProvider extends ContentProvider {
             case CLIENT_ROUTINE_WITH_CLIENT_KEY:
                 retCursor = ClientRoutineQueryHelper.getClientRoutineByClientKey(mOpenHelper, uri, projection, sortOrder);
                 break;
-            case CLIENT_ROUTINE_WITH_DATE_TIME:
+            case CLIENT_ROUTINE_WITH_TIMESTAMP:
                 retCursor = ClientRoutineQueryHelper.getClientRoutineByDateTime(mOpenHelper, uri, projection, sortOrder);
                 break;
             case CLIENT_EXERCISE_WITH_UID:
@@ -418,66 +417,6 @@ public class GymRatProvider extends ContentProvider {
         final int match = dbUriMatcher.match(uri);
         int returnCount = 0;
         switch (match) {
-            case USER:
-                db.beginTransaction();
-                try {
-                    for (ContentValues value : values) {
-                        long _id = db.insert(Contractor.UserEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
-            case CLIENT:
-                db.beginTransaction();
-                try {
-                    for (ContentValues value : values) {
-                        long _id = db.insert(Contractor.ClientEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
-            case CATEGORY:
-                db.beginTransaction();
-                try {
-                    for (ContentValues value : values) {
-                        long _id = db.insert(Contractor.CategoryEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
-            case EXERCISE:
-                db.beginTransaction();
-                try {
-                    for (ContentValues value : values) {
-                        long _id = db.insert(Contractor.ExerciseEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
             default:
                 return super.bulkInsert(uri, values);
         }
