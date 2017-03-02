@@ -9,14 +9,13 @@ import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 /**************************************************************************************************/
 /*
  *  ClientExerciseQueryHelper helps build queries to client exercise table
  */
-
 /**************************************************************************************************/
 
 public class ClientExerciseQueryHelper {
@@ -34,40 +33,40 @@ public class ClientExerciseQueryHelper {
         //initialize clientExerciseQueryBuilder
         clientExerciseQueryBuilder = new SQLiteQueryBuilder();
         //set builder to query clientExercise table
-        clientExerciseQueryBuilder.setTables(Contractor.ClientExerciseEntry.TABLE_NAME);
+        clientExerciseQueryBuilder.setTables(ClientExerciseContract.TABLE_NAME);
     }
 
     //query selection - clientExercise.uid = ?
     public static final String uidSelection =
-            Contractor.ClientExerciseEntry.TABLE_NAME + "." + Contractor.ClientExerciseEntry.COLUMN_UID + " = ? ";
+            ClientExerciseContract.TABLE_NAME + "." + ClientExerciseContract.COLUMN_UID + " = ? ";
 
     //query selection - clientExercise.uid = ? AND client_key = ?
     public static final String clientKeySelection =
-            Contractor.ClientExerciseEntry.TABLE_NAME+
-                    "." + Contractor.ClientExerciseEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ClientExerciseEntry.COLUMN_CLIENT_KEY + " = ? ";
+            ClientExerciseContract.TABLE_NAME+
+                    "." + ClientExerciseContract.COLUMN_UID + " = ? AND " +
+                    ClientExerciseContract.COLUMN_CLIENT_KEY + " = ? ";
 
     //query selection - clientExercise.uid = ? AND client_key = ? AND timestamp = ?
     public static final String clientKeyTimestampSelection =
-            Contractor.ClientExerciseEntry.TABLE_NAME+
-                    "." + Contractor.ClientExerciseEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ClientExerciseEntry.COLUMN_CLIENT_KEY + " = ? AND " +
-                    Contractor.ClientExerciseEntry.COLUMN_TIMESTAMP + " = ? ";
+            ClientExerciseContract.TABLE_NAME+
+                    "." + ClientExerciseContract.COLUMN_UID + " = ? AND " +
+                    ClientExerciseContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    ClientExerciseContract.COLUMN_TIMESTAMP + " = ? ";
 
     //query selection - clientExercise.uid = ? AND client_key = ? AND exercise = ?
     public static final String clientKeyExerciseSelection =
-            Contractor.ClientExerciseEntry.TABLE_NAME+
-                    "." + Contractor.ClientExerciseEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ClientExerciseEntry.COLUMN_CLIENT_KEY + " = ? AND " +
-                    Contractor.ClientExerciseEntry.COLUMN_EXERCISE + " = ? ";
+            ClientExerciseContract.TABLE_NAME+
+                    "." + ClientExerciseContract.COLUMN_UID + " = ? AND " +
+                    ClientExerciseContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    ClientExerciseContract.COLUMN_EXERCISE + " = ? ";
 
     //query selection - clientExercise.uid = ? AND client_key = ? AND timestamp = ? AND exercise = ?
     public static final String clientKeyTimestampExerciseSelection =
-            Contractor.ClientExerciseEntry.TABLE_NAME+
-                    "." + Contractor.ClientExerciseEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ClientExerciseEntry.COLUMN_CLIENT_KEY + " = ? AND " +
-                    Contractor.ClientExerciseEntry.COLUMN_TIMESTAMP + " = ? AND " +
-                    Contractor.ClientExerciseEntry.COLUMN_EXERCISE + " = ? ";
+            ClientExerciseContract.TABLE_NAME+
+                    "." + ClientExerciseContract.COLUMN_UID + " = ? AND " +
+                    ClientExerciseContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    ClientExerciseContract.COLUMN_TIMESTAMP + " = ? AND " +
+                    ClientExerciseContract.COLUMN_EXERCISE + " = ? ";
 
 /**************************************************************************************************/
 
@@ -84,7 +83,7 @@ public class ClientExerciseQueryHelper {
      */
     public static Cursor getClientExerciseByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientExercise/[uid]
-        String uid = Contractor.ClientExerciseEntry.getUIdFromUri(uri);
+        String uid = ClientExerciseContract.getUIdFromUri(uri);
 
         //query from client routine table
         return ClientExerciseQueryHelper.clientExerciseQueryBuilder.query(
@@ -104,8 +103,8 @@ public class ClientExerciseQueryHelper {
      */
     public static Cursor getClientExerciseByClientKey(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientExercise/[uid]/client_key/[clientKey]
-        String uid = Contractor.ClientExerciseEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.ClientExerciseEntry.getClientKeyFromUri(uri);
+        String uid = ClientExerciseContract.getUIdFromUri(uri);
+        String clientKey = ClientExerciseContract.getClientKeyFromUri(uri);
 
         //query from table
         return ClientExerciseQueryHelper.clientExerciseQueryBuilder.query(
@@ -125,9 +124,9 @@ public class ClientExerciseQueryHelper {
      */
     public static Cursor getClientExerciseByTimestamp(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/timestamp/[timestamp]
-        String uid = Contractor.ClientExerciseEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.ClientExerciseEntry.getClientKeyFromTimestampUri(uri);
-        String timestamp = Contractor.ClientExerciseEntry.getTimestampFromTimestampUri(uri);
+        String uid = ClientExerciseContract.getUIdFromUri(uri);
+        String clientKey = ClientExerciseContract.getClientKeyFromTimestampUri(uri);
+        String timestamp = ClientExerciseContract.getTimestampFromTimestampUri(uri);
 
         //query from table
         return ClientExerciseQueryHelper.clientExerciseQueryBuilder.query(
@@ -147,9 +146,9 @@ public class ClientExerciseQueryHelper {
      */
     public static Cursor getClientExerciseByExercise(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/exercise/[exercise]
-        String uid = Contractor.ClientExerciseEntry.getUIdFromUri(uri);
-        String clientKey = Contractor.ClientExerciseEntry.getClientKeyFromExerciseUri(uri);
-        String exercise = Contractor.ClientExerciseEntry.getExerciseFromExerciseUri(uri);
+        String uid = ClientExerciseContract.getUIdFromUri(uri);
+        String clientKey = ClientExerciseContract.getClientKeyFromExerciseUri(uri);
+        String exercise = ClientExerciseContract.getExerciseFromExerciseUri(uri);
 
         //query from table
         return ClientExerciseQueryHelper.clientExerciseQueryBuilder.query(
@@ -180,7 +179,7 @@ public class ClientExerciseQueryHelper {
     public static Uri insertClientExercise(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.ClientExerciseEntry.TABLE_NAME, null, values);
+            _id = db.insert(ClientExerciseContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
             if(mSQLException instanceof SQLiteConstraintException){
@@ -191,7 +190,7 @@ public class ClientExerciseQueryHelper {
             throw mSQLException;
         }
 
-        return Contractor.ClientExerciseEntry.buildClientExerciseUri(_id);
+        return ClientExerciseContract.buildClientExerciseUri(_id);
     }
 
     /*
@@ -205,7 +204,7 @@ public class ClientExerciseQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.ClientExerciseEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(ClientExerciseContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -221,7 +220,7 @@ public class ClientExerciseQueryHelper {
                                   String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.ClientExerciseEntry.TABLE_NAME, values, whereClause, whereArgs);
+            rowsUpdated = db.update(ClientExerciseContract.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
