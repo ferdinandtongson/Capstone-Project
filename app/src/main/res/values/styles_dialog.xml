@@ -65,15 +65,15 @@
         <item name="android:background">@drawable/bg_blue</item>
     </style>
 
-    <style name="GymRat.Dialog.Exercise.Text.Edit.Primary" parent="GymRat.Dialog.Exercise.Text">
-        <item name="android:layout_marginStart">62dp</item>
+    <style name="GymRat.Dialog.EditText.Exercise" parent="GymRat.Dialog.Exercise.Text">
         <item name="android:textColorHint">@color/darkgray</item>
         <item name="android:background">@drawable/bg_white</item>
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:imeOptions">actionNext</item>
     </style>
 
-    <style name="GymRat.Dialog.Exercise.Text.Edit" parent="GymRat.Dialog.Exercise.Text">
-        <item name="android:textColorHint">@color/darkgray</item>
-        <item name="android:background">@drawable/bg_white</item>
+    <style name="GymRat.Dialog.EditText.Exercise.Primary" parent="GymRat.Dialog.EditText.Exercise">
+        <item name="android:layout_marginStart">62dp</item>
     </style>
 
     <style name="GymRat.Dialog.Exercise.Text.Set" parent="GymRat.Dialog.Exercise.Text">
