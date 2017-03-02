@@ -133,9 +133,16 @@ public class ClientExerciseContract extends MyContractor implements BaseColumns 
     }
 
     //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/timestamp/[timestamp]
-    public static Uri buildClientExerciseByTimeStamp(String uid, String clientKey, String timestamp) {
+    public static Uri buildClientExerciseByTimestamp(String uid, String clientKey, String timestamp) {
         return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).
                 appendPath(COLUMN_TIMESTAMP).appendPath(timestamp).build();
+    }
+
+    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
+    public static Uri buildClientExerciseByTimestampExercise(String uid, String clientKey,
+                                                             String timestamp, String exercise) {
+        return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).appendPath(timestamp).
+                appendPath(COLUMN_EXERCISE).appendPath(exercise).build();
     }
 
     //"content://CONTENT_AUTHORITY/clientExercise/[uid]/....
@@ -167,6 +174,22 @@ public class ClientExerciseContract extends MyContractor implements BaseColumns 
     public static String getTimestampFromTimestampUri(Uri uri) {
         return uri.getPathSegments().get(4);
     }
+
+    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
+    public static String getClientKeyFromTimestampExerciseUri(Uri uri) {
+        return uri.getPathSegments().get(2);
+    }
+
+    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
+    public static String getTimestampFromTimestampExerciseUri(Uri uri) {
+        return uri.getPathSegments().get(3);
+    }
+
+    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
+    public static String getExerciseFromTimestampExerciseUri(Uri uri) {
+        return uri.getPathSegments().get(5);
+    }
+
 
 /**************************************************************************************************/
 
