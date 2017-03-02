@@ -118,7 +118,7 @@ public class ClientExerciseFirebaseHelper {
         ref.setValue(item);
     }
 
-    public void adClientExerciseReferenceByTimestamp(String userId, String clientKey, String timestamp,
+    public void addClientExerciseReferenceByTimestamp(String userId, String clientKey, String timestamp,
                                                      ClientExerciseFBItem item){
 
         DatabaseReference ref = getClientExerciseReferenceByTimestamp(userId, clientKey, timestamp);
@@ -156,10 +156,7 @@ public class ClientExerciseFirebaseHelper {
 
             }
         });
-
-
-
-        ref.addListenerForSingleValueEvent(listener);
+        exerciseQuery.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
