@@ -6,8 +6,6 @@ package me.makeachoice.gymratpta.model.item.client;
 
 public class ClientExerciseFBItem {
 
-    public String appointmentDate;
-    public String appointmentTime;
     public String category;
     public String exercise;
     public int orderNumber;
