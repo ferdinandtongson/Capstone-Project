@@ -209,7 +209,7 @@ public class ClientExerciseLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = ClientExerciseContract.buildClientExerciseByTimeStamp(mUserId, mClientKey,
+                        Uri uri = ClientExerciseContract.buildClientExerciseByTimestamp(mUserId, mClientKey,
                                 mTimestamp);
 
                         //get cursor
@@ -239,18 +239,19 @@ public class ClientExerciseLoader {
     }
 
     /*
-     * void loadClientExerciseByExercise(...) - start loader to load client exercise data from database by exercise
+     * void loadClientExerciseByTimestampExercise(...) - start loader to load client exercise data from database by exercise
      */
     public void loadClientExerciseByExercise(String exercise, OnClientExerciseLoadListener listener){
 
-        //load client exercise using default loader id
+        //load client exercise
         loadClientExerciseByExercise(exercise, LOADER_CLIENT_EXERCISE, listener);
     }
 
     /*
      * void loadClientExerciseByExercise(...) - start loader to load client exercise data by exercise
      */
-    public void loadClientExerciseByExercise(String exercise, int loaderId, OnClientExerciseLoadListener listener){
+    public void loadClientExerciseByExercise(String exercise, int loaderId,
+                                                      OnClientExerciseLoadListener listener){
         //get exercise
         mExercise = exercise;
 
@@ -264,7 +265,66 @@ public class ClientExerciseLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = ClientExerciseContract.buildClientExerciseByExercise(mUserId, mClientKey, mExercise);
+                        Uri uri = ClientExerciseContract.buildClientExerciseByExercise(mUserId,
+                                mClientKey, mExercise);
+
+                        //get cursor
+                        return new CursorLoader(
+                                mActivity,
+                                uri,
+                                ClientExerciseContract.PROJECTION,
+                                null,
+                                null,
+                                ClientExerciseContract.DEFAULT_SORT_ORDER);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //make sure listener is not NULL
+                        if(mListener != null){
+                            //notify listener that client exercise data has finished loading
+                            mListener.onClientExerciseLoadFinished(cursor);
+                        }
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                        //does nothing
+                    }
+                });
+    }
+
+
+    /*
+     * void loadClientExerciseByTimestampExercise(...) - start loader to load client exercise data from database by exercise
+     */
+    public void loadClientExerciseByTimestampExercise(String timestamp, String exercise, OnClientExerciseLoadListener listener){
+
+        //load client exercise
+        loadClientExerciseByTimestampExercise(timestamp, exercise, LOADER_CLIENT_EXERCISE, listener);
+    }
+
+    /*
+     * void loadClientExerciseByTimestampExercise(...) - start loader to load client exercise data by exercise
+     */
+    public void loadClientExerciseByTimestampExercise(String timestamp, String exercise, int loaderId,
+                                             OnClientExerciseLoadListener listener){
+        //get exercise
+        mExercise = exercise;
+        mTimestamp = timestamp;
+
+        //get listener
+        mListener = listener;
+
+        //initializes loader
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request cursor from local database
+                        Uri uri = ClientExerciseContract.buildClientExerciseByTimestampExercise(mUserId,
+                                mClientKey, mTimestamp, mExercise);
 
                         //get cursor
                         return new CursorLoader(
