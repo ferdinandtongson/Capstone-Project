@@ -131,12 +131,12 @@ public class StatsButler {
             mStatsList.add(item);
         }
 
+        //destroy loader
+        mStatsLoader.destroyLoader(mLoaderId);
+
         if(mLoadListener != null){
             mLoadListener.onLoaded(mStatsList);
         }
-
-        //destroy loader
-        mStatsLoader.destroyLoader(mLoaderId);
     }
 
 /**************************************************************************************************/

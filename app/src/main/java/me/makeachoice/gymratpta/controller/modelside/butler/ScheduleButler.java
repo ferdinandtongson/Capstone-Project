@@ -134,12 +134,12 @@ public class ScheduleButler {
             mScheduleList.add(item);
         }
 
+        //destroy loader
+        mScheduleLoader.destroyLoader(mLoaderId);
+
         if(mLoadListener != null){
             mLoadListener.onScheduleLoaded(mScheduleList);
         }
-
-        //destroy loader
-        mScheduleLoader.destroyLoader(mLoaderId);
     }
 
     /*

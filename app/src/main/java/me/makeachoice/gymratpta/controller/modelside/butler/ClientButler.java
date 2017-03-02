@@ -122,9 +122,9 @@ public class ClientButler {
             }
         }
 
-        mAllListener.onAllClientsLoaded(clientMap);
-
         mClientLoader.destroyLoader(mLoaderId);
+
+        mAllListener.onAllClientsLoaded(clientMap);
 
     }
 

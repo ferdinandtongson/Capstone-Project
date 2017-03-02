@@ -37,12 +37,6 @@ public class NotesButler {
     //mUserId - user authentication id
     private String mUserId;
 
-    //mSaveItem - appointment item to save to database
-    //private ScheduleItem mSaveItem;
-
-    //mDeleteItem - appointment item to delete from database
-    //private ScheduleItem mDeleteItem;
-
     //mNotesList - list of notes loaded from database
     private ArrayList<NotesItem> mNotesList;
 
@@ -131,12 +125,12 @@ public class NotesButler {
             mNotesList.add(item);
         }
 
+        //destroy loader
+        mNotesLoader.destroyLoader(mLoaderId);
+
         if(mLoadListener != null){
             mLoadListener.onLoaded(mNotesList);
         }
-
-        //destroy loader
-        mNotesLoader.destroyLoader(mLoaderId);
     }
 
 /**************************************************************************************************/
