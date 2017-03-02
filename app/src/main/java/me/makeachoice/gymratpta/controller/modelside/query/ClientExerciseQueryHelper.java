@@ -163,6 +163,32 @@ public class ClientExerciseQueryHelper {
         );
     }
 
+    /*
+     * Cursor getClientExerciseByExercise(...) - get client exercises by exercise
+     */
+    public static Cursor getClientExerciseByTimestampExercise(DBHelper dbHelper, Uri uri,
+                                                              String[] projection, String sortOrder) {
+        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
+        String uid = ClientExerciseContract.getUIdFromUri(uri);
+        String clientKey = ClientExerciseContract.getClientKeyFromTimestampExerciseUri(uri);
+        String timestamp = ClientExerciseContract.getTimestampFromTimestampExerciseUri(uri);
+        String exercise = ClientExerciseContract.getExerciseFromTimestampExerciseUri(uri);
+
+        //query from table
+        return ClientExerciseQueryHelper.clientExerciseQueryBuilder.query(
+                dbHelper.getReadableDatabase(),
+                projection,
+                //query selection - clientExercise.uid = ? AND client_key = ? AND timestamp = ? AND exercise = ?
+                ClientExerciseQueryHelper.clientKeyTimestampExerciseSelection,
+                new String[]{uid, clientKey, timestamp, exercise},
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
