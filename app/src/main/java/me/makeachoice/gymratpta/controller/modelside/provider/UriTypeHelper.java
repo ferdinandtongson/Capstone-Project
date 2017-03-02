@@ -19,9 +19,11 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_CLIENT_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_EXERCISE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_TIMESTAMP;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_TIMESTAMP_EXERCISE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_EXERCISE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_CLIENT_KEY;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_EXERCISE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_TIMESTAMP;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CLIENT_WITH_FKEY;
@@ -149,7 +151,9 @@ public class UriTypeHelper {
             case CLIENT_ROUTINE_WITH_CLIENT_KEY:
                 return ClientRoutineContract.CONTENT_TYPE;
             case CLIENT_ROUTINE_WITH_TIMESTAMP:
-                return ClientRoutineContract.CONTENT_ITEM_TYPE;
+                return ClientRoutineContract.CONTENT_TYPE;
+            case CLIENT_ROUTINE_WITH_EXERCISE:
+                return ClientRoutineContract.CONTENT_TYPE;
             case CLIENT_EXERCISE:
                 return ClientExerciseContract.CONTENT_TYPE;
             case CLIENT_EXERCISE_WITH_UID:
@@ -159,6 +163,8 @@ public class UriTypeHelper {
             case CLIENT_EXERCISE_WITH_EXERCISE:
                 return ClientExerciseContract.CONTENT_TYPE;
             case CLIENT_EXERCISE_WITH_TIMESTAMP:
+                return ClientExerciseContract.CONTENT_TYPE;
+            case CLIENT_EXERCISE_WITH_TIMESTAMP_EXERCISE:
                 return ClientExerciseContract.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
