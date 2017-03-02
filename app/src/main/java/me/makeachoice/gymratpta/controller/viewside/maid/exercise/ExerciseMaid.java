@@ -1,11 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +9,13 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
+import me.makeachoice.gymratpta.controller.modelside.butler.CategoryButler;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardViewPager;
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
+
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CATEGORY;
 
 /**************************************************************************************************/
 /*
@@ -50,10 +46,17 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
  */
 /**************************************************************************************************/
 
+    //mUserId - user id taken from firebase authentication
     private String mUserId;
 
     //mCategories - list of category items used by viewPager tabLayout
+    private ArrayList<CategoryItem> mCategories;
+
+    //mPageTitles - list of titles used by tabs
     ArrayList<String> mPageTitles;
+
+    //mCategoryButler - butler in charge of loading category data
+    private CategoryButler mCategoryButler;
 
 /**************************************************************************************************/
 
@@ -107,8 +110,21 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
-        //load exercise categories
-        loadCategories();
+        //initialize list buffers
+        mCategories = new ArrayList<>();
+        mPageTitles = new ArrayList<>();
+
+        //initialize butler
+        mCategoryButler = new CategoryButler(mActivity, mUserId);
+
+        //request categories from butler
+        mCategoryButler.loadCategories(LOADER_CATEGORY, new CategoryButler.OnLoadedListener() {
+            @Override
+            public void onLoaded(ArrayList<CategoryItem> categoryList) {
+                //categories loaded
+                onCategoriesLoaded(categoryList);
+            }
+        });
     }
 
     /*
@@ -167,55 +183,41 @@ public class ExerciseMaid extends MyMaid implements BasicFragment.Bridge{
         }
     }
 
-    private int LOADER_CATEGORY = 100;
+/**************************************************************************************************/
 
 /**************************************************************************************************/
-    /*
-     * void loadCategories() - loads categories onto cursor used by Adapter. First gets load categories
-     * from Firebase, loads categories data to sqlite local database and then retrieves and delivers
-     * that data as a cursor. If there is no categories, load from flat file to firebase first
-     */
-    private void loadCategories(){
-        // Initializes a loader for loading clients
-        mFragment.getActivity().getSupportLoaderManager().initLoader(LOADER_CATEGORY, null,
-                new LoaderManager.LoaderCallbacks<Cursor>() {
-            @Override
-            public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+/*
+ * ExerciseMaid - constructor
+ */
+/**************************************************************************************************/
 
-                //request client cursor from local database
-                Uri uri = Contractor.CategoryEntry.buildCategoryByUID(mUserId);
-                //get cursor
-                return new CursorLoader(
-                        mFragment.getActivity(),
-                        uri,
-                        CategoryColumns.PROJECTION_CATEGORY,
-                        null,
-                        null,
-                        Contractor.CategoryEntry.SORT_ORDER_DEFAULT);
-            }
+    private void onCategoriesLoaded(ArrayList<CategoryItem> categories){
+        //clear buffer
+        mCategories.clear();
+        mPageTitles.clear();
 
-            @Override
-            public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
-                mCategories = new ArrayList();
-                mPageTitles = new ArrayList();
+        //get number of categories
+        int count = categories.size();
 
-                int count = cursor.getCount();
-                for(int i = 0; i < count; i++){
-                    cursor.moveToPosition(i);
-                    CategoryItem item = new CategoryItem(cursor);
-                    mCategories.add(item);
-                    mPageTitles.add(cursor.getString(Contractor.CategoryEntry.INDEX_CATEGORY_NAME));
-                }
-                //category cursor loaded, initialize layout
-                prepareFragment();
-            }
+        //loop through categories
+        for(int i = 0; i < count; i++){
+            //get category item
+            CategoryItem item = categories.get(i);
 
-            @Override
-            public void onLoaderReset(Loader<Cursor> cursorLoader) {
-            }
-        });
+            //get name of category, add to title list
+            mPageTitles.add(item.categoryName);
+        }
+
+        //add categories to category list
+        mCategories.addAll(categories);
+
+        //initialize layout
+        prepareFragment();
+
     }
 
-    private ArrayList<CategoryItem> mCategories;
+/**************************************************************************************************/
+
+
 
 }
