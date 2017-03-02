@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    >
+
+    <TextView
+        android:id="@+id/diaRecordExercise_txtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:minLines="1"
+        style="@style/GymRat.Dialog.TextView.Large"
+        />
+
+    <View
+        android:id="@+id/line01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/diaRecordExercise_txtName"
+        android:background="@color/black"/>
+
+
+    <RelativeLayout
+        android:id="@+id/diaRecordExercise_relSets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/line01"
+        android:background="#40FFFFFF"
+        >
+
+        <!-- Measurement Title -->
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSetLabel"
+            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:text="@string/sets"
+            style="@style/GymRat.Dialog.Exercise.Text.Title"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_height="wrap_content"
+            android:layout_width="102dp"
+            android:layout_marginStart="60dp"
+            android:text="@string/reps"
+            style="@style/GymRat.Dialog.Exercise.Text.Title"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSecondaryLabel"
+            android:layout_height="wrap_content"
+            android:layout_width="102dp"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:text="@string/weight"
+            style="@style/GymRat.Dialog.Exercise.Text.Title"/>
+
+        <!-- Set 01 -->
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSet01"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            style="@style/GymRat.Dialog.Exercise.Text.Set"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtPrimary01"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            android:nextFocusForward="@+id/diaRecordExercise_edtSecondary01"
+            style="@style/GymRat.Dialog.EditText.Exercise.Primary"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtPrimary01"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator01a"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtPrimary01"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastPrimary01"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator01a"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtSecondary01"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            android:nextFocusForward="@+id/diaRecordExercise_edtPrimary02"
+            style="@style/GymRat.Dialog.EditText.Exercise"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSecondary01"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator01b"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtSecondary01"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastSecondary01"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator01b"
+            android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <!-- Set 02 -->
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSet02"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            style="@style/GymRat.Dialog.Exercise.Text.Set"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtPrimary02"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            android:nextFocusForward="@+id/diaRecordExercise_edtSecondary02"
+            style="@style/GymRat.Dialog.EditText.Exercise.Primary"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtPrimary02"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator02a"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtPrimary02"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastPrimary02"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator02a"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtSecondary02"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            android:nextFocusForward="@+id/diaRecordExercise_edtPrimary03"
+            style="@style/GymRat.Dialog.EditText.Exercise"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSecondary02"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator02b"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtSecondary02"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastSecondary02"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator02b"
+            android:layout_below="@id/diaRecordExercise_txtSet01"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+
+        <!-- Set 03 -->
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSet03"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            style="@style/GymRat.Dialog.Exercise.Text.Set"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtPrimary03"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            android:nextFocusForward="@+id/diaRecordExercise_edtSecondary03"
+            style="@style/GymRat.Dialog.EditText.Exercise.Primary"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtPrimary03"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator03a"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtPrimary03"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastPrimary03"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator03a"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtSecondary03"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            android:nextFocusForward="@+id/diaRecordExercise_edtPrimary04"
+            style="@style/GymRat.Dialog.EditText.Exercise"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSecondary03"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator03b"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtSecondary03"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastSecondary03"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator03b"
+            android:layout_below="@id/diaRecordExercise_txtSet02"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <!-- Set 04 -->
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSet04"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            style="@style/GymRat.Dialog.Exercise.Text.Set"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtPrimary04"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            android:nextFocusForward="@+id/diaRecordExercise_edtSecondary04"
+            style="@style/GymRat.Dialog.EditText.Exercise.Primary"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtPrimary04"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator04a"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtPrimary04"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastPrimary04"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator04a"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtSecondary04"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            android:nextFocusForward="@+id/diaRecordExercise_edtPrimary05"
+            style="@style/GymRat.Dialog.EditText.Exercise"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSecondary04"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator04b"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtSecondary04"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastSecondary04"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator04b"
+            android:layout_below="@id/diaRecordExercise_txtSet03"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <!-- Set 05 -->
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSet05"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            style="@style/GymRat.Dialog.Exercise.Text.Set"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtPrimary05"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            android:nextFocusForward="@+id/diaRecordExercise_edtSecondary05"
+            style="@style/GymRat.Dialog.EditText.Exercise.Primary"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtPrimary05"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator05a"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtPrimary05"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastPrimary05"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator05a"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtSecondary05"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            android:nextFocusForward="@+id/diaRecordExercise_edtPrimary06"
+            style="@style/GymRat.Dialog.EditText.Exercise"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSecondary05"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator05b"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtSecondary05"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastSecondary05"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator05b"
+            android:layout_below="@id/diaRecordExercise_txtSet04"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <!-- Set 06 -->
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSet06"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            style="@style/GymRat.Dialog.Exercise.Text.Set"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtPrimary06"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            android:nextFocusForward="@+id/diaRecordExercise_edtSecondary06"
+            style="@style/GymRat.Dialog.EditText.Exercise.Primary"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtPrimary06"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator06a"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtPrimary06"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastPrimary06"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator06a"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtSecondary06"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            android:nextFocusForward="@+id/diaRecordExercise_edtPrimary07"
+            style="@style/GymRat.Dialog.EditText.Exercise"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSecondary06"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator06b"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtSecondary06"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastSecondary06"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator06b"
+            android:layout_below="@id/diaRecordExercise_txtSet05"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <!-- Set 07 -->
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSet07"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            style="@style/GymRat.Dialog.Exercise.Text.Set"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtPrimary07"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            android:nextFocusForward="@+id/diaRecordExercise_edtSecondary07"
+            style="@style/GymRat.Dialog.EditText.Exercise.Primary"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtPrimary07"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator07a"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtPrimary07"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastPrimary07"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator07a"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <EditText
+            android:id="@+id/diaRecordExercise_edtSecondary07"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            android:imeOptions="actionDone"
+            style="@style/GymRat.Dialog.EditText.Exercise"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSecondary07"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/diaRecordExercise_txtPrimaryLabel"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtSeparator07b"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_edtSecondary07"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            android:text="/"
+            style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
+
+        <TextView
+            android:id="@+id/diaRecordExercise_txtLastSecondary07"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/diaRecordExercise_txtSeparator07b"
+            android:layout_below="@id/diaRecordExercise_txtSet06"
+            style="@style/GymRat.Dialog.Exercise.Text.Data"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/diaRecordExercise_txtSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaRecordExercise_relSets"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/save"
+        style="@style/GymRat.Dialog.TextView.Button.Small"
+        />
+
+    <TextView
+        android:id="@+id/diaRecordExercise_txtCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/diaRecordExercise_txtSave"
+        android:layout_below="@id/diaRecordExercise_relSets"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/cancel"
+        style="@style/GymRat.Dialog.TextView.Button.Small"
+        />
+
+</RelativeLayout>
