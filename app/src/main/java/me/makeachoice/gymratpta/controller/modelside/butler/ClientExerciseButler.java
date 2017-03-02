@@ -106,7 +106,7 @@ public class ClientExerciseButler {
     /*
      * void loadClientExercisesByTimestamp() - load client exercise data from database
      */
-    public void loadClientExercisesByTimestamp(int loaderId, String timestamp, OnLoadedListener listener){
+    public void loadClientExercisesByTimestamp(String timestamp, int loaderId, OnLoadedListener listener){
         mLoaderId = loaderId;
         mLoadListener = listener;
 
@@ -122,7 +122,7 @@ public class ClientExerciseButler {
     /*
      * void loadClientExercisesByExercise() - load client exercise data from database
      */
-    public void loadClientExercisesByExercise(int loaderId, String exercise, OnLoadedListener listener){
+    public void loadClientExercisesByExercise(String exercise, int loaderId, OnLoadedListener listener){
         mLoaderId = loaderId;
         mLoadListener = listener;
 
@@ -133,6 +133,24 @@ public class ClientExerciseButler {
                 onClientExerciseLoaded(cursor);
             }
         });
+    }
+
+    /*
+     * void loadClientExercisesByTimestampExercise() - load client exercise data from database
+     */
+    public void loadClientExercisesByTimestampExercise(String timestamp, String exercise,
+                                                       int loaderId, OnLoadedListener listener){
+        mLoaderId = loaderId;
+        mLoadListener = listener;
+
+        //start loader to get data from database
+        mExerciseLoader.loadClientExerciseByTimestampExercise(timestamp, exercise, mLoaderId,
+                new ClientExerciseLoader.OnClientExerciseLoadListener() {
+                    @Override
+                    public void onClientExerciseLoadFinished(Cursor cursor) {
+                        onClientExerciseLoaded(cursor);
+                    }
+                });
     }
 
     /*
@@ -157,12 +175,13 @@ public class ClientExerciseButler {
             mExerciseList.add(item);
         }
 
+        //destroy loader
+        mExerciseLoader.destroyLoader(mLoaderId);
+
         if(mLoadListener != null){
             mLoadListener.onLoaded(mExerciseList);
         }
 
-        //destroy loader
-        mExerciseLoader.destroyLoader(mLoaderId);
     }
 
 /**************************************************************************************************/
