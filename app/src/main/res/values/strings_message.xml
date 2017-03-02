@@ -18,4 +18,6 @@
     <string name="msg_do_not_show_warning" translatable="true">Don\'t Show Warning</string>
     <string name="msg_appointment_time_passed" translatable="true">Appointment time has already passed!</string>
     <string name="msg_none_selected" translatable="true">- None Selected -</string>
+
+    <string name="msg_forget_input">Did you forget to input a value?</string>
 </resources>
