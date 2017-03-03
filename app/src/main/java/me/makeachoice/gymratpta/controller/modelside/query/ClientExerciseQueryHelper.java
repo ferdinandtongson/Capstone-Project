@@ -60,13 +60,13 @@ public class ClientExerciseQueryHelper {
                     ClientExerciseContract.COLUMN_CLIENT_KEY + " = ? AND " +
                     ClientExerciseContract.COLUMN_EXERCISE + " = ? ";
 
-    //query selection - clientExercise.uid = ? AND client_key = ? AND timestamp = ? AND exercise = ?
-    public static final String clientKeyTimestampExerciseSelection =
+    //query selection - clientExercise.uid = ? AND client_key = ? AND timestamp = ? AND order_number = ?
+    public static final String clientKeyTimestampOrderNumberSelection =
             ClientExerciseContract.TABLE_NAME+
                     "." + ClientExerciseContract.COLUMN_UID + " = ? AND " +
                     ClientExerciseContract.COLUMN_CLIENT_KEY + " = ? AND " +
                     ClientExerciseContract.COLUMN_TIMESTAMP + " = ? AND " +
-                    ClientExerciseContract.COLUMN_EXERCISE + " = ? ";
+                    ClientExerciseContract.COLUMN_ORDER_NUMBER + " = ? ";
 
 /**************************************************************************************************/
 
@@ -166,21 +166,21 @@ public class ClientExerciseQueryHelper {
     /*
      * Cursor getClientExerciseByExercise(...) - get client exercises by exercise
      */
-    public static Cursor getClientExerciseByTimestampExercise(DBHelper dbHelper, Uri uri,
+    public static Cursor getClientExerciseByTimestampOrderNumber(DBHelper dbHelper, Uri uri,
                                                               String[] projection, String sortOrder) {
-        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
+        //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/order_number/[orderNumber]
         String uid = ClientExerciseContract.getUIdFromUri(uri);
-        String clientKey = ClientExerciseContract.getClientKeyFromTimestampExerciseUri(uri);
-        String timestamp = ClientExerciseContract.getTimestampFromTimestampExerciseUri(uri);
-        String exercise = ClientExerciseContract.getExerciseFromTimestampExerciseUri(uri);
+        String clientKey = ClientExerciseContract.getClientKeyFromTimestampOrderNumberUri(uri);
+        String timestamp = ClientExerciseContract.getTimestampFromTimestampOrderNumberUri(uri);
+        String orderNumber = ClientExerciseContract.getOrderNumberFromTimestampOrderNumberUri(uri);
 
         //query from table
         return ClientExerciseQueryHelper.clientExerciseQueryBuilder.query(
                 dbHelper.getReadableDatabase(),
                 projection,
-                //query selection - clientExercise.uid = ? AND client_key = ? AND timestamp = ? AND exercise = ?
-                ClientExerciseQueryHelper.clientKeyTimestampExerciseSelection,
-                new String[]{uid, clientKey, timestamp, exercise},
+                //query selection - clientExercise.uid = ? AND client_key = ? AND timestamp = ? AND order_number = ?
+                ClientExerciseQueryHelper.clientKeyTimestampOrderNumberSelection,
+                new String[]{uid, clientKey, timestamp, orderNumber},
                 null,
                 null,
                 sortOrder
