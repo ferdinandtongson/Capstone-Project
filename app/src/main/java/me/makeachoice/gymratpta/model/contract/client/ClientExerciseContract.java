@@ -138,11 +138,11 @@ public class ClientExerciseContract extends MyContractor implements BaseColumns 
                 appendPath(COLUMN_TIMESTAMP).appendPath(timestamp).build();
     }
 
-    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
-    public static Uri buildClientExerciseByTimestampExercise(String uid, String clientKey,
-                                                             String timestamp, String exercise) {
+    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/order_number/[orderNumber]
+    public static Uri buildClientExerciseByTimestampOrderNumber(String uid, String clientKey,
+                                                             String timestamp, String orderNumber) {
         return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).appendPath(timestamp).
-                appendPath(COLUMN_EXERCISE).appendPath(exercise).build();
+                appendPath(COLUMN_ORDER_NUMBER).appendPath(orderNumber).build();
     }
 
     //"content://CONTENT_AUTHORITY/clientExercise/[uid]/....
@@ -175,18 +175,18 @@ public class ClientExerciseContract extends MyContractor implements BaseColumns 
         return uri.getPathSegments().get(4);
     }
 
-    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
-    public static String getClientKeyFromTimestampExerciseUri(Uri uri) {
+    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/order_number/[orderNumber]
+    public static String getClientKeyFromTimestampOrderNumberUri(Uri uri) {
         return uri.getPathSegments().get(2);
     }
 
-    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
-    public static String getTimestampFromTimestampExerciseUri(Uri uri) {
+    //"content://CONTENT_AUTHORITY/clientOrderNumber/[uid]/[clientKey]/[timestamp]/order_number/[orderNumber]
+    public static String getTimestampFromTimestampOrderNumberUri(Uri uri) {
         return uri.getPathSegments().get(3);
     }
 
-    //"content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
-    public static String getExerciseFromTimestampExerciseUri(Uri uri) {
+    //"content://CONTENT_AUTHORITY/clientOrderNumber/[uid]/[clientKey]/[timestamp]/order_number/[orderNumber]
+    public static String getOrderNumberFromTimestampOrderNumberUri(Uri uri) {
         return uri.getPathSegments().get(5);
     }
 
