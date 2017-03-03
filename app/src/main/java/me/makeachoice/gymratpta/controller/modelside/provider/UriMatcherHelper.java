@@ -69,13 +69,14 @@ public class UriMatcherHelper {
     public static final int CLIENT_ROUTINE_WITH_CLIENT_KEY = 1002;
     public static final int CLIENT_ROUTINE_WITH_TIMESTAMP = 1003;
     public static final int CLIENT_ROUTINE_WITH_EXERCISE = 1004;
+    public static final int CLIENT_ROUTINE_WITH_ORDER_NUMBER = 1005;
 
     public static final int CLIENT_EXERCISE = 1100;
     public static final int CLIENT_EXERCISE_WITH_UID = 1101;
     public static final int CLIENT_EXERCISE_WITH_CLIENT_KEY = 1102;
     public static final int CLIENT_EXERCISE_WITH_EXERCISE = 1103;
     public static final int CLIENT_EXERCISE_WITH_TIMESTAMP = 1104;
-    public static final int CLIENT_EXERCISE_WITH_TIMESTAMP_EXERCISE = 1105;
+    public static final int CLIENT_EXERCISE_WITH_TIMESTAMP_ORDER_NUMBER = 1105;
 
     public static final UriMatcher dbUriMatcher = buildUriMatcher();
 
@@ -276,8 +277,12 @@ public class UriMatcherHelper {
         matcher.addURI(authority, timePath, CLIENT_ROUTINE_WITH_TIMESTAMP);
 
         //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
-        String exercisePath = Contractor.PATH_CLIENT_ROUTINE + "/*/*/*"  + ClientRoutineContract.COLUMN_EXERCISE + "/*";
+        String exercisePath = Contractor.PATH_CLIENT_ROUTINE + "/*/*/*/"  + ClientRoutineContract.COLUMN_EXERCISE + "/*";
         matcher.addURI(authority, exercisePath, CLIENT_ROUTINE_WITH_EXERCISE);
+
+        //"content://CONTENT_AUTHORITY/clientRoutine/[uid]/[clientKey]/[timestamp]/order_number/[orderNumber]
+        String orderNumberPath = Contractor.PATH_CLIENT_ROUTINE + "/*/*/*/"  + ClientRoutineContract.COLUMN_ORDER_NUMBER+ "/*";
+        matcher.addURI(authority, orderNumberPath, CLIENT_ROUTINE_WITH_ORDER_NUMBER);
 
     }
 
@@ -301,9 +306,9 @@ public class UriMatcherHelper {
         String timePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/"  + ClientExerciseContract.COLUMN_TIMESTAMP + "/*";
         matcher.addURI(authority, timePath, CLIENT_EXERCISE_WITH_TIMESTAMP);
 
-        //content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/exercise/[exercise]
-        String timeExercisePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/*/"  + ClientExerciseContract.COLUMN_EXERCISE + "/*";
-        matcher.addURI(authority, timeExercisePath, CLIENT_EXERCISE_WITH_TIMESTAMP_EXERCISE);
+        //content://CONTENT_AUTHORITY/clientExercise/[uid]/[clientKey]/[timestamp]/order_number/[orderNumber]
+        String timeExercisePath = Contractor.PATH_CLIENT_EXERCISE + "/*/*/*/"  + ClientExerciseContract.COLUMN_ORDER_NUMBER + "/*";
+        matcher.addURI(authority, timeExercisePath, CLIENT_EXERCISE_WITH_TIMESTAMP_ORDER_NUMBER);
 
     }
 }
