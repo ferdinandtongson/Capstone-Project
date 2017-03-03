@@ -40,8 +40,8 @@ public class StatsButler {
     //mSaveItem - appointment item to save to database
     //private ScheduleItem mSaveItem;
 
-    //mDeleteItem - appointment item to delete from database
-    //private ScheduleItem mDeleteItem;
+    //mDeleteItem - delete item from database
+    private StatsItem mDeleteItem;
 
     //mStatsList - list of stats loaded from database
     private ArrayList<StatsItem> mStatsList;
@@ -218,6 +218,7 @@ public class StatsButler {
      */
     public void deleteStats(StatsItem deleteItem, OnDeletedListener listener){
         mDeleteListener = listener;
+        mDeleteItem = deleteItem;
 
         //create string values used to delete notes
         String clientKey = deleteItem.clientKey;
@@ -236,6 +237,7 @@ public class StatsButler {
                         postSnapshot.getRef().removeValue();
                     }
                 }
+                deleteStatsFromDatabase(mDeleteItem);
             }
 
             @Override
@@ -244,7 +246,6 @@ public class StatsButler {
             }
         });
 
-        deleteStatsFromDatabase(deleteItem);
     }
 
     /*
