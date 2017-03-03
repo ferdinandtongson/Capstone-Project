@@ -1,5 +1,6 @@
 package me.makeachoice.gymratpta.view.dialog;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -60,6 +61,11 @@ public class NotesDialog extends DialogFragment {
     private OnSaveNotesListener mOnSaveListener;
     public interface OnSaveNotesListener{
         public void onSaveNotes(ArrayList<String> notes);
+    }
+
+    private OnDismissListener mDismissListener;
+    public interface OnDismissListener{
+        public void onDismiss(DialogInterface dialogInterface);
     }
 
 /**************************************************************************************************/
@@ -123,6 +129,14 @@ public class NotesDialog extends DialogFragment {
     public void setOnCancelListener(View.OnClickListener cancelListener){
         mOnCancelListener = cancelListener;
     }
+
+    /*
+     * void setOnDismissListener(...) - set listener for dialog dismiss events
+     */
+    public void setOnDismissListener(OnDismissListener listener){
+        mDismissListener = listener;
+    }
+
 
 /**************************************************************************************************/
 
@@ -302,6 +316,18 @@ public class NotesDialog extends DialogFragment {
 
             //save note index selected
             mOldIndex = index;
+        }
+    }
+
+    /*
+     * void onDismiss(DialogInterface) - dialog dismiss event occurred
+     */
+    @Override
+    public void onDismiss(DialogInterface dialogInterface){
+        //check for listener
+        if(mDismissListener != null){
+            //notify listener for dismiss event
+            mDismissListener.onDismiss(dialogInterface);
         }
     }
 
