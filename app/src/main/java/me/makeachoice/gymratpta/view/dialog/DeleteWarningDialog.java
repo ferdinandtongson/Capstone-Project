@@ -43,7 +43,6 @@ public class DeleteWarningDialog extends DialogFragment {
     private View mRootView;
 
     private OnDismissListener mDismissListener;
-
     public interface OnDismissListener{
         public void onDismiss(DialogInterface dialogInterface);
     }
@@ -235,7 +234,7 @@ public class DeleteWarningDialog extends DialogFragment {
     public void onDismiss(DialogInterface dialogInterface){
         //check for listener
         if(mDismissListener != null){
-            //notify listener for dimiss event
+            //notify listener for dismiss event
             mDismissListener.onDismiss(dialogInterface);
         }
     }
