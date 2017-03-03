@@ -1,5 +1,6 @@
 package me.makeachoice.gymratpta.view.dialog;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -108,6 +109,11 @@ public class StatsDialog extends DialogFragment {
         public void onSave(StatsItem saveItem);
     }
 
+    private OnDismissListener mDismissListener;
+    public interface OnDismissListener{
+        public void onDismiss(DialogInterface dialogInterface);
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -163,6 +169,14 @@ public class StatsDialog extends DialogFragment {
     public void setOnCancelListener(View.OnClickListener cancelListener){
         mOnCancelListener = cancelListener;
     }
+
+    /*
+     * void setOnDismissListener(...) - set listener for dialog dismiss events
+     */
+    public void setOnDismissListener(OnDismissListener listener){
+        mDismissListener = listener;
+    }
+
 
 /**************************************************************************************************/
 
@@ -469,6 +483,17 @@ public class StatsDialog extends DialogFragment {
         return Double.valueOf(stat);
     }
 
+    /*
+     * void onDismiss(DialogInterface) - dialog dismiss event occurred
+     */
+    @Override
+    public void onDismiss(DialogInterface dialogInterface){
+        //check for listener
+        if(mDismissListener != null){
+            //notify listener for dimiss event
+            mDismissListener.onDismiss(dialogInterface);
+        }
+    }
 
 /**************************************************************************************************/
 
