@@ -9,5 +9,5 @@ import me.makeachoice.gymratpta.model.item.BaseSessionItem;
 public class RoutineFBItem {
     public String exercise;
     public String category;
-    public int numOfSets;
+    public String numOfSets;
 }
