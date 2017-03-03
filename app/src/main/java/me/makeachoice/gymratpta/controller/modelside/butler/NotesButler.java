@@ -40,6 +40,10 @@ public class NotesButler {
     //mNotesList - list of notes loaded from database
     private ArrayList<NotesItem> mNotesList;
 
+    //mDeleteItem - delete item from database
+    private NotesItem mDeleteItem;
+
+
     //mLoaderId - loader id number
     private int mLoaderId;
 
@@ -201,6 +205,7 @@ public class NotesButler {
      */
     public void deleteNotes(NotesItem deleteItem, OnDeletedListener listener){
         mDeleteListener = listener;
+        mDeleteItem = deleteItem;
 
         //create string values used to delete notes
         String clientKey = deleteItem.clientKey;
@@ -219,6 +224,7 @@ public class NotesButler {
                         postSnapshot.getRef().removeValue();
                     }
                 }
+                deleteNotesFromDatabase(mDeleteItem);
             }
 
             @Override
@@ -227,7 +233,6 @@ public class NotesButler {
             }
         });
 
-        deleteNotesFromDatabase(deleteItem);
     }
 
     /*
