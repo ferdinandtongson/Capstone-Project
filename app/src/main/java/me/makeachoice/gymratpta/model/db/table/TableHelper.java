@@ -57,10 +57,10 @@ public class TableHelper {
             Contractor.RoutineEntry._ID + " INTEGER PRIMARY KEY," +
             Contractor.RoutineEntry.COLUMN_UID + " TEXT NOT NULL, " +
             Contractor.RoutineEntry.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_ORDER_NUMBER + " INTEGER NOT NULL, " +
+            Contractor.RoutineEntry.COLUMN_ORDER_NUMBER + " TEXT NOT NULL, " +
             Contractor.RoutineEntry.COLUMN_EXERCISE + " TEXT NOT NULL, " +
             Contractor.RoutineEntry.COLUMN_CATEGORY + " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_NUM_SETS + " INTEGER NOT NULL);";
+            Contractor.RoutineEntry.COLUMN_NUM_SETS + " TEXT NOT NULL);";
 
     public final static String SQL_CREATE_ROUTINE_NAME_TABLE = "CREATE TABLE " + Contractor.RoutineNameEntry.TABLE_NAME + " (" +
             Contractor.RoutineNameEntry._ID + " INTEGER PRIMARY KEY," +
@@ -121,8 +121,8 @@ public class TableHelper {
             ClientRoutineContract.COLUMN_TIMESTAMP + " TEXT, " +
             ClientRoutineContract.COLUMN_CATEGORY + " TEXT, " +
             ClientRoutineContract.COLUMN_EXERCISE + " TEXT, " +
-            ClientRoutineContract.COLUMN_ORDER_NUMBER + " INTEGER, " +
-            ClientRoutineContract.COLUMN_NUM_OF_SETS + " INTEGER);";
+            ClientRoutineContract.COLUMN_ORDER_NUMBER + " TEXT, " +
+            ClientRoutineContract.COLUMN_NUM_OF_SETS + " TEXT);";
 
     public final static String SQL_CREATE_CLIENT_EXERCISE_TABLE = "CREATE TABLE " + ClientExerciseContract.TABLE_NAME + " (" +
             ClientExerciseContract._ID + " INTEGER PRIMARY KEY," +
@@ -131,8 +131,8 @@ public class TableHelper {
             ClientExerciseContract.COLUMN_TIMESTAMP + " TEXT, " +
             ClientExerciseContract.COLUMN_CATEGORY + " TEXT, " +
             ClientExerciseContract.COLUMN_EXERCISE + " TEXT, " +
-            ClientExerciseContract.COLUMN_ORDER_NUMBER + " INTEGER, " +
-            ClientExerciseContract.COLUMN_SET_NUMBER + " INTEGER, " +
+            ClientExerciseContract.COLUMN_ORDER_NUMBER + " TEXT, " +
+            ClientExerciseContract.COLUMN_SET_NUMBER + " TEXT, " +
             ClientExerciseContract.COLUMN_PRIMARY_LABEL + " TEXT, " +
             ClientExerciseContract.COLUMN_PRIMARY_VALUE + " TEXT, " +
             ClientExerciseContract.COLUMN_SECONDARY_LABEL + " TEXT, " +
