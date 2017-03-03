@@ -50,6 +50,8 @@ public class ClientExerciseLoader {
     //mExercise - exercise name value
     private String mExercise;
 
+    private String mOrderNumber;
+
     //mListener - listens for when client exercise data is loaded
     private OnClientExerciseLoadListener mListener;
     public interface OnClientExerciseLoadListener{
@@ -298,19 +300,19 @@ public class ClientExerciseLoader {
     /*
      * void loadClientExerciseByTimestampExercise(...) - start loader to load client exercise data from database by exercise
      */
-    public void loadClientExerciseByTimestampExercise(String timestamp, String exercise, OnClientExerciseLoadListener listener){
+    public void loadClientExerciseByTimestampOrderNumber(String timestamp, String orderNumber, OnClientExerciseLoadListener listener){
 
         //load client exercise
-        loadClientExerciseByTimestampExercise(timestamp, exercise, LOADER_CLIENT_EXERCISE, listener);
+        loadClientExerciseByTimestampOrderNumber(timestamp, orderNumber, LOADER_CLIENT_EXERCISE, listener);
     }
 
     /*
      * void loadClientExerciseByTimestampExercise(...) - start loader to load client exercise data by exercise
      */
-    public void loadClientExerciseByTimestampExercise(String timestamp, String exercise, int loaderId,
+    public void loadClientExerciseByTimestampOrderNumber(String timestamp, String orderNumber, int loaderId,
                                              OnClientExerciseLoadListener listener){
         //get exercise
-        mExercise = exercise;
+        mOrderNumber = orderNumber;
         mTimestamp = timestamp;
 
         //get listener
@@ -323,8 +325,8 @@ public class ClientExerciseLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = ClientExerciseContract.buildClientExerciseByTimestampExercise(mUserId,
-                                mClientKey, mTimestamp, mExercise);
+                        Uri uri = ClientExerciseContract.buildClientExerciseByTimestampOrderNumber(mUserId,
+                                mClientKey, mTimestamp, mOrderNumber);
 
                         //get cursor
                         return new CursorLoader(
