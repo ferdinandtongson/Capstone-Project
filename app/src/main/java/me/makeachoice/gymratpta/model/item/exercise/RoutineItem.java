@@ -23,7 +23,7 @@ public class RoutineItem extends RoutineFBItem {
     
     public String uid;
     public String routineName;
-    public int orderNumber;
+    public String orderNumber;
 
 /**************************************************************************************************/
 
@@ -44,10 +44,10 @@ public class RoutineItem extends RoutineFBItem {
     public RoutineItem(Cursor cursor){
         uid = cursor.getString(RoutineColumns.INDEX_UID);
         routineName = cursor.getString(RoutineColumns.INDEX_ROUTINE_NAME);
-        orderNumber = cursor.getInt(RoutineColumns.INDEX_ORDER_NUMBER);
+        orderNumber = cursor.getString(RoutineColumns.INDEX_ORDER_NUMBER);
         exercise = cursor.getString(RoutineColumns.INDEX_EXERCISE);
         category = cursor.getString(RoutineColumns.INDEX_CATEGORY);
-        numOfSets = cursor.getInt(RoutineColumns.INDEX_NUM_SETS);
+        numOfSets = cursor.getString(RoutineColumns.INDEX_NUM_SETS);
     }
 
 /**************************************************************************************************/
