@@ -170,6 +170,7 @@
     <string name="contact_info" translatable="true">Contact Info</string>
     <string name="contacts_list" translatable="true">Contacts List</string>
     <string name="core" translatable="true">Core</string>
+    <string name="custom_routine" translatable="true">Custom Routine</string>
     <string name="daily" translatable="true">Daily</string>
     <string name="date" translatable="true">Date</string>
     <string name="delete" translatable="true">Delete</string>
