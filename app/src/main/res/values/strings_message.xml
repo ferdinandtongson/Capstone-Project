@@ -20,4 +20,5 @@
     <string name="msg_none_selected" translatable="true">- None Selected -</string>
 
     <string name="msg_forget_input">Did you forget to input a value?</string>
+    <string name="msg_delete_anyway">has recorded values! Delete anyway?</string>
 </resources>
