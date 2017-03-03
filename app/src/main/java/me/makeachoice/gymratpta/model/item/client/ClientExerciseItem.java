@@ -50,8 +50,8 @@ public class ClientExerciseItem extends ClientExerciseFBItem {
         timestamp = cursor.getString(ClientExerciseContract.INDEX_TIMESTAMP);
         category = cursor.getString(ClientExerciseContract.INDEX_CATEGORY);
         exercise = cursor.getString(ClientExerciseContract.INDEX_EXERCISE);
-        orderNumber = cursor.getInt(ClientExerciseContract.INDEX_ORDER_NUMBER);
-        setNumber = cursor.getInt(ClientExerciseContract.INDEX_SET_NUMBER);
+        orderNumber = cursor.getString(ClientExerciseContract.INDEX_ORDER_NUMBER);
+        setNumber = cursor.getString(ClientExerciseContract.INDEX_SET_NUMBER);
         primaryLabel = cursor.getString(ClientExerciseContract.INDEX_PRIMARY_LABEL);
         primaryValue = cursor.getString(ClientExerciseContract.INDEX_PRIMARY_VALUE);
         secondaryLabel = cursor.getString(ClientExerciseContract.INDEX_SECONDARY_LABEL);

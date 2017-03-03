@@ -8,8 +8,8 @@ public class ClientExerciseFBItem {
 
     public String category;
     public String exercise;
-    public int orderNumber;
-    public int setNumber;
+    public String orderNumber;
+    public String setNumber;
     public String primaryLabel;
     public String primaryValue;
     public String secondaryLabel;
