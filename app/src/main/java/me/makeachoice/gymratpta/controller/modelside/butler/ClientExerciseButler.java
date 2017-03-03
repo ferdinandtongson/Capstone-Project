@@ -37,6 +37,9 @@ public class ClientExerciseButler {
     //mUserId - user authentication id
     private String mUserId;
 
+    //mDeleteItem - client exercise item to be deleted
+    private ClientExerciseItem mDeleteItem;
+
     //mStatsList - list of stats loaded from database
     private ArrayList<ClientExerciseItem> mExerciseList;
 
@@ -138,13 +141,13 @@ public class ClientExerciseButler {
     /*
      * void loadClientExercisesByTimestampExercise() - load client exercise data from database
      */
-    public void loadClientExercisesByTimestampExercise(String timestamp, String exercise,
+    public void loadClientExercisesByTimestampOrderNumber(String timestamp, String orderNumber,
                                                        int loaderId, OnLoadedListener listener){
         mLoaderId = loaderId;
         mLoadListener = listener;
 
         //start loader to get data from database
-        mExerciseLoader.loadClientExerciseByTimestampExercise(timestamp, exercise, mLoaderId,
+        mExerciseLoader.loadClientExerciseByTimestampOrderNumber(timestamp, orderNumber, mLoaderId,
                 new ClientExerciseLoader.OnClientExerciseLoadListener() {
                     @Override
                     public void onClientExerciseLoadFinished(Cursor cursor) {
@@ -252,23 +255,28 @@ public class ClientExerciseButler {
     /*
      * void deleteClientExercise(...) - delete from firebase
      */
-    public void deleteClientExercise(ClientExerciseItem deleteItem, OnDeletedListener listener){
+    public void deleteClientExerciseByOrderNumber(ClientExerciseItem deleteItem, OnDeletedListener listener){
         mDeleteListener = listener;
+        mDeleteItem = deleteItem;
 
         //create string values used to delete
         String clientKey = deleteItem.clientKey;
         String timestamp = deleteItem.timestamp;
-        final String exercise = deleteItem.exercise;
+        String orderNumber = deleteItem.orderNumber;
 
         //get firebase helper instance
         ClientExerciseFirebaseHelper fbHelper = ClientExerciseFirebaseHelper.getInstance();
+
         //delete notes from firebase
-        fbHelper.deleteClientExerciseByExercise(mUserId, clientKey, timestamp, exercise, new ValueEventListener() {
+        fbHelper.deleteClientExerciseByOrderNumber(mUserId, clientKey, timestamp, orderNumber, new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     snapshot.getRef().removeValue();
                 }
+
+                //if called outside of listener, local and firebase will get out of sync
+                deleteFromDatabase(mDeleteItem);
             }
 
             @Override
@@ -277,7 +285,6 @@ public class ClientExerciseButler {
             }
         });
 
-        deleteFromDatabase(deleteItem);
     }
 
     /*
@@ -287,15 +294,15 @@ public class ClientExerciseButler {
         //create string values used to delete notes
         String clientKey = deleteItem.clientKey;
         String timestamp = deleteItem.timestamp;
-        String exercise = deleteItem.exercise;
+        String orderNumber = deleteItem.orderNumber;
 
         //get uri value for table
         Uri uri = ClientExerciseContract.CONTENT_URI;
 
         //remove notes from database
         mActivity.getContentResolver().delete(uri,
-                ClientExerciseQueryHelper.clientKeyTimestampExerciseSelection,
-                new String[]{mUserId, clientKey, timestamp, exercise});
+                ClientExerciseQueryHelper.clientKeyTimestampOrderNumberSelection,
+                new String[]{mUserId, clientKey, timestamp, orderNumber});
 
         if(mDeleteListener != null){
             mDeleteListener.onDeleted();
