@@ -29,11 +29,12 @@ public class ClientExerciseFirebaseHelper {
     public static String CHILD_APPOINTMENT_TIME = "appointmentTime";
     public static String CHILD_EXERCISE = "exercise";
     public static String CHILD_CATEGORY = "category";
-    public static String CHILD_SET_NUMBER = "setNumber";
+    public static String CHILD_ORDER_NUMBER = "orderNumber";
     public static String CHILD_PRIMARY_LABEL = "primaryLabel";
     public static String CHILD_PRIMARY_VALUE = "primaryValue";
     public static String CHILD_SECONDARY_LABEL = "secondaryLabel";
     public static String CHILD_SECONDARY_VALUE = "secondaryValue";
+    public static String CHILD_SET_NUMBER = "setNumber";
 
     //PARENT - parent director
     private static String PARENT = "clientExercise";
@@ -135,17 +136,16 @@ public class ClientExerciseFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteClientExerciseByExercise(String userId, String clientKey, String timestamp,
-                                     String exercise, ValueEventListener listener){
+    public void deleteClientExerciseByOrderNumber(String userId, String clientKey, String timestamp,
+                                     String orderNumber, ValueEventListener listener){
 
         DatabaseReference ref = getClientExerciseReferenceByTimestamp(userId, clientKey, timestamp);
 
-        Query exerciseQuery = ref.orderByChild(CHILD_EXERCISE).equalTo(exercise);
+        Query exerciseQuery = ref.orderByChild(CHILD_ORDER_NUMBER).equalTo(orderNumber);
 
         exerciseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     snapshot.getRef().removeValue();
                 }
