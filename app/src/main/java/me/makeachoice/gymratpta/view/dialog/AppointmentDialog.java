@@ -1,7 +1,8 @@
 package me.makeachoice.gymratpta.view.dialog;
 
 import android.app.TimePickerDialog;
-import android.database.Cursor;
+import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -12,22 +13,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
-import me.makeachoice.gymratpta.controller.modelside.loader.RoutineLoader;
-import me.makeachoice.gymratpta.controller.modelside.loader.RoutineNameLoader;
+import me.makeachoice.gymratpta.controller.modelside.butler.ClientButler;
+import me.makeachoice.gymratpta.controller.modelside.butler.RoutineNameButler;
 import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineNameItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
+import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
-import static me.makeachoice.gymratpta.controller.manager.Boss.CLIENT_ACTIVE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NAME;
 
 /**************************************************************************************************/
 /*
@@ -49,7 +50,7 @@ public class AppointmentDialog extends DialogFragment {
     //mUserId - user id number from firebase authentication
     private String mUserId;
 
-    //mNoneSelected - string value used when no routine is selected
+    //mNoneSelected - string value used when user will does Not select a routine
     private String mNoneSelected;
 
     //mClientIndex - client spinner index used if editing a previous client appointment item
@@ -60,9 +61,10 @@ public class AppointmentDialog extends DialogFragment {
 
     //mSaveApmtItem - client appointment item to save
     private ScheduleItem mSaveApmtItem;
+    private ScheduleItem mOldAptmItem;
 
-    //mRoutineItem - routine item selected for appointment
-    private ArrayList<RoutineItem> mExercises;
+    private HashMap<String,String> mAppointmentMap;
+    private HashMap<String,String> mEditAppointmentMap;
 
     //mClientList - list of client items
     private ArrayList<ClientItem> mClientList;
@@ -73,14 +75,45 @@ public class AppointmentDialog extends DialogFragment {
     //mRoutineNames - list of routine names
     private ArrayList<String> mRoutineNames;
 
-    private ClientLoader mClientLoader;
+    private ClientButler mClientButler;
+    private RoutineNameButler mRoutineNameButler;
 
     //mRootView - root view component containing dialog child components
     private View mRootView;
 
+    //dialog ui components
     private Spinner mSpnRoutine;
-
+    private Spinner mSpnClient;
     private TextView mTxtTimeSelected;
+    private TextView mTxtTimeLabel;
+    private TextView mTxtClientLabel;
+    private TextView mTxtSave;
+
+    //string values - used by session time labels
+    private String mStrSessionTime;
+
+    //string value - used by client label
+    private String mStrClient;
+    private String mMsgAlreadyBooked;
+    private String mMsgSameTime;
+    private String mMsgAlreadyPast;
+
+    //string value - used by save button
+    private String mStrSave;
+    private String mStrSaveAnyway;
+
+    //background drawable and color
+    private Drawable mBgBlue;
+    private Drawable mBgOrange;
+    private int mBgGray;
+    private int mTxtOrange;
+    private int mTxtBlack;
+
+    //valid status flags
+    private boolean mValidTime;
+    private boolean mSameBooking;
+    private boolean mDoubleClient;
+    private boolean mEditMode;
 
     private TimePickerDialog.OnTimeSetListener mTimePickerListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -93,9 +126,13 @@ public class AppointmentDialog extends DialogFragment {
     //mSavedListener - notifies listener that the saved button was clicked
     private OnSaveClickListener mSavedListener;
     public interface OnSaveClickListener{
-        public void onSaveClicked(ScheduleItem appItem, ArrayList<RoutineItem> exercises);
+        void onSaveClicked(ScheduleItem appItem);
     }
 
+    private OnDismissListener mDismissListener;
+    public interface OnDismissListener{
+        void onDismiss(DialogInterface dialogInterface);
+    }
 
 
 /**************************************************************************************************/
@@ -124,7 +161,8 @@ public class AppointmentDialog extends DialogFragment {
     /*
      * void setDialogValues(MyActivity,String) - set dialog values
      */
-    public void setDialogValues(MyActivity activity, String userId, ScheduleItem item){
+    public void setDialogValues(MyActivity activity, String userId, ScheduleItem item,
+                                HashMap<String,String> appointmentMap){
         //set activity context
         mActivity = activity;
 
@@ -132,7 +170,7 @@ public class AppointmentDialog extends DialogFragment {
         mUserId = userId;
 
         //set string value
-        mNoneSelected = mActivity.getString(R.string.dialogSchedule_no_routine_selected);
+        mNoneSelected = mActivity.getString(R.string.msg_none_selected);
 
         //initialize client list buffer
         mClientList = new ArrayList<>();
@@ -144,10 +182,13 @@ public class AppointmentDialog extends DialogFragment {
         mRoutineNames = new ArrayList<>();
 
         //initialize exercises in routine
-        mExercises = new ArrayList<>();
+        mAppointmentMap = appointmentMap;
+        mEditAppointmentMap = new HashMap<>();
 
-        mClientLoader = new ClientLoader(mActivity, mUserId);
+        mRoutineNameButler = new RoutineNameButler(mActivity, mUserId);
+        mClientButler = new ClientButler(mActivity, mUserId);
 
+        mEditMode = false;
         //initialize appointment item to save
         initializeSaveItem(item);
 
@@ -157,6 +198,11 @@ public class AppointmentDialog extends DialogFragment {
 
             //set routine spinner selected index
             mRoutineIndex = 0;
+        }
+        else{
+            //need to define indexes after data is loaded
+            mClientIndex = -1;
+            mRoutineIndex = -1;
         }
     }
 
@@ -189,8 +235,6 @@ public class AppointmentDialog extends DialogFragment {
             mSaveApmtItem.clientName = item.clientName;
             mSaveApmtItem.routineName = item.routineName;
             mSaveApmtItem.status = item.status;
-
-            loadRoutine(item.routineName);
         }
     }
 
@@ -201,8 +245,35 @@ public class AppointmentDialog extends DialogFragment {
         mSavedListener = listener;
     }
 
-/**************************************************************************************************/
+    /*
+     * void setOnDismissListener(...) - set listener for dialog dismiss events
+     */
+    public void setOnDismissListener(OnDismissListener listener){
+        mDismissListener = listener;
+    }
 
+    public void setEditMode(boolean isEditMode){
+        mEditMode = isEditMode;
+
+        if(mEditMode){
+            mOldAptmItem = new ScheduleItem();
+            mOldAptmItem.uid = mUserId;
+            mOldAptmItem.datestamp = mSaveApmtItem.datestamp;
+            mOldAptmItem.appointmentDate = mSaveApmtItem.appointmentDate;
+            mOldAptmItem.appointmentTime = mSaveApmtItem.appointmentTime;
+            mOldAptmItem.clientKey = mSaveApmtItem.clientKey;
+            mOldAptmItem.clientName = mSaveApmtItem.clientName;
+            mOldAptmItem.routineName = mSaveApmtItem.routineName;
+            mOldAptmItem.status = mSaveApmtItem.status;
+
+            String mapKey = mOldAptmItem.clientKey + mOldAptmItem.appointmentTime;
+            mEditAppointmentMap.putAll(mAppointmentMap);
+            mEditAppointmentMap.remove(mapKey);
+        }
+
+    }
+
+/**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
@@ -229,18 +300,34 @@ public class AppointmentDialog extends DialogFragment {
         //inflate root view, parent child components
         mRootView = inflater.inflate(layoutId, container, false);
 
-        //clear client items list
-        mClientList.clear();
+        mStrSessionTime = mActivity.getString(R.string.session_time);
+        mMsgAlreadyPast = mActivity.getString(R.string.msg_already_past);
 
-        //clear client names list
-        mClientNames.clear();
+        mStrClient = mActivity.getString(R.string.client);
+        mMsgAlreadyBooked = mActivity.getString(R.string.msg_already_booked);
+        mMsgSameTime = mActivity.getString(R.string.msg_booked_that_time);
 
-        //clear routine names list
-        mRoutineNames.clear();
-        mRoutineNames.add(mNoneSelected);
+        mStrSave = mActivity.getString(R.string.save);
+        mStrSaveAnyway = mActivity.getString(R.string.save_anyway);
+
+        mBgBlue = DeprecatedUtility.getDrawable(mActivity, R.drawable.button_border);
+        mBgOrange = DeprecatedUtility.getDrawable(mActivity, R.drawable.bg_orange);
+        mBgGray = DeprecatedUtility.getColor(mActivity, R.color.silver_90);
+
+        mTxtOrange = DeprecatedUtility.getColor(mActivity, R.color.orange);
+        mTxtBlack = DeprecatedUtility.getColor(mActivity, R.color.black);
+
+        mValidTime = true;
+        mDoubleClient = false;
+        mSameBooking = false;
 
         //load clients used by spinner
-        loadClients();
+        mClientButler.loadActiveClients(LOADER_CLIENT, new ClientButler.OnLoadedListener() {
+            @Override
+            public void onLoaded(ArrayList<ClientItem> clientList) {
+                onClientsLoaded(clientList);
+            }
+        });
 
         return mRootView;
     }
@@ -259,7 +346,7 @@ public class AppointmentDialog extends DialogFragment {
         initializeSaveTextView();
 
         //initialize client spinner component
-        initializeClientSpinner();
+        initializeClientViews();
 
         //initialize routine spinner component
         initializeRoutineSpinner();
@@ -282,6 +369,7 @@ public class AppointmentDialog extends DialogFragment {
     private void initializeTimeTextView(){
         //get time textView component
         mTxtTimeSelected = (TextView)mRootView.findViewById(R.id.diaSchedule_txtTimeSelect);
+        mTxtTimeLabel = (TextView)mRootView.findViewById(R.id.diaSchedule_txtTime);
 
         //get appointment time selected string value
         String strTime = mSaveApmtItem.appointmentTime;
@@ -310,27 +398,29 @@ public class AppointmentDialog extends DialogFragment {
      */
     private void initializeSaveTextView(){
         //get save textView component
-        TextView txtSave = (TextView)mRootView.findViewById(R.id.diaSchedule_txtSave);
+        mTxtSave = (TextView)mRootView.findViewById(R.id.diaSchedule_txtSave);
 
         //set onClick listener
-        txtSave.setOnClickListener(new View.OnClickListener() {
+        mTxtSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //schedule is valid,
                 onSaveRequested();
             }
         });
     }
 
     /*
-     * void initializeClientSpinner() - initialize client spinner component
+     * void initializeClientViews() - initialize client component
      */
-    private void initializeClientSpinner(){
+    private void initializeClientViews(){
 
+        mTxtClientLabel = (TextView)mRootView.findViewById(R.id.diaSchedule_txtClient);
         //get spinner component
-        Spinner spnClient = (Spinner)mRootView.findViewById(R.id.diaSchedule_spnClient);
+        mSpnClient = (Spinner)mRootView.findViewById(R.id.diaSchedule_spnClient);
 
         //set onItemSelected listener
-        spnClient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpnClient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //notify client was selected
@@ -351,10 +441,10 @@ public class AppointmentDialog extends DialogFragment {
         adpClients.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         //set spinner with adapter
-        spnClient.setAdapter(adpClients);
+        mSpnClient.setAdapter(adpClients);
 
         //set client selection
-        spnClient.setSelection(mClientIndex);
+        mSpnClient.setSelection(mClientIndex);
     }
 
     /*
@@ -398,66 +488,62 @@ public class AppointmentDialog extends DialogFragment {
 /**************************************************************************************************/
 /*
  * Load Database Methods
- *      void loadClients() - load active clients from database
- *      void onClientDataLoaded(Cursor) - active client data from database has been loaded
+ *      void onClientsLoaded(Cursor) - active client list from database has been loaded
  *      void loadRoutinesNames() - load routines names from database
  *      void onRoutineNameDataLoaded(Cursor) - routine names from database has been loaded
- *      void loadRoutine() - load routine exercises from database
- *      void onRoutineLoaded - routine exercise data from database has been loaded
  */
 /**************************************************************************************************/
     /*
-     * void loadClients() - load active clients from database
+     * void onClientsLoaded(Cursor) - active client list from database has been loaded
      */
-    private void loadClients(){
-        //load client data with only clients with an Active status
-        mClientLoader.loadClientsByStatus(CLIENT_ACTIVE, new ClientLoader.OnClientLoadListener() {
-            @Override
-            public void onClientLoadFinished(Cursor cursor) {
-                //client data has been loaded
-                onClientDataLoaded(cursor);
+    private void onClientsLoaded(ArrayList<ClientItem> clientList){
+        //create client name buffer
+        String clientName = "";
+
+        //check if client index equal zero, new appointment
+        if(mClientIndex != 0){
+            //editing an appointment, get client attached to appointment
+            ClientItem item = mClientButler.getClientFromMap(mSaveApmtItem.clientKey);
+
+            //make sure not null
+            if(item != null){
+                //get client name, used to find clientIndex
+                clientName = item.clientName;
             }
-        });
+            else{
+                //null client, set index to zero
+                mClientIndex = 0;
+            }
+        }
 
-    }
+        //clear client buffers
+        mClientList.clear();
+        mClientNames.clear();
 
-    /*
-     * void onClientDataLoaded(Cursor) - active client data from database has been loaded
-     */
-    private void onClientDataLoaded(Cursor cursor){
-        //get client name from client appointment item
-        String selectedClient = mSaveApmtItem.clientName;
+        //save client list to buffer
+        mClientList.addAll(clientList);
 
-        //get size of cursor
-        int count = cursor.getCount();
+        //get number of clients
+        int count = mClientList.size();
 
         //loop through cursor
         for(int i = 0; i < count; i++){
-            //move cursor to index position
-            cursor.moveToPosition(i);
-
-            //get clientItem from cursor
-            ClientItem item = new ClientItem(cursor);
-
-            //add item to client item list
-            mClientList.add(item);
+            ClientItem item = mClientList.get(i);
 
             //get client name from item
             String client = item.clientName;
 
-            //add client name to client name list
-            mClientNames.add(client);
-
-            //check if client name is equal to client appointment item name
-            if(selectedClient.equals(client)){
-                //match, set spinner selected index
+            //check if client name is equal to client
+            if(clientName.equals(client)){
+                //set client index
                 mClientIndex = i;
             }
 
+            //add client name to client name list
+            mClientNames.add(client);
         }
 
-        mClientLoader.destroyLoader();
-
+        //load routine names for routine spinner
         loadRoutinesNames();
     }
 
@@ -465,33 +551,39 @@ public class AppointmentDialog extends DialogFragment {
      * void loadRoutinesNames() - load routines names from database
      */
     private void loadRoutinesNames(){
-        //load client data with only clients with an Active status
-        RoutineNameLoader.loadRoutineNames(mActivity, mUserId, new RoutineNameLoader.OnRoutineNameLoadListener() {
+        mRoutineNameButler.loadRoutineNames(LOADER_ROUTINE_NAME, new RoutineNameButler.OnLoadedListener() {
             @Override
-            public void onRoutineNameLoadFinished(Cursor cursor) {
-                onRoutineNameDataLoaded(cursor);
+            public void onLoaded(ArrayList<RoutineNameItem> routineList) {
+                onRoutineNameDataLoaded(routineList);
             }
         });
-
     }
 
     /*
      * void onRoutineNameDataLoaded(Cursor) - routine names from database has been loaded
      */
-    private void onRoutineNameDataLoaded(Cursor cursor){
-        //get routine name from client appointment item
-        String selectedRoutine = mSaveApmtItem.routineName;
+    private void onRoutineNameDataLoaded(ArrayList<RoutineNameItem> routineList){
+        //clear routineName buffer
+        mRoutineNames.clear();
+        mRoutineNames.add(mNoneSelected);
+
+        //create routine name buffer
+        String selectedRoutine = "";
+
+        //check if client index equal zero, new appointment
+        if(mRoutineIndex != 0){
+            //editing an appointment, get routine attached to appointment
+            selectedRoutine = mSaveApmtItem.routineName;
+        }
 
         //get size of cursor
-        int count = cursor.getCount();
+        int count = routineList.size();
 
         //loop through cursor
         for(int i = 0; i < count; i++){
-            //move cursor to index position
-            cursor.moveToPosition(i);
 
             //get routineItem from cursor
-            RoutineNameItem item = new RoutineNameItem(cursor);
+            RoutineNameItem item = routineList.get(i);
 
             //get routine name from item
             String routine = item.routineName;
@@ -501,66 +593,14 @@ public class AppointmentDialog extends DialogFragment {
 
             //check if client name is equal to client appointment item name
             if(selectedRoutine.equals(routine)){
-                //match, set spinner selected index, need to add 1 because of "- None Selected -"
+                //match, set spinner selected index, need to add 1 because of "custom routine"
                 mRoutineIndex = i + 1;
             }
         }
 
-        //destroy loader
-        RoutineNameLoader.destroyLoader(mActivity);
-
         //initialize dialog
         initializeDialog();
-
     }
-
-    /*
-     * void loadRoutine() - load routine exercises from database
-     */
-    private void loadRoutine(String routineName){
-        //load exercise routine by routine name
-        RoutineLoader.loadRoutineByName(mActivity, mUserId, routineName, new RoutineLoader.OnRoutineLoadListener() {
-            @Override
-            public void onRoutineLoadFinished(Cursor cursor) {
-                onRoutineLoaded(cursor);
-            }
-        });
-    }
-
-    /*
-     * void onRoutineLoaded - routine exercise data from database has been loaded
-     */
-    private void onRoutineLoaded(Cursor cursor){
-
-        //check that cursor is Not null or empty
-        if(cursor != null && cursor.getCount() > 0){
-            //get number of items in cursor
-            int count = cursor.getCount();
-
-            //loop through cursor
-            for(int i = 0; i < count; i++){
-                //move cursor to index position
-                cursor.moveToPosition(i);
-
-                //create routine item from cursor data
-                RoutineItem item = new RoutineItem(cursor);
-
-                //add routine exercise into exercise list
-                mExercises.add(item);
-            }
-        }
-
-        //destroy loader
-        RoutineLoader.destroyLoader(mActivity);
-
-        //check if routine spinner has been created
-        if(mSpnRoutine != null){
-            //enable routine spinner
-            mSpnRoutine.setEnabled(true);
-        }
-
-    }
-
 
 /**************************************************************************************************/
 
@@ -568,33 +608,35 @@ public class AppointmentDialog extends DialogFragment {
 /*
  * Event Methods
  *      void onClientSelected(int) - client was selected from spinner
+ *      void onRoutineSelected(int) - exercise routine was selected from spinner
  *      void onTimePickerSet(int,int) - appointment time has been selected
+ *      boolean validTime() - check that appointment time selected has not already passed
+ *      void validateClient(String) - warn user if client already has a schedule appointment that day
  *      void onSaveRequested() - save appointment has been requested
- *      void hasPassed(String) - check if selected time has already passed
+ *      void onDismiss(DialogInterface) - dialog dismiss event occurred
  */
 /**************************************************************************************************/
     /*
      * void onClientSelected(int) - client was selected from spinner
      */
-    private void onClientSelected(int index){
+    private void onClientSelected(int index) {
         //get client from list
         ClientItem clientItem = mClientList.get(index);
 
         //save client data to save appointment item
         mSaveApmtItem.clientKey = clientItem.fkey;
         mSaveApmtItem.clientName = clientItem.clientName;
+
+        validateClient(clientItem.fkey);
     }
 
+    /*
+     * void onRoutineSelected(int) - exercise routine was selected from spinner
+     */
     private void onRoutineSelected(int index){
-        mExercises.clear();
-
         //save routine data to save appointment item
         mSaveApmtItem.routineName = mRoutineNames.get(index);
 
-        if(index != 0){
-            mSpnRoutine.setEnabled(false);
-            loadRoutine(mSaveApmtItem.routineName);
-        }
     }
 
     /*
@@ -611,38 +653,115 @@ public class AppointmentDialog extends DialogFragment {
         //save time to save appointment item
         mSaveApmtItem.appointmentTime = strTime;
 
-        //notify user if appointment time has passed
-        hasPassed(strTime);
+        String timestamp = DateTimeHelper.getTimestamp(mSaveApmtItem.appointmentDate, strTime);
+
+        mValidTime = validTime(timestamp);
+        validateClient(mSaveApmtItem.clientKey);
+    }
+
+    /*
+     * boolean validTime() - check that appointment time selected has not already passed
+     */
+    private boolean validTime(String timestamp){
+        boolean invalid = DateTimeHelper.hasAppointmentTimePassed(timestamp);
+
+        if(invalid){
+            String msg = mStrSessionTime + ": " + mMsgAlreadyPast + "!";
+            mTxtTimeLabel.setText(msg);
+            mTxtTimeLabel.setTextColor(mTxtOrange);
+
+            mTxtSave.setBackgroundColor(mBgGray);
+            mTxtSave.setClickable(false);
+            mTxtSave.setVisibility(View.INVISIBLE);
+            return false;
+        }
+        else{
+            mTxtTimeLabel.setText(mStrSessionTime);
+            mTxtTimeLabel.setTextColor(mTxtBlack);
+
+            mTxtSave.setBackground(mBgBlue);
+            mTxtSave.setClickable(true);
+            mTxtSave.setVisibility(View.VISIBLE);
+
+            if(mDoubleClient){
+                mTxtSave.setText(mStrSaveAnyway);
+            }
+            else{
+                mTxtSave.setText(mStrSave);
+            }
+            return true;
+        }
+    }
+
+    /*
+     * void validateClient(String) - warn user if client already has a schedule appointment that day
+     */
+    private void validateClient(String clientKey){
+        String mapKey = clientKey + mSaveApmtItem.appointmentTime;
+
+        mSameBooking = mAppointmentMap.containsKey(mapKey);
+
+        if(mSameBooking){
+            if(!mEditMode){
+                mTxtClientLabel.setText(mStrClient + ": " + mMsgSameTime + "!");
+                mTxtClientLabel.setTextColor(mTxtOrange);
+
+                mTxtSave.setClickable(false);
+                mTxtSave.setVisibility(View.INVISIBLE);
+            }
+        }
+        else{
+
+            if(mEditMode){
+                mDoubleClient = mEditAppointmentMap.containsValue(clientKey);
+            }
+            else{
+                mDoubleClient = mAppointmentMap.containsValue(clientKey);
+            }
+
+            if(mDoubleClient){
+                mTxtClientLabel.setText(mStrClient + ": " + mMsgAlreadyBooked);
+                mTxtClientLabel.setTextColor(mTxtOrange);
+
+                if(mValidTime){
+                    mTxtSave.setText(mStrSaveAnyway);
+                }
+            }
+            else{
+                mTxtClientLabel.setTextColor(mTxtBlack);
+                mTxtClientLabel.setText(mStrClient);
+                mTxtSave.setText(mStrSave);
+            }
+        }
     }
 
     /*
      * void onSaveRequested() - save appointment has been requested
      */
     private void onSaveRequested(){
-        //check if save listener is Not null
-        if(mSavedListener != null){
+        String timestamp = DateTimeHelper.getTimestamp(mSaveApmtItem.appointmentDate, mSaveApmtItem.appointmentTime);
+        mValidTime = validTime(timestamp);
+
+        if(mValidTime && mSavedListener != null){
+            dismiss();
             //notify save listener
-            mSavedListener.onSaveClicked(mSaveApmtItem, mExercises);
+            mSavedListener.onSaveClicked(mSaveApmtItem);
         }
     }
+
 
     /*
-     * void hasPassed(String) - check if selected time has already passed
+     * void onDismiss(DialogInterface) - dialog dismiss event occurred
      */
-    private void hasPassed(String selectedTime){
-        //create "time has passed" message
-        String msg = mActivity.getString(R.string.msg_appointment_time_passed);
-
-        //get current time
-        String currentTime = DateTimeHelper.getCurrentTime();
-
-        //compare current time with selected time
-        if(DateTimeHelper.isTime1AfterTime2(currentTime, selectedTime) == 1){
-            //selected time has already passed, notify user
-            Toast.makeText(mActivity, msg, Toast.LENGTH_LONG).show();
+    @Override
+    public void onDismiss(DialogInterface dialogInterface){
+        //check for listener
+        if(mDismissListener != null){
+            //notify listener for dismiss event
+            mDismissListener.onDismiss(dialogInterface);
         }
-
     }
+
 
 /**************************************************************************************************/
 
