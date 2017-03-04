@@ -4,7 +4,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -84,14 +83,9 @@ public class ClientRoutineFirebaseHelper {
         return getClientRoutineReference(userId).child(clientKey);
     }
 
-    private DatabaseReference getClientRoutineReferenceByDate(String userId, String clientKey,
-                                                                  String appointmentDate){
-        return getClientRoutineReference(userId).child(clientKey).child(appointmentDate);
-    }
-
-    private DatabaseReference getClientRoutineReferenceByDateTime(String userId, String clientKey,
-                                                                  String appointmentDate, String appointmentTime){
-        return getClientRoutineReference(userId).child(clientKey).child(appointmentDate).child(appointmentTime);
+    private DatabaseReference getClientRoutineReferenceByTimestamp(String userId, String clientKey,
+                                                                  String timestamp){
+        return getClientRoutineReference(userId).child(clientKey).child(timestamp);
     }
 
 /**************************************************************************************************/
@@ -102,28 +96,24 @@ public class ClientRoutineFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addRoutineDataByDateTime(String userId, String clientKey, String appointmentDate,
-                                   String appointmentTime, ArrayList<RoutineItem> routines){
+    public void addRoutineDataByTimestamp(String userId, String clientKey, String timestamp,
+                                          ArrayList<RoutineItem> routines){
         RoutineItem routine;
 
         int count = routines.size();
         for(int i = 0; i < count; i++){
             routine = routines.get(i);
 
-            String strIndex = String.valueOf(routine.orderNumber);
-
             RoutineFBItem item = new RoutineFBItem();
             item.exercise = routine.exercise;
             item.category = routine.category;
             item.numOfSets = routine.numOfSets;
-            addRoutineByDateTime(userId, clientKey, appointmentDate, appointmentTime, strIndex, item);
+            addRoutineByTimestamp(userId, clientKey, timestamp, routine.orderNumber, item);
         }
     }
 
-    public void addRoutineByDateTime(String userId, String clientKey, String appointmentDate, String appointmentTime,
-                           String strIndex, RoutineFBItem item){
-        DatabaseReference ref = getClientRoutineReferenceByDateTime(userId, clientKey,
-                appointmentDate, appointmentTime);
+    public void addRoutineByTimestamp(String userId, String clientKey, String timestamp, String strIndex, RoutineFBItem item){
+        DatabaseReference ref = getClientRoutineReferenceByTimestamp(userId, clientKey, timestamp);
 
         ref.child(strIndex).setValue(item);
     }
@@ -136,14 +126,21 @@ public class ClientRoutineFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteClientRoutine(String userId, String clientKey, String appointmentDate,
-                                    String appointmentTime, ValueEventListener listener){
-        DatabaseReference ref = getClientRoutineReferenceByDateTime(userId, clientKey,
-                appointmentDate, appointmentTime);
+    public void deleteClientRoutine(String userId, String clientKey, String timestamp, ValueEventListener listener){
+        DatabaseReference ref = getClientRoutineReferenceByTimestamp(userId, clientKey, timestamp);
 
         ref.addListenerForSingleValueEvent(listener);
         ref.removeValue();
     }
+
+    public void deleteClientRoutineAtOrderNumber(String userId, String clientKey, String timestamp,
+                                           String orderNumber, ValueEventListener listener){
+        DatabaseReference ref = getClientRoutineReferenceByTimestamp(userId, clientKey, timestamp);
+
+        ref.addListenerForSingleValueEvent(listener);
+        ref.child(orderNumber).removeValue();
+    }
+
 
 /**************************************************************************************************/
 
@@ -174,12 +171,11 @@ public class ClientRoutineFirebaseHelper {
         ref.orderByChild(orderBy).addListenerForSingleValueEvent(mEventListener);
     }
 
-    public void requestClientRoutineDataByDateTime(String userId, String clientKey, String appointmentDay,
-                                                   String appointmentTime, String orderBy,
+    public void requestClientRoutineDataByTimestamp(String userId, String clientKey, String timestamp,
+                                                   String orderBy,
                                                    OnDataLoadedListener listener){
         //get reference
-        DatabaseReference ref = getClientRoutineReferenceByDateTime(userId, clientKey,
-                appointmentDay, appointmentTime);
+        DatabaseReference ref = getClientRoutineReferenceByTimestamp(userId, clientKey, timestamp);
 
         mOnDataLoadedListener = listener;
 
