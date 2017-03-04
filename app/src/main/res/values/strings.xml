@@ -205,6 +205,7 @@
     <string name="routine" translatable="true">Routine</string>
     <string name="routines" translatable="true">Routines</string>
     <string name="save" translatable="true">Save</string>
+    <string name="save_anyway" translatable="true">Save Anyway</string>
     <string name="schedule" translatable="true">Schedule</string>
     <string name="schedule_daily" translatable="true">Daily Schedule</string>
     <string name="schedule_weekly" translatable="true">Weekly Schedule</string>
