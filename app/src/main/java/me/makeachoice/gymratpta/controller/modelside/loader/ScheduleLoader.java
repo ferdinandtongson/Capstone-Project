@@ -262,10 +262,8 @@ public class ScheduleLoader {
                 new LoaderManager.LoaderCallbacks<Cursor>() {
                     @Override
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-                    Log.d("Choice", "ScheduleLoader.loadScheduleByRange");
                         //request cursor from local database
                         Uri uri = ScheduleContract.buildScheduleByRange(mUserId, mStartRange, mEndRange);
-                    Log.d("Choice", "     uri: " + uri.toString());
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
