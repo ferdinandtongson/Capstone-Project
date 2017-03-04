@@ -274,7 +274,7 @@ public class ScheduleButler {
         ScheduleFirebaseHelper appointmentFB = ScheduleFirebaseHelper.getInstance();
 
         //delete schedule from firebase
-        appointmentFB.deleteSchedule(mUserId, String.valueOf(timestamp), clientName, new ValueEventListener() {
+        appointmentFB.deleteSchedule(mUserId, timestamp, clientName, new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
