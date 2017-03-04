@@ -4,8 +4,7 @@ package me.makeachoice.gymratpta.model.item.exercise;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
 
 /**************************************************************************************************/
 /*
@@ -42,12 +41,12 @@ public class RoutineItem extends RoutineFBItem {
     }
 
     public RoutineItem(Cursor cursor){
-        uid = cursor.getString(RoutineColumns.INDEX_UID);
-        routineName = cursor.getString(RoutineColumns.INDEX_ROUTINE_NAME);
-        orderNumber = cursor.getString(RoutineColumns.INDEX_ORDER_NUMBER);
-        exercise = cursor.getString(RoutineColumns.INDEX_EXERCISE);
-        category = cursor.getString(RoutineColumns.INDEX_CATEGORY);
-        numOfSets = cursor.getString(RoutineColumns.INDEX_NUM_SETS);
+        uid = cursor.getString(RoutineContract.INDEX_UID);
+        routineName = cursor.getString(RoutineContract.INDEX_ROUTINE_NAME);
+        orderNumber = cursor.getString(RoutineContract.INDEX_ORDER_NUMBER);
+        exercise = cursor.getString(RoutineContract.INDEX_EXERCISE);
+        category = cursor.getString(RoutineContract.INDEX_CATEGORY);
+        numOfSets = cursor.getString(RoutineContract.INDEX_NUM_SETS);
     }
 
 /**************************************************************************************************/
@@ -64,12 +63,12 @@ public class RoutineItem extends RoutineFBItem {
     public ContentValues getContentValues(){
         // Add a new student record
         ContentValues values = new ContentValues();
-        values.put(Contractor.RoutineEntry.COLUMN_UID, uid);
-        values.put(Contractor.RoutineEntry.COLUMN_ROUTINE_NAME, routineName);
-        values.put(Contractor.RoutineEntry.COLUMN_ORDER_NUMBER, orderNumber);
-        values.put(Contractor.RoutineEntry.COLUMN_EXERCISE, exercise);
-        values.put(Contractor.RoutineEntry.COLUMN_CATEGORY, category);
-        values.put(Contractor.RoutineEntry.COLUMN_NUM_SETS, numOfSets);
+        values.put(RoutineContract.COLUMN_UID, uid);
+        values.put(RoutineContract.COLUMN_ROUTINE_NAME, routineName);
+        values.put(RoutineContract.COLUMN_ORDER_NUMBER, orderNumber);
+        values.put(RoutineContract.COLUMN_EXERCISE, exercise);
+        values.put(RoutineContract.COLUMN_CATEGORY, category);
+        values.put(RoutineContract.COLUMN_NUM_SETS, numOfSets);
 
         return values;
     }
