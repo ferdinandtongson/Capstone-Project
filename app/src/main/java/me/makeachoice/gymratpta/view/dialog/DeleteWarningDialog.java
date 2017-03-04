@@ -37,7 +37,7 @@ public class DeleteWarningDialog extends DialogFragment {
     //mUserId - user id number from firebase authentication
     private String mUserId;
 
-    private String mItemName;
+    private String mStrTitle;
 
     //mRootView - root view component containing dialog child components
     private View mRootView;
@@ -78,15 +78,18 @@ public class DeleteWarningDialog extends DialogFragment {
     /*
      * void setDialogValues(...) - set dialog values
      */
-    public void setDialogValues(MyActivity activity, String userId, String itemName){
+    public void setDialogValues(MyActivity activity, String userId, String msg){
         //get activity context
         mActivity = activity;
 
         //get user id from firebase authentication
         mUserId = userId;
 
+        //get title string value
+        String strDelete = mActivity.getString(R.string.delete);
+
         //get item name
-        mItemName = itemName;
+        mStrTitle = strDelete + ": " + msg;
     }
 
     /*
@@ -101,6 +104,10 @@ public class DeleteWarningDialog extends DialogFragment {
      */
     public void setOnDeleteListener(OnDeleteListener listener){
         mDeleteListener = listener;
+    }
+
+    public void setTitle(String msg){
+        mStrTitle = msg;
     }
 
 /**************************************************************************************************/
@@ -140,14 +147,12 @@ public class DeleteWarningDialog extends DialogFragment {
      * void initializeTitleTextView() - initialize textView title component
      */
     private void initializeTitleTextView(){
-        //get title string value
-        String strDelete = mActivity.getString(R.string.delete);
 
         //get title textView component
         TextView txtTitle = (TextView)mRootView.findViewById(R.id.diaDelete_txtTitle);
 
         //set title value
-        txtTitle.setText(strDelete + ": " + mItemName);
+        txtTitle.setText(mStrTitle);
 
     }
 
