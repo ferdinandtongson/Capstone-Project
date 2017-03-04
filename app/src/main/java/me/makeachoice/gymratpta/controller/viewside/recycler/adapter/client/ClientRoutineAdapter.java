@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,8 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
     //mData - an array list of item data consumed by the adapter
     private ArrayList<ClientRoutineItem> mData;
 
+    private ArrayList<Drawable> mBgStatusList;
+
     //mOnLongClickListener - list item onLongClick event listener
     private static View.OnLongClickListener mOnLongClickListener;
 
@@ -86,6 +89,7 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
         //initialize data array
         mData = new ArrayList<>();
 
+        //initialize marker list
         mMarkerList = new ArrayList<>();
 
         //string value "sets"
@@ -169,6 +173,10 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
         mOnClickListener = listener;
     }
 
+    public void setStatusList(ArrayList<Drawable> bgList){
+        mBgStatusList = bgList;
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -229,6 +237,9 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
      * void addItem(ClientRoutineItem) - dynamically add items to adapter
      */
     public void addItem(ClientRoutineItem item) {
+        //clear marker id list
+        mMarkerList.clear();
+
         //add item object to data array
         mData.add(item);
         //notify adapter of data change
@@ -239,6 +250,9 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
      * void adItemAt(ClientRoutineItem,int) - add item to adapter at specific position
      */
     public void addItemAt(ClientRoutineItem item, int position){
+        //clear marker id list
+        mMarkerList.clear();
+
         //add item object to data array at position
         mData.add(position, item);
 
@@ -250,6 +264,9 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
      * void removeItemAt(int) - remove item from adapter then refresh adapter
      */
     public void removeItemAt(int position){
+        //clear marker id list
+        mMarkerList.clear();
+
         //remove item at given position
         mData.remove(position);
 
@@ -265,6 +282,9 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
      * void swapData(ArrayList<ClientRoutineItem>) - swap old data with new data
      */
     public void swapData(ArrayList<ClientRoutineItem> data){
+        //clear marker id list
+        mMarkerList.clear();
+
         //clear old data
         mData.clear();
         //add new data
@@ -277,6 +297,9 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
      * void clearData() - remove all data from adapter
      */
     public void clearData(){
+        //clear marker id list
+        mMarkerList.clear();
+
         //clear data
         mData.clear();
         //notify adapter of data change
@@ -319,13 +342,13 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
             ClientRoutineItem item = mData.get(position);
 
             //update item order number
-            item.orderNumber = position;
+            item.orderNumber = String.valueOf(position + 1);
 
             //add marker to list
             mMarkerList.add(MARKER + position);
 
             //bind viewHolder components
-            holder.bindCardView(item, position);
+            holder.bindCardView(item, mBgStatusList.get(position), position);
             holder.bindTextView(item);
         }
     }
@@ -386,7 +409,7 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
      * void bindCardView(ClientRoutineItem,int,int) - bind data to cardView. Set tag values, bg color,
      * and contextMenu listener, if not null
      */
-        private void bindCardView(ClientRoutineItem item, int position) {
+        private void bindCardView(ClientRoutineItem item, Drawable bg, int position) {
 
             //save item position (is NOT updated when a drag-and-drop event occurs)
             mItemView.setTag(R.string.recycler_tagPosition, position);
@@ -397,9 +420,15 @@ public class ClientRoutineAdapter extends RecyclerView.Adapter<ClientRoutineAdap
             //save marker, used to determine position
             mItemView.setTag(R.string.recycler_tagId, MARKER + position);
 
+            mItemView.setBackground(bg);
+
             if(mOnClickListener != null){
                 //notify listener of onClick event
                 mItemView.setOnClickListener(mOnClickListener);
+            }
+
+            if(mOnLongClickListener != null){
+                mItemView.setOnLongClickListener(mOnLongClickListener);
             }
         }
 
