@@ -7,6 +7,7 @@ import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
 
 /**************************************************************************************************/
 /*
@@ -53,14 +54,14 @@ public class TableHelper {
             ExerciseContract.COLUMN_RECORD_PRIMARY + " TEXT, " +
             ExerciseContract.COLUMN_RECORD_SECONDARY + " TEXT);";
 
-    public final static String SQL_CREATE_ROUTINE_TABLE = "CREATE TABLE " + Contractor.RoutineEntry.TABLE_NAME + " (" +
-            Contractor.RoutineEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.RoutineEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_ORDER_NUMBER + " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_EXERCISE + " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_CATEGORY + " TEXT NOT NULL, " +
-            Contractor.RoutineEntry.COLUMN_NUM_SETS + " TEXT NOT NULL);";
+    public final static String SQL_CREATE_ROUTINE_TABLE = "CREATE TABLE " + RoutineContract.TABLE_NAME + " (" +
+            RoutineContract._ID + " INTEGER PRIMARY KEY," +
+            RoutineContract.COLUMN_UID + " TEXT NOT NULL, " +
+            RoutineContract.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL, " +
+            RoutineContract.COLUMN_ORDER_NUMBER + " TEXT NOT NULL, " +
+            RoutineContract.COLUMN_EXERCISE + " TEXT NOT NULL, " +
+            RoutineContract.COLUMN_CATEGORY + " TEXT NOT NULL, " +
+            RoutineContract.COLUMN_NUM_SETS + " TEXT NOT NULL);";
 
     public final static String SQL_CREATE_ROUTINE_NAME_TABLE = "CREATE TABLE " + Contractor.RoutineNameEntry.TABLE_NAME + " (" +
             Contractor.RoutineNameEntry._ID + " INTEGER PRIMARY KEY," +
