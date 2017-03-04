@@ -20,6 +20,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".view.activity.ScheduleDetailActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".view.activity.ScheduleActivity"/>
+
         <activity android:name=".view.activity.ClientActivity"
             android:launchMode="singleTask"
             android:parentActivityName=".view.activity.ScheduleActivity"/>
