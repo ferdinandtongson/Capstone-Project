@@ -6,7 +6,6 @@ import android.provider.BaseColumns;
 
 import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
-import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
 
@@ -191,61 +190,6 @@ public class Contractor {
             return uri.getPathSegments().get(3);
         }
 
-    }
-
-    /*
-     * RoutineEntry - user defined exercise routines
-     */
-    public static class RoutineEntry extends RoutineColumns implements BaseColumns {
-
-        public static Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_ROUTINE).build();
-
-        public static String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ROUTINE;
-        public static String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ROUTINE;
-
-
-        //"content://CONTENT_AUTHORITY/routine/[_id]
-        public static Uri buildRoutineUri(long id) {
-            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/routine/[uid]
-        public static Uri buildRoutineByUID(String uid) {
-            return CONTENT_URI.buildUpon().appendPath(uid).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]
-        public static Uri buildRoutineByName(String uid, String routineName) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(routineName).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]/[orderNumber]
-        public static Uri buildRoutineByOrderNumber(String uid, String routineName, String orderNumber) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(routineName).appendPath(orderNumber).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/routine/[uid]
-        public static String getUIdFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
-        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]
-        public static String getRoutineNameFromUri(Uri uri) {
-            return uri.getPathSegments().get(2);
-        }
-
-        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]/[orderNumber]
-        public static String getOrderNumberFromUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
-
-        //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]/[exerciseName]
-        public static String getCategoryKeyFromExerciseNameUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
     }
 
     /*
