@@ -7,8 +7,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.client.ClientRoutineColumns;
+import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT_ROUTINE;
@@ -45,17 +44,14 @@ public class ClientRoutineLoader {
     //mClientKey - client key value
     private String mClientKey;
 
-    //mAppointmentDate - appointment date value
-    private String mAppointmentDate;
-
-    //mAppointmentTime - appointment time value
-    private String mAppointmentTime;
+    //mTimestamp - timestamp value
+    private String mTimestamp;
 
     //mListener - listens for when client routine data is loaded
     private OnClientRoutineLoadListener mListener;
     public interface OnClientRoutineLoadListener{
         //notifies listener client routine data has finished loading
-        public void onClientRoutineLoadFinished(Cursor cursor);
+        void onClientRoutineLoadFinished(Cursor cursor);
     }
 
 /**************************************************************************************************/
@@ -105,16 +101,16 @@ public class ClientRoutineLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.ClientRoutineEntry.buildClientRoutineByUID(mUserId);
+                        Uri uri = ClientRoutineContract.buildClientRoutineByUID(mUserId);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                ClientRoutineColumns.PROJECTION,
+                                ClientRoutineContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.ClientRoutineEntry.DEFAULT_SORT_ORDER);
+                                ClientRoutineContract.DEFAULT_SORT_ORDER);
                     }
 
                     @Override
@@ -156,16 +152,16 @@ public class ClientRoutineLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.ClientRoutineEntry.buildClientRoutineByClientKey(mUserId, mClientKey);
+                        Uri uri = ClientRoutineContract.buildClientRoutineByClientKey(mUserId, mClientKey);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                ClientRoutineColumns.PROJECTION,
+                                ClientRoutineContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.ClientRoutineEntry.DEFAULT_SORT_ORDER);
+                                ClientRoutineContract.DEFAULT_SORT_ORDER);
                     }
 
                     @Override
@@ -185,24 +181,20 @@ public class ClientRoutineLoader {
     }
 
     /*
-     * void loadClientRoutineByDateTime(...) - start loader to load client routine data from database by date and time
+     * void loadClientRoutineByTimestamp(...) - start loader to load client routine data from database by timestamp
      */
-    public void loadClientRoutineByDateTime(String appointmentDate, String appointmentTime, ClientRoutineLoader.OnClientRoutineLoadListener listener){
+    public void loadClientRoutineByTimestamp(String timestamp, ClientRoutineLoader.OnClientRoutineLoadListener listener){
 
         //load client routine using default loader id
-        loadClientRoutineByDateTime(appointmentDate, appointmentTime, LOADER_CLIENT_ROUTINE, listener);
+        loadClientRoutineByTimestamp(timestamp, LOADER_CLIENT_ROUTINE, listener);
     }
 
     /*
-     * void loadClientRoutineByDateTime(...) - start loader to load client routine data from database by date and time
+     * void loadClientRoutineByTimestamp(...) - start loader to load client routine data from database by timestamp
      */
-    public void loadClientRoutineByDateTime(String appointmentDate, String appointmentTime,
-                                    int loaderId, ClientRoutineLoader.OnClientRoutineLoadListener listener){
+    public void loadClientRoutineByTimestamp(String timestamp, int loaderId, ClientRoutineLoader.OnClientRoutineLoadListener listener){
         //get date
-        mAppointmentDate = appointmentDate;
-
-        //get time
-        mAppointmentTime = appointmentTime;
+        mTimestamp = timestamp;
 
         //get listener
         mListener = listener;
@@ -214,17 +206,16 @@ public class ClientRoutineLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request cursor from local database
-                        Uri uri = Contractor.ClientRoutineEntry.buildClientRoutineByDateTime(mUserId, mClientKey,
-                                mAppointmentDate, mAppointmentTime);
+                        Uri uri = ClientRoutineContract.buildClientRoutineByTimestamp(mUserId, mClientKey, mTimestamp);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                ClientRoutineColumns.PROJECTION,
+                                ClientRoutineContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.ClientRoutineEntry.DEFAULT_SORT_ORDER);
+                                ClientRoutineContract.DEFAULT_SORT_ORDER);
                     }
 
                     @Override
