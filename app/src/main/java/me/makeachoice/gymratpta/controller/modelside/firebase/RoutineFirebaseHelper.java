@@ -114,8 +114,7 @@ public class RoutineFirebaseHelper {
     }
 
     public void addRoutine(String userId, RoutineItem routine, RoutineFBItem item){
-        String strIndex = String.valueOf(routine.orderNumber);
-        DatabaseReference ref = getRoutineExerciseReference(userId, routine.routineName, strIndex);
+        DatabaseReference ref = getRoutineExerciseReference(userId, routine.routineName, routine.orderNumber);
         ref.setValue(item);
     }
 
@@ -147,16 +146,18 @@ public class RoutineFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteRoutine(String userId, String routineName){
+    public void deleteRoutine(String userId, String routineName, ValueEventListener listener){
         DatabaseReference refRoutine = getRoutineDetailReference(userId, routineName);
 
         refRoutine.removeValue();
+        refRoutine.addListenerForSingleValueEvent(listener);
     }
 
-    public void deleteRoutineExercise(String userId, String routineName, String index){
+    public void deleteRoutineExerciseByIndex(String userId, String routineName, String index, ValueEventListener listener){
         DatabaseReference refRoutine = getRoutineDetailReference(userId, routineName);
 
         refRoutine.child(index).removeValue();
+        refRoutine.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
