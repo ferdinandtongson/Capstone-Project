@@ -211,6 +211,7 @@
     <string name="schedule_weekly" translatable="true">Weekly Schedule</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
     <string name="session_time" translatable="true">Session Time</string>
+    <string name="session" translatable="true">Session</string>
     <string name="sessions" translatable="true">Sessions</string>
     <string name="sets" translatable="true">Sets</string>
     <string name="settings" translatable="true">Settings</string>
