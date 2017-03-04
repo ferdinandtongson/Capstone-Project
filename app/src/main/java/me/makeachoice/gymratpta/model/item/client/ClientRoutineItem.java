@@ -3,9 +3,9 @@ package me.makeachoice.gymratpta.model.item.client;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.client.ClientRoutineColumns;
+import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 
 /**************************************************************************************************/
 /*
@@ -23,12 +23,11 @@ public class ClientRoutineItem {
 
     public String uid;
     public String clientKey;
-    public String appointmentDate;
-    public String appointmentTime;
+    public String timestamp;
     public String exercise;
     public String category;
-    public int orderNumber;
-    public int numOfSets;
+    public String orderNumber;
+    public String numOfSets;
 
 /**************************************************************************************************/
 
@@ -40,11 +39,10 @@ public class ClientRoutineItem {
 
     public ClientRoutineItem(){}
 
-    public ClientRoutineItem(AppointmentItem appItem, RoutineItem routineItem){
+    public ClientRoutineItem(ScheduleItem appItem, RoutineItem routineItem){
         uid = appItem.uid;
         clientKey = appItem.clientKey;
-        appointmentDate = appItem.appointmentDate;
-        appointmentTime = appItem.appointmentTime;
+        timestamp = DateTimeHelper.getTimestamp(appItem.appointmentDate, appItem.appointmentTime);
         category = routineItem.category;
         exercise = routineItem.exercise;
         orderNumber = routineItem.orderNumber;
@@ -53,14 +51,13 @@ public class ClientRoutineItem {
     }
 
     public ClientRoutineItem(Cursor cursor){
-        uid = cursor.getString(ClientRoutineColumns.INDEX_UID);
-        clientKey = cursor.getString(ClientRoutineColumns.INDEX_CLIENT_KEY);
-        appointmentDate = cursor.getString(ClientRoutineColumns.INDEX_APPOINTMENT_DATE);
-        appointmentTime = cursor.getString(ClientRoutineColumns.INDEX_APPOINTMENT_TIME);
-        category = cursor.getString(ClientRoutineColumns.INDEX_CATEGORY);
-        exercise = cursor.getString(ClientRoutineColumns.INDEX_EXERCISE);
-        orderNumber = cursor.getInt(ClientRoutineColumns.INDEX_ORDER_NUMBER);
-        numOfSets = cursor.getInt(ClientRoutineColumns.INDEX_NUM_OF_SETS);
+        uid = cursor.getString(ClientRoutineContract.INDEX_UID);
+        clientKey = cursor.getString(ClientRoutineContract.INDEX_CLIENT_KEY);
+        timestamp = cursor.getString(ClientRoutineContract.INDEX_TIMESTAMP);
+        category = cursor.getString(ClientRoutineContract.INDEX_CATEGORY);
+        exercise = cursor.getString(ClientRoutineContract.INDEX_EXERCISE);
+        orderNumber = cursor.getString(ClientRoutineContract.INDEX_ORDER_NUMBER);
+        numOfSets = cursor.getString(ClientRoutineContract.INDEX_NUM_OF_SETS);
     }
 
 /**************************************************************************************************/
@@ -77,14 +74,13 @@ public class ClientRoutineItem {
     public ContentValues getContentValues(){
         // Add a new student record
         ContentValues values = new ContentValues();
-        values.put(Contractor.ClientRoutineEntry.COLUMN_UID, uid);
-        values.put(Contractor.ClientRoutineEntry.COLUMN_CLIENT_KEY, clientKey);
-        values.put(Contractor.ClientRoutineEntry.COLUMN_APPOINTMENT_DATE, appointmentDate);
-        values.put(Contractor.ClientRoutineEntry.COLUMN_APPOINTMENT_TIME, appointmentTime);
-        values.put(Contractor.ClientRoutineEntry.COLUMN_CATEGORY, category);
-        values.put(Contractor.ClientRoutineEntry.COLUMN_EXERCISE, exercise);
-        values.put(Contractor.ClientRoutineEntry.COLUMN_ORDER_NUMBER, orderNumber);
-        values.put(Contractor.ClientRoutineEntry.COLUMN_NUM_OF_SETS, numOfSets);
+        values.put(ClientRoutineContract.COLUMN_UID, uid);
+        values.put(ClientRoutineContract.COLUMN_CLIENT_KEY, clientKey);
+        values.put(ClientRoutineContract.COLUMN_TIMESTAMP, timestamp);
+        values.put(ClientRoutineContract.COLUMN_CATEGORY, category);
+        values.put(ClientRoutineContract.COLUMN_EXERCISE, exercise);
+        values.put(ClientRoutineContract.COLUMN_ORDER_NUMBER, orderNumber);
+        values.put(ClientRoutineContract.COLUMN_NUM_OF_SETS, numOfSets);
 
         return values;
     }
