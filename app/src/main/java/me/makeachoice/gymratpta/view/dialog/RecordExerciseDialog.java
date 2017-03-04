@@ -1,5 +1,6 @@
 package me.makeachoice.gymratpta.view.dialog;
 
+import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -59,8 +60,8 @@ public class RecordExerciseDialog extends DialogFragment {
     private String mMsgInvalidInput;
 
     private ArrayList<ClientExerciseItem> mRecords;
-    private HashMap<Integer,ClientExerciseItem> mCurrentMap;
-    private HashMap<Integer,ClientExerciseItem> mLastMap;
+    private HashMap<String,ClientExerciseItem> mCurrentMap;
+    private HashMap<String,ClientExerciseItem> mLastMap;
 
     private ArrayList<TextView> mSetViews;
     private ArrayList<EditText> mPrimaryEdit;
@@ -89,14 +90,20 @@ public class RecordExerciseDialog extends DialogFragment {
 
     private OnCancelListener mCancelListener;
     public interface OnCancelListener{
-        public void onCancel();
+        void onCancel();
     }
 
     private OnSaveListener mSaveListener;
     public interface OnSaveListener{
-        public void onSave(String primaryLabel, String secondaryLabel, ArrayList<String> primaryValues,
-                           ArrayList<String> secondaryValues, HashMap<Integer,ClientExerciseItem> editValues);
+        void onSave(int setCount, ExerciseItem item, ArrayList<String> primaryValues,
+                    ArrayList<String> secondaryValues);
     }
+
+    private OnDismissListener mDismissListener;
+    public interface OnDismissListener{
+        void onDismiss(DialogInterface dialogInterface);
+    }
+
 
 /**************************************************************************************************/
 
@@ -157,6 +164,14 @@ public class RecordExerciseDialog extends DialogFragment {
         mSaveListener = listener;
     }
 
+    /*
+     * void setOnDismissListener(...) - set listener for dialog dismiss events
+     */
+    public void setOnDismissListener(OnDismissListener listener){
+        mDismissListener = listener;
+    }
+
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -194,9 +209,9 @@ public class RecordExerciseDialog extends DialogFragment {
     }
 
     /*
- * void onStart() - called when dialog start is request. Gets the devices screen dimensions and
- * then calculates the size of the dialog
- */
+     * void onStart() - called when dialog start is request. Gets the devices screen dimensions and
+     * then calculates the size of the dialog
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -250,7 +265,7 @@ public class RecordExerciseDialog extends DialogFragment {
         initializeTitleTextView();
         initializeButtonTextView();
 
-        mSetCount = mRoutineExercise.numOfSets;
+        mSetCount = Integer.valueOf(mRoutineExercise.numOfSets);
         enableViews(mSetCount);
     }
 
@@ -460,12 +475,12 @@ public class RecordExerciseDialog extends DialogFragment {
      * String getCurrentValue(...) - get current value to be displayed
      */
     private String getCurrentValue(int recordType, int index){
-        if(mCurrentMap.containsKey(index)){
+        if(mCurrentMap.containsKey(String.valueOf(index))){
             if(recordType == PRIMARY){
-                return mCurrentMap.get(index).primaryValue;
+                return mCurrentMap.get(String.valueOf(index)).primaryValue;
             }
             else{
-                return mCurrentMap.get(index).secondaryValue;
+                return mCurrentMap.get(String.valueOf(index)).secondaryValue;
             }
         }
         return "";
@@ -475,12 +490,12 @@ public class RecordExerciseDialog extends DialogFragment {
      * String getLastValue(...) - get last value to be displayed
      */
     private String getLastValue(int recordType, int index){
-        if(mLastMap.containsKey(index)){
+        if(mLastMap.containsKey(String.valueOf(index))){
             if(recordType == PRIMARY){
-                return mLastMap.get(index).primaryValue;
+                return mLastMap.get(String.valueOf(index)).primaryValue;
             }
             else{
-                return mLastMap.get(index).secondaryValue;
+                return mLastMap.get(String.valueOf(index)).secondaryValue;
             }
         }
         return "-";
@@ -530,7 +545,7 @@ public class RecordExerciseDialog extends DialogFragment {
         }
 
         //load exercise client data
-        mClientButler.loadClientExercisesByExercise(LOADER_CLIENT_EXERCISE, mRoutineExercise.exercise,
+        mClientButler.loadClientExercisesByExercise(mRoutineExercise.exercise, LOADER_CLIENT_EXERCISE,
                 new ClientExerciseButler.OnLoadedListener() {
                     @Override
                     public void onLoaded(ArrayList<ClientExerciseItem> exerciseList) {
@@ -639,11 +654,17 @@ public class RecordExerciseDialog extends DialogFragment {
     private boolean isCurrentRecord(ClientExerciseItem record){
         //get current exercise timestamp
         String currentTimestamp = mRoutineExercise.timestamp;
+        String currentOrderNumber = mRoutineExercise.orderNumber;
 
         //get record timestamp
         String recordTimestamp = record.timestamp;
+        String recordOrderNumber = record.orderNumber;
 
-        return recordTimestamp.equals(currentTimestamp);
+        if(recordTimestamp.equals(currentTimestamp) && recordOrderNumber.equals(currentOrderNumber)){
+            return true;
+        }
+
+        return false;
     }
 
 /**************************************************************************************************/
@@ -683,12 +704,16 @@ public class RecordExerciseDialog extends DialogFragment {
             edtPrimary = mPrimaryEdit.get(i);
             edtSecondary = mSecondaryEdit.get(i);
 
-            //check if input values are valid
+            //check if input values are valid or both are empty
             if(validInput(edtPrimary, edtSecondary)){
 
-                //save editText values
-                mPrimaryValues.add(editTextValue(edtPrimary));
-                mSecondaryValues.add(editTextValue(edtSecondary));
+                //do NOT save if editText components are empty
+                if(!editTextValue(edtPrimary).isEmpty()){
+                    //save editText values
+                    mPrimaryValues.add(editTextValue(edtPrimary));
+                    mSecondaryValues.add(editTextValue(edtSecondary));
+                }
+
             }
             else{
                 //invalid, show message
@@ -701,8 +726,7 @@ public class RecordExerciseDialog extends DialogFragment {
         //check if input is valid
         if(validInput){
             //valid input, save values
-            mSaveListener.onSave(mExerciseItem.recordPrimary, mExerciseItem.recordSecondary,
-                    mPrimaryValues, mSecondaryValues, mCurrentMap);
+            mSaveListener.onSave(mSetCount, mExerciseItem, mPrimaryValues, mSecondaryValues);
         }
     }
 
@@ -815,6 +839,19 @@ public class RecordExerciseDialog extends DialogFragment {
         //refresh views that are enabled/disabled
         enableViews(mSetCount);
     }
+
+    /*
+     * void onDismiss(DialogInterface) - dialog dismiss event occurred
+     */
+    @Override
+    public void onDismiss(DialogInterface dialogInterface){
+        //check for listener
+        if(mDismissListener != null){
+            //notify listener for dismiss event
+            mDismissListener.onDismiss(dialogInterface);
+        }
+    }
+
 
 /**************************************************************************************************/
 
