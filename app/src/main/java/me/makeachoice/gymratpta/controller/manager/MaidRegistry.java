@@ -6,6 +6,7 @@ import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.StubMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DailyMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DayViewMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.schedule.ScheduleDetailMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.WeekViewMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.WeeklyMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistoryMaid;
@@ -47,6 +48,7 @@ public class MaidRegistry extends MyMaidRegistry {
     public static final String MAID_WEEK = "WeeklyMaid";
     public static final String MAID_DAY_VP = "DayViewMaid";
     public static final String MAID_WEEK_VP = "WeekViewMaid";
+    public static final String MAID_SCHEDULE_DETAIL = "ScheduleDetailMaid";
 
     //Client Screen maids
     public static final String MAID_CLIENT_INFO = "ClientInfoMaid";
@@ -133,6 +135,15 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
+    public void initializeScheduleDetailMaid(String maidKey, int layoutId, String userId, ClientItem item,
+                                            ScheduleItem appItem){
+        //create maid
+        ScheduleDetailMaid maid = new ScheduleDetailMaid(maidKey, layoutId, userId, item, appItem);
+
+        //register maid
+        registerMaid(maidKey, maid);
+    }
+
 
 /**************************************************************************************************/
 
@@ -184,8 +195,6 @@ public class MaidRegistry extends MyMaidRegistry {
         //register maid
         registerMaid(maidKey, maid);
     }
-
-
 
     public void initializeClientHistoryMaid(String maidKey, int layoutId){
         //create maid
