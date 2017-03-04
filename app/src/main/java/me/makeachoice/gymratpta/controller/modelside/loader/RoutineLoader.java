@@ -7,8 +7,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.RoutineColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
@@ -35,19 +34,32 @@ public class RoutineLoader {
 /**************************************************************************************************/
 
     //mActivity - activity context
-    private static MyActivity mActivity;
+    private MyActivity mActivity;
 
     //mUserId - user id number taken from firebase authentication
-    private static String mUserId;
+    private String mUserId;
 
     //mRoutineName - name of specific routine
-    private static String mRoutineName;
+    private String mRoutineName;
 
     //mListener - listens for when the routine data is loaded
-    private static OnRoutineLoadListener mListener;
+    private OnRoutineLoadListener mListener;
     public interface OnRoutineLoadListener{
         //notify listener that routine data has finished loading
         public void onRoutineLoadFinished(Cursor cursor);
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Constructor
+ */
+/**************************************************************************************************/
+
+    public RoutineLoader(MyActivity activity, String userId){
+        mActivity = activity;
+        mUserId = userId;
     }
 
 /**************************************************************************************************/
@@ -63,21 +75,15 @@ public class RoutineLoader {
     /*
      * void loadRoutines(...) - start loader to load routine data from database
      */
-    public static void loadRoutines(MyActivity activity, String userId, OnRoutineLoadListener listener){
+    public void loadRoutines(OnRoutineLoadListener listener){
         //load routines using default loader routine id
-        loadRoutines(activity, userId, LOADER_ROUTINE, listener);
+        loadRoutines(LOADER_ROUTINE, listener);
     }
 
     /*
      * void loadRoutines(...) - start loader to load routine data from database
      */
-    public static void loadRoutines(MyActivity activity, String userId, int loaderId,
-                                      OnRoutineLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
+    public void loadRoutines(int loaderId, OnRoutineLoadListener listener){
 
         //get listener
         mListener = listener;
@@ -89,15 +95,15 @@ public class RoutineLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request client cursor from local database
-                        Uri uri = Contractor.RoutineEntry.buildRoutineByUID(mUserId);
+                        Uri uri = RoutineContract.buildRoutineByUID(mUserId);
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                RoutineColumns.PROJECTION_ROUTINE,
+                                RoutineContract.PROJECTION_ROUTINE,
                                 null,
                                 null,
-                                Contractor.RoutineEntry.SORT_ORDER_DEFAULT);
+                                RoutineContract.SORT_ORDER_DEFAULT);
                     }
 
                     @Override
@@ -119,22 +125,15 @@ public class RoutineLoader {
     /*
      * void loadRoutineByName(...) - start loader to load specified routine from database
      */
-    public static void loadRoutineByName(MyActivity activity, String userId, String routineName,
-                                         OnRoutineLoadListener listener){
+    public void loadRoutineByName(String routineName, OnRoutineLoadListener listener){
         //load routines using default loader routine id
-        loadRoutineByName(activity, userId, routineName, LOADER_ROUTINE, listener);
+        loadRoutineByName(routineName, LOADER_ROUTINE, listener);
     }
 
     /*
      * void loadRoutineByName(...) - start loader to load specified routine from database
      */
-    public static void loadRoutineByName(MyActivity activity, String userId, String routineName,
-                                         int loaderId, OnRoutineLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
+    public void loadRoutineByName(String routineName, int loaderId, OnRoutineLoadListener listener){
 
         //get routine name
         mRoutineName = routineName;
@@ -149,16 +148,16 @@ public class RoutineLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request client cursor from local database
-                        Uri uri = Contractor.RoutineEntry.buildRoutineByName(mUserId, mRoutineName);
+                        Uri uri = RoutineContract.buildRoutineByName(mUserId, mRoutineName);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                RoutineColumns.PROJECTION_ROUTINE,
+                                RoutineContract.PROJECTION_ROUTINE,
                                 null,
                                 null,
-                                Contractor.RoutineEntry.SORT_ORDER_DEFAULT);
+                                RoutineContract.SORT_ORDER_DEFAULT);
                     }
 
                     @Override
@@ -182,17 +181,17 @@ public class RoutineLoader {
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity){
+    public void destroyLoader(){
         //destroy loader using default routine loader id
-        activity.getSupportLoaderManager().destroyLoader(LOADER_ROUTINE);
+        mActivity.getSupportLoaderManager().destroyLoader(LOADER_ROUTINE);
     }
 
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity, int loaderId){
+    public void destroyLoader(int loaderId){
         //destroy loader
-        activity.getSupportLoaderManager().destroyLoader(loaderId);
+        mActivity.getSupportLoaderManager().destroyLoader(loaderId);
     }
 
 /**************************************************************************************************/
