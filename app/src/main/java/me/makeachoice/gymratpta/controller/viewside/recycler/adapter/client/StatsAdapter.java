@@ -56,6 +56,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.MyViewHolder
     private static int mOldColor;
 
     private static int mActiveIndex;
+    private static String mStrModified;
 
     //mData - an array list of item data consumed by the adapter
     private ArrayList<StatsItem> mData;
@@ -89,6 +90,8 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.MyViewHolder
         //get colors used as card background color
         mCurrentColor = DeprecatedUtility.getColor(mContext, R.color.card_activeBackground);
         mOldColor = DeprecatedUtility.getColor(mContext, R.color.card_retiredBackground);
+
+        mStrModified = mContext.getString(R.string.modified);
 
         //initialize data array
         mData = new ArrayList<>();
@@ -353,6 +356,8 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
     private TextView mTxtPrevLCalf;
     private TextView mTxtFirstLCalf;
 
+    private TextView mTxtModified;
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -426,6 +431,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
         mTxtPrevLCalf = (TextView)recycleView.findViewById(R.id.cardStats_txtLCalfPrevious);
         mTxtFirstLCalf = (TextView)recycleView.findViewById(R.id.cardStats_txtLCalfFirst);
 
+        mTxtModified = (TextView)recycleView.findViewById(R.id.cardStats_txtModified);
     }
 
 /**************************************************************************************************/
@@ -448,12 +454,17 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         if(position == mActiveIndex){
             mCardView.setCardBackgroundColor(mCurrentColor);
+            mTxtModified.setVisibility(View.GONE);
         }
         else{
             mCardView.setCardBackgroundColor(mOldColor);
             if(mOnLongClickListener != null){
                 mCardView.setOnLongClickListener(mOnLongClickListener);
             }
+            String modified = mStrModified + ": " + item.modifiedDate;
+            mTxtModified.setText(modified);
+            mTxtModified.setContentDescription(modified);
+            mTxtModified.setVisibility(View.VISIBLE);
         }
 
         if(mOnClickListener != null){

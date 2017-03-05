@@ -56,6 +56,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     private static int mOldColor;
 
     private static int mActiveIndex;
+    private static String mStrModified;
 
     //mData - an array list of item data consumed by the adapter
     private ArrayList<NotesItem> mData;
@@ -87,6 +88,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         //get colors used as card background color
         mCurrentColor = DeprecatedUtility.getColor(mContext, R.color.card_activeBackground);
         mOldColor = DeprecatedUtility.getColor(mContext, R.color.lightgray);
+
+        mStrModified = mContext.getString(R.string.modified);
 
         //initialize data array
         mData = new ArrayList<>();
@@ -290,6 +293,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     private TextView mTxtObjective;
     private TextView mTxtAssessment;
     private TextView mTxtPlan;
+    private TextView mTxtModified;
 
 /**************************************************************************************************/
 
@@ -312,6 +316,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         mTxtObjective = (TextView)recycleView.findViewById(R.id.cardNotes_txtObjective);
         mTxtAssessment = (TextView)recycleView.findViewById(R.id.cardNotes_txtAssessment);
         mTxtPlan = (TextView)recycleView.findViewById(R.id.cardNotes_txtPlan);
+
+        mTxtModified = (TextView)recycleView.findViewById(R.id.cardNotes_txtModified);
     }
 
 /**************************************************************************************************/
@@ -334,12 +340,18 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
         if(position == mActiveIndex){
             mCardView.setCardBackgroundColor(mCurrentColor);
+            mTxtModified.setVisibility(View.GONE);
         }
         else{
-            mCardView.setCardBackgroundColor(mOldColor);
             if(mOnLongClickListener != null){
                 mCardView.setOnLongClickListener(mOnLongClickListener);
             }
+            mCardView.setCardBackgroundColor(mOldColor);
+
+            String modified = mStrModified + ": " + item.modifiedDate;
+            mTxtModified.setText(modified);
+            mTxtModified.setContentDescription(modified);
+            mTxtModified.setVisibility(View.VISIBLE);
         }
 
         if(mOnClickListener != null){
@@ -370,6 +382,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
         mTxtPlan.setText("P - " + item.planNotes);
         mTxtPlan.setContentDescription(item.planNotes);
+
     }
 
 }
