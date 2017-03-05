@@ -14,7 +14,9 @@ import me.makeachoice.gymratpta.controller.modelside.loader.ClientRoutineLoader;
 import me.makeachoice.gymratpta.controller.modelside.query.ClientRoutineQueryHelper;
 import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.item.client.ClientRoutineItem;
+import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineFBItem;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 /**************************************************************************************************/
@@ -36,6 +38,8 @@ public class ClientRoutineButler {
 
     //mUserId - user authentication id
     private String mUserId;
+    private String mClientKey;
+    private String mTimestamp;
 
     //mRoutineList - list loaded from database
     private ArrayList<ClientRoutineItem> mRoutineList;
@@ -244,6 +248,37 @@ public class ClientRoutineButler {
     }
 
     /*
+     * void deleteClientRoutine(...) - delete from firebase
+     */
+    public void deleteClientRoutine(ScheduleItem scheduleItem, OnDeletedListener listener){
+        mDeleteListener = listener;
+
+        //create string values used to delete
+        mClientKey = scheduleItem.clientKey;
+        mTimestamp = DateTimeHelper.getTimestamp(scheduleItem.appointmentDate, scheduleItem.appointmentTime);
+
+        //get firebase helper instance
+        ClientRoutineFirebaseHelper fbHelper = ClientRoutineFirebaseHelper.getInstance();
+
+        //delete notes from firebase
+        fbHelper.deleteClientRoutine(mUserId, mClientKey, mTimestamp, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().removeValue();
+                }
+                deleteFromDatabase(mClientKey, mTimestamp);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //does nothing
+            }
+        });
+
+    }
+
+    /*
      * void deleteClientRoutineAtOrderNumber(...) - delete from firebase
      */
     public void deleteClientRoutineAtOrderNumber(ClientRoutineItem deleteItem, OnDeletedListener listener){
@@ -303,7 +338,24 @@ public class ClientRoutineButler {
         //create string values used to delete notes
         String clientKey = deleteItem.clientKey;
         String timestamp = deleteItem.timestamp;
-        String exercise = deleteItem.exercise;
+
+        //get uri value for table
+        Uri uri = ClientRoutineContract.CONTENT_URI;
+
+        //remove notes from database
+        mActivity.getContentResolver().delete(uri,
+                ClientRoutineQueryHelper.timestampSelection,
+                new String[]{mUserId, clientKey, timestamp});
+
+        if(mDeleteListener != null){
+            mDeleteListener.onDeleted();
+        }
+    }
+
+    /*
+     * void deleteFromDatabase(...) - delete data from database
+     */
+    private void deleteFromDatabase(String clientKey, String timestamp){
 
         //get uri value for table
         Uri uri = ClientRoutineContract.CONTENT_URI;
