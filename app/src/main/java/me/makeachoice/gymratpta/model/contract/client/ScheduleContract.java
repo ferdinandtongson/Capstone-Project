@@ -93,6 +93,8 @@ public class ScheduleContract extends MyContractor implements BaseColumns {
  *  Projection and Index
  */
 /**************************************************************************************************/
+    public static String PENDING = "pending";
+    public static String PAST = "past";
 
     public static Uri CONTENT_URI =
             BASE_CONTENT_URI.buildUpon().appendPath(PATH_SCHEDULE).build();
@@ -128,6 +130,18 @@ public class ScheduleContract extends MyContractor implements BaseColumns {
                 appendPath(startDate).appendPath(endDate).build();
     }
 
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/pending/[pendingDate]
+    public static Uri buildPendingScheduleByClientKey(String uid, String clientKey, String pendingDate) {
+        return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).
+                appendPath(PENDING).appendPath(pendingDate).build();
+    }
+
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/past/[pendingDate]
+    public static Uri buildPastScheduleByClientKey(String uid, String clientKey, String pastDate) {
+        return CONTENT_URI.buildUpon().appendPath(uid).appendPath(clientKey).
+                appendPath(PAST).appendPath(pastDate).build();
+    }
+
     //"content://CONTENT_AUTHORITY/userSchedule/[uid]/....
     public static String getUIdFromUri(Uri uri) {
         return uri.getPathSegments().get(1);
@@ -153,6 +167,25 @@ public class ScheduleContract extends MyContractor implements BaseColumns {
         return uri.getPathSegments().get(4);
     }
 
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/pending/[pendingDate]
+    public static String getClientKeyFromPendingUri(Uri uri) {
+        return uri.getPathSegments().get(2);
+    }
+
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/pending/[pendingDate]
+    public static String getPendingDateFromPendingUri(Uri uri) {
+        return uri.getPathSegments().get(4);
+    }
+
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/past/[pastDate]
+    public static String getClientKeyFromPastUri(Uri uri) {
+        return uri.getPathSegments().get(2);
+    }
+
+    //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/past/[pastDate]
+    public static String getPastDateFromPastUri(Uri uri) {
+        return uri.getPathSegments().get(4);
+    }
 
 /**************************************************************************************************/
 
