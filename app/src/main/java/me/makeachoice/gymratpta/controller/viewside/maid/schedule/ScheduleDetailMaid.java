@@ -66,6 +66,7 @@ public class ScheduleDetailMaid extends GymRatRecyclerMaid implements BasicFragm
     private ClientRoutineButler mRoutineButler;
 
     private RoutineExerciseDialog mAddDialog;
+    private String mStrNone;
 
     private boolean mEditMode;
     private int mEditIndex;
@@ -163,6 +164,8 @@ public class ScheduleDetailMaid extends GymRatRecyclerMaid implements BasicFragm
 
         mData = new ArrayList<>();
 
+        mStrNone = mActivity.getString(R.string.msg_none_selected);
+
         mRoutineButler = new ClientRoutineButler(mActivity, mUserId, mClientItem.fkey);
 
         String timestamp = DateTimeHelper.getTimestamp(mScheduleItem.appointmentDate, mScheduleItem.appointmentTime);
@@ -236,8 +239,12 @@ public class ScheduleDetailMaid extends GymRatRecyclerMaid implements BasicFragm
         //get editText component
         mEdtName = (EditText)mLayout.findViewById(R.id.routineDetail_edtName);
 
+        String routineName = "";
+        if(!mScheduleItem.routineName.equals(mStrNone)){
+            routineName = mScheduleItem.routineName;
+        }
         //set routine name
-        mEdtName.setText(mScheduleItem.routineName);
+        mEdtName.setText(routineName);
     }
 
     /*
