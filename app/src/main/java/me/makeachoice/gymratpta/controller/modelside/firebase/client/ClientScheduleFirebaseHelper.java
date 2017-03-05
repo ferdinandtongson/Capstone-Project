@@ -1,7 +1,5 @@
 package me.makeachoice.gymratpta.controller.modelside.firebase.client;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -13,15 +11,13 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
 
-import static com.facebook.login.widget.ProfilePictureView.TAG;
-
 /**************************************************************************************************/
 /*
- * ClientAppFirebaseHelper helps in adding and requesting client appointment data to and from firebase
+ * ClientScheduleFirebaseHelper helps in adding and requesting client schedule data to and from firebase
  */
 /**************************************************************************************************/
 
-public class ClientAppFirebaseHelper {
+public class ClientScheduleFirebaseHelper {
 
 /**************************************************************************************************/
 /*
@@ -35,7 +31,7 @@ public class ClientAppFirebaseHelper {
     public final static String CHILD_STATUS = "status";
 
     //PARENT - parent director
-    private final static String PARENT = "clientAppointment";
+    private final static String PARENT = "clientSchedule";
 
     //mFireDB - firebase instance
     private FirebaseDatabase mFireDB;
@@ -57,16 +53,16 @@ public class ClientAppFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    private static ClientAppFirebaseHelper instance = null;
+    private static ClientScheduleFirebaseHelper instance = null;
 
-    public static ClientAppFirebaseHelper getInstance() {
+    public static ClientScheduleFirebaseHelper getInstance() {
         if(instance == null) {
-            instance = new ClientAppFirebaseHelper();
+            instance = new ClientScheduleFirebaseHelper();
         }
         return instance;
     }
 
-    private ClientAppFirebaseHelper(){
+    private ClientScheduleFirebaseHelper(){
 
         mFireDB = FirebaseDatabase.getInstance();
     }
@@ -79,12 +75,12 @@ public class ClientAppFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public DatabaseReference getClientAppReference(String userId){
+    public DatabaseReference getClientScheduleReference(String userId){
         return mFireDB.getReference().child(PARENT).child(userId);
     }
 
-    private DatabaseReference getClientAppReferenceByClientKey(String userId, String clientKey){
-        return getClientAppReference(userId).child(clientKey);
+    private DatabaseReference getClientScheduleReferenceByClientKey(String userId, String clientKey){
+        return getClientScheduleReference(userId).child(clientKey);
     }
 
 /**************************************************************************************************/
@@ -95,16 +91,16 @@ public class ClientAppFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addClientAppDataByClientKey(String userId, String clientKey, ArrayList<ClientAppFBItem> appointments){
-        int count = appointments.size();
+    public void addClientScheduleDataByClientKey(String userId, String clientKey, ArrayList<ClientAppFBItem> schedule){
+        int count = schedule.size();
         for(int i = 0; i < count; i++){
-            addClientAppByClientKey(userId, clientKey, appointments.get(i));
+            addClientScheduleByClientKey(userId, clientKey, schedule.get(i));
         }
 
     }
 
-    public void addClientAppByClientKey(String userId, String clientKey, ClientAppFBItem item){
-        DatabaseReference ref = getClientAppReferenceByClientKey(userId, clientKey);
+    public void addClientScheduleByClientKey(String userId, String clientKey, ClientAppFBItem item){
+        DatabaseReference ref = getClientScheduleReferenceByClientKey(userId, clientKey);
         ref.push().setValue(item);
     }
 
@@ -116,15 +112,15 @@ public class ClientAppFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteAppointment(String userId, String clientKey, String appointmentDate,
+    public void deleteSchedule(String userId, String clientKey, String appointmentDate,
                                   String appointmentTime, ValueEventListener listener){
-        DatabaseReference ref = getClientAppReferenceByClientKey(userId, clientKey);
+        DatabaseReference ref = getClientScheduleReferenceByClientKey(userId, clientKey);
 
-        Query appointmentQuery = ref.orderByChild(CHILD_APPOINTMENT_DATE).equalTo(appointmentDate);
+        Query scheduleQuery = ref.orderByChild(CHILD_APPOINTMENT_DATE).equalTo(appointmentDate);
 
         final String appTime = appointmentTime;
 
-        appointmentQuery.addListenerForSingleValueEvent(listener);
+        scheduleQuery.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
@@ -135,9 +131,9 @@ public class ClientAppFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void requestClientAppDataByClientKey(String userId, String clientKey, OnDataLoadedListener listener){
+    public void requestClientScheduleDataByClientKey(String userId, String clientKey, OnDataLoadedListener listener){
         //get reference
-        DatabaseReference ref = getClientAppReferenceByClientKey(userId, clientKey);
+        DatabaseReference ref = getClientScheduleReferenceByClientKey(userId, clientKey);
 
         mOnDataLoadedListener = listener;
 
@@ -145,10 +141,10 @@ public class ClientAppFirebaseHelper {
         ref.addListenerForSingleValueEvent(mEventListener);
     }
 
-    public void requestClientAppDataByClientKey(String userId, String appointmentDay, String orderBy,
+    public void requestClientScheduleDataByClientKey(String userId, String appointmentDay, String orderBy,
                                                 OnDataLoadedListener listener){
         //get reference
-        DatabaseReference ref = getClientAppReferenceByClientKey(userId, appointmentDay);
+        DatabaseReference ref = getClientScheduleReferenceByClientKey(userId, appointmentDay);
 
         mOnDataLoadedListener = listener;
 
