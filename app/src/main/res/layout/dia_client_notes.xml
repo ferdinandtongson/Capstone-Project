@@ -41,9 +41,6 @@
         android:paddingTop="3dp"
         android:background="@drawable/bg_white"
         >
-        <!--
-        android:background="#40FFFFFF"
-        -->
 
         <ScrollView
             android:id="@+id/diaNotes_scrNotes"
