@@ -4,7 +4,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -115,7 +114,7 @@ public class StatsFirebaseHelper {
 
     public void addStatsByTimestamp(String userId, String clientKey, String timestamp, StatsFBItem item){
         DatabaseReference ref = getStatsReferenceByTimestamp(userId, clientKey, timestamp);
-        ref.push().setValue(item);
+        ref.setValue(item);
     }
 
 /**************************************************************************************************/
@@ -126,13 +125,11 @@ public class StatsFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteStats(String userId, String clientKey, String timestamp,
-                            String appointmentTime, ValueEventListener listener){
+    public void deleteStats(String userId, String clientKey, String timestamp, ValueEventListener listener){
         DatabaseReference ref = getStatsReferenceByTimestamp(userId, clientKey, timestamp);
 
-        Query statsQuery = ref.orderByChild(CHILD_APPOINTMENT_TIME).equalTo(appointmentTime);
-
-        statsQuery.addListenerForSingleValueEvent(listener);
+        ref.removeValue();
+        ref.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
