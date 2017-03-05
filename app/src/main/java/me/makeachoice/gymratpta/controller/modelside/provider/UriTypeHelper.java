@@ -3,6 +3,7 @@ package me.makeachoice.gymratpta.controller.modelside.provider;
 import android.net.Uri;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
@@ -79,21 +80,21 @@ public class UriTypeHelper {
             case USER_WITH_KEY:
                 return Contractor.UserEntry.CONTENT_ITEM_TYPE;
             case CLIENT:
-                return Contractor.ClientEntry.CONTENT_TYPE;
+                return ClientContract.CONTENT_TYPE;
             case CLIENT_WITH_UID:
-                return Contractor.ClientEntry.CONTENT_TYPE;
+                return ClientContract.CONTENT_TYPE;
             case CLIENT_WITH_FKEY:
-                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
+                return ClientContract.CONTENT_ITEM_TYPE;
             case CLIENT_WITH_STATUS:
-                return Contractor.ClientEntry.CONTENT_TYPE;
+                return ClientContract.CONTENT_TYPE;
             case CATEGORY:
-                return Contractor.ClientEntry.CONTENT_TYPE;
+                return ClientContract.CONTENT_TYPE;
             case CATEGORY_WITH_UID:
-                return Contractor.ClientEntry.CONTENT_TYPE;
+                return ClientContract.CONTENT_TYPE;
             case CATEGORY_WITH_FKEY:
-                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
+                return ClientContract.CONTENT_ITEM_TYPE;
             case CATEGORY_WITH_NAME:
-                return Contractor.ClientEntry.CONTENT_ITEM_TYPE;
+                return ClientContract.CONTENT_ITEM_TYPE;
             case EXERCISE:
                 return ExerciseContract.CONTENT_TYPE;
             case EXERCISE_WITH_UID:
