@@ -492,14 +492,14 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //check appointment count index
         if(mAppCount < mAppointments.size()){
             //index less than appointment list size, get appointment item from list
-            ScheduleItem item = mAppointments.get(mAppCount);
-            String mapKey = item.clientKey + item.appointmentTime;
-            mAppointmentMap.put(mapKey, item.clientKey);
+            mScheduleItem = mAppointments.get(mAppCount);
+            String mapKey = mScheduleItem.clientKey + mScheduleItem.appointmentTime;
+            mAppointmentMap.put(mapKey, mScheduleItem.clientKey);
 
-            mClientButler.loadClient(mClientLoaderId, item, new ClientButler.OnClientLoadedListener() {
+            mClientButler.loadClient(mClientLoaderId, mScheduleItem, new ClientButler.OnClientLoadedListener() {
                 @Override
-                public void onClientLoaded(ClientItem clientItem, AppointmentCardItem cardItem) {
-                    onClientDataLoaded(clientItem, cardItem);
+                public void onClientLoaded(ClientItem clientItem) {
+                    onClientDataLoaded(clientItem);
                 }
             });
         }
@@ -508,16 +508,17 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
             prepareFragment();
         }
     }
+    private ScheduleItem mScheduleItem;
 
     /*
      * void onClientDataLoaded(...) - client data has been loaded
      */
-    private void onClientDataLoaded(ClientItem clientItem, AppointmentCardItem cardItem){
-        if(clientItem != null && cardItem != null){
+    private void onClientDataLoaded(ClientItem clientItem){
+        if(clientItem != null){
             //add client item to client list
             mClients.add(clientItem);
 
-
+            AppointmentCardItem cardItem = mClientButler.createAppointmentCardItem(mScheduleItem, clientItem);
             //add clientCard item to data list
             mData.add(cardItem);
         }
