@@ -48,6 +48,8 @@ public class ScheduleLoader {
     //mClientKey - client key value
     private String mClientKey;
 
+    private String mUseDate;
+
     //mStartRange - start date of range of dates
     private String mStartRange;
 
@@ -114,7 +116,7 @@ public class ScheduleLoader {
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                me.makeachoice.gymratpta.model.contract.client.ScheduleContract.PROJECTION,
+                                ScheduleContract.PROJECTION,
                                 null,
                                 null,
                                 ScheduleContract.SORT_ORDER_TIMESTAMP);
@@ -222,7 +224,7 @@ public class ScheduleLoader {
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                me.makeachoice.gymratpta.model.contract.client.ScheduleContract.PROJECTION,
+                                ScheduleContract.PROJECTION,
                                 null,
                                 null,
                                 ScheduleContract.SORT_ORDER_TIMESTAMP);
@@ -268,7 +270,7 @@ public class ScheduleLoader {
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                me.makeachoice.gymratpta.model.contract.client.ScheduleContract.PROJECTION,
+                                ScheduleContract.PROJECTION,
                                 null,
                                 null,
                                 ScheduleContract.SORT_ORDER_TIME_CLIENT);
@@ -289,6 +291,104 @@ public class ScheduleLoader {
                     }
                 });
     }
+
+
+    /*
+     * void loadPendingScheduleByClientKey(...) - start loader to load pending schedule data
+     */
+    public void loadPendingScheduleByClientKey(String clientKey, String pendingDate, int loaderId,
+                                               OnScheduleLoadListener listener){
+        //get use date for pending
+        mUseDate = pendingDate;
+        mClientKey = clientKey;
+
+        //get listener
+        mListener = listener;
+
+        //initializes loader
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request cursor from local database
+                        Uri uri = ScheduleContract.buildPendingScheduleByClientKey(mUserId, mClientKey, mUseDate);
+
+                        //get cursor
+                        return new CursorLoader(
+                                mActivity,
+                                uri,
+                                ScheduleContract.PROJECTION,
+                                null,
+                                null,
+                                ScheduleContract.SORT_ORDER_TIMESTAMP);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //make sure listener is not NULL
+                        if(mListener != null){
+                            //notify listener that client data has finished loading
+                            mListener.onScheduleLoadFinished(cursor);
+                        }
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                        //does nothing
+                    }
+                });
+    }
+
+    /*
+     * void loadPastScheduleByClientKey(...) - start loader to load past schedule data
+     */
+    public void loadPastScheduleByClientKey(String clientKey, String pastDate, int loaderId, OnScheduleLoadListener listener){
+        //get use date for pending
+        mUseDate = pastDate;
+        mClientKey = clientKey;
+
+        //get listener
+        mListener = listener;
+
+        //initializes loader
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request cursor from local database
+                        Uri uri = ScheduleContract.buildPastScheduleByClientKey(mUserId, mClientKey, mUseDate);
+
+                        //get cursor
+                        return new CursorLoader(
+                                mActivity,
+                                uri,
+                                ScheduleContract.PROJECTION,
+                                null,
+                                null,
+                                ScheduleContract.SORT_ORDER_TIMESTAMP);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //make sure listener is not NULL
+                        if(mListener != null){
+                            //notify listener that client data has finished loading
+                            mListener.onScheduleLoadFinished(cursor);
+                        }
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                        //does nothing
+                    }
+                });
+    }
+
+
+
+
 
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
