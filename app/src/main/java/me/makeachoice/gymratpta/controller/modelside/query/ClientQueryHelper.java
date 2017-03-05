@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 /**************************************************************************************************/
@@ -33,24 +33,24 @@ public class ClientQueryHelper {
         //initialize clientQueryBuilder
         clientQueryBuilder = new SQLiteQueryBuilder();
         //set builder to query user table
-        clientQueryBuilder.setTables(Contractor.ClientEntry.TABLE_NAME);
+        clientQueryBuilder.setTables(ClientContract.TABLE_NAME);
     }
 
     //query selection - client.uid = ?
     public static final String uidSelection =
-            Contractor.ClientEntry.TABLE_NAME + "." + Contractor.ClientEntry.COLUMN_UID + " = ? ";
+            ClientContract.TABLE_NAME + "." + ClientContract.COLUMN_UID + " = ? ";
 
     //query selection - client.uid = ? AND fkey = ?
     public static final String fkeySelection =
-            Contractor.ClientEntry.TABLE_NAME+
-                    "." + Contractor.ClientEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ClientEntry.COLUMN_FKEY + " = ? ";
+            ClientContract.TABLE_NAME+
+                    "." + ClientContract.COLUMN_UID + " = ? AND " +
+                    ClientContract.COLUMN_FKEY + " = ? ";
 
     //query selection - client.uid = ? AND client_status = ?
     public static final String statusSelection =
-            Contractor.ClientEntry.TABLE_NAME+
-                    "." + Contractor.ClientEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ClientEntry.COLUMN_CLIENT_STATUS + " = ? ";
+            ClientContract.TABLE_NAME+
+                    "." + ClientContract.COLUMN_UID + " = ? AND " +
+                    ClientContract.COLUMN_CLIENT_STATUS + " = ? ";
     
 /**************************************************************************************************/
 
@@ -67,7 +67,7 @@ public class ClientQueryHelper {
      */
      public static Cursor getClients(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
          //"content://CONTENT_AUTHORITY/client/[uid]/....
-         String uid = Contractor.ClientEntry.getUIdFromUri(uri);
+         String uid = ClientContract.getUIdFromUri(uri);
     
          //query client table
          return ClientQueryHelper.clientQueryBuilder.query(
@@ -87,7 +87,7 @@ public class ClientQueryHelper {
      */
     public static Cursor getClientByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/client/[uid]
-        String uid = Contractor.ClientEntry.getUIdFromUri(uri);
+        String uid = ClientContract.getUIdFromUri(uri);
 
         //query from user table
         return ClientQueryHelper.clientQueryBuilder.query(
@@ -107,8 +107,8 @@ public class ClientQueryHelper {
      */
     public static Cursor getClientByFKey(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fKey]
-        String uid = Contractor.ClientEntry.getUIdFromUri(uri);
-        String fkey = Contractor.ClientEntry.getFKeyFromUri(uri);
+        String uid = ClientContract.getUIdFromUri(uri);
+        String fkey = ClientContract.getFKeyFromUri(uri);
 
         //query from user table
         return ClientQueryHelper.clientQueryBuilder.query(
@@ -128,8 +128,8 @@ public class ClientQueryHelper {
      */
     public static Cursor getClientByStatus(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/client/[uid]/client_status/[status]
-        String uid = Contractor.ClientEntry.getUIdFromUri(uri);
-        String status = Contractor.ClientEntry.getStatusFromUri(uri);
+        String uid = ClientContract.getUIdFromUri(uri);
+        String status = ClientContract.getStatusFromUri(uri);
 
         //query from user table
         return ClientQueryHelper.clientQueryBuilder.query(
@@ -153,14 +153,14 @@ public class ClientQueryHelper {
  *      int deleteClient(...) - delete client from database
  *      int updateClient(...) - update client in database
  */
-    /**************************************************************************************************/
+/**************************************************************************************************/
     /*
      * Uri insertClient(...) - insert client into database
      */
     public static Uri insertClient(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.ClientEntry.TABLE_NAME, null, values);
+            _id = db.insert(ClientContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
             if(mSQLException instanceof SQLiteConstraintException){
@@ -171,7 +171,7 @@ public class ClientQueryHelper {
             throw mSQLException;
         }
 
-        return Contractor.ClientEntry.buildClientUri(_id);
+        return ClientContract.buildClientUri(_id);
     }
 
     /*
@@ -185,7 +185,7 @@ public class ClientQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.ClientEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(ClientContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -201,7 +201,7 @@ public class ClientQueryHelper {
                                  String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.ClientEntry.TABLE_NAME, values, whereClause, whereArgs);
+            rowsUpdated = db.update(ClientContract.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
