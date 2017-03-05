@@ -3,6 +3,7 @@ package me.makeachoice.gymratpta.controller.viewside.maid.client;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,16 +17,30 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.firebase.ClientFirebaseHelper;
-import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.butler.ClientButler;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
+import me.makeachoice.gymratpta.view.dialog.GoalDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
-/**
- * Created by Usuario on 1/31/2017.
+/**************************************************************************************************/
+/*
+ * ClientInfoMaid displays client contact info and exercise goals
+ *
+ * Variables from MyMaid:
+ *      mMaidKey - key string of instance Maid
+ *      int mLayoutId - resource id number of fragment layout
+ *      View mLayout - fragment layout view holding the child views
+ *
+ * Methods from MyMaid:
+ *      void activityCreated() - called when Activity.onCreate() completed
+ *      void destroyView() - called when fragment is being removed
+ *      void detach() - called when fragment is being disassociated from Activity
+ *      void saveInstanceState(Bundle) - called before onDestroy( ), save state to bundle
+ *      String getKey() - get maid key value
+ *      Fragment getFragment() - get new instance fragment
  */
+/**************************************************************************************************/
 
 public class ClientInfoMaid extends MyMaid  implements BasicFragment.Bridge{
 
@@ -35,10 +50,16 @@ public class ClientInfoMaid extends MyMaid  implements BasicFragment.Bridge{
  */
 /**************************************************************************************************/
 
-    private final static int STATUS_ACTIVE = 0;
-    private final static int STATUS_RETIRED = 1;
+    private final static int ACTIVE_STATUS = 0;
+    private final static int RETIRED_STATUS = 1;
+
+    private String mStrActive;
+    private String mStrRetired;
 
     private ClientItem mClientItem;
+
+    private GoalDialog mGoalDialog;
+    private ClientButler mClientButler;
 
     //used so client status is updated during initialization
     private int mSpinnerCount;
@@ -97,6 +118,12 @@ public class ClientInfoMaid extends MyMaid  implements BasicFragment.Bridge{
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
+
+        mStrActive = mFragment.getString(R.string.active);
+        mStrRetired = mFragment.getString(R.string.retired);
+
+        mClientButler = new ClientButler(mActivity, mClientItem.uid);
+
         //prepare fragment components
         prepareFragment();
     }
@@ -124,14 +151,13 @@ public class ClientInfoMaid extends MyMaid  implements BasicFragment.Bridge{
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
     private void prepareFragment() {
+        Log.d("Choice", "ClientInfoMaid.prepareFragment");
         initializeInfoText();
         initializeTrainingText();
         initializeIconImage();
         initializeProfileImage();
         initializeSpinner();
 
-        //load category and exercise data
-        loadData();
     }
 
     private void initializeInfoText(){
@@ -151,15 +177,26 @@ public class ClientInfoMaid extends MyMaid  implements BasicFragment.Bridge{
         txtEmail.setContentDescription(strEmail + mClientItem.email);
     }
 
+    private TextView mTxtEmptyGoals;
+    private TextView mTxtGoals;
     private void initializeTrainingText(){
-        TextView txtStartDate = (TextView)mLayout.findViewById(R.id.clientInfo_txtStartDate);
-        txtStartDate.setText("- start date -");
+        mTxtGoals = (TextView)mLayout.findViewById(R.id.clientInfo_txtGoals);
+        mTxtGoals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initializeGoalDialog();
+            }
+        });
 
-        TextView txtTotalSession = (TextView)mLayout.findViewById(R.id.clientInfo_txtTotal);
-        txtTotalSession.setText("Total: ");
+        mTxtEmptyGoals = (TextView)mLayout.findViewById(R.id.clientInfo_txtEmptyGoals);
+        mTxtEmptyGoals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initializeGoalDialog();
+            }
+        });
 
-        TextView txtScheduledSession = (TextView)mLayout.findViewById(R.id.clientInfo_txtScheduled);
-        txtScheduledSession.setText("Scheduled: ");
+        updateGoalView();
     }
 
     private void initializeIconImage(){
@@ -205,16 +242,57 @@ public class ClientInfoMaid extends MyMaid  implements BasicFragment.Bridge{
             }
         });
 
-        if(mClientItem.status.equals("Retired")){
-            spnStatus.setSelection(STATUS_RETIRED);
+        if(mClientItem.status.equals(mStrRetired)){
+            spnStatus.setSelection(RETIRED_STATUS);
+        }
+        else{
+            spnStatus.setSelection(ACTIVE_STATUS);
         }
     }
 
     /*
-     * void loadData() - load category and exercise data
-     */
-    private void loadData(){
+ * NotesDialog initializeGoalDialog - initialize client notes dialog
+ */
+    private GoalDialog initializeGoalDialog(){
+        //get fragment manager
+        FragmentManager fm = mActivity.getSupportFragmentManager();
 
+        //create dialog
+        mGoalDialog = new GoalDialog();
+        mGoalDialog.setDialogValues(mActivity, mClientItem.uid, mClientItem);
+
+        mGoalDialog.setOnSaveListener(new GoalDialog.OnSaveListener() {
+            @Override
+            public void onSaveGoals(String goals) {
+                onGoalsSaved(goals);
+            }
+        });
+
+        mGoalDialog.setOnCancelListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mGoalDialog.dismiss();
+            }
+        });
+
+        mGoalDialog.setCancelable(true);
+
+        mGoalDialog.show(fm, "diaNotes");
+
+        return mGoalDialog;
+    }
+
+
+    private void updateGoalView(){
+        String goals = mClientItem.goals;
+        if(goals.isEmpty()){
+            mTxtEmptyGoals.setVisibility(View.VISIBLE);
+        }
+        else{
+            mTxtEmptyGoals.setVisibility(View.GONE);
+        }
+
+        mTxtGoals.setText(goals);
     }
 
 /**************************************************************************************************/
@@ -236,54 +314,39 @@ public class ClientInfoMaid extends MyMaid  implements BasicFragment.Bridge{
     }
 
     private void onStatusSelected(int index){
-        String strActive = mFragment.getString(R.string.active);
-        String strRetired = mFragment.getString(R.string.retired);
-
+        //Note: onStatusSelected is called during initialization, use SpinnerCount to prevent save
         if(mSpinnerCount > 0){
             switch(index){
-                case STATUS_ACTIVE:
-                    Log.d("Choice", "Status - Active");
-                    updateClient(strActive);
+                case ACTIVE_STATUS:
+                    mClientItem.status = mStrActive;
                     break;
-                case STATUS_RETIRED:
-                    Log.d("Choice", "Status - Retired");
-                    updateClient(strRetired);
+                case RETIRED_STATUS:
+                    mClientItem.status = mStrRetired;
                     break;
             }
+
+            mClientButler.updateClientStatus(mClientItem, new ClientButler.OnSavedListener() {
+                @Override
+                public void onSaved() {
+                    //does nothing
+                }
+            });
+
         }
 
         mSpinnerCount++;
     }
 
-    private void updateClient(String status){
-        mClientItem.status = status;
-
-        ClientFirebaseHelper clientFB = ClientFirebaseHelper.getInstance();
-        clientFB.setClientStatus(mClientItem.uid, mClientItem.fkey, status);
-
-        putClientInDatabase(mClientItem);
+    private void onGoalsSaved(String goals){
+        mClientItem.goals = goals;
+        mClientButler.updateClientGoals(mClientItem, new ClientButler.OnSavedListener() {
+            @Override
+            public void onSaved() {
+                updateGoalView();
+            }
+        });
     }
 
-    /*
- * void putClientInDatabase(DataSnapshot, String) - add client data into database
- */
-    private void putClientInDatabase(ClientItem item){
-        Log.d("Choice", "ContactListDialog.putClientInDatabase");
-
-        Log.d("Choice", "     client: " + item.clientName);
-
-        //get client uri
-        Uri uriValue = Contractor.ClientEntry.CONTENT_URI;
-
-        //query selection - client.uid = ? AND fkey = ?
-        String whereClause = ClientQueryHelper.fkeySelection;
-        String[] whereArgs = new String[]{item.uid, item.fkey };
-
-        //insert client into database
-        int updateCount = mFragment.getContext().getContentResolver().update(uriValue, item.getContentValues(),
-                whereClause, whereArgs);
-
-        Log.d("Choice", "     update: " + updateCount);
-    }
+/**************************************************************************************************/
 
 }
