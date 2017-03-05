@@ -30,10 +30,6 @@ public class ScheduleNav extends MyBottomNav implements BottomNavigationView.OnN
 
     private final static int DEFAULT_MENU_ID = R.menu.bottom_nav_schedule;
 
-    private OnNavSelectedListener mListener;
-    public interface OnNavSelectedListener{
-        public void onNavSelected(int navId);
-    }
 
 /**************************************************************************************************/
 
@@ -71,10 +67,6 @@ public class ScheduleNav extends MyBottomNav implements BottomNavigationView.OnN
 
         mNav.setOnNavigationItemSelectedListener(this);
         onNavigationItemSelected(mNav.getMenu().getItem(0));
-    }
-
-    public void setOnNavSelectedListener(OnNavSelectedListener listener){
-        mListener = listener;
     }
 
 
