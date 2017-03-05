@@ -8,15 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.item.client.AppointmentCardItem;
 import me.makeachoice.gymratpta.model.item.client.ClientAppCardItem;
-import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 
 /**************************************************************************************************/
 /*
@@ -322,8 +318,8 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
         mTxtDate.setText(item.appointmentDate);
         mTxtDate.setContentDescription(item.appointmentDate);
 
-        mTxtTime.setText(item.appointmentTime);
-        mTxtTime.setContentDescription(item.appointmentTime);
+        mTxtTime.setText(DateTimeHelper.convert24Hour(item.appointmentTime));
+        mTxtTime.setContentDescription(DateTimeHelper.convert24Hour(item.appointmentTime));
 
         mTxtRoutine.setText(item.routineName);
         mTxtRoutine.setContentDescription(item.routineName);
