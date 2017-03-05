@@ -11,14 +11,6 @@
         style="@style/GymRat.Fragment.OutsideFrame"
         >
 
-        <TextView android:id="@+id/clientInfo_txtInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/client_info"
-            android:text="@string/contact_info"
-            style="@style/GymRat.Fragment.Text.Title"
-            />
-
         <Spinner android:id="@+id/clientInfo_spnStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,6 +19,16 @@
             android:layout_marginEnd="3dp"
             android:entries="@array/client_status"
             />
+
+        <TextView android:id="@+id/clientInfo_txtInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/clientInfo_spnStatus"
+            android:contentDescription="@string/client_info"
+            android:text="@string/contact_info"
+            style="@style/GymRat.Fragment.Text.Title"
+            />
+
 
 
         <RelativeLayout
@@ -99,9 +101,11 @@
 
         </RelativeLayout>
 
+
         <TextView android:id="@+id/clientInfo_txtTraining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_below="@id/clientInfo_relInfo"
             android:contentDescription="@string/training_info"
             android:text="@string/training_info"
@@ -116,43 +120,15 @@
             style="@style/GymRat.Fragment.InsideFrame"
             >
 
-            <TextView android:id="@+id/clientInfo_txtStartDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="10dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                />
-
-            <TextView android:id="@+id/clientInfo_txtTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_below="@id/clientInfo_txtStartDate"
-                style="@style/GymRat.Fragment.Text.Info"
-                />
-
-            <TextView android:id="@+id/clientInfo_txtScheduled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:layout_below="@id/clientInfo_txtTotal"
-                style="@style/GymRat.Fragment.Text.Info"
-                />
-
 
             <RelativeLayout
                 android:id="@+id/clientInfo_relTrainingGoal"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_below="@id/clientInfo_txtScheduled"
                 android:paddingTop="3dp"
                 android:background="@color/colorAccent"
                 >
@@ -164,7 +140,7 @@
                     android:scrollbars="vertical"
                     android:fillViewport="true">
 
-                    <TextView android:id="@+id/clientInfo_txtGoal"
+                    <TextView android:id="@+id/clientInfo_txtGoals"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:layout_marginLeft="10dp"
@@ -177,7 +153,7 @@
 
                 </ScrollView>
 
-                <TextView android:id="@+id/txtEmptyGoal"
+                <TextView android:id="@+id/clientInfo_txtEmptyGoals"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
