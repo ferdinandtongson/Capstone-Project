@@ -6,8 +6,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 import me.makeachoice.gymratpta.model.item.client.ClientFBItem;
 
 /**************************************************************************************************/
@@ -92,15 +90,7 @@ public class ClientFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addClientData(String userId, ArrayList<ClientFBItem> users){
-        int count = users.size();
-        for(int i = 0; i < count; i++){
-            addClient(userId, users.get(i));
-        }
-
-    }
-
-    public void addClient(String userId, ClientFBItem item){
+    public void addClient(String userId, ClientFBItem item, OnDataLoadedListener listener){
         DatabaseReference ref = getClientReference(userId);
         ref.push().setValue(item);
     }
@@ -113,34 +103,39 @@ public class ClientFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void setClientEmail(String userId, String clientKey, String email){
+    public void setClientEmail(String userId, String clientKey, String email, ValueEventListener listener){
         DatabaseReference refClient = getClientDetailReference(userId, clientKey);
 
         refClient.child(CHILD_EMAIL).setValue(email);
+        refClient.addListenerForSingleValueEvent(listener);
     }
 
-    public void setClientFirstSession(String userId, String clientKey, String firstSession){
+    public void setClientFirstSession(String userId, String clientKey, String firstSession, ValueEventListener listener){
         DatabaseReference refClient = getClientDetailReference(userId, clientKey);
 
         refClient.child(CHILD_FIRST_SESSION).setValue(firstSession);
+        refClient.addListenerForSingleValueEvent(listener);
     }
 
-    public void setClientPhone(String userId, String clientKey, String phone){
+    public void setClientPhone(String userId, String clientKey, String phone, ValueEventListener listener){
         DatabaseReference refClient = getClientDetailReference(userId, clientKey);
 
         refClient.child(CHILD_PHONE).setValue(phone);
+        refClient.addListenerForSingleValueEvent(listener);
     }
 
-    public void setClientGoals(String userId, String clientKey, String goals){
+    public void setClientGoals(String userId, String clientKey, String goals, ValueEventListener listener){
         DatabaseReference refClient = getClientDetailReference(userId, clientKey);
 
         refClient.child(CHILD_GOALS).setValue(goals);
+        refClient.addListenerForSingleValueEvent(listener);
     }
 
-    public void setClientStatus(String userId, String clientKey, String status){
+    public void setClientStatus(String userId, String clientKey, String status, ValueEventListener listener){
         DatabaseReference refClient = getClientDetailReference(userId, clientKey);
 
         refClient.child(CHILD_STATUS).setValue(status);
+        refClient.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
@@ -182,6 +177,23 @@ public class ClientFirebaseHelper {
     }
 
 /**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Delete Data Methods
+ */
+/**************************************************************************************************/
+
+    public void deleteClient(String userId, String clientKey, ValueEventListener listener){
+        DatabaseReference ref = getClientDetailReference(userId, clientKey);
+
+        ref.removeValue();
+
+        ref.addListenerForSingleValueEvent(listener);
+    }
+
+/**************************************************************************************************/
+
 
 /**************************************************************************************************/
 /*
