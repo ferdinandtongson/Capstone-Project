@@ -75,7 +75,7 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
     private ClientItem mClientItem;
     private ScheduleItem mScheduleItem;
 
-    private String mStrCustomRoutine;
+    private String mStrCustom;
     private String mTimestamp;
     private String mOrderNumber;
     private int mDataCount;
@@ -211,7 +211,8 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
         mWhiteBg = DeprecatedUtility.getDrawable(mActivity, R.drawable.bg_white);
         mOrangeBg = DeprecatedUtility.getDrawable(mActivity, R.drawable.bg_orange);
 
-        mStrCustomRoutine = "*** " + mActivity.getString(R.string.custom_routine) + " ***";
+        mStrCustom = mActivity.getString(R.string.custom_routine);
+
         mAlreadyModified = false;
         mIsModified = false;
 
@@ -521,7 +522,7 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
             mScheduleButler.deleteSchedule(mScheduleItem, new ScheduleButler.OnScheduleDeletedListener() {
                 @Override
                 public void onScheduleDeleted() {
-                    mScheduleItem.routineName = mStrCustomRoutine;
+                    mScheduleItem.routineName = mStrCustom;
                     mScheduleButler.saveSchedule(mScheduleItem, null);
                 }
             });
