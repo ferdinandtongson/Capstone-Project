@@ -2,7 +2,7 @@ package me.makeachoice.gymratpta.view.dialog;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.database.Cursor;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -14,19 +14,20 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.loader.RoutineLoader;
-import me.makeachoice.gymratpta.controller.modelside.loader.RoutineNameLoader;
-import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
+import me.makeachoice.gymratpta.controller.modelside.butler.RoutineNameButler;
+import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
-import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineNameItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
+import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NAME;
 
 /**************************************************************************************************/
 /*
@@ -57,21 +58,45 @@ public class ClientAppointmentDialog extends DialogFragment {
     //mClientItem - client item object
     private ClientItem mClientItem;
 
-    //mSaveApmtItem - client appointment item to save
-    private AppointmentItem mSaveApmtItem;
-
-    //mRoutineItem - routine item selected for appointment
-    private ArrayList<RoutineItem> mExercises;
+    private ScheduleItem mSaveItem;
 
     //mRoutineNames - list of routine names
     private ArrayList<String> mRoutineNames;
+    private HashMap<String,String> mScheduleMap;
+    private HashMap<String,String> mEditScheduleMap;
 
     //mRootView - root view component containing dialog child components
     private View mRootView;
 
-    private Spinner mSpnRoutine;
-
     private TextView mTxtDateSelected;
+    private TextView mTxtDate;
+    private TextView mTxtTime;
+    private TextView mTxtSave;
+
+    private RoutineNameButler mRoutineButler;
+
+    //string values - used by session time labels
+    private String mStrSessionTime;
+    private String mStrSessionDate;
+
+    //string value - used by client label
+    private String mMsgAlreadyBooked;
+    private String mMsgSameTime;
+    private String mMsgAlreadyPast;
+
+    //string value - used by save button
+    private String mStrSave;
+    private String mStrSaveAnyway;
+
+    private int mTxtOrange;
+    private int mTxtBlack;
+
+    //valid status flags
+    private boolean mEditMode;
+
+    private String mSelectedDate;
+    private String mSelectedTime;
+
 
     private DatePickerDialog.OnDateSetListener mDatePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -94,9 +119,13 @@ public class ClientAppointmentDialog extends DialogFragment {
     //mSavedListener - notifies listener that the saved button was clicked
     private OnSaveClickListener mSavedListener;
     public interface OnSaveClickListener{
-        public void onSaveClicked(AppointmentItem appItem, ArrayList<RoutineItem> exercises);
+        void onSaveClicked(ScheduleItem appItem);
     }
 
+    private OnDismissListener mDismissListener;
+    public interface OnDismissListener{
+        void onDismiss(DialogInterface dialogInterface);
+    }
 
 
 /**************************************************************************************************/
@@ -125,7 +154,8 @@ public class ClientAppointmentDialog extends DialogFragment {
     /*
      * void setDialogValues(MyActivity,String) - set dialog values
      */
-    public void setDialogValues(MyActivity activity, String userId, ClientItem clientItem, AppointmentItem item){
+    public void setDialogValues(MyActivity activity, String userId, ClientItem clientItem,
+                                ScheduleItem item, HashMap<String,String> scheduleMap){
         //set activity context
         mActivity = activity;
 
@@ -138,11 +168,15 @@ public class ClientAppointmentDialog extends DialogFragment {
         //set client item
         mClientItem = clientItem;
 
-        //initialize exercises in routine
-        mExercises = new ArrayList<>();
-
         //initialize routine name list buffer
         mRoutineNames = new ArrayList<>();
+        mScheduleMap = new HashMap<>();
+        mEditScheduleMap = new HashMap<>();
+
+
+        mScheduleMap.putAll(scheduleMap);
+
+        mEditMode = false;
 
         //initialize appointment item to save
         initializeSaveItem(item);
@@ -156,35 +190,36 @@ public class ClientAppointmentDialog extends DialogFragment {
     /*
      * void initializeSaveItem(...) - initialize appointment item to be saved
      */
-    private void initializeSaveItem(AppointmentItem item){
+    private void initializeSaveItem(ScheduleItem item){
         //create appointment item to be saved
-        mSaveApmtItem = new AppointmentItem();
+        mSaveItem = new ScheduleItem();
 
         //check if item is null
         if(item == null){
             //if null, new appointment item being created
-            mSaveApmtItem.uid = mUserId;
-            mSaveApmtItem.fkey = "";
-            mSaveApmtItem.appointmentDate = DateTimeHelper.getToday();
-            mSaveApmtItem.appointmentTime = DateTimeHelper.getCurrentTime();
-            mSaveApmtItem.clientKey = mClientItem.fkey;
-            mSaveApmtItem.clientName = mClientItem.clientName;
-            mSaveApmtItem.routineName = mNoneSelected;
-            mSaveApmtItem.status = "";
+            mSaveItem.uid = mUserId;
+            mSaveItem.datestamp = DateTimeHelper.getDatestamp(0);
+            mSaveItem.appointmentDate = DateTimeHelper.getToday();
+            mSaveItem.appointmentTime = DateTimeHelper.getCurrentTime();
+            mSaveItem.clientKey = mClientItem.fkey;
+            mSaveItem.clientName = mClientItem.clientName;
+            mSaveItem.routineName = mNoneSelected;
+            mSaveItem.status = "";
         }
         else{
             //old appointment item being edited, save values to save item
-            mSaveApmtItem.uid = mUserId;
-            mSaveApmtItem.fkey = item.fkey;
-            mSaveApmtItem.appointmentDate = item.appointmentDate;
-            mSaveApmtItem.appointmentTime = item.appointmentTime;
-            mSaveApmtItem.clientKey = item.clientKey;
-            mSaveApmtItem.clientName = item.clientName;
-            mSaveApmtItem.routineName = item.routineName;
-            mSaveApmtItem.status = item.status;
-
-            loadRoutine(item.routineName);
+            mSaveItem.uid = mUserId;
+            mSaveItem.datestamp = item.datestamp;
+            mSaveItem.appointmentDate = item.appointmentDate;
+            mSaveItem.appointmentTime = item.appointmentTime;
+            mSaveItem.clientKey = item.clientKey;
+            mSaveItem.clientName = item.clientName;
+            mSaveItem.routineName = item.routineName;
+            mSaveItem.status = item.status;
         }
+
+        mSelectedDate = mSaveItem.appointmentDate;
+        mSelectedTime = mSaveItem.appointmentTime;
 
     }
 
@@ -193,6 +228,27 @@ public class ClientAppointmentDialog extends DialogFragment {
      */
     public void setOnSavedListener(OnSaveClickListener listener){
         mSavedListener = listener;
+    }
+
+    /*
+     * void setOnDismissListener(...) - set listener for dialog dismiss events
+     */
+    public void setOnDismissListener(OnDismissListener listener){
+        mDismissListener = listener;
+    }
+
+    public void setEditMode(boolean isEditMode){
+        mEditMode = isEditMode;
+
+        if(mEditMode){
+            mEditScheduleMap.clear();
+
+            String timestamp = DateTimeHelper.getTimestamp(mSaveItem.appointmentDate,
+                    mSaveItem.appointmentTime);
+            mEditScheduleMap.putAll(mScheduleMap);
+            mEditScheduleMap.remove(timestamp);
+        }
+
     }
 
 /**************************************************************************************************/
@@ -223,12 +279,30 @@ public class ClientAppointmentDialog extends DialogFragment {
         //inflate root view, parent child components
         mRootView = inflater.inflate(layoutId, container, false);
 
+        mStrSessionTime = mActivity.getString(R.string.session_time);
+        mStrSessionDate = mActivity.getString(R.string.session_date);
+        mMsgAlreadyPast = mActivity.getString(R.string.msg_already_past);
+
+        mMsgAlreadyBooked = mActivity.getString(R.string.msg_already_booked);
+        mMsgSameTime = mActivity.getString(R.string.msg_booked_that_time);
+
+        mStrSave = mActivity.getString(R.string.save);
+        mStrSaveAnyway = mActivity.getString(R.string.save_anyway);
+
+        mTxtOrange = DeprecatedUtility.getColor(mActivity, R.color.orange);
+        mTxtBlack = DeprecatedUtility.getColor(mActivity, R.color.black);
+
         //clear routine names list
         mRoutineNames.clear();
         mRoutineNames.add(mNoneSelected);
 
-        //load routine names used by spinner
-        loadRoutineNames();
+        mRoutineButler = new RoutineNameButler(mActivity, mUserId);
+        mRoutineButler.loadRoutineNames(LOADER_ROUTINE_NAME, new RoutineNameButler.OnLoadedListener() {
+            @Override
+            public void onLoaded(ArrayList<RoutineNameItem> routineList) {
+                onRoutineNamesLoaded(routineList);
+            }
+        });
 
         return mRootView;
     }
@@ -264,12 +338,11 @@ public class ClientAppointmentDialog extends DialogFragment {
     private void initializeDateTextView(){
         //get date textView component
         mTxtDateSelected = (TextView)mRootView.findViewById(R.id.diaClientApp_txtDateSelect);
-
-        //create date string to display
-        String strToday = mSaveApmtItem.appointmentDate;
+        mTxtDate = (TextView)mRootView.findViewById(R.id.diaClientApp_txtDate);
+        mTxtDate.setText(mStrSessionDate);
 
         //set string value
-        mTxtDateSelected.setText(strToday);
+        mTxtDateSelected.setText(mSelectedDate);
 
         mTxtDateSelected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,12 +362,11 @@ public class ClientAppointmentDialog extends DialogFragment {
     private void initializeTimeTextView(){
         //get time textView component
         mTxtTimeSelected = (TextView)mRootView.findViewById(R.id.diaClientApp_txtTimeSelect);
-
-        //get appointment time selected string value
-        String strTime = mSaveApmtItem.appointmentTime;
+        mTxtTime = (TextView)mRootView.findViewById(R.id.diaClientApp_txtTime);
+        mTxtTime.setText(mStrSessionTime);
 
         //set text to current time
-        mTxtTimeSelected.setText(strTime);
+        mTxtTimeSelected.setText(DateTimeHelper.convert24Hour(mSelectedTime));
 
         //set onClick listener
         mTxtTimeSelected.setOnClickListener(new View.OnClickListener() {
@@ -317,10 +389,10 @@ public class ClientAppointmentDialog extends DialogFragment {
      */
     private void initializeSaveTextView(){
         //get save textView component
-        TextView txtSave = (TextView)mRootView.findViewById(R.id.diaClientApp_txtSave);
+        mTxtSave = (TextView)mRootView.findViewById(R.id.diaClientApp_txtSave);
 
         //set onClick listener
-        txtSave.setOnClickListener(new View.OnClickListener() {
+        mTxtSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onSaveRequested();
@@ -334,10 +406,10 @@ public class ClientAppointmentDialog extends DialogFragment {
     private void initializeRoutineSpinner(){
 
         //get spinner component
-        mSpnRoutine = (Spinner)mRootView.findViewById(R.id.diaClientApp_spnRoutine);
+        Spinner spnRoutine = (Spinner)mRootView.findViewById(R.id.diaClientApp_spnRoutine);
 
         //set onItemSelected listener
-        mSpnRoutine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnRoutine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //notify routine was selected
@@ -358,10 +430,10 @@ public class ClientAppointmentDialog extends DialogFragment {
         adpRoutine.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         //set spinner with adapter
-        mSpnRoutine.setAdapter(adpRoutine);
+        spnRoutine.setAdapter(adpRoutine);
 
         //set client selection
-        mSpnRoutine.setSelection(mRoutineIndex);
+        spnRoutine.setSelection(mRoutineIndex);
     }
 
 /**************************************************************************************************/
@@ -374,36 +446,19 @@ public class ClientAppointmentDialog extends DialogFragment {
  */
 /**************************************************************************************************/
     /*
-     * void loadRoutines() - load routine names from database
-     */
-    private void loadRoutineNames(){
-        //load client data with only clients with an Active status
-        RoutineNameLoader.loadRoutineNames(mActivity, mUserId, new RoutineNameLoader.OnRoutineNameLoadListener() {
-            @Override
-            public void onRoutineNameLoadFinished(Cursor cursor) {
-                onRoutineNameDataLoaded(cursor);
-            }
-        });
-
-    }
-
-    /*
      * void onRoutineNameDataLoaded(Cursor) - routine name data from database has been loaded
      */
-    private void onRoutineNameDataLoaded(Cursor cursor){
+    private void onRoutineNamesLoaded(ArrayList<RoutineNameItem> routineList){
         //get routine name from client appointment item
-        String selectedRoutine = mSaveApmtItem.routineName;
+        String selectedRoutine = mSaveItem.routineName;
 
         //get size of cursor
-        int count = cursor.getCount();
+        int count = routineList.size();
 
         //loop through cursor
         for(int i = 0; i < count; i++){
-            //move cursor to index position
-            cursor.moveToPosition(i);
-
             //get routineItem from cursor
-            RoutineNameItem item = new RoutineNameItem(cursor);
+            RoutineNameItem item = routineList.get(i);
 
             //get routine name from item
             String routine = item.routineName;
@@ -419,58 +474,8 @@ public class ClientAppointmentDialog extends DialogFragment {
             }
         }
 
-        //destroy loader
-        RoutineNameLoader.destroyLoader(mActivity);
-
         //initialize dialog
         initializeDialog();
-
-    }
-
-    /*
-     * void loadRoutine() - load routine exercises from database
-     */
-    private void loadRoutine(String routineName){
-        //load exercise routine by routine name
-        RoutineLoader.loadRoutineByName(mActivity, mUserId, routineName, new RoutineLoader.OnRoutineLoadListener() {
-            @Override
-            public void onRoutineLoadFinished(Cursor cursor) {
-                onRoutineLoaded(cursor);
-            }
-        });
-    }
-
-    /*
-     * void onRoutineLoaded - routine exercise data from database has been loaded
-     */
-    private void onRoutineLoaded(Cursor cursor){
-
-        //check that cursor is Not null or empty
-        if(cursor != null && cursor.getCount() > 0){
-            //get number of items in cursor
-            int count = cursor.getCount();
-
-            //loop through cursor
-            for(int i = 0; i < count; i++){
-                //move cursor to index position
-                cursor.moveToPosition(i);
-
-                //create routine item from cursor data
-                RoutineItem item = new RoutineItem(cursor);
-
-                //add routine exercise into exercise list
-                mExercises.add(item);
-            }
-        }
-
-        //destroy loader
-        RoutineLoader.destroyLoader(mActivity);
-
-        //check if routine spinner has been created
-        if(mSpnRoutine != null){
-            //enable routine spinner
-            mSpnRoutine.setEnabled(true);
-        }
 
     }
 
@@ -481,46 +486,47 @@ public class ClientAppointmentDialog extends DialogFragment {
 /*
  * Event Methods
  *      void onTimePickerSet(int,int) - appointment time has been selected
- *      void onSaveRequested() - save appointment has been requested
- *      void hasPassed(String) - check if selected time has already passed
+ *      void onDatePickerSet() - session date has been selected
+ *      void onTimePickerSet(int,int) - session time has been selected
  */
 /**************************************************************************************************/
     private void onRoutineSelected(int index){
-        mExercises.clear();
-
         //save routine data to save appointment item
-        mSaveApmtItem.routineName = mRoutineNames.get(index);
-
-        if(index != 0){
-            mSpnRoutine.setEnabled(false);
-            loadRoutine(mSaveApmtItem.routineName);
-        }
-    }
-
-    private void onDatePickerSet(int year, int month, int dayOfMonth){
-        String selectedDate = DateTimeHelper.getDate(year, month, dayOfMonth);
-
-        mSaveApmtItem.appointmentDate = selectedDate;
-
-        mTxtDateSelected.setText(selectedDate);
+        mSaveItem.routineName = mRoutineNames.get(index);
     }
 
     /*
-     * void onTimePickerSet(int,int) - appointment time has been selected
+     * void onDatePickerSet() - session date has been selected
+     */
+    private void onDatePickerSet(int year, int month, int dayOfMonth){
+        //get selected date
+        String selectedDate = DateTimeHelper.getDate(year, month, dayOfMonth);
+
+        //update display date
+        mTxtDateSelected.setText(selectedDate);
+
+        //save selected date to buffer
+        mSelectedDate = selectedDate;
+
+        //check if valid booking
+        checkBooking(mSelectedDate, mSelectedTime);
+    }
+
+    /*
+     * void onTimePickerSet(int,int) - session time has been selected
      */
     private void onTimePickerSet(int selectedHour, int selectedMinute){
+        //convert time to string value (24hour)
+        String strTime = DateTimeHelper.getTime(selectedHour, selectedMinute);
 
-        //convert time to string value
-        String strTime = DateTimeHelper.convert24Hour(selectedHour, selectedMinute);
+        // set current time into textView (AM/PM)
+        mTxtTimeSelected.setText(DateTimeHelper.convert24Hour(strTime));
 
-        // set current time into textView
-        mTxtTimeSelected.setText(strTime);
+        //save 24hour selected time
+        mSelectedTime = strTime;
 
-        //save time to save appointment item
-        mSaveApmtItem.appointmentTime = strTime;
-
-        //notify user if appointment time has passed
-        hasPassed(strTime);
+        //check if valid booking
+        checkBooking(mSelectedDate, mSelectedTime);
     }
 
     /*
@@ -529,28 +535,210 @@ public class ClientAppointmentDialog extends DialogFragment {
     private void onSaveRequested(){
         //check if save listener is Not null
         if(mSavedListener != null){
+            mSaveItem.datestamp = DateTimeHelper.convertDateToDatestamp(mSelectedDate);
+            mSaveItem.appointmentDate = mSelectedDate;
+            mSaveItem.appointmentTime = mSelectedTime;
             //notify save listener
-            mSavedListener.onSaveClicked(mSaveApmtItem, mExercises);
+            mSavedListener.onSaveClicked(mSaveItem);
         }
     }
 
     /*
-     * void hasPassed(String) - check if selected time has already passed
+     * void onDismiss(DialogInterface) - dialog dismiss event occurred
      */
-    private void hasPassed(String selectedTime){
-        //create "time has passed" message
-        String msg = mActivity.getString(R.string.msg_appointment_time_passed);
+    @Override
+    public void onDismiss(DialogInterface dialogInterface){
+        //check for listener
+        if(mDismissListener != null){
+            //notify listener for dismiss event
+            mDismissListener.onDismiss(dialogInterface);
+        }
+    }
 
-        //get current time
-        String currentTime = DateTimeHelper.getCurrentTime();
 
-        //compare current time with selected time
-        if(DateTimeHelper.isTime1AfterTime2(currentTime, selectedTime) == 1){
-            //selected time has already passed, notify user
-            Toast.makeText(mActivity, msg, Toast.LENGTH_LONG).show();
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Validation Methods
+ *      void checkBoooking() - check if booking is valid or not
+ *      boolean validateTime(String) - check if time has already past
+ *      void setDoubleBooked() - session date and time has already been scheduled
+ *      void setAlreadyBookedDate() - check if client has already been booked that day
+ *      boolean isToday() - check if selected date is currently today
+ *      HashMap<String,String> getScheduleMap(...) - get map used for validating date and time
+ *      void setDateText(...) - set date text and color
+ *      void setTimeText(...) - set time text and color
+ *      void setSaveText(...) - set visibility of save text
+ */
+/**************************************************************************************************/
+    /*
+     * void checkBoooking() - check if booking is valid or not
+     */
+    private void checkBooking(String selectedDate, String selectedTime){
+        //create past date message
+        String msgPastDate = mStrSessionDate + ": " + mMsgAlreadyPast + "!";
+
+        //get timestamp and datestamp
+        String timestamp = DateTimeHelper.getTimestamp(selectedDate, selectedTime);
+        String datestamp = DateTimeHelper.convertDateToDatestamp(selectedDate);
+
+        //get schedule map
+        HashMap<String,String> validationMap = getScheduleMap(selectedDate, selectedTime);
+
+        //check if today
+        boolean isToday = isToday(selectedDate);
+
+        //check if past date, (NOTE - today is consider past)
+        boolean dateHasPast = DateTimeHelper.hasDatePast(datestamp);
+
+        //check if already booked
+        boolean alreadyBooked = validationMap.containsValue(selectedDate);
+
+        //check if double booked, (NOTE - date/time could have already past)
+        boolean doubleBooked = validationMap.containsKey(timestamp);
+
+        //check if today
+        if(isToday){
+            //session date is today, check double booking
+            if(doubleBooked){
+                //date and time already booked, date and time invalid
+                setDoubleBooked();
+            }
+            else{
+                //is today, check if already booked
+                setAlreadyBookedDate(alreadyBooked);
+
+                //check time has not past
+                validateTime(timestamp);
+            }
+
+
+        }
+        else if(dateHasPast){
+            //date is in the past
+            setDateText(msgPastDate, mTxtOrange);
+            setTimeText(mStrSessionTime, mTxtBlack);
+            setSaveText(View.INVISIBLE);
+        }
+        else{
+            //date is in the future, check double booking
+            if(doubleBooked){
+                //date and time already booked, date and time invalid
+                setDoubleBooked();
+            }
+            else{
+                //check if already booked for that date
+                setAlreadyBookedDate(alreadyBooked);
+                setTimeText(mStrSessionTime, mTxtBlack);
+                setSaveText(View.VISIBLE);
+            }
         }
 
     }
+
+    /*
+     * boolean validateTime(String) - check if time has already past
+     */
+    private boolean validateTime(String timestamp){
+        String msgPastTime = mStrSessionTime + ": " + mMsgAlreadyPast + "!";
+
+        //check if time has already past, date has already been validated
+        boolean invalid = DateTimeHelper.hasAppointmentTimePassed(timestamp);
+        if(invalid){
+            //time has past
+            setTimeText(msgPastTime, mTxtOrange);
+            setSaveText(View.INVISIBLE);
+            return false;
+        }
+        else{
+            //time is valid
+            setTimeText(mStrSessionTime, mTxtBlack);
+            setSaveText(View.VISIBLE);
+            return true;
+        }
+    }
+
+    /*
+     * void setDoubleBooked() - session date and time has already been scheduled
+     */
+    private void setDoubleBooked(){
+        //set warning messages
+        String msgDateBooked = mStrSessionDate + ": " + mMsgAlreadyBooked;
+        String msgSameTime = mStrSessionTime + ": " + mMsgSameTime + "!";
+
+        //display messages
+        setDateText(msgDateBooked, mTxtOrange);
+        setTimeText(msgSameTime, mTxtOrange);
+        setSaveText(View.INVISIBLE);
+
+    }
+
+    /*
+     * void setAlreadyBookedDate() - check if client has already been booked that day
+     */
+    private void setAlreadyBookedDate(boolean alreadyBooked){
+        //set warning message
+        String msgDateBooked = mStrSessionDate + ": " + mMsgAlreadyBooked;
+
+        //check already booked
+        if(alreadyBooked){
+            //already booked, give warning (user will have option to save regardless)
+            setDateText(msgDateBooked, mTxtOrange);
+            mTxtSave.setText(mStrSaveAnyway);
+        }
+        else{
+            //not already booked for that day
+            setDateText(mStrSessionDate, mTxtBlack);
+            mTxtSave.setText(mStrSave);
+        }
+
+    }
+
+    /*
+     * boolean isToday() - check if selected date is currently today
+     */
+    private boolean isToday(String selectedDate){
+        String today = DateTimeHelper.getToday();
+
+        return today.equals(selectedDate);
+    }
+
+    /*
+     * HashMap<String,String> getScheduleMap(...) - get map used for validating date and time
+     */
+    private HashMap<String,String> getScheduleMap(String selectedDate, String selectedTime){
+        if(mEditMode){
+            return mEditScheduleMap;
+        }
+        else{
+            return mScheduleMap;
+        }
+    }
+
+    /*
+     * void setDateText(...) - set date text and color
+     */
+    private void setDateText(String msg, int color){
+        mTxtDate.setTextColor(color);
+        mTxtDate.setText(msg);
+    }
+
+    /*
+     * void setTimeText(...) - set time text and color
+     */
+    private void setTimeText(String msg, int color){
+        mTxtTime.setTextColor(color);
+        mTxtTime.setText(msg);
+    }
+
+    /*
+     * void setSaveText(...) - set visibility of save text
+     */
+    private void setSaveText(int visibility){
+        mTxtSave.setVisibility(visibility);
+    }
+
 
 /**************************************************************************************************/
 
