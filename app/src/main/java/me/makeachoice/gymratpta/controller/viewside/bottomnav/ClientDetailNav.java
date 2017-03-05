@@ -4,7 +4,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.MenuItem;
 
 import me.makeachoice.gymratpta.R;
@@ -104,6 +103,10 @@ public class ClientDetailNav extends MyBottomNav implements BottomNavigationView
                 maid = null;
         }
 
+        if(mListener != null){
+            mListener.onNavSelected(itemId);
+        }
+
         //load fragment
         loadFragment(maid);
 
@@ -114,7 +117,6 @@ public class ClientDetailNav extends MyBottomNav implements BottomNavigationView
      * void loadFragment(MyMaid) - load appropriate fragment requested by user
      */
     private void loadFragment(MyMaid maid) {
-        Log.d("Choice", "     load Fragment: " + maid.toString());
         //get fragment manger
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
 
