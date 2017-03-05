@@ -10,6 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 
 /**************************************************************************************************/
 /*
@@ -101,7 +102,9 @@ public class ClientScheduleFirebaseHelper {
 
     public void addClientScheduleByClientKey(String userId, String clientKey, ClientAppFBItem item){
         DatabaseReference ref = getClientScheduleReferenceByClientKey(userId, clientKey);
-        ref.push().setValue(item);
+
+        String timestamp = DateTimeHelper.getTimestamp(item.appointmentDate, item.appointmentTime);
+        ref.child(timestamp).setValue(item);
     }
 
 /**************************************************************************************************/
