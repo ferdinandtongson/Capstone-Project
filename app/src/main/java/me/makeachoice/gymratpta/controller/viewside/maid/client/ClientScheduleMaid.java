@@ -2,51 +2,43 @@ package me.makeachoice.gymratpta.controller.viewside.maid.client;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.firebase.client.AppointmentFirebaseHelper;
-import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientAppFirebaseHelper;
-import me.makeachoice.gymratpta.controller.modelside.firebase.client.ClientRoutineFirebaseHelper;
-import me.makeachoice.gymratpta.controller.modelside.loader.AppointmentLoader;
-import me.makeachoice.gymratpta.controller.modelside.query.AppointmentQueryHelper;
-import me.makeachoice.gymratpta.controller.modelside.query.ClientRoutineQueryHelper;
+import me.makeachoice.gymratpta.controller.modelside.butler.ClientRoutineButler;
+import me.makeachoice.gymratpta.controller.modelside.butler.RoutineButler;
+import me.makeachoice.gymratpta.controller.modelside.butler.ScheduleButler;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.ClientAppAdapter;
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.item.client.AppointmentFBItem;
-import me.makeachoice.gymratpta.model.item.client.AppointmentItem;
+import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientAppCardItem;
-import me.makeachoice.gymratpta.model.item.client.ClientAppFBItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.client.ClientRoutineItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.view.dialog.ClientAppointmentDialog;
 import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_SCHEDULE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING_APPOINTMENT;
 
 /**************************************************************************************************/
 /*
- * TODO - add description
+ * ClientScheduleMaid display the list of scheduled appointments a particular client has
+ *
  * Variables from MyMaid:
  *      mMaidKey - key string of instance Maid
  *      int mLayoutId - resource id number of fragment layout
@@ -77,17 +69,23 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
     private ClientItem mClientItem;
 
     private MyActivity mActivity;
-    private ArrayList<AppointmentItem> mAppointments;
+    private ArrayList<ScheduleItem> mScheduleList;
     private ArrayList<RoutineItem> mExercises;
+    private HashMap<String,String> mScheduleMap;
 
-    private boolean mEditingAppointment;
-    private AppointmentItem mDeleteItem;
-    private AppointmentItem mSaveItem;
+    private ScheduleItem mSaveItem;
+    private ScheduleItem mEditItem;
+    private ScheduleItem mDeleteItem;
     private boolean mRefreshOnDismiss;
 
-    private AppointmentLoader mAppointmentLoader;
+    private RoutineButler mRoutineButler;
+    private ScheduleButler mScheduleButler;
+    private ClientRoutineButler mClientRoutineButler;
+
     private ClientAppointmentDialog mAppDialog;
     private DeleteWarningDialog mWarningDialog;
+
+    private boolean mEditMode;
 
 
     //mTouchCallback - helper class that enables drag-and-drop and swipe to dismiss functionality to recycler
@@ -102,10 +100,16 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            onAppointmentDeleteRequest(viewHolder.getAdapterPosition());
+            onDeleteAppointment(viewHolder.getAdapterPosition());
         }
     };
 
+    ScheduleButler.OnScheduleLoadedListener mScheduleListener = new ScheduleButler.OnScheduleLoadedListener() {
+        @Override
+        public void onScheduleLoaded(ArrayList<ScheduleItem> scheduleList) {
+            scheduleLoaded(scheduleList);
+        }
+    };
 
 /**************************************************************************************************/
 
@@ -163,13 +167,18 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
 
         mActivity = (MyActivity)mFragment.getActivity();
 
-        mAppointments = new ArrayList<>();
+        mScheduleList = new ArrayList<>();
         mExercises = new ArrayList<>();
         mData = new ArrayList<>();
-        mEditingAppointment = false;
+        mScheduleMap = new HashMap<>();
+        mEditMode = false;
 
-        mAppointmentLoader = new AppointmentLoader(mActivity, mUserId);
-        loadAppointment();
+        String dateStamp = DateTimeHelper.getDatestamp(0);
+
+        mRoutineButler = new RoutineButler(mActivity, mUserId);
+        mClientRoutineButler = new ClientRoutineButler(mActivity, mUserId, mClientItem.fkey);
+        mScheduleButler = new ScheduleButler(mActivity, mUserId);
+        mScheduleButler.loadSchedulePendingByClientKey(mClientItem.fkey, dateStamp, LOADER_SCHEDULE, mScheduleListener);
     }
 
     /*
@@ -280,19 +289,21 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
     }
 
     /*
-     * ClientAppointmentDialog initializeAppointmentDialog - initialize appointment dialog
+     * ClientAppointmentDialog initializeScheduleDialog - initialize appointment dialog
      */
-    private ClientAppointmentDialog initializeAppointmentDialog(AppointmentItem item){
+    private ClientAppointmentDialog initializeScheduleDialog(ScheduleItem item){
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
         //create dialog
         mAppDialog = new ClientAppointmentDialog();
-        mAppDialog.setDialogValues(mActivity, mUserId, mClientItem, item);
+        mAppDialog.setDialogValues(mActivity, mUserId, mClientItem, item, mScheduleMap);
+        mAppDialog.setEditMode(mEditMode);
+
         mAppDialog.setOnSavedListener(new ClientAppointmentDialog.OnSaveClickListener() {
             @Override
-            public void onSaveClicked(AppointmentItem appItem, ArrayList<RoutineItem> exercises) {
-                onSaveAppointment(appItem, exercises);
+            public void onSaveClicked(ScheduleItem appItem) {
+                onSaveAppointment(appItem);
             }
         });
 
@@ -304,9 +315,10 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
     /*
      * DeleteWarningDialog initializeDialog(...) - delete warning dialog
      */
-    private DeleteWarningDialog initializeWarningDialog(AppointmentItem deleteItem, ClientItem clientItem) {
-        String strTitle = clientItem.clientName + " @" + mDeleteItem.appointmentTime;
+    private DeleteWarningDialog initializeWarningDialog(ScheduleItem deleteItem, ClientItem clientItem) {
+        String strTitle = clientItem.clientName + " @" + deleteItem.appointmentTime;
         mRefreshOnDismiss = true;
+        mDeleteItem = deleteItem;
 
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
@@ -322,7 +334,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 if(mRefreshOnDismiss){
-                    loadAppointment();
+                    onRefresh();
                 }
             }
         });
@@ -333,7 +345,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
             public void onDelete() {
                 mRefreshOnDismiss = false;
                 //delete routine
-                deleteAppointment(mDeleteItem);
+                butlerDeleteAppointment(mDeleteItem);
 
                 //dismiss dialog
                 mWarningDialog.dismiss();
@@ -361,71 +373,59 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         }
     }
 
+    private void onRefresh(){
+        //get timestamp for today
+        String dateStamp = DateTimeHelper.getDatestamp(0);
+
+        //get pending schedules
+        mScheduleButler.loadSchedulePendingByClientKey(mClientItem.fkey, dateStamp, LOADER_SCHEDULE, mScheduleListener);
+    }
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * Class Methods
- *      void loadAppointment() - load today's appointment data from database
- *      void loadClient() - load client data from database
- *      void onAppointmentsLoaded(Cursor) - appointments from database has been loaded
- *      void onClientLoaded(Cursor) - client data from database has been loaded
- *      createClientCardItem(...) - create clientCard item consumed by adapter
+ *      void scheduleLoaded(...) - scheduled appointments from database has been loaded
+ *      ClientAppCardItem createClientAppCardItem(...) - create appointmentCard item consumed by adapter
  */
 /**************************************************************************************************/
     /*
-     * void loadAppointment() - load today's appointment data from database
+     * void scheduleLoaded(...) - scheduled appointments from database has been loaded
      */
-    private void loadAppointment(){
-        Log.d("Choice", "ClientScheduleMaid.loadAppointment");
+    private void scheduleLoaded(ArrayList<ScheduleItem> scheduleList){
 
-        //start loader to get appointment data from database
-        mAppointmentLoader.loadAppointmentByClientKey(mClientItem.fkey,
-                new AppointmentLoader.OnAppointmentLoadListener() {
-            @Override
-            public void onAppointmentLoadFinished(Cursor cursor){
-                onAppointmentsLoaded(cursor);
-            }
-        });
-    }
-
-    /*
-     * void onAppointmentsLoaded(Cursor) - appointments from database has been loaded
-     */
-    private void onAppointmentsLoaded(Cursor cursor){
-        Log.d("Choice", "     cursor: " + cursor.getCount());
-        //clear appointment list array
-        mAppointments.clear();
-
-        //clear data list consumed by recycler
+        //clear buffer list array
+        mScheduleMap.clear();
+        mScheduleList.clear();
         mData.clear();
 
+
+        mScheduleList.addAll(scheduleList);
+
+        //clear data list consumed by recycler
+
         //get number of appointments loaded
-        int count = cursor.getCount();
+        int count = mScheduleList.size();
 
         //loop through cursor
         for(int i = 0; i < count; i++){
-            //move cursor to index position
-            cursor.moveToPosition(i);
 
             //create appointment item from cursor data
-            AppointmentItem item = new AppointmentItem(cursor);
+            ScheduleItem item = mScheduleList.get(i);
 
-            //add appointment item to list
-            mAppointments.add(item);
-
+            String timestamp = DateTimeHelper.getTimestamp(item.appointmentDate, item.appointmentTime);
+            mScheduleMap.put(timestamp, item.appointmentDate);
             mData.add(createClientAppCardItem(item));
         }
 
-        //destroy loader
-        mAppointmentLoader.destroyLoader();
         prepareFragment();
     }
 
     /*
      * ClientAppCardItem createClientAppCardItem(...) - create appointmentCard item consumed by adapter
      */
-    private ClientAppCardItem createClientAppCardItem(AppointmentItem appItem){
+    private ClientAppCardItem createClientAppCardItem(ScheduleItem appItem){
         //create clientCard item used by adapter
         ClientAppCardItem item = new ClientAppCardItem();
         item.appointmentDate = appItem.appointmentDate;
@@ -442,9 +442,9 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
 /*
  * Class Methods
  *      void onFabClicked(View) - floating action button clicked, open schedule appointment dialog
- *      void onIconClicked(View) - icon clicked
- *      void onEditAppointment() - edit appointment item
- *      void onSaveAppointment(...) - save appointment item
+ *      void onEditAppointment() - edit appointment request
+ *      void onSaveAppointment(...) - save appointment request
+ *      onDeleteAppointment(...) - delete appointment request
  *      void onAppointmentDeleteRequest(int) - delete appointment requested
  */
 /**************************************************************************************************/
@@ -452,40 +452,31 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
      * void onFabClicked(View) - floating action button clicked, open schedule appointment dialog
      */
     private void onFabClicked(View view){
-        //set delete appointment item to null
-        mDeleteItem = null;
-
-        //set edit appointment false, creating new appointment
-        mEditingAppointment = false;
+        //set edit mode false, creating new appointment
+        mEditMode = false;
 
         //initialize schedule appointment dialog
-        initializeAppointmentDialog(null);
+        initializeScheduleDialog(null);
     }
 
     /*
-     * void onEditAppointment() - edit appointment item
+     * void onEditAppointment() - edit appointment request
      */
     private void onEditAppointment(int index){
         //set edit appointment status flag as true
-        mEditingAppointment = true;
+        mEditMode = true;
 
         //save edit appointment as delete appointment item
-        mDeleteItem = mAppointments.get(index);
+        mEditItem = mScheduleList.get(index);
 
         //open schedule appointment dialog
-        initializeAppointmentDialog(mDeleteItem);
+        initializeScheduleDialog(mEditItem);
     }
 
     /*
-     * void onSaveAppointment(...) - save appointment item
+     * void onSaveAppointment(...) - save appointment request
      */
-    private void onSaveAppointment(AppointmentItem appointmentItem, ArrayList<RoutineItem> exercises){
-        //clear routine exercise list
-        mExercises.clear();
-
-        //save new routine exercise list
-        mExercises = exercises;
-
+    private void onSaveAppointment(ScheduleItem appointmentItem){
         //get save appointment item
         mSaveItem = appointmentItem;
 
@@ -493,25 +484,26 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         mAppDialog.dismiss();
 
         //check if editing an old appointment
-        if(mEditingAppointment){
+        if(mEditMode){
             //yes, delete old appointment (new appointment will be saved after deletion)
-            deleteAppointment(mDeleteItem);
+            butlerDeleteAppointment(mEditItem);
         }
         else{
+
             //no, save new appointment
-            saveAppointment(mSaveItem, mExercises);
+            saveAppointment(mSaveItem);
         }
     }
 
     /*
-     * void onAppointmentDeleteRequest(int) - delete appointment requested
+     * void onDeleteAppointment(int) - delete appointment request
      */
-    private void onAppointmentDeleteRequest(int index){
+    private void onDeleteAppointment(int index){
         //set editing old appointment flag, false
-        mEditingAppointment = false;
+        mEditMode = false;
 
         //get appointment item to be deleted
-        mDeleteItem = mAppointments.get(index);
+        mDeleteItem = mScheduleList.get(index);
 
         //get user shared preference
         SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
@@ -526,7 +518,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         }
         else{
             //no warning, delete routine
-            deleteAppointment(mDeleteItem);
+            butlerDeleteAppointment(mDeleteItem);
         }
     }
 
@@ -536,118 +528,99 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
 /*
  * Save Methods
  *      void saveAppointment(...) - save appointment
- *      void saveAppointmentToFirebase(AppointmentItem) - save appointment to firebase
- *      void saveAppointmentToAppointmentFB(AppointmentItem) - save appointment to appointment firebase
- *      void saveAppointmentToClientAppFB(AppointmentItem) - save appointment to client appointment firebase
- *      void saveAppointmentToDatabase(...) - save appointment to local database
+ *      void onSaveRoutineLoaded(...) - exercise routine to save has been loaded
+ *      void butlerSaveRoutine(int) - user butler to save exercise routine
+ *      void butlerSaveAppointment(...) - use butler to save scheduled appointment
  */
 /**************************************************************************************************/
+    private int mRoutineCounter;
+    private ScheduleItem mRScheduleItem;
     /*
      * void saveAppointment(...) - save appointment
      */
-    private void saveAppointment(AppointmentItem saveItem, ArrayList<RoutineItem> exercises){
-        //save to firebase
-        saveAppointmentToFirebase(saveItem);
+    private void saveAppointment(ScheduleItem saveItem){
+        //save schedule to be saved
+        mSaveItem = saveItem;
 
-        //save to firebase
-        saveExercisesToFirebase(saveItem, exercises);
+        //get "none selected" routine name
+        String strNoneSelected = mActivity.getString(R.string.msg_none_selected);
 
-        //save to local database
-        saveAppointmentToDatabase(saveItem);
-
-        //save to local database
-        saveExercisesToDatabase(saveItem, exercises);
-
-        //load appointments to refresh recycler view
-        loadAppointment();
-
+        //check if routine is "none selected"
+        if(!strNoneSelected.equals(saveItem.routineName)){
+            //a routine was selected, get exercises in routine
+            mRoutineButler.loadRoutineByName(mSaveItem.routineName, LOADER_ROUTINE, new RoutineButler.OnLoadedListener() {
+                @Override
+                public void onLoaded(ArrayList<RoutineItem> routineList) {
+                    //routine list has loaded
+                    onSaveRoutineLoaded(routineList);
+                }
+            });
+        }
+        else{
+            //no routine, save scheduled appointment
+            butlerSaveAppointment(mSaveItem);
+        }
     }
 
     /*
-     * void saveAppointmentToFirebase(AppointmentItem) - save appointment to firebase
+     * void onSaveRoutineLoaded(...) - exercise routine to save has been loaded
      */
-    private void saveAppointmentToFirebase(AppointmentItem saveItem){
-        //save appointment to appointment firebase
-        saveAppointmentToAppointmentFB(saveItem);
+    private void onSaveRoutineLoaded(ArrayList<RoutineItem> routineList){
+        //clear exercise buffer list
+        mExercises.clear();
 
-        //save appointment to client appointment firebase
-        saveAppointmentToClientAppFB(saveItem);
+        //save exercise to buffer
+        mExercises.addAll(routineList);
+
+        //set routine recursive counter
+        mRoutineCounter = 0;
+
+        //set schedule item used in recursive method
+        mRScheduleItem = mSaveItem;
+
+        //save routine (recursive)
+        butlerSaveRoutine(mRoutineCounter);
     }
+
 
     /*
-     * void saveAppointmentToAppointmentFB(AppointmentItem) - save appointment to appointment firebase
+     * void butlerSaveRoutine(int) - user butler to save exercise routine
      */
-    private void saveAppointmentToAppointmentFB(AppointmentItem saveItem){
-        //get appointment firebase helper instance
-        AppointmentFirebaseHelper appointmentFB = AppointmentFirebaseHelper.getInstance();
+    private void butlerSaveRoutine(int count){
+        //check recursive counter, less than exercise list
+        if(mRoutineCounter < mExercises.size()){
+            //get client routine item
+            ClientRoutineItem item = new ClientRoutineItem(mRScheduleItem, mExercises.get(count));
 
-        //create appointment firebase item
-        AppointmentFBItem appointmentFBItem = new AppointmentFBItem();
-        appointmentFBItem.appointmentTime = saveItem.appointmentTime;
-        appointmentFBItem.clientKey = saveItem.clientKey;
-        appointmentFBItem.clientName = saveItem.clientName;
-        appointmentFBItem.routineName = saveItem.routineName;
-        appointmentFBItem.status = saveItem.status;
+            //save client routine to database
+            mClientRoutineButler.saveClientRoutine(item, new ClientRoutineButler.OnSavedListener() {
+                @Override
+                public void onSaved() {
+                    //increase counter
+                    mRoutineCounter++;
 
-        //save appointment item to firebase
-        appointmentFB.addAppointmentByDay(mUserId, saveItem.appointmentDate, appointmentFBItem);
-
-    }
-
-    /*
-     * void saveAppointmentToClientAppFB(AppointmentItem) - save appointment to client appointment firebase
-     */
-    private void saveAppointmentToClientAppFB(AppointmentItem saveItem){
-        //get client appointment firebase helper instance
-        ClientAppFirebaseHelper clientFB = ClientAppFirebaseHelper.getInstance();
-
-        //create client appointment firebase item
-        ClientAppFBItem clientFBItem = new ClientAppFBItem();
-        clientFBItem.appointmentDate = saveItem.appointmentDate;
-        clientFBItem.appointmentTime = saveItem.appointmentTime;
-        clientFBItem.clientName = saveItem.clientName;
-        clientFBItem.routineName = saveItem.routineName;
-        clientFBItem.status = saveItem.status;
-
-        //save client appointment to firebase
-        clientFB.addClientAppByClientKey(mUserId, saveItem.clientKey, clientFBItem);
-    }
-
-    /*
-     * void saveAppointmentToDatabase(...) - save appointment to local database
-     */
-    private void saveAppointmentToDatabase(AppointmentItem saveItem){
-        //get uri value for routine name table
-        Uri uriValue = Contractor.AppointmentEntry.CONTENT_URI;
-
-        //appointment is new, add appointment to database
-        Uri uri = mActivity.getContentResolver().insert(uriValue, saveItem.getContentValues());
-
-    }
-
-    private void saveExercisesToFirebase(AppointmentItem appItem, ArrayList<RoutineItem> exercises){
-        //get client routine firebase helper instance
-        ClientRoutineFirebaseHelper routineFB = ClientRoutineFirebaseHelper.getInstance();
-
-        //save client appointment to firebase
-        routineFB.addRoutineDataByDateTime(mUserId, appItem.clientKey, appItem.appointmentDate,
-                appItem.appointmentTime, exercises);
-
-    }
-
-    private void saveExercisesToDatabase(AppointmentItem saveItem, ArrayList<RoutineItem> exercises){
-        //get uri value for routine name table
-        Uri uriValue = Contractor.ClientRoutineEntry.CONTENT_URI;
-
-        int count = exercises.size();
-        for(int i = 0; i < count; i++){
-            RoutineItem exercise = exercises.get(i);
-            ClientRoutineItem item = new ClientRoutineItem(saveItem, exercise);
-
-            //appointment is new, add appointment to database
-            Uri uri = mActivity.getContentResolver().insert(uriValue, item.getContentValues());
+                    //save exercise routine
+                    butlerSaveRoutine( mRoutineCounter);
+                }
+            });
+        }
+        else{
+            //no more exercises to save, save scheduled appointment
+            butlerSaveAppointment(mRScheduleItem);
         }
 
+    }
+
+    /*
+     * void butlerSaveAppointment(...) - use butler to save scheduled appointment
+     */
+    private void butlerSaveAppointment(ScheduleItem saveItem){
+        mScheduleButler.saveSchedule(saveItem, new ScheduleButler.OnScheduleSavedListener() {
+            @Override
+            public void onScheduleSaved() {
+                onRefresh();
+            }
+        });
     }
 
 /**************************************************************************************************/
@@ -655,148 +628,37 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
 /**************************************************************************************************/
 /*
  * Delete Methods
- *      void deleteAppointment(AppointmentItem) - delete appointment
+ *      void deleteAppointment(ScheduleItem) - delete appointment
  *      void deleteAppointmentFromFirebase(...) - delete appointment from firebase
  *      void deleteAppointmentFromDatabase(...) - delete appointment data from database
  */
 /**************************************************************************************************/
     /*
-     * void deleteAppointment(AppointmentItem) - delete appointment
+     * void butlerDeleteAppointment(ScheduleItem) - delete appointment
      */
-    private void deleteAppointment(AppointmentItem deleteItem){
-        deleteRoutineExercises(deleteItem);
+    private void butlerDeleteAppointment(ScheduleItem deleteItem){
+        mDeleteItem = deleteItem;
+        mScheduleButler.deleteSchedule(deleteItem, new ScheduleButler.OnScheduleDeletedListener() {
+            @Override
+            public void onScheduleDeleted() {
+                butlerDeleteRoutine(mDeleteItem);
+            }
+        });
     }
 
-    private void deleteRoutineExercises(AppointmentItem deleteItem){
-        //create string values used to delete appointment
-        String appDate = deleteItem.appointmentDate;
-        final String appTime = deleteItem.appointmentTime;
-        String clientKey = deleteItem.clientKey;
-
-        //get client routine firebase helper
-        ClientRoutineFirebaseHelper routineFB = ClientRoutineFirebaseHelper.getInstance();
-
-        //delete client routine from firebase
-        routineFB.deleteClientRoutine(mUserId, clientKey, appDate, appTime, new ValueEventListener() {
+    private void butlerDeleteRoutine(ScheduleItem deleteItem){
+        mClientRoutineButler.deleteClientRoutine(deleteItem, new ClientRoutineButler.OnDeletedListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                deleteAppointmentFromFirebase(mDeleteItem);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onDeleted() {
+                if(mEditMode){
+                    saveAppointment(mSaveItem);
+                }
+                else{
+                    onRefresh();
+                }
             }
         });
 
-    }
-
-    /*
-     * void deleteAppointmentFromFirebase(...) - delete appointment from firebase
-     */
-    private void deleteAppointmentFromFirebase(AppointmentItem deleteItem){
-        //create string values used to delete appointment
-        String appDate = deleteItem.appointmentDate;
-        final String appTime = deleteItem.appointmentTime;
-        String clientKey = deleteItem.clientKey;
-        String clientName = deleteItem.clientName;
-
-        //get appointment firebase helper instance
-        AppointmentFirebaseHelper appointmentFB = AppointmentFirebaseHelper.getInstance();
-        //delete appointment from firebase
-        appointmentFB.deleteAppointment(mUserId, appDate, clientName, appTime, new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    AppointmentFBItem appointment = postSnapshot.getValue(AppointmentFBItem.class);
-                    if(appointment.appointmentTime.equals(appTime)){
-                        postSnapshot.getRef().removeValue();
-                    }
-                }
-
-                if(mEditingAppointment){
-                    saveAppointmentToAppointmentFB(mSaveItem);
-                    saveExercisesToFirebase(mSaveItem,mExercises);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //does nothing
-            }
-        });
-
-        //get client appointment firebase helper
-        ClientAppFirebaseHelper clientFB = ClientAppFirebaseHelper.getInstance();
-        //delete client appointment from firebase
-        clientFB.deleteAppointment(mUserId, clientKey, appDate, appTime, new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    ClientAppFBItem appointment = postSnapshot.getValue(ClientAppFBItem.class);
-                    if(appointment.appointmentTime.equals(appTime)){
-                        postSnapshot.getRef().removeValue();
-                    }
-                }
-                if(mEditingAppointment){
-                    saveAppointmentToClientAppFB(mSaveItem);
-                }
-                deleteAppointmentFromDatabase(mDeleteItem);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //does nothing
-            }
-        });
-
-    }
-
-    /*
-     * void deleteAppointmentFromDatabase(...) - delete appointment data from database
-     */
-    private void deleteAppointmentFromDatabase(AppointmentItem deleteItem){
-        //create string values used to delete appointment
-        String appDate = deleteItem.appointmentDate;
-        String appTime = deleteItem.appointmentTime;
-        String clientKey = deleteItem.clientKey;
-
-        //get uri value from appointment table
-        Uri uri = Contractor.AppointmentEntry.CONTENT_URI;
-
-        //remove appointment from database
-        int appointmentDeleted = mActivity.getContentResolver().delete(uri,
-                AppointmentQueryHelper.clientKeyDateTimeSelection,
-                new String[]{mUserId, clientKey, appDate, appTime});
-
-        deleteClientRoutineFromDatabase(deleteItem);
-    }
-
-    /*
-     * void deleteClientRoutineFromDatabase(...) - delete client routine data from database
-     */
-    private void deleteClientRoutineFromDatabase(AppointmentItem deleteItem){
-        //create string values used to delete appointment
-        String appDate = deleteItem.appointmentDate;
-        String appTime = deleteItem.appointmentTime;
-        String clientKey = deleteItem.clientKey;
-
-        //get uri value from appointment table
-        Uri uri = Contractor.ClientRoutineEntry.CONTENT_URI;
-
-        //remove client routine from database
-        int clientRoutineDeleted = mActivity.getContentResolver().delete(uri,
-                ClientRoutineQueryHelper.clientKeyDateTimeSelection,
-                new String[]{mUserId, clientKey, appDate, appTime});
-
-        if(mEditingAppointment) {
-            //editing, save new appointment used to replace old appointment
-            saveAppointmentToDatabase(mSaveItem);
-            saveExercisesToDatabase(mSaveItem, mExercises);
-        }else{
-            //load appointments to update recycler view
-            loadAppointment();
-        }
     }
 
 /**************************************************************************************************/
