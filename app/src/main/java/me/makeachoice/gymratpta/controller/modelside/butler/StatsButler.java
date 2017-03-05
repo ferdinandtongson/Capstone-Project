@@ -222,21 +222,14 @@ public class StatsButler {
 
         //create string values used to delete notes
         String clientKey = deleteItem.clientKey;
-        String appDate = deleteItem.appointmentDate;
-        final String appTime = deleteItem.appointmentTime;
+        String timestamp = deleteItem.timestamp;
 
         //get notes firebase helper instance
-        StatsFirebaseHelper notesFB = StatsFirebaseHelper.getInstance();
+        StatsFirebaseHelper fbHelper = StatsFirebaseHelper.getInstance();
         //delete notes from firebase
-        notesFB.deleteStats(mUserId, clientKey, appDate, appTime, new ValueEventListener() {
+        fbHelper.deleteStats(mUserId, clientKey, timestamp, new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    StatsFBItem notes = postSnapshot.getValue(StatsFBItem.class);
-                    if(notes.appointmentTime.equals(appTime)){
-                        postSnapshot.getRef().removeValue();
-                    }
-                }
                 deleteStatsFromDatabase(mDeleteItem);
             }
 
