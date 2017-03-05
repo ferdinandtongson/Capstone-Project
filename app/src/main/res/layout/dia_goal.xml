@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/diaGoals_txtGoals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Goals"
+        style="@style/GymRat.Dialog.TextView.Large"
+        />
+
+    <RelativeLayout
+        android:id="@+id/diaGoals_relGoals"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/diaGoals_txtGoals"
+        android:paddingTop="3dp"
+        >
+
+        <EditText
+            android:id="@+id/diaGoals_edtGoals"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            style="@style/GymRat.Dialog.EditText.Small"
+            />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/diaGoals_txtSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diaGoals_relGoals"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"
+        android:text="@string/save"
+        style="@style/GymRat.Dialog.TextView.Button.Small"
+        />
+
+    <TextView
+        android:id="@+id/diaGoals_txtCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/diaGoals_txtSave"
+        android:layout_below="@id/diaGoals_relGoals"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/cancel"
+        style="@style/GymRat.Dialog.TextView.Button.Small"
+        />
+
+</RelativeLayout>
