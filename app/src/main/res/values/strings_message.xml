@@ -19,11 +19,13 @@
     <string name="msg_appointment_time_passed" translatable="true">Appointment time has already passed!</string>
     <string name="msg_none_selected" translatable="true">- None Selected -</string>
 
-    <string name="msg_forget_input">Did you forget to input a value?</string>
-    <string name="msg_delete_anyway">has recorded values! Delete anyway?</string>
-    <string name="msg_already_past">already past</string>
-    <string name="msg_already_booked">already booked today</string>
-    <string name="msg_booked_that_time">same time booked</string>
-    <string name="msg_update_session_part1">Updating session</string>
-    <string name="msg_update_session_part2">will delete previous values</string>
+    <string name="msg_forget_input" translatable="true">Did you forget to input a value?</string>
+    <string name="msg_delete_anyway" translatable="true">has recorded values! Delete anyway?</string>
+    <string name="msg_already_past" translatable="true">already past</string>
+    <string name="msg_already_booked" translatable="true">already booked today</string>
+    <string name="msg_booked_that_time" translatable="true">same time booked</string>
+    <string name="msg_update_session_part1" translatable="true">Updating session</string>
+    <string name="msg_update_session_part2" translatable="true">will delete previous values</string>
+
+    <string name="msg_today_session" translatable="true">Today\'s Sessions</string>
 </resources>
