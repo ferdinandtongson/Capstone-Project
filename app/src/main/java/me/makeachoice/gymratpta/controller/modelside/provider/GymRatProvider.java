@@ -74,6 +74,8 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_ROUTINE_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_PAST;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_PENDING;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_CLIENT_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_RANGE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_TIMESTAMP;
@@ -193,6 +195,12 @@ public class GymRatProvider extends ContentProvider {
                 break;
             case SCHEDULE_WITH_RANGE:
                 retCursor = ScheduleQueryHelper.getScheduleByRange(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case SCHEDULE_PENDING:
+                retCursor = ScheduleQueryHelper.getPendingSchedule(mOpenHelper, uri, projection, sortOrder);
+                break;
+            case SCHEDULE_PAST:
+                retCursor = ScheduleQueryHelper.getPastSchedule(mOpenHelper, uri, projection, sortOrder);
                 break;
             case NOTES_WITH_UID:
                 retCursor = NotesQueryHelper.getNotesByUId(mOpenHelper, uri, projection, sortOrder);

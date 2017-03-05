@@ -53,6 +53,8 @@ public class UriMatcherHelper {
     public static final int SCHEDULE_WITH_TIMESTAMP = 702;
     public static final int SCHEDULE_WITH_CLIENT_KEY = 703;
     public static final int SCHEDULE_WITH_RANGE = 704;
+    public static final int SCHEDULE_PENDING = 705;
+    public static final int SCHEDULE_PAST = 706;
 
     public static final int NOTES = 800;
     public static final int NOTES_WITH_UID = 801;
@@ -221,6 +223,15 @@ public class UriMatcherHelper {
         //"content://CONTENT_AUTHORITY/userSchedule/[uid]/timestamp/[startDate]/[endDate]
         String rangePath = MyContractor.PATH_SCHEDULE + "/*/" + ScheduleContract.COLUMN_TIMESTAMP + "/*/*";
         matcher.addURI(authority, rangePath, SCHEDULE_WITH_RANGE);
+
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/pending/[pendingDate]
+        String pendingPath = MyContractor.PATH_SCHEDULE + "/*/*/" + ScheduleContract.PENDING + "/*";
+        matcher.addURI(authority, pendingPath, SCHEDULE_PENDING);
+
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/past/[pastDate]
+        String pastPath = MyContractor.PATH_SCHEDULE + "/*/*/" + ScheduleContract.PAST + "/*";
+        matcher.addURI(authority, clientKeyPath, SCHEDULE_PAST);
+
     }
 
     private static void addUriNotes(UriMatcher matcher, String authority){

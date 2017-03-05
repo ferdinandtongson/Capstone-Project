@@ -50,6 +50,8 @@ import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherH
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_ROUTINE_NAME;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.ROUTINE_WITH_UID;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_PAST;
+import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_PENDING;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_CLIENT_KEY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_RANGE;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.SCHEDULE_WITH_TIMESTAMP;
@@ -126,6 +128,10 @@ public class UriTypeHelper {
             case SCHEDULE_WITH_CLIENT_KEY:
                 return ScheduleContract.CONTENT_TYPE;
             case SCHEDULE_WITH_RANGE:
+                return ScheduleContract.CONTENT_TYPE;
+            case SCHEDULE_PENDING:
+                return ScheduleContract.CONTENT_TYPE;
+            case SCHEDULE_PAST:
                 return ScheduleContract.CONTENT_TYPE;
             case NOTES:
                 return NotesContract.CONTENT_TYPE;
