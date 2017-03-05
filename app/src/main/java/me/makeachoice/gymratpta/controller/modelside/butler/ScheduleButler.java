@@ -98,12 +98,12 @@ public class ScheduleButler {
     /*
      * void loadSchedule() - load schedule data for given day from database
      */
-    public void loadSchedule(int loaderId, String datestamp, OnScheduleLoadedListener listener){
+    public void loadSchedule(int loaderId, String timestamp, OnScheduleLoadedListener listener){
         mLoaderId = loaderId;
         mLoadListener = listener;
 
         //start loader to get schedule data from database
-        mScheduleLoader.loadScheduleByTimestamp(datestamp, mLoaderId,
+        mScheduleLoader.loadScheduleByTimestamp(timestamp, mLoaderId,
                 new ScheduleLoader.OnScheduleLoadListener() {
                     @Override
                     public void onScheduleLoadFinished(Cursor cursor){
@@ -111,6 +111,70 @@ public class ScheduleButler {
                     }
                 });
     }
+
+    public void loadScheduleByClientKey(String clientKey, int loaderId, OnScheduleLoadedListener listener){
+        mLoaderId= loaderId;
+        mLoadListener = listener;
+
+        //start loader to get schedule data from database
+        mScheduleLoader.loadScheduleByClientKey(clientKey, mLoaderId,
+                new ScheduleLoader.OnScheduleLoadListener() {
+                    @Override
+                    public void onScheduleLoadFinished(Cursor cursor){
+                        onScheduleLoaded(cursor);
+                    }
+                });
+
+    }
+
+    /*
+     * void loadRangeSchedule() - load schedule data for given week from database
+     */
+    public void loadRangeSchedule(int loaderId, String[] dateRange, OnScheduleLoadedListener listener){
+        mLoaderId = loaderId;
+        mLoadListener = listener;
+
+        //start loader to get schedule data from database
+        mScheduleLoader.loadScheduleByRange(dateRange, mLoaderId,
+                new ScheduleLoader.OnScheduleLoadListener() {
+                    @Override
+                    public void onScheduleLoadFinished(Cursor cursor){
+                        onScheduleLoaded(cursor);
+                    }
+                });
+    }
+
+    public void loadSchedulePendingByClientKey(String clientKey, String pendingDate, int loaderId, OnScheduleLoadedListener listener){
+        mLoaderId= loaderId;
+        mLoadListener = listener;
+
+        //start loader to get schedule data from database
+        mScheduleLoader.loadPendingScheduleByClientKey(clientKey, pendingDate, mLoaderId,
+                new ScheduleLoader.OnScheduleLoadListener() {
+                    @Override
+                    public void onScheduleLoadFinished(Cursor cursor){
+                        onScheduleLoaded(cursor);
+                    }
+                });
+
+    }
+
+    public void loadSchedulePastByClientKey(String clientKey, String pastDate, int loaderId, OnScheduleLoadedListener listener){
+        mLoaderId= loaderId;
+        mLoadListener = listener;
+
+        //start loader to get schedule data from database
+        mScheduleLoader.loadPastScheduleByClientKey(clientKey, pastDate, mLoaderId,
+                new ScheduleLoader.OnScheduleLoadListener() {
+                    @Override
+                    public void onScheduleLoadFinished(Cursor cursor){
+                        onScheduleLoaded(cursor);
+                    }
+                });
+
+    }
+
+
 
     /*
      * void onScheduleLoaded(Cursor) - schedule from database has been loaded
@@ -140,23 +204,6 @@ public class ScheduleButler {
         if(mLoadListener != null){
             mLoadListener.onScheduleLoaded(mScheduleList);
         }
-    }
-
-    /*
-     * void loadRangeSchedule() - load schedule data for given week from database
-     */
-    public void loadRangeSchedule(int loaderId, String[] dateRange, OnScheduleLoadedListener listener){
-        mLoaderId = loaderId;
-        mLoadListener = listener;
-
-        //start loader to get schedule data from database
-        mScheduleLoader.loadScheduleByRange(dateRange, mLoaderId,
-                new ScheduleLoader.OnScheduleLoadListener() {
-                    @Override
-                    public void onScheduleLoadFinished(Cursor cursor){
-                        onScheduleLoaded(cursor);
-                    }
-                });
     }
 
 
