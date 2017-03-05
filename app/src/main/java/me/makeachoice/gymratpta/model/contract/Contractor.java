@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
@@ -35,12 +34,7 @@ public class Contractor {
     // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
     // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
     public static final String PATH_USER = "user";
-    public static final String PATH_CLIENT = "client";
-    public static final String PATH_CLIENT_ROUTINE = "clientRoutine";
-    public static final String PATH_CLIENT_EXERCISE = "clientExercise";
     public static final String PATH_CATEGORY = "category";
-    public static final String PATH_EXERCISE = "exercise";
-    public static final String PATH_ROUTINE = "routine";
     public static final String PATH_ROUTINE_NAME = "routineName";
 
 
@@ -79,55 +73,6 @@ public class Contractor {
         }
     }
 
-    /*
-     * ClientEntry - GymRat app client
-     */
-    public static class ClientEntry extends ClientColumns implements BaseColumns {
-
-        public static Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLIENT).build();
-
-        public static String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT;
-        public static String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLIENT;
-
-        //"content://CONTENT_AUTHORITY/client/[_id]
-        public static Uri buildClientUri(long id) {
-            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/client/[uid]
-        public static Uri buildClientByUID(String uid) {
-            return CONTENT_URI.buildUpon().appendPath(uid).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fKey]
-        public static Uri buildClientByFKey(String uid, String fKey) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_FKEY).appendPath(fKey).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/client/[uid]/client_status/[status]
-        public static Uri buildClientByStatus(String uid, String status) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CLIENT_STATUS).appendPath(status).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/client/[uid]/....
-        public static String getUIdFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
-        //"content://CONTENT_AUTHORITY/client/[uid]/fkey/[fKey]
-        public static String getFKeyFromUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
-
-        //"content://CONTENT_AUTHORITY/client/[uid]/client_status/[status]
-        public static String getStatusFromUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
-
-    }
 
 
 /**************************************************************************************************/
@@ -235,10 +180,5 @@ public class Contractor {
 
 /**************************************************************************************************/
 
-/**************************************************************************************************/
-/*
- *  Exercise Inner Classes
- */
-/**************************************************************************************************/
 
 }
