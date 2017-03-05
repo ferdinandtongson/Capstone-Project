@@ -2,7 +2,6 @@ package me.makeachoice.gymratpta.view.dialog;
 
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -59,9 +58,7 @@ public class AppointmentDialog extends DialogFragment {
     //mRoutineIndex - routine spinner index used if editing a previous client appointment item
     private int mRoutineIndex;
 
-    //mSaveApmtItem - client appointment item to save
     private ScheduleItem mSaveApmtItem;
-    private ScheduleItem mOldAptmItem;
 
     private HashMap<String,String> mAppointmentMap;
     private HashMap<String,String> mEditAppointmentMap;
@@ -103,9 +100,6 @@ public class AppointmentDialog extends DialogFragment {
     private String mStrSaveAnyway;
 
     //background drawable and color
-    private Drawable mBgBlue;
-    private Drawable mBgOrange;
-    private int mBgGray;
     private int mTxtOrange;
     private int mTxtBlack;
 
@@ -256,17 +250,9 @@ public class AppointmentDialog extends DialogFragment {
         mEditMode = isEditMode;
 
         if(mEditMode){
-            mOldAptmItem = new ScheduleItem();
-            mOldAptmItem.uid = mUserId;
-            mOldAptmItem.datestamp = mSaveApmtItem.datestamp;
-            mOldAptmItem.appointmentDate = mSaveApmtItem.appointmentDate;
-            mOldAptmItem.appointmentTime = mSaveApmtItem.appointmentTime;
-            mOldAptmItem.clientKey = mSaveApmtItem.clientKey;
-            mOldAptmItem.clientName = mSaveApmtItem.clientName;
-            mOldAptmItem.routineName = mSaveApmtItem.routineName;
-            mOldAptmItem.status = mSaveApmtItem.status;
+            mEditAppointmentMap.clear();
 
-            String mapKey = mOldAptmItem.clientKey + mOldAptmItem.appointmentTime;
+            String mapKey = mSaveApmtItem.clientKey + mSaveApmtItem.appointmentTime;
             mEditAppointmentMap.putAll(mAppointmentMap);
             mEditAppointmentMap.remove(mapKey);
         }
@@ -309,10 +295,6 @@ public class AppointmentDialog extends DialogFragment {
 
         mStrSave = mActivity.getString(R.string.save);
         mStrSaveAnyway = mActivity.getString(R.string.save_anyway);
-
-        mBgBlue = DeprecatedUtility.getDrawable(mActivity, R.drawable.button_border);
-        mBgOrange = DeprecatedUtility.getDrawable(mActivity, R.drawable.bg_orange);
-        mBgGray = DeprecatedUtility.getColor(mActivity, R.color.silver_90);
 
         mTxtOrange = DeprecatedUtility.getColor(mActivity, R.color.orange);
         mTxtBlack = DeprecatedUtility.getColor(mActivity, R.color.black);
@@ -670,7 +652,6 @@ public class AppointmentDialog extends DialogFragment {
             mTxtTimeLabel.setText(msg);
             mTxtTimeLabel.setTextColor(mTxtOrange);
 
-            mTxtSave.setBackgroundColor(mBgGray);
             mTxtSave.setClickable(false);
             mTxtSave.setVisibility(View.INVISIBLE);
             return false;
@@ -679,7 +660,6 @@ public class AppointmentDialog extends DialogFragment {
             mTxtTimeLabel.setText(mStrSessionTime);
             mTxtTimeLabel.setTextColor(mTxtBlack);
 
-            mTxtSave.setBackground(mBgBlue);
             mTxtSave.setClickable(true);
             mTxtSave.setVisibility(View.VISIBLE);
 
