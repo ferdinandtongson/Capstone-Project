@@ -4,6 +4,8 @@ import java.util.Date;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.StubMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistoryNotesMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistoryStatsMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DailyMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DayViewMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.ScheduleDetailMaid;
@@ -204,13 +206,24 @@ public class MaidRegistry extends MyMaidRegistry {
         registerMaid(maidKey, maid);
     }
 
-    /*public void initializeClientHistoryViewPagerMaid(String maidKey, int layoutId, ArrayList<ClientCardItem> clients){
+    public void initializeClientHistoryNotesMaid(String maidKey, int layoutId, String userId,
+                                                 ClientItem item){
         //create maid
-        //DayViewMaid maid = new DayViewMaid(maidKey, layoutId, clients);
+        ClientHistoryNotesMaid maid = new ClientHistoryNotesMaid(maidKey, layoutId, userId, item);
 
         //register maid
-        //registerMaid(maidKey, maid);
-    }*/
+        registerMaid(maidKey, maid);
+    }
+
+    public void initializeClientHistoryStatsMaid(String maidKey, int layoutId, String userId,
+                                                 ClientItem item){
+        //create maid
+        ClientHistoryStatsMaid maid = new ClientHistoryStatsMaid(maidKey, layoutId, userId, item);
+
+        //register maid
+        registerMaid(maidKey, maid);
+    }
+
 
 /**************************************************************************************************/
 
