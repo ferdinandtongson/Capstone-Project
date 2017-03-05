@@ -8,8 +8,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
+import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT;
@@ -102,17 +101,17 @@ public class ClientLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request client cursor from local database
-                        Uri uri = Contractor.ClientEntry.buildClientByUID(mUserId);
+                        Uri uri = ClientContract.buildClientByUID(mUserId);
                         Log.d("Choice", "ClientLoader: " + uri.toString());
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                ClientColumns.PROJECTION,
+                                ClientContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.ClientEntry.SORT_ORDER_DEFAULT);
+                                ClientContract.SORT_ORDER_DEFAULT);
                     }
 
                     @Override
@@ -156,16 +155,16 @@ public class ClientLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request client cursor from local database
-                        Uri uri = Contractor.ClientEntry.buildClientByStatus(mUserId, mStatus);
+                        Uri uri = ClientContract.buildClientByStatus(mUserId, mStatus);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                ClientColumns.PROJECTION,
+                                ClientContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.ClientEntry.SORT_ORDER_DEFAULT);
+                                ClientContract.SORT_ORDER_DEFAULT);
                     }
 
                     @Override
@@ -210,16 +209,16 @@ public class ClientLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request client cursor from local database
-                        Uri uri = Contractor.ClientEntry.buildClientByFKey(mUserId, mFKey);
+                        Uri uri = ClientContract.buildClientByFKey(mUserId, mFKey);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                ClientColumns.PROJECTION,
+                                ClientContract.PROJECTION,
                                 null,
                                 null,
-                                Contractor.ClientEntry.SORT_ORDER_DEFAULT);
+                                ClientContract.SORT_ORDER_DEFAULT);
                     }
 
                     @Override
