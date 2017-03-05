@@ -67,6 +67,21 @@ public class ScheduleQueryHelper {
                     "." + ScheduleContract.COLUMN_UID + " = ? AND " + ScheduleContract.COLUMN_TIMESTAMP +
                     " BETWEEN ? AND ?";
 
+    //query selection - userSchedule.uid = ? AND client_key = ? AND appointment_date >= ?
+    public static final String pendingScheduleSelectionByClientKey =
+            ScheduleContract.TABLE_NAME+
+                    "." + ScheduleContract.COLUMN_UID + " = ? AND " +
+                    ScheduleContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    ScheduleContract.COLUMN_TIMESTAMP + " >= ?";
+
+    //query selection - userSchedule.uid = ? AND client_key = ? AND appointment_date < ?
+    public static final String pastScheduleSelectionByClientKey =
+            ScheduleContract.TABLE_NAME+
+                    "." + ScheduleContract.COLUMN_UID + " = ? AND " +
+                    ScheduleContract.COLUMN_CLIENT_KEY + " = ? AND " +
+                    ScheduleContract.COLUMN_TIMESTAMP + " < ?";
+
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -161,6 +176,49 @@ public class ScheduleQueryHelper {
         );
     }
 
+    /*
+     * Cursor getPendingSchedule(...) - get pending schedule
+     */
+    public static Cursor getPendingSchedule(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/pending/[pendingDate]
+        String uid = ScheduleContract.getUIdFromUri(uri);
+        String pendingDate = ScheduleContract.getPendingDateFromPendingUri(uri);
+        String clientKey = ScheduleContract.getClientKeyFromPendingUri(uri);
+
+        //query from table
+        return ScheduleQueryHelper.scheduleQueryBuilder.query(
+                dbHelper.getReadableDatabase(),
+                projection,
+                //query selection - userSchedule.uid = ? AND client_key = ? AND appointment_date >= ?
+                ScheduleQueryHelper.pendingScheduleSelectionByClientKey,
+                new String[]{uid, clientKey, pendingDate},
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    /*
+     * Cursor getPastSchedule(...) - get past schedule
+     */
+    public static Cursor getPastSchedule(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
+        //"content://CONTENT_AUTHORITY/userSchedule/[uid]/[clientKey]/past/[pendingDate]
+        String uid = ScheduleContract.getUIdFromUri(uri);
+        String pendingDate = ScheduleContract.getPastDateFromPastUri(uri);
+        String clientKey = ScheduleContract.getClientKeyFromPastUri(uri);
+
+        //query from table
+        return ScheduleQueryHelper.scheduleQueryBuilder.query(
+                dbHelper.getReadableDatabase(),
+                projection,
+                //query selection - userSchedule.uid = ? AND client_key = ? AND appointment_date < ?
+                ScheduleQueryHelper.pastScheduleSelectionByClientKey,
+                new String[]{uid, clientKey, pendingDate},
+                null,
+                null,
+                sortOrder
+        );
+    }
 
 
 /**************************************************************************************************/
