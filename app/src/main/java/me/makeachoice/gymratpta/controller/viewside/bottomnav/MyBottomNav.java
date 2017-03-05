@@ -28,6 +28,12 @@ public abstract class MyBottomNav{
     //mActivity - activity context
     MyActivity mActivity;
 
+    protected OnNavSelectedListener mListener;
+    public interface OnNavSelectedListener{
+        public void onNavSelected(int navId);
+    }
+
+
 /**************************************************************************************************/
 
 
@@ -63,6 +69,10 @@ public abstract class MyBottomNav{
             mNav.getMenu().getItem(i).setChecked(false);
         }
 
+    }
+
+    public void setOnNavSelectedListener(OnNavSelectedListener listener){
+        mListener = listener;
     }
 
 /**************************************************************************************************/
