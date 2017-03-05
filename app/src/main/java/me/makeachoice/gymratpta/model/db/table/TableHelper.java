@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.model.db.table;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
@@ -25,18 +26,18 @@ public class TableHelper {
             Contractor.UserEntry.COLUMN_USER_PHOTO+ " TEXT, " +
             Contractor.UserEntry.COLUMN_USER_STATUS + " TEXT NOT NULL);";
 
-    public final static String SQL_CREATE_CLIENT_TABLE = "CREATE TABLE " + Contractor.ClientEntry.TABLE_NAME + " (" +
-            Contractor.ClientEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.ClientEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.ClientEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
-            Contractor.ClientEntry.COLUMN_CONTACTS_ID + " INTEGER NOT NULL, " +
-            Contractor.ClientEntry.COLUMN_CLIENT_NAME + " TEXT NOT NULL, " +
-            Contractor.ClientEntry.COLUMN_CLIENT_EMAIL + " TEXT, " +
-            Contractor.ClientEntry.COLUMN_CLIENT_PHONE + " TEXT, " +
-            Contractor.ClientEntry.COLUMN_FIRST_SESSION + " TEXT, " +
-            Contractor.ClientEntry.COLUMN_CLIENT_GOALS + " TEXT, " +
-            Contractor.ClientEntry.COLUMN_CLIENT_STATUS + " TEXT NOT NULL, " +
-            Contractor.ClientEntry.COLUMN_PROFILE_PIC + " TEXT);";
+    public final static String SQL_CREATE_CLIENT_TABLE = "CREATE TABLE " + ClientContract.TABLE_NAME + " (" +
+            ClientContract._ID + " INTEGER PRIMARY KEY," +
+            ClientContract.COLUMN_UID + " TEXT NOT NULL, " +
+            ClientContract.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
+            ClientContract.COLUMN_CONTACTS_ID + " INTEGER NOT NULL, " +
+            ClientContract.COLUMN_CLIENT_NAME + " TEXT NOT NULL, " +
+            ClientContract.COLUMN_CLIENT_EMAIL + " TEXT, " +
+            ClientContract.COLUMN_CLIENT_PHONE + " TEXT, " +
+            ClientContract.COLUMN_FIRST_SESSION + " TEXT, " +
+            ClientContract.COLUMN_CLIENT_GOALS + " TEXT, " +
+            ClientContract.COLUMN_CLIENT_STATUS + " TEXT NOT NULL, " +
+            ClientContract.COLUMN_PROFILE_PIC + " TEXT);";
 
     public final static String SQL_CREATE_CATEGORY_TABLE = "CREATE TABLE " + Contractor.CategoryEntry.TABLE_NAME + " (" +
             Contractor.CategoryEntry._ID + " INTEGER PRIMARY KEY," +
