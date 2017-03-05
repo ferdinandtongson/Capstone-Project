@@ -121,13 +121,12 @@ public class NotesFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void deleteNotes(String userId, String clientKey, String appointmentDate,
-                                  String appointmentTime, ValueEventListener listener){
-        DatabaseReference ref = getNotesReferenceByTimestamp(userId, clientKey, appointmentDate);
+    public void deleteNotes(String userId, String clientKey, String timestamp, ValueEventListener listener){
+        DatabaseReference ref = getNotesReferenceByTimestamp(userId, clientKey, timestamp);
 
-        Query notesQuery = ref.orderByChild(CHILD_APPOINTMENT_TIME).equalTo(appointmentTime);
+        ref.removeValue();
 
-        notesQuery.addListenerForSingleValueEvent(listener);
+        ref.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
