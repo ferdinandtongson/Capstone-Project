@@ -1,11 +1,14 @@
 package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.schedule;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -34,7 +37,8 @@ import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
 /**************************************************************************************************/
 
-public class ScheduleWeekAdapter extends RecyclerView.Adapter<ScheduleWeekAdapter.MyViewHolder> {
+public class ScheduleWeekAdapter extends RecyclerView.Adapter<ScheduleWeekAdapter.MyViewHolder>
+        implements RecyclerView.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener{
 
 /**************************************************************************************************/
 /*
@@ -58,10 +62,12 @@ public class ScheduleWeekAdapter extends RecyclerView.Adapter<ScheduleWeekAdapte
     private int mItemLayoutId;
 
     //mCardDefaultColor - default background card color
-    private int mCardDefaultColor;
+    private static int mCardDefaultColor;
 
     //mCardRetiredColor - background card color used when client is retired
     private int mCardRetiredColor;
+
+    private static Drawable mBgOrange;
 
     //mStrRetired - "Retired" string value
     private String mStrRetired;
@@ -77,6 +83,13 @@ public class ScheduleWeekAdapter extends RecyclerView.Adapter<ScheduleWeekAdapte
 
     //mOnClickListener - list item onClick event listener
     private static View.OnClickListener mOnClickListener;
+
+    private ContextMenuListener mContextMenuListener;
+    //Implemented communication line to a class
+    public interface ContextMenuListener{
+        void contextMenuCreated(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo);
+        void contextMenuItemSelected(MenuItem item);
+    }
 
 /**************************************************************************************************/
 
@@ -95,6 +108,8 @@ public class ScheduleWeekAdapter extends RecyclerView.Adapter<ScheduleWeekAdapte
         //get colors used as card background color
         mCardDefaultColor = DeprecatedUtility.getColor(mContext, R.color.card_activeBackground);
         mCardRetiredColor = DeprecatedUtility.getColor(mContext, R.color.powderOrangeish_90);
+
+        mBgOrange = DeprecatedUtility.getDrawable(mContext, R.drawable.bg_orange);
 
         //get "retired" status string value
         mStrRetired = mContext.getString(R.string.retired);
@@ -171,6 +186,9 @@ public class ScheduleWeekAdapter extends RecyclerView.Adapter<ScheduleWeekAdapte
         mOnClickListener = listener;
     }
 
+    public void setContextMenuListener(ContextMenuListener listener){
+        mContextMenuListener = listener;
+    }
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -276,13 +294,14 @@ public class ScheduleWeekAdapter extends RecyclerView.Adapter<ScheduleWeekAdapte
             // Extract info from cursor
             AppointmentCardItem item = mData.get(position);
 
-            //set default card color background
-            int cardColor = mCardDefaultColor;
+            //change card color background
+            int cardColor = mCardRetiredColor;
 
             //check client status, if false
-            if(!item.isActive){
-                //change card color background
-                cardColor = mCardRetiredColor;
+            if(item.isActive){
+                //set default card color background
+                cardColor = mCardDefaultColor;
+                holder.mCardView.setOnCreateContextMenuListener(this);
             }
 
             //bind viewHolder components
@@ -309,13 +328,12 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
  */
 /**************************************************************************************************/
 
-    //mCardView - view that hold child views found below
-    private RelativeLayout mItemView;
+    private CardView mCardView;
 
     private CircleImageView mImgProfile;
+    private TextView mTxtInfo;
     private TextView mTxtName;
-    private TextView mTxtTime;
-    private TextView mTxtDate;
+    private TextView mTxtRoutine;
 
 /**************************************************************************************************/
 
@@ -330,11 +348,11 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
     public MyViewHolder(View recycleView){
         super(recycleView);
         //get view components held by ViewHolder
-        mItemView = (RelativeLayout)recycleView.findViewById(R.id.choiceItem);
-        mImgProfile = (CircleImageView)recycleView.findViewById(R.id.itemWeek_imgProfile);
-        mTxtName = (TextView)recycleView.findViewById(R.id.itemWeek_txtName);
-        mTxtTime = (TextView)recycleView.findViewById(R.id.itemWeek_txtTime);
-        mTxtDate = (TextView)recycleView.findViewById(R.id.itemWeek_txtDate);
+        mCardView = (CardView)recycleView.findViewById(R.id.choiceCardView);
+        mImgProfile = (CircleImageView)recycleView.findViewById(R.id.cardAppointment_imgProfile);
+        mTxtInfo = (TextView)recycleView.findViewById(R.id.cardAppointment_txtInfo);
+        mTxtName = (TextView)recycleView.findViewById(R.id.cardAppointment_txtName);
+        mTxtRoutine = (TextView)recycleView.findViewById(R.id.cardAppointment_txtRoutine);
     }
 
 /**************************************************************************************************/
@@ -354,17 +372,25 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      */
     private void bindCardView(AppointmentCardItem item, int position, int cardColor) {
 
-        mItemView.setTag(R.string.recycler_tagPosition, position);
-        mItemView.setTag(R.string.recycler_tagItem, item);
-        mItemView.setBackgroundColor(cardColor);
+        mCardView.setTag(R.string.recycler_tagPosition, position);
+        mCardView.setTag(R.string.recycler_tagItem, item);
+        mCardView.setCardBackgroundColor(cardColor);
 
         if(mOnLongClickListener != null){
-            mItemView.setOnLongClickListener(mOnLongClickListener);
+            mCardView.setOnLongClickListener(mOnLongClickListener);
         }
 
         if(mOnClickListener != null){
-            mItemView.setOnClickListener(mOnClickListener);
+            mCardView.setOnClickListener(mOnClickListener);
         }
+
+        if(item.isActive){
+            mCardView.setBackgroundColor(mCardDefaultColor);
+        }
+        else{
+            mCardView.setBackground(mBgOrange);
+        }
+
 
     }
 
@@ -376,24 +402,26 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         if(isActive){
             mTxtName.setVisibility(View.VISIBLE);
-            mTxtTime.setVisibility(View.VISIBLE);
-            mTxtDate.setVisibility(View.GONE);
+            mTxtInfo.setVisibility(View.VISIBLE);
+            mTxtRoutine.setVisibility(View.VISIBLE);
 
             mTxtName.setText(item.clientName);
             mTxtName.setContentDescription(item.clientName);
 
-            mTxtTime.setText(DateTimeHelper.convert24Hour(item.clientInfo));
-            mTxtTime.setContentDescription(DateTimeHelper.convert24Hour(item.clientInfo));
+            mTxtInfo.setText(DateTimeHelper.convert24Hour(item.clientInfo));
+            mTxtInfo.setContentDescription(DateTimeHelper.convert24Hour(item.clientInfo));
 
+            mTxtRoutine.setText(item.routineName);
+            mTxtRoutine.setContentDescription(item.routineName);
         }
         else{
-            mTxtName.setVisibility(View.GONE);
-            mTxtTime.setVisibility(View.GONE);
-            mTxtDate.setVisibility(View.VISIBLE);
+            mTxtName.setVisibility(View.VISIBLE);
+            mTxtInfo.setVisibility(View.GONE);
+            mTxtRoutine.setVisibility(View.GONE);
 
             String strDate = DateTimeHelper.convertDatestampToDate(item.clientName);
-            mTxtDate.setText(strDate);
-            mTxtDate.setContentDescription(strDate);
+            mTxtName.setText(strDate);
+            mTxtName.setContentDescription(strDate);
         }
 
     }
@@ -424,5 +452,46 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 }
 
 /**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Context Menu Methods:
+ *      void onCreateContextMenu(...) - create context menu
+ *      boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+ */
+/**************************************************************************************************/
+    /*
+     * void onCreateContextMenu(...) - create context menu
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        //create string values for menu
+        String strEdit = mContext.getString(R.string.edit);
+        String strDelete = mContext.getString(R.string.delete);
+
+        //add menu and set menu item click listener
+        menu.add(strEdit).setOnMenuItemClickListener(this);
+        menu.add(strDelete).setOnMenuItemClickListener(this);
+
+        if(mContextMenuListener != null){
+            //notify bridge that context menu has been created
+            mContextMenuListener.contextMenuCreated(menu, v, menuInfo);
+        }
+    }
+
+    /*
+     * boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+     */
+    public boolean onMenuItemClick(MenuItem item){
+        if(mContextMenuListener != null){
+            //notify bridge that a context menu item has been clicked
+            mContextMenuListener.contextMenuItemSelected(item);
+        }
+        return true;
+    }
+
+/**************************************************************************************************/
+
 
 }
