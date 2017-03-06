@@ -9,6 +9,8 @@ import android.net.Uri;
 public class AppointmentCardItem {
 
     public String clientName;
+    public String clientKey;
+    public String datestamp;
     public String clientInfo;
     public Uri profilePic;
     public String routineName;
