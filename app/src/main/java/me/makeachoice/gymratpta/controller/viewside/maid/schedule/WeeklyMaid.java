@@ -52,9 +52,6 @@ public class WeeklyMaid extends MyMaid implements BasicFragment.Bridge{
     private String[][] mDateRange;
     private ArrayList<Date> mStartDates;
 
-    //mDatestamps - list of datestamps
-    //private ArrayList<String> mDatestamps;
-
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -179,7 +176,7 @@ public class WeeklyMaid extends MyMaid implements BasicFragment.Bridge{
      */
     private void initializeVPMaids(){
         //layout resource id maid will use to create fragment
-        int layoutId = R.layout.standard_recycler_fab;
+        int layoutId = R.layout.standard_recycler;
 
         //get number of pages to create
         int count = mPageTitles.size();
