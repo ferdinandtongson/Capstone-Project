@@ -7,6 +7,7 @@ import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.contract.client.StatsContract;
+import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
 
@@ -39,11 +40,11 @@ public class TableHelper {
             ClientContract.COLUMN_CLIENT_STATUS + " TEXT NOT NULL, " +
             ClientContract.COLUMN_PROFILE_PIC + " TEXT);";
 
-    public final static String SQL_CREATE_CATEGORY_TABLE = "CREATE TABLE " + Contractor.CategoryEntry.TABLE_NAME + " (" +
-            Contractor.CategoryEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.CategoryEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.CategoryEntry.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
-            Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
+    public final static String SQL_CREATE_CATEGORY_TABLE = "CREATE TABLE " + CategoryContract.TABLE_NAME + " (" +
+            CategoryContract._ID + " INTEGER PRIMARY KEY," +
+            CategoryContract.COLUMN_UID + " TEXT NOT NULL, " +
+            CategoryContract.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
+            CategoryContract.COLUMN_CATEGORY_NAME + " TEXT NOT NULL);";
 
     public final static String SQL_CREATE_EXERCISE_TABLE = "CREATE TABLE " + ExerciseContract.TABLE_NAME + " (" +
             ExerciseContract._ID + " INTEGER PRIMARY KEY," +
