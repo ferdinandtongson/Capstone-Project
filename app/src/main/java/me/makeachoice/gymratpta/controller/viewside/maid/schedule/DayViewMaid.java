@@ -45,6 +45,8 @@ import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_SCHEDULE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_WARNING_DELETE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_SCHEDULE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT;
@@ -104,12 +106,12 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     private int mClientLoaderId;
     private String mDatestamp;
     private boolean mShowWarning;
-    private boolean mEditMode;
 
     private String mStrDelete;
     private String mMsgUpdatePart1;
     private String mMsgUpdatePart2;
     private int mPageIndex;
+    private int mDialogCounter;
 
     private AppointmentDialog mAppDialog;
     private DeleteWarningDialog mWarningDialog;
@@ -369,20 +371,30 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
-        //create dialog
-        mAppDialog = new AppointmentDialog();
-        mAppDialog.setDialogValues(mActivity, mUserId, item, mAppointmentMap);
-        mAppDialog.setEditMode(mEditMode);
+        if(mDialogCounter == 0){
+            //create dialog
+            mAppDialog = new AppointmentDialog();
+            mAppDialog.setDialogValues(mActivity, mUserId, item, mAppointmentMap);
+            mAppDialog.setEditMode(mEditingAppointment);
 
-        mAppDialog.setOnSavedListener(new AppointmentDialog.OnSaveClickListener() {
-            @Override
-            public void onSaveClicked(ScheduleItem appItem) {
-                mAppDialog.dismiss();
-                onSaveAppointment(appItem);
-            }
-        });
+            mAppDialog.setOnDismissListener(new AppointmentDialog.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    mDialogCounter = -1;
+                }
+            });
 
-        mAppDialog.show(fm, "diaAppointmentDialog");
+            mAppDialog.setOnSavedListener(new AppointmentDialog.OnSaveClickListener() {
+                @Override
+                public void onSaveClicked(ScheduleItem appItem) {
+                    mAppDialog.dismiss();
+                    onSaveAppointment(appItem);
+                }
+            });
+
+            mAppDialog.show(fm, DIA_SCHEDULE);
+            mDialogCounter = 1;
+        }
 
         return mAppDialog;
     }
@@ -397,46 +409,49 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
-        //create dialog
-        mWarningDialog = new DeleteWarningDialog();
+        if(mDialogCounter == 0){
+            //create dialog
+            mWarningDialog = new DeleteWarningDialog();
 
-        //set dialog values
-        mWarningDialog.setDialogValues(mActivity, mUserId, strTitle);
-        mWarningDialog.setTitle(strTitle);
+            //set dialog values
+            mWarningDialog.setDialogValues(mActivity, mUserId, strTitle);
+            mWarningDialog.setTitle(strTitle);
 
-        //set onDismiss listener
-        mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                if(mRefreshOnDismiss){
-                    mScheduleButler.loadSchedule(mAppointmentLoaderId, mDatestamp, mOnScheduleLoadListener);
+            //set onDismiss listener
+            mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    if(mRefreshOnDismiss){
+                        mScheduleButler.loadSchedule(mAppointmentLoaderId, mDatestamp, mOnScheduleLoadListener);
+                    }
+                    mDialogCounter = -1;
                 }
-            }
-        });
+            });
 
-        //set onDelete listener
-        mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
-            @Override
-            public void onDelete() {
-                mRefreshOnDismiss = false;
+            //set onDelete listener
+            mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
+                @Override
+                public void onDelete() {
+                    mRefreshOnDismiss = false;
 
-                //dismiss dialog
-                mWarningDialog.dismiss();
+                    //dismiss dialog
+                    mWarningDialog.dismiss();
 
-                if(mEditingAppointment){
-                    deleteOldEditAppointment();
+                    if(mEditingAppointment){
+                        deleteOldEditAppointment();
+                    }
+                    else{
+                        //delete routine
+                        deleteAppointment();
+                    }
+
                 }
-                else{
-                    //delete routine
-                    deleteAppointment();
-                }
+            });
 
-            }
-        });
-
-
-        //show dialog
-        mWarningDialog.show(fm, "diaWarning");
+            //show dialog
+            mWarningDialog.show(fm, DIA_WARNING_DELETE);
+            mDialogCounter = 1;
+        }
         return mWarningDialog;
     }
 
@@ -493,8 +508,9 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         if(mAppCount < mAppointments.size()){
             //index less than appointment list size, get appointment item from list
             mScheduleItem = mAppointments.get(mAppCount);
-            String mapKey = mScheduleItem.clientKey + mScheduleItem.appointmentTime;
-            mAppointmentMap.put(mapKey, mScheduleItem.clientKey);
+            String mapKey = mScheduleItem.clientKey + mScheduleItem.datestamp + mScheduleItem.appointmentTime;
+            String mapValue = mScheduleItem.clientKey + mScheduleItem.datestamp;
+            mAppointmentMap.put(mapKey, mapValue);
 
             mClientButler.loadClient(mClientLoaderId, mScheduleItem, new ClientButler.OnClientLoadedListener() {
                 @Override
@@ -549,8 +565,6 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //set edit appointment false, creating new appointment
         mEditingAppointment = false;
 
-        mEditMode = false;
-
         ScheduleItem tmpItem = new ScheduleItem();
         tmpItem.uid = mUserId;
         tmpItem.datestamp = mDatestamp;
@@ -561,6 +575,7 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         tmpItem.routineName = "";
         tmpItem.status = "";
 
+        mDialogCounter = 0;
         //initialize schedule appointment dialog
         initializeScheduleDialog(tmpItem);
     }
@@ -592,7 +607,7 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
         mClientEditItem = mClients.get(index);
 
-        mEditMode = true;
+        mDialogCounter = 0;
         //open schedule appointment dialog
         initializeScheduleDialog(mOldEditAppointment);
     }
@@ -616,6 +631,8 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //check status
         if(mShowWarning){
             String msg = mStrDelete + ": " + clientItem.clientName + " @" + mDeleteAppointment.appointmentTime;
+
+            mDialogCounter = 0;
             //wants warning, show "delete warning" dialog
             initializeWarningDialog(clientItem, msg);
         }
@@ -673,6 +690,8 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
                 //yes, delete old appointment (new appointment will be saved after deletion)
                 String msg = mMsgUpdatePart1 + " @" + mOldEditAppointment.appointmentTime +
                         " " + mMsgUpdatePart2;
+
+                mDialogCounter = 0;
                 //wants warning, show "delete warning" dialog
                 initializeWarningDialog(mClientEditItem, msg);
             }
@@ -787,15 +806,15 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     /*
      * void deleteAppointment(ScheduleItem) - delete appointment
      */
-private void deleteAppointment(){
+    private void deleteAppointment(){
 
-    mScheduleButler.deleteSchedule(mDeleteAppointment, new ScheduleButler.OnScheduleDeletedListener() {
-        @Override
-        public void onScheduleDeleted() {
-            deleteRoutineExercises(mDeleteAppointment);
-        }
-    });
-}
+        mScheduleButler.deleteSchedule(mDeleteAppointment, new ScheduleButler.OnScheduleDeletedListener() {
+            @Override
+            public void onScheduleDeleted() {
+                deleteRoutineExercises(mDeleteAppointment);
+            }
+        });
+    }
 
     private void deleteRoutineExercises(ScheduleItem deleteItem){
         //create string values used to delete appointment
