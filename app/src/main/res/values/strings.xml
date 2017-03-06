@@ -186,6 +186,7 @@
     <string name="gym_rat" translatable="true">Gym Rat</string>
     <string name="last" translatable="true">Last</string>
     <string name="legs" translatable="true">Legs</string>
+    <string name="modified" translatable="true">Modified</string>
     <string name="no_notes" translatable="true">No Notes</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="no_stats" translatable="true">No Stats</string>
