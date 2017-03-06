@@ -28,4 +28,5 @@
     <string name="msg_update_session_part2" translatable="true">will delete previous values</string>
 
     <string name="msg_today_session" translatable="true">Today\'s Sessions</string>
+    <string name="msg_purchase_gymrat" translatable="true">Purchase Gym Rat to enable!</string>
 </resources>
