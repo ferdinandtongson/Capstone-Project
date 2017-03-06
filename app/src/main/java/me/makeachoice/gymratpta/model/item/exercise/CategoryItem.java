@@ -3,8 +3,7 @@ package me.makeachoice.gymratpta.model.item.exercise;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 
 /**************************************************************************************************/
 /*
@@ -38,9 +37,9 @@ public class CategoryItem extends CategoryFBItem{
     }
 
     public CategoryItem(Cursor cursor){
-        uid = cursor.getString(CategoryColumns.INDEX_UID);
-        fkey = cursor.getString(CategoryColumns.INDEX_FKEY);
-        categoryName = cursor.getString(CategoryColumns.INDEX_CATEGORY_NAME);
+        uid = cursor.getString(CategoryContract.INDEX_UID);
+        fkey = cursor.getString(CategoryContract.INDEX_FKEY);
+        categoryName = cursor.getString(CategoryContract.INDEX_CATEGORY_NAME);
     }
 
 /**************************************************************************************************/
@@ -58,9 +57,9 @@ public class CategoryItem extends CategoryFBItem{
     public ContentValues getContentValues(){
         // Add a new student record
         ContentValues values = new ContentValues();
-        values.put(Contractor.CategoryEntry.COLUMN_UID, uid);
-        values.put(Contractor.CategoryEntry.COLUMN_FKEY, fkey);
-        values.put(Contractor.CategoryEntry.COLUMN_CATEGORY_NAME, categoryName);
+        values.put(CategoryContract.COLUMN_UID, uid);
+        values.put(CategoryContract.COLUMN_FKEY, fkey);
+        values.put(CategoryContract.COLUMN_CATEGORY_NAME, categoryName);
 
         return values;
     }
