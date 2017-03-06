@@ -8,9 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 /**************************************************************************************************/
@@ -34,24 +33,24 @@ public class CategoryQueryHelper {
         //initialize categoryQueryBuilder
         categoryQueryBuilder = new SQLiteQueryBuilder();
         //set builder to query user table
-        categoryQueryBuilder.setTables(Contractor.CategoryEntry.TABLE_NAME);
+        categoryQueryBuilder.setTables(CategoryContract.TABLE_NAME);
     }
 
     //query selection - category.uid = ?
     public static final String uidSelection =
-            Contractor.CategoryEntry.TABLE_NAME + "." + Contractor.CategoryEntry.COLUMN_UID + " = ? ";
+            CategoryContract.TABLE_NAME + "." + CategoryContract.COLUMN_UID + " = ? ";
 
     //query selection - category.uid = ? AND fkey = ?
     public static final String fkeySelection =
-            Contractor.CategoryEntry.TABLE_NAME+
-                    "." + Contractor.CategoryEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.CategoryEntry.COLUMN_FKEY + " = ? ";
+            CategoryContract.TABLE_NAME+
+                    "." + CategoryContract.COLUMN_UID + " = ? AND " +
+                    CategoryContract.COLUMN_FKEY + " = ? ";
 
     //query selection - category.uid = ? AND category_name = ?
     public static final String statusSelection =
-            Contractor.CategoryEntry.TABLE_NAME+
-                    "." + Contractor.CategoryEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + " = ? ";
+            CategoryContract.TABLE_NAME+
+                    "." + CategoryContract.COLUMN_UID + " = ? AND " +
+                    CategoryContract.COLUMN_CATEGORY_NAME + " = ? ";
 
 /**************************************************************************************************/
 
@@ -68,7 +67,7 @@ public class CategoryQueryHelper {
      */
     public static Cursor getCategories(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/category/[uid]/....
-        String uid = Contractor.CategoryEntry.getUIdFromUri(uri);
+        String uid = CategoryContract.getUIdFromUri(uri);
 
         //query category table
         return CategoryQueryHelper.categoryQueryBuilder.query(
@@ -88,7 +87,7 @@ public class CategoryQueryHelper {
      */
     public static Cursor getCategoryByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/category/[uid]
-        String uid = Contractor.CategoryEntry.getUIdFromUri(uri);
+        String uid = CategoryContract.getUIdFromUri(uri);
 
         //query from category table
         return CategoryQueryHelper.categoryQueryBuilder.query(
@@ -108,8 +107,8 @@ public class CategoryQueryHelper {
      */
     public static Cursor getCategoryByFKey(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/category/[uid]/fkey/[fKey]
-        String uid = Contractor.CategoryEntry.getUIdFromUri(uri);
-        String fkey = Contractor.CategoryEntry.getFirebaseKeyFromUri(uri);
+        String uid = CategoryContract.getUIdFromUri(uri);
+        String fkey = CategoryContract.getFirebaseKeyFromUri(uri);
 
         //query from category table
         return CategoryQueryHelper.categoryQueryBuilder.query(
@@ -129,8 +128,8 @@ public class CategoryQueryHelper {
      */
     public static Cursor getCategoryByName(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/category/[uid]/category_name/[name]
-        String uid = Contractor.CategoryEntry.getUIdFromUri(uri);
-        String categoryName = Contractor.CategoryEntry.getCategoryNameFromUri(uri);
+        String uid = CategoryContract.getUIdFromUri(uri);
+        String categoryName = CategoryContract.getCategoryNameFromUri(uri);
 
         //query from category table
         return CategoryQueryHelper.categoryQueryBuilder.query(
@@ -161,21 +160,18 @@ public class CategoryQueryHelper {
     public static Uri insertCategory(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.CategoryEntry.TABLE_NAME, null, values);
+            _id = db.insert(CategoryContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
-            Log.d("Choice", "     exception: " + mSQLException.toString());
             if(mSQLException instanceof SQLiteConstraintException){
                 //some toast message to user.
-                Log.d("Choice", "     constraint exception");
             }else if(mSQLException instanceof SQLiteDatatypeMismatchException) {
                 //some toast message to user.
-                Log.d("Choice", "     mismatch exception");
             }
             throw mSQLException;
         }
 
-        return Contractor.CategoryEntry.buildCategoryUri(_id);
+        return CategoryContract.buildCategoryUri(_id);
     }
 
     /*
@@ -189,7 +185,7 @@ public class CategoryQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.CategoryEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(CategoryContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -205,7 +201,7 @@ public class CategoryQueryHelper {
                                    String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.CategoryEntry.TABLE_NAME, values, whereClause, whereArgs);
+            rowsUpdated = db.update(CategoryContract.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
