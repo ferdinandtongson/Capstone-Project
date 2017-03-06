@@ -8,7 +8,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CATEGORY;
@@ -34,16 +34,32 @@ public class CategoryLoader {
 /**************************************************************************************************/
 
     //mActivity - activity context
-    private static MyActivity mActivity;
+    private MyActivity mActivity;
 
     //mUserId - user id number taken from firebase authentication
-    private static String mUserId;
+    private String mUserId;
+
+    //mCategoryName - name of category
+    private String mCategoryName;
 
     //mListener - listens for when the category data is loaded
-    private static OnCategoryLoadListener mListener;
+    private OnCategoryLoadListener mListener;
     public interface OnCategoryLoadListener{
         //notify listener that category data has finished loading
         public void onCategoryLoadFinished(Cursor cursor);
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Constructor
+ */
+/**************************************************************************************************/
+
+    public CategoryLoader(MyActivity activity, String userId){
+        mActivity = activity;
+        mUserId = userId;
     }
 
 /**************************************************************************************************/
@@ -58,21 +74,15 @@ public class CategoryLoader {
     /*
      * void loadCategories(...) - start loader to load category data from database
      */
-    public static void loadCategories(MyActivity activity, String userId, OnCategoryLoadListener listener){
+    public void loadCategories(OnCategoryLoadListener listener){
         //load category using default loader category id
-        loadCategories(activity, userId, LOADER_CATEGORY, listener);
+        loadCategories(LOADER_CATEGORY, listener);
     }
 
     /*
      * void loadCategories(...) - start loader to load category data from database
      */
-    public static void loadCategories(MyActivity activity, String userId, int loaderId,
-                                      OnCategoryLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
+    public void loadCategories(int loaderId, OnCategoryLoadListener listener){
 
         //get listener
         mListener = listener;
@@ -84,15 +94,59 @@ public class CategoryLoader {
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request client cursor from local database
-                        Uri uri = Contractor.CategoryEntry.buildCategoryByUID(mUserId);
+                        Uri uri = CategoryContract.buildCategoryByUID(mUserId);
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                CategoryColumns.PROJECTION_CATEGORY,
+                                CategoryContract.PROJECTION_CATEGORY,
                                 null,
                                 null,
-                                Contractor.CategoryEntry.SORT_ORDER_DEFAULT);
+                                CategoryContract.SORT_ORDER_DEFAULT);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //make sure listener is not null
+                        if(mListener != null){
+                            //notify listener that category data has finished loading
+                            mListener.onCategoryLoadFinished(cursor);
+                        }
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                        //does nothing
+                    }
+                });
+    }
+
+    /*
+     * void loadCategoryByName(...) - start loader to load category data from database
+     */
+    public void loadCategoryByName(String categoryName, int loaderId, OnCategoryLoadListener listener){
+        //get category name
+        mCategoryName = categoryName;
+
+        //get listener
+        mListener = listener;
+
+        // Initializes category loader
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request client cursor from local database
+                        Uri uri = CategoryContract.buildCategoryByName(mUserId, mCategoryName);
+                        //get cursor
+                        return new CursorLoader(
+                                mActivity,
+                                uri,
+                                CategoryContract.PROJECTION_CATEGORY,
+                                null,
+                                null,
+                                CategoryContract.SORT_ORDER_DEFAULT);
                     }
 
                     @Override
@@ -114,17 +168,17 @@ public class CategoryLoader {
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity){
+    public void destroyLoader(){
         //destroy loader using default category loader id
-        activity.getSupportLoaderManager().destroyLoader(LOADER_CATEGORY);
+        mActivity.getSupportLoaderManager().destroyLoader(LOADER_CATEGORY);
     }
 
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity, int loaderId){
+    public void destroyLoader(int loaderId){
         //destroy loader
-        activity.getSupportLoaderManager().destroyLoader(loaderId);
+        mActivity.getSupportLoaderManager().destroyLoader(loaderId);
     }
 
 /**************************************************************************************************/
