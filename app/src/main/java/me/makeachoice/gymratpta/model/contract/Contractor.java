@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import me.makeachoice.gymratpta.model.contract.exercise.CategoryColumns;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
 import me.makeachoice.gymratpta.model.contract.user.UserColumns;
 
@@ -34,7 +33,6 @@ public class Contractor {
     // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
     // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
     public static final String PATH_USER = "user";
-    public static final String PATH_CATEGORY = "category";
     public static final String PATH_ROUTINE_NAME = "routineName";
 
 
@@ -86,56 +84,6 @@ public class Contractor {
  *          RoutineNameEntry - user defined routine names
  */
 /**************************************************************************************************/
-    /*
-     * CategoryEntry - user defined exercise categories
-     */
-    public static class CategoryEntry extends CategoryColumns implements BaseColumns {
-
-        public static Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CATEGORY).build();
-
-        public static String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CATEGORY;
-        public static String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CATEGORY;
-
-
-        //"content://CONTENT_AUTHORITY/category/[_id]
-        public static Uri buildCategoryUri(long id) {
-            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/category/[uid]
-        public static Uri buildCategoryByUID(String uid) {
-            return CONTENT_URI.buildUpon().appendPath(uid).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/category/[uid]/fkey/[fKey]
-        public static Uri buildCategoryByFirebaseKey(String uid, String fKey) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_FKEY).appendPath(fKey).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/category/[uid]/category_name/[name]
-        public static Uri buildCategoryByName(String uid, String name) {
-            return CONTENT_URI.buildUpon().appendPath(uid).appendPath(COLUMN_CATEGORY_NAME).appendPath(name).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/category/[uid]/....
-        public static String getUIdFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
-        //"content://CONTENT_AUTHORITY/category/[uid]/fkey/[fKey]
-        public static String getFirebaseKeyFromUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
-
-        //"content://CONTENT_AUTHORITY/category/[uid]/category_name/[name]
-        public static String getCategoryNameFromUri(Uri uri) {
-            return uri.getPathSegments().get(3);
-        }
-
-    }
 
     /*
      * RoutineNameEntry - user defined routine names
