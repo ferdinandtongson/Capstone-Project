@@ -11,6 +11,7 @@ import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.contract.client.StatsContract;
+import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 
 /**
@@ -141,11 +142,11 @@ public class UriMatcherHelper {
         matcher.addURI(authority, uidPath, CATEGORY_WITH_UID);
 
         //"content://CONTENT_AUTHORITY/category/[uid]/fkey/[fkey]
-        String fkeyPath = MyContractor.PATH_CATEGORY + "/*/" + Contractor.CategoryEntry.COLUMN_FKEY + "/*";
+        String fkeyPath = MyContractor.PATH_CATEGORY + "/*/" + CategoryContract.COLUMN_FKEY + "/*";
         matcher.addURI(authority, fkeyPath, CATEGORY_WITH_FKEY);
 
         //"content://CONTENT_AUTHORITY/category/[uid]/category_name/[name]
-        String namePath = MyContractor.PATH_CATEGORY + "/*/" + Contractor.CategoryEntry.COLUMN_CATEGORY_NAME + "/*";
+        String namePath = MyContractor.PATH_CATEGORY + "/*/" + CategoryContract.COLUMN_CATEGORY_NAME + "/*";
         matcher.addURI(authority, namePath, CATEGORY_WITH_NAME);
 
     }

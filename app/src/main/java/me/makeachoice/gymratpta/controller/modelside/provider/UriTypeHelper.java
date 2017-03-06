@@ -9,6 +9,7 @@ import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
 import me.makeachoice.gymratpta.model.contract.client.NotesContract;
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.gymratpta.model.contract.client.StatsContract;
+import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
 
@@ -90,13 +91,13 @@ public class UriTypeHelper {
             case CLIENT_WITH_STATUS:
                 return ClientContract.CONTENT_TYPE;
             case CATEGORY:
-                return ClientContract.CONTENT_TYPE;
+                return CategoryContract.CONTENT_TYPE;
             case CATEGORY_WITH_UID:
-                return ClientContract.CONTENT_TYPE;
+                return CategoryContract.CONTENT_TYPE;
             case CATEGORY_WITH_FKEY:
-                return ClientContract.CONTENT_ITEM_TYPE;
+                return CategoryContract.CONTENT_ITEM_TYPE;
             case CATEGORY_WITH_NAME:
-                return ClientContract.CONTENT_ITEM_TYPE;
+                return CategoryContract.CONTENT_ITEM_TYPE;
             case EXERCISE:
                 return ExerciseContract.CONTENT_TYPE;
             case EXERCISE_WITH_UID:
