@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -39,6 +40,8 @@ import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_SCHEDULE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_WARNING_DELETE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_SCHEDULE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT;
@@ -141,6 +144,7 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
 
     private AppointmentDialog mAppDialog;
     private DeleteWarningDialog mWarningDialog;
+    private int mDialogCounter;
 
     //mTouchCallback - helper class that enables drag-and-drop and swipe to dismiss functionality to recycler
     private ItemTouchHelper.Callback mTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP |
@@ -246,6 +250,7 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         mDatestamp = DateTimeHelper.getDatestamp(0);
         mAppointmentLoaderId = LOADER_SCHEDULE;
         mClientLoaderId = LOADER_CLIENT;
+        mDialogCounter = -1;
 
         mClientButler = new ClientButler(mActivity, mUserId);
         mScheduleButler = new ScheduleButler(mActivity, mUserId);
@@ -263,6 +268,26 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         super.start();
         mScheduleButler.loadSchedule(mAppointmentLoaderId, mDatestamp, mOnScheduleLoadListener);
     }
+
+    public void pause(){
+        super.pause();
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+
+        ArrayList<String> tagList = new ArrayList<>();
+        tagList.add(DIA_SCHEDULE);
+        tagList.add(DIA_WARNING_DELETE);
+
+        String tag;
+        DialogFragment dia;
+        int count = tagList.size();
+        for(int i = 0; i < count; i++){
+            tag = tagList.get(i);
+
+            dia = (DialogFragment)fm.findFragmentByTag(tag);
+            if (dia != null) { dia.dismiss(); }
+        }
+    }
+
 
 /**************************************************************************************************/
 
@@ -400,20 +425,24 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
-        //create dialog
-        mAppDialog = new AppointmentDialog();
-        mAppDialog.setDialogValues(mActivity, mUserId, item, mAppointmentMap);
-        mAppDialog.setEditMode(mEditMode);
+        if(mDialogCounter == 0){
+            //create dialog
+            mAppDialog = new AppointmentDialog();
+            mAppDialog.setDialogValues(mActivity, mUserId, item, mAppointmentMap);
+            mAppDialog.setEditMode(mEditMode);
 
-        mAppDialog.setOnSavedListener(new AppointmentDialog.OnSaveClickListener() {
-            @Override
-            public void onSaveClicked(ScheduleItem appItem) {
-                mAppDialog.dismiss();
-                onSaveAppointment(appItem);
-            }
-        });
+            mAppDialog.setOnSavedListener(new AppointmentDialog.OnSaveClickListener() {
+                @Override
+                public void onSaveClicked(ScheduleItem appItem) {
+                    mAppDialog.dismiss();
+                    mDialogCounter = -1;
+                    onSaveAppointment(appItem);
+                }
+            });
 
-        mAppDialog.show(fm, "diaAppointmentDialog");
+            mAppDialog.show(fm, DIA_SCHEDULE);
+            mDialogCounter = 1;
+        }
 
         return mAppDialog;
     }
@@ -425,51 +454,55 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         String strTitle = title;
         mRefreshOnDismiss = true;
 
-        //get fragment manager
-        FragmentManager fm = mActivity.getSupportFragmentManager();
+        if(mDialogCounter == 0){
+            //get fragment manager
+            FragmentManager fm = mActivity.getSupportFragmentManager();
 
-        //create dialog
-        mWarningDialog = new DeleteWarningDialog();
+            //create dialog
+            mWarningDialog = new DeleteWarningDialog();
 
-        //set dialog values
-        mWarningDialog.setDialogValues(mActivity, mUserId, strTitle);
-        mWarningDialog.setTitle(strTitle);
+            //set dialog values
+            mWarningDialog.setDialogValues(mActivity, mUserId, strTitle);
+            mWarningDialog.setTitle(strTitle);
 
-        //set onDismiss listener
-        mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                if(mRefreshOnDismiss){
-                    mScheduleButler.loadSchedule(mAppointmentLoaderId, mDatestamp, mOnScheduleLoadListener);
+            //set onDismiss listener
+            mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    if(mRefreshOnDismiss){
+                        mScheduleButler.loadSchedule(mAppointmentLoaderId, mDatestamp, mOnScheduleLoadListener);
+                    }
+                    mDialogCounter = -1;
                 }
-            }
-        });
+            });
 
-        //set onDelete listener
-        mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
-            @Override
-            public void onDelete() {
-                mRefreshOnDismiss = false;
+            //set onDelete listener
+            mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
+                @Override
+                public void onDelete() {
+                    mRefreshOnDismiss = false;
 
-                //dismiss dialog
-                mWarningDialog.dismiss();
+                    //dismiss dialog
+                    mWarningDialog.dismiss();
 
-                if(mEditingAppointment){
-                    deleteOldEditAppointment();
+                    if(mEditingAppointment){
+                        deleteOldEditAppointment();
+                    }
+                    else{
+                        //delete routine
+                        deleteAppointment();
+                    }
+
                 }
-                else{
-                    //delete routine
-                    deleteAppointment();
-                }
-
-            }
-        });
+            });
 
 
-        //show dialog
-        mWarningDialog.show(fm, "diaWarning");
-
+            //show dialog
+            mWarningDialog.show(fm, DIA_WARNING_DELETE);
+            mDialogCounter = 1;
+        }
         return mWarningDialog;
+
     }
 
     /*
@@ -526,8 +559,9 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         if(mAppCount < mAppointments.size()){
             //index less than appointment list size, get appointment item from list
             mScheduleItem = mAppointments.get(mAppCount);
-            String mapKey = mScheduleItem.clientKey + mScheduleItem.appointmentTime;
-            mAppointmentMap.put(mapKey, mScheduleItem.clientKey);
+            String mapKey = mScheduleItem.clientKey + mScheduleItem.datestamp + mScheduleItem.appointmentTime;
+            String mapValue = mScheduleItem.clientKey + mScheduleItem.datestamp;
+            mAppointmentMap.put(mapKey, mapValue);
 
             mClientLoaderId = mClientLoaderId + mAppCount;
 
@@ -599,6 +633,8 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
 
         mEditMode = false;
 
+        mDialogCounter = 0;
+
         //initialize schedule appointment dialog
         initializeScheduleDialog(null);
     }
@@ -629,6 +665,9 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         mClientEditItem = mClients.get(index);
 
         mEditMode = true;
+
+        mDialogCounter = 0;
+
         //open schedule appointment dialog
         initializeScheduleDialog(mOldEditAppointment);
     }
@@ -653,6 +692,9 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         //check status
         if(mShowWarning){
             String msg = mStrDelete + ": " + clientItem.clientName + " @" + mDeleteAppointment.appointmentTime;
+
+            mDialogCounter = 0;
+
             //wants warning, show "delete warning" dialog
             initializeWarningDialog(clientItem, msg);
         }
@@ -703,6 +745,9 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
                 //yes, delete old appointment (new appointment will be saved after deletion)
                 String msg = mMsgUpdatePart1 + " @" + mOldEditAppointment.appointmentTime +
                         " " + mMsgUpdatePart2;
+
+                mDialogCounter = 0;
+
                 //wants warning, show "delete warning" dialog
                 initializeWarningDialog(mClientEditItem, msg);
             }
