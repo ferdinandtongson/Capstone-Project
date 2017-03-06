@@ -252,7 +252,7 @@ public class AppointmentDialog extends DialogFragment {
         if(mEditMode){
             mEditAppointmentMap.clear();
 
-            String mapKey = mSaveApmtItem.clientKey + mSaveApmtItem.appointmentTime;
+            String mapKey = mSaveApmtItem.clientKey + mSaveApmtItem.datestamp +  mSaveApmtItem.appointmentTime;
             mEditAppointmentMap.putAll(mAppointmentMap);
             mEditAppointmentMap.remove(mapKey);
         }
@@ -677,7 +677,9 @@ public class AppointmentDialog extends DialogFragment {
      * void validateClient(String) - warn user if client already has a schedule appointment that day
      */
     private void validateClient(String clientKey){
-        String mapKey = clientKey + mSaveApmtItem.appointmentTime;
+        //String mapKey = clientKey + mSaveApmtItem.appointmentTime;
+        String mapKey = clientKey + mSaveApmtItem.datestamp +  mSaveApmtItem.appointmentTime;
+        String mapValue = clientKey + mSaveApmtItem.datestamp;
 
         mSameBooking = mAppointmentMap.containsKey(mapKey);
 
@@ -693,10 +695,10 @@ public class AppointmentDialog extends DialogFragment {
         else{
 
             if(mEditMode){
-                mDoubleClient = mEditAppointmentMap.containsValue(clientKey);
+                mDoubleClient = mEditAppointmentMap.containsValue(mapValue);
             }
             else{
-                mDoubleClient = mAppointmentMap.containsValue(clientKey);
+                mDoubleClient = mAppointmentMap.containsValue(mapValue);
             }
 
             if(mDoubleClient){
