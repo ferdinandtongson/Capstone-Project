@@ -1,6 +1,10 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+
+import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
@@ -10,6 +14,8 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.R.id.bottom_nav_item1;
 import static me.makeachoice.gymratpta.R.id.bottom_nav_item2;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_SCHEDULE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_WARNING_DELETE;
 
 /**************************************************************************************************/
 /*
@@ -133,6 +139,25 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
             }
         });
 
+    }
+
+    public void pause(){
+        super.pause();
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+
+        ArrayList<String> tagList = new ArrayList<>();
+        tagList.add(DIA_SCHEDULE);
+        tagList.add(DIA_WARNING_DELETE);
+
+        String tag;
+        DialogFragment dia;
+        int count = tagList.size();
+        for(int i = 0; i < count; i++){
+            tag = tagList.get(i);
+
+            dia = (DialogFragment)fm.findFragmentByTag(tag);
+            if (dia != null) { dia.dismiss(); }
+        }
     }
 
     /*
