@@ -90,9 +90,10 @@ public class ClientFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addClient(String userId, ClientFBItem item, OnDataLoadedListener listener){
+    public void addClient(String userId, ClientFBItem item, ValueEventListener listener){
         DatabaseReference ref = getClientReference(userId);
         ref.push().setValue(item);
+        ref.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
