@@ -31,6 +31,8 @@ import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_SCHEDULE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_WARNING_DELETE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_SCHEDULE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING_APPOINTMENT;
@@ -86,6 +88,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
     private DeleteWarningDialog mWarningDialog;
 
     private boolean mEditMode;
+    private boolean mShowWarning;
 
 
     //mTouchCallback - helper class that enables drag-and-drop and swipe to dismiss functionality to recycler
@@ -172,6 +175,12 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         mData = new ArrayList<>();
         mScheduleMap = new HashMap<>();
         mEditMode = false;
+
+        //get user shared preference
+        SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
+
+        //get user preference to want to receive deletion warning
+        mShowWarning = prefs.getBoolean(PREF_DELETE_WARNING_APPOINTMENT, true);
 
         String dateStamp = DateTimeHelper.getDatestamp(0);
 
@@ -307,7 +316,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
             }
         });
 
-        mAppDialog.show(fm, "diaScheduleAppointment");
+        mAppDialog.show(fm, DIA_SCHEDULE);
 
         return mAppDialog;
     }
@@ -354,7 +363,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
 
 
         //show dialog
-        mWarningDialog.show(fm, "diaDeleteRoutine");
+        mWarningDialog.show(fm, DIA_WARNING_DELETE);
 
         return mWarningDialog;
     }
@@ -505,14 +514,8 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //get appointment item to be deleted
         mDeleteItem = mScheduleList.get(index);
 
-        //get user shared preference
-        SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
-
-        //get user preference to want to receive deletion warning
-        boolean showWarning = prefs.getBoolean(PREF_DELETE_WARNING_APPOINTMENT, true);
-
         //check status
-        if(showWarning){
+        if(mShowWarning){
             //wants warning, show "delete warning" dialog
             initializeWarningDialog(mDeleteItem, mClientItem);
         }
