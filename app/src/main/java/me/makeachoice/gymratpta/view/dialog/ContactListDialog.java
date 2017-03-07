@@ -1,8 +1,8 @@
 package me.makeachoice.gymratpta.view.dialog;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
@@ -20,27 +20,13 @@ import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-
 import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.firebase.ClientFirebaseHelper;
 import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
 import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.ContactsAdapter;
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.contacts.ContactsColumns;
-import me.makeachoice.gymratpta.model.item.ContactsItem;
-import me.makeachoice.gymratpta.model.item.client.ClientFBItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
-
-/**************************************************************************************************/
-/*
- * TODO - Look at moving contacts loader to a loader class helper
- */
-/**************************************************************************************************/
-
 
 /**************************************************************************************************/
 /*
@@ -66,22 +52,25 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
     private ProgressBar mProgressBar;
     private ContactsAdapter mAdapter;
     private HashMap<String,ClientItem> mClientMap;
-    private String mUserId;
-
-    private ClientFBItem mClientFB;
-
 
     private final int CONTEXT_MENU_ADD = 0;
     private final int CONTEXT_MENU_DUPLICATE = 1;
-    private ContactsItem mContactsItem;
+    private ClientItem mClientItem;
 
 
     private BasicRecycler mBasicRecycler;
 
     private View mRootView;
 
-    //mCreateContextMenuListener - "create context menu" event listener
-    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
+    private OnDismissListener mDismissListener;
+    public interface OnDismissListener{
+        void onDismiss(DialogInterface dialogInterface);
+    }
+
+    private OnAddClientListener mAddListener;
+    public interface OnAddClientListener{
+        void onAddClient(ClientItem clientFBItem);
+    }
 
 /**************************************************************************************************/
 
@@ -106,25 +95,30 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
  *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
  */
 /**************************************************************************************************/
-    /*
-     * void setUserId(String) - user authentication id
-     */
-    public void setUserId(String uid){
-    mUserId = uid;
-}
 
     /*
      * void setClientMap(HashMap<String,ClientItem>) - hashmap of current clients
      */
     public void setClientMap(HashMap<String,ClientItem> hashMap){
-        mClientMap = hashMap;
+        if(mClientMap == null){
+            mClientMap = new HashMap<>();
+        }
+        mClientMap.clear();
+        mClientMap.putAll(hashMap);
     }
 
     /*
-     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+     * void setOnAddClientListener(...) - set listener for add client event
      */
-    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
-        mCreateContextMenuListener = listener;
+    public void setOnAddClientListener(OnAddClientListener listener){
+        mAddListener = listener;
+    }
+
+    /*
+     * void setOnDismissListener(...) - set listener for dialog dismiss events
+     */
+    public void setOnDismissListener(OnDismissListener listener){
+        mDismissListener = listener;
     }
 
 
@@ -321,21 +315,12 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
      */
     private void requestContacts(){
 
-        /*ContactsLoader.requestContacts(getActivity(), LOADER_CONTACTS, new ContactsLoader.OnLoadFinishedListener() {
-            @Override
-            public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
-                mProgressBar.setVisibility(View.GONE);
-                mCursor = cursor;
-                initializeLayout(mCursor);
-            }
-        });*/
-
         // Initializes a loader for loading the contacts
         getLoaderManager().initLoader(LOADER_CONTACTS, null, new LoaderManager.LoaderCallbacks<Cursor>() {
             @Override
             public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
                 //contacts sort order
-                String sort = "upper("+ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + ") ASC";
+                String sort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC";
 
                 //get cursor
                 return new CursorLoader(
@@ -363,19 +348,6 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
      * void requestPhone() - request phone number of given contact
      */
     private void requestPhone(){
-        Log.d("Choice", "Dialog.requestPhone");
-        /*ContactsLoader.requestPhoneInfo(getActivity(), LOADER_PHONE, mContactsItem.contactId, mClientFB,
-                new ContactsLoader.OnLoadContactPhoneListener(){
-            @Override
-            public void onLoadContactPhone(ClientFBItem item) {
-                mProgressBar.setVisibility(View.GONE);
-                mClientFB = item;
-                Log.d("Choice", "     phone: " + mClientFB.phone);
-                requestEmail();
-                getLoaderManager().destroyLoader(LOADER_PHONE);
-            }
-        });*/
-
 
         // Initializes a loader for loading the contacts
         getLoaderManager().initLoader(LOADER_PHONE, null, new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -386,7 +358,7 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
                         getContext(),
                         ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                         ContactsColumns.PROJECTION_EMAIL,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + mContactsItem.contactId,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + mClientItem.contactId,
                         null,
                         null);
             }
@@ -396,10 +368,10 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
                 if(cursor != null && cursor.getCount() > 0){
                     cursor.moveToFirst();
                     String phoneNumber = cursor.getString(ContactsColumns.INDEX_PHONE);
-                    mClientFB.phone = phoneNumber;
+                    mClientItem.phone = phoneNumber;
                 }
                 else{
-                    mClientFB.phone = "";
+                    mClientItem.phone = "";
                 }
 
                 cursor.close();
@@ -426,7 +398,7 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
                         getContext(),
                         ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                         ContactsColumns.PROJECTION_EMAIL,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + mContactsItem.contactId,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + mClientItem.contactId,
                         null,
                         null);
             }
@@ -437,87 +409,24 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
                 if(cursor != null && cursor.getCount() > 0){
                     cursor.moveToFirst();
                     String email = cursor.getString(cursor.getColumnIndex(columnIndex));
-                    mClientFB.email = email;
+                    mClientItem.email = email;
                 }
                 else{
-                    mClientFB.email = "";
+                    mClientItem.email = "";
                 }
 
                 cursor.close();
                 getLoaderManager().destroyLoader(LOADER_EMAIL);
-                putClientInFirebase();
+
+                if(mAddListener != null){
+                    mClientMap.put(mClientItem.clientName, mClientItem);
+                    mAddListener.onAddClient(mClientItem);
+                }
             }
 
             @Override
             public void onLoaderReset(Loader<Cursor> cursorLoader) {}
         });
-
-    }
-
-    /*
-     * void putClientInFirebase() - add client to firebase database
-     */
-    private void putClientInFirebase(){
-        Log.d("Choice", "Dialog.putClientInFirebase");
-        //get client firebase instance
-        final ClientFirebaseHelper clientFB = ClientFirebaseHelper.getInstance();
-
-        DatabaseReference ref = clientFB.getClientReference(mUserId);
-
-        Log.d("Choice", "     name: " + mClientFB.clientName);
-        //add client to firebase
-        clientFB.addClient(mUserId, mClientFB);
-
-        clientFB.requestClientDataByClientName(mUserId, mClientFB.clientName,
-                new ClientFirebaseHelper.OnDataLoadedListener() {
-            @Override
-            public void onDataLoaded(DataSnapshot dataSnapshot) {
-                //mClientFB = dataSnapshot.getValue(ClientFBItem.class);
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //create client item used for database
-                    ClientItem item = new ClientItem(mClientFB);
-                    item.uid = mUserId;
-                    item.fkey = postSnapshot.getKey();
-                    item.contactId = mContactsItem.contactId;
-                    item.profilePic = mContactsItem.profilePic.toString();
-
-                    putClientInDatabase(item);
-                }
-            }
-
-            @Override
-            public void onCancelled() {
-
-            }
-        });
-
-
-
-    }
-
-    /*
-     * void putClientInDatabase(DataSnapshot, String) - add client data into database
-     */
-    private void putClientInDatabase(ClientItem item){
-        mIsDoubleCall = true;
-        Log.d("Choice", "ContactListDialog.putClientInDatabase");
-
-
-        Log.d("Choice", "     client: " + item.clientName);
-
-        //get client uri
-        Uri uriValue = Contractor.ClientEntry.CONTENT_URI;
-
-        Log.d("Choice", "     uri: " + uriValue.toString());
-
-        //insert client into database
-        Uri uri = mRootView.getContext().getContentResolver().insert(uriValue, item.getContentValues());
-
-        Log.d("Choice", "     return: " + uri.toString());
-
-        mClientMap.put(item.clientName, item);
-
-        Log.d("Choice", "     map: " + mClientMap.size());
 
     }
 
@@ -536,20 +445,17 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
         //get contacts item
-        mContactsItem = (ContactsItem)v.getTag(R.string.recycler_tagItem);
-
-        //get client name
-        String clientName = (mContactsItem.contactName);
+        mClientItem = (ClientItem)v.getTag(R.string.recycler_tagItem);
 
         //get context menu strings
         String strAlready = mRootView.getResources().getString(R.string.msg_already_client);
         String strAdd = mRootView.getResources().getString(R.string.msg_add);
 
-        if(mClientMap.containsKey(clientName)){
-            menu.add(0, CONTEXT_MENU_DUPLICATE, 0, clientName + " " + strAlready);
+        if(mClientMap.containsKey(mClientItem.clientName)){
+            menu.add(0, CONTEXT_MENU_DUPLICATE, 0, mClientItem.clientName + " " + strAlready);
         }
         else{
-            menu.add(0, CONTEXT_MENU_ADD, 0, strAdd + " " + clientName);
+            menu.add(0, CONTEXT_MENU_ADD, 0, strAdd + " " + mClientItem.clientName);
         }
 
         int count = menu.size();
@@ -581,18 +487,23 @@ public class ContactListDialog extends DialogFragment implements RecyclerView.On
         mIsDoubleCall = false;
 
         String strActive = mRootView.getResources().getString(R.string.active);
-
-        mClientFB = new ClientFBItem();
-        mClientFB.clientName = mContactsItem.contactName;
-        mClientFB.email = "";
-        mClientFB.phone = "";
-        mClientFB.firstSession = "";
-        mClientFB.goals = "";
-        mClientFB.status = strActive;
+        mClientItem.status = strActive;
 
         //request client phone number
         requestPhone();
 
+    }
+
+    /*
+     * void onDismiss(DialogInterface) - dialog dismiss event occurred
+     */
+    @Override
+    public void onDismiss(DialogInterface dialogInterface){
+        //check for listener
+        if(mDismissListener != null){
+            //notify listener for dismiss event
+            mDismissListener.onDismiss(dialogInterface);
+        }
     }
 
 /**************************************************************************************************/
