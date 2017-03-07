@@ -1,7 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,20 +10,22 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
+import static me.makeachoice.gymratpta.controller.manager.Boss.CLIENT_RETIRED;
+
 /**************************************************************************************************/
 /*
- * ClientItemAdapter is used by Client Screen and displays a list user clients
+ * ClientAdapter is used by Client Screen and displays a list user clients
  */
 /**************************************************************************************************/
 
-public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.MyViewHolder> {
+public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.MyViewHolder> {
 
 /**************************************************************************************************/
 /*
@@ -43,6 +44,8 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     //mContext - activity context
     private Context mContext;
 
+    private ArrayList<ClientItem> mData;
+
     //mItemLayoutId - item/card layout resource id
     private int mItemLayoutId;
 
@@ -52,29 +55,20 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
     //mCardRetiredColor - background card color used when client is retired
     private int mCardRetiredColor;
 
-    //mContactIdMap - hashMap used to map contact names
-    private HashMap<String,ClientItem> mClientMap;
-
-    //mCursor - cursor consumed by adapter
-    private Cursor mCursor;
-
-    //mCreateContextMenuListener - "create context menu" event listener
-    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
-
-    //mOnClickListener - onClick listener for item click event
-    private static View.OnClickListener mOnItemClickListener;
+    //mOnClickListener - list item onClick event listener
+    private static View.OnClickListener mOnClickListener;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * ClientItemAdapter - constructor
+ * ClientAdapter - constructor
  */
 /**************************************************************************************************/
     /*
-     * ClientItemAdapter - constructor
+     * ClientAdapter - constructor
      */
-    public ClientItemAdapter(Context ctx, Cursor cursor, int itemLayoutId) {
+    public ClientAdapter(Context ctx, int itemLayoutId) {
         //set context
         mContext = ctx;
 
@@ -85,11 +79,7 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
         mCardDefaultColor = DeprecatedUtility.getColor(mContext, R.color.card_activeBackground);
         mCardRetiredColor = DeprecatedUtility.getColor(mContext, R.color.card_retiredBackground);
 
-        //initialize hashMap
-        mClientMap = new HashMap();
-
-        //set cursor
-        mCursor = cursor;
+        mData = new ArrayList<>();
     }
 
 /**************************************************************************************************/
@@ -98,10 +88,6 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
 /*
  * Public Methods:
  *      int getItemCount() - get number of items in adapter
- *      HashMap<String,ClientItem> getContactIdMap - get contact names map
- *      void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
- *      void setOnItemClickListener(...) - set listener to listen for item click events
- *      void closeCurosr() - close cursor
  */
 /**************************************************************************************************/
     /*
@@ -109,48 +95,114 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
      */
     @Override
     public int getItemCount(){
-        if(mCursor != null){
-            return mCursor.getCount();
+        if(mData != null){
+            //return number of items
+            return mData.size();
         }
-
         return 0;
     }
 
     /*
-     * HashMap<String,ClientItem> getContactIdMap - get contact names map
+     * ClientItem getItem(int) - get item at given position
      */
-    public HashMap<String,ClientItem> getClientMap(){ return mClientMap; }
-
-    /*
-     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
-     */
-    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
-        mCreateContextMenuListener = listener;
+    public ClientItem getItem(int position){
+        return mData.get(position);
     }
 
     /*
-     * void setOnItemClickListener(...) - set listener to listen for item click events
+     * ArrayList<ClientItem> getData() - get array data used by recycler
      */
-    public void setOnItemClickListener(View.OnClickListener listener){
-        mOnItemClickListener = listener;
+    public ArrayList<ClientItem> getData(){ return mData; }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Set Listener Methods:
+ *      void setOnImageClickListener(View.OnClickListener) - set listener for image profile onClick event
+ *      void setOnLongClickListener(...) - set listener for list item onLongClick event
+ *      void setOnClickListener(...) - set listener for list item onClick event
+ */
+/**************************************************************************************************/
+    /*
+     * void setOnClickListener(...) - set listener for list item onClick event
+     */
+    public void setOnClickListener(View.OnClickListener listener){
+        mOnClickListener = listener;
     }
 
-    public void setCursor(Cursor cursor){
-        mCursor = cursor;
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Public Methods:
+ *      void addItem(ClientItem) - dynamically add items to adapter
+ *      void adItemAt(ClientItem,int) - add item to adapter at specific position
+ *      void removeItemAt(int) - remove item from adapter then refresh adapter
+ *      void swapData(ArrayList<ClientItem>) - swap old data with new data
+ *      void clearData() - remove all data from adapter
+ */
+/**************************************************************************************************/
+    /*
+     * void addItem(ClientItem) - dynamically add items to adapter
+     */
+    public void addItem(ClientItem item) {
+        //add item object to data array
+        mData.add(item);
+        //notify adapter of data change
+        this.notifyDataSetChanged();
+    }
+
+    /*
+     * void adItemAt(ClientItem,int) - add item to adapter at specific position
+     */
+    public void addItemAt(ClientItem item, int position){
+        //add item object to data array at position
+        mData.add(position, item);
+
+        //notify adapter of data change
+        this.notifyDataSetChanged();
+    }
+
+    /*
+     * void removeItemAt(int) - remove item from adapter then refresh adapter
+     */
+    public void removeItemAt(int position){
+        //remove item at given position
+        mData.remove(position);
+
+        //notify item was removed
+        this.notifyItemRemoved(position);
+        //notify data range has changed
+        this.notifyItemRangeRemoved(position, mData.size());
+        //notify adapter of data change
+        this.notifyDataSetChanged();
+    }
+
+    /*
+     * void swapData(ArrayList<ClientItem>) - swap old data with new data
+     */
+    public void swapData(ArrayList<ClientItem> data){
+        //clear old data
+        mData.clear();
+        //add new data
+        mData.addAll(data);
+        //notify adapter of data change
         notifyDataSetChanged();
     }
 
     /*
-     * void closeCurosr() - close cursor
+     * void clearData() - remove all data from adapter
      */
-    public void closeCursor(){
-        if(mCursor != null && !mCursor.isClosed()){
-            mCursor.close();
-            mCursor = null;
-        }
+    public void clearData(){
+        //clear data
+        mData.clear();
+        //notify adapter of data change
+        notifyDataSetChanged();
     }
 
 /**************************************************************************************************/
+
 
 /**************************************************************************************************/
 /*
@@ -165,42 +217,40 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
      * inflated layout and is only called when a new view must be created.
      */
     @Override
-    public ClientItemAdapter.MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i){
+    public ClientAdapter.MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i){
         //inflate the itemView
         View itemView = LayoutInflater.
                 from(viewGroup.getContext()).
                 inflate(mItemLayoutId, viewGroup, false);
 
         //return ViewHolder
-        return new ClientItemAdapter.MyViewHolder(itemView);
+        return new ClientAdapter.MyViewHolder(itemView);
     }
 
     /*
      * void onBindViewHolder(ViewHolder, int) - where we bind our data to the views
      */
     @Override
-    public void onBindViewHolder(ClientItemAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(ClientAdapter.MyViewHolder holder, int position) {
         // Extract info from cursor
-        mCursor.moveToPosition(position);
-        ClientItem item = new ClientItem(mCursor);
+        if(mData.size() > 0){
+            ClientItem item = mData.get(position);
 
-        mClientMap.put(item.clientName, item);
+            //set default card color background
+            int cardColor = mCardDefaultColor;
 
-        //set default card color background
-        int bgColor = mCardDefaultColor;
+            //check client status, if false
+            if(item.status.equals(CLIENT_RETIRED)){
+                //change card color background
+                cardColor = mCardRetiredColor;
+            }
 
-        String strRetired = mContext.getString(R.string.retired);
-        //check client status, if false
-        if(item.status.equals(strRetired)){
-            //change card color background
-            bgColor = mCardRetiredColor;
+            //bind to viewHolder
+            holder.bindItemView(item, position, cardColor);
+            holder.bindTextView(item);
+            holder.bindProfileImage(item);
         }
 
-
-        //bind to viewHolder
-        holder.bindItemView(item, position, bgColor);
-        holder.bindTextView(item);
-        holder.bindProfileImage(item);
     }
 
 
@@ -265,12 +315,8 @@ public class ClientItemAdapter extends RecyclerView.Adapter<ClientItemAdapter.My
         mItemView.setTag(R.string.recycler_tagItem, item);
         mItemView.setBackgroundColor(bgColor);
 
-        if(mCreateContextMenuListener != null){
-            mItemView.setOnCreateContextMenuListener(mCreateContextMenuListener);
-        }
-
-        if(mOnItemClickListener != null){
-            mItemView.setOnClickListener(mOnItemClickListener);
+        if(mOnClickListener != null){
+            mItemView.setOnClickListener(mOnClickListener);
         }
 
     }
