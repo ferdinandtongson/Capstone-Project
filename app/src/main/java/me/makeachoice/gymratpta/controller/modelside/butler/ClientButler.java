@@ -12,7 +12,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.modelside.firebase.ClientFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.loader.ClientLoader;
 import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
@@ -23,6 +22,9 @@ import me.makeachoice.gymratpta.model.item.client.ClientFBItem;
 import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static me.makeachoice.gymratpta.controller.manager.Boss.CLIENT_ACTIVE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.CLIENT_RETIRED;
 
 /**************************************************************************************************/
 /*
@@ -151,7 +153,7 @@ public class ClientButler {
         mLoaderId = loaderId;
         mLoadListener = listener;
 
-        String strActive = mActivity.getString(R.string.active);
+        String strActive = CLIENT_ACTIVE;
 
         //load client data
         mClientLoader.loadClientsByStatus(strActive, mLoaderId, new ClientLoader.OnClientLoadListener() {
@@ -166,7 +168,7 @@ public class ClientButler {
         mLoaderId = loaderId;
         mLoadListener = listener;
 
-        String strRetired = mActivity.getString(R.string.retired);
+        String strRetired = CLIENT_RETIRED;
 
         //load client data
         mClientLoader.loadClientsByStatus(strRetired, mLoaderId, new ClientLoader.OnClientLoadListener() {
@@ -235,7 +237,9 @@ public class ClientButler {
         //create appointmentCard item used by adapter
         AppointmentCardItem item = new AppointmentCardItem();
         item.clientName = clientItem.clientName;
+        item.clientKey = clientItem.fkey;
         item.clientInfo = appItem.appointmentTime;
+        item.datestamp = appItem.datestamp;
         item.profilePic = Uri.parse(clientItem.profilePic);
         item.routineName = appItem.routineName;
         item.isActive = true;
@@ -281,17 +285,22 @@ public class ClientButler {
         fbItem.status = saveItem.status;
 
         //save notes item to firebase
-        fbHelper.addClient(mUserId, fbItem, new ClientFirebaseHelper.OnDataLoadedListener() {
+        fbHelper.addClient(mUserId, fbItem, new ValueEventListener() {
             @Override
-            public void onDataLoaded(DataSnapshot dataSnapshot) {
-                mSaveItem.fkey = dataSnapshot.getKey();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    ClientItem item = postSnapshot.getValue(ClientItem.class);
 
+                    if(item.clientName.equals(mSaveItem.clientName)){
+                        mSaveItem.fkey = postSnapshot.getKey();
+                    }
+                }
                 //save to local database
                 saveToDatabase(mSaveItem);
             }
 
             @Override
-            public void onCancelled() {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
@@ -309,6 +318,7 @@ public class ClientButler {
         mActivity.getContentResolver().insert(uriValue, saveItem.getContentValues());
 
         if(mSaveListener != null){
+            mClientMap.put(saveItem.clientName, saveItem);
             mSaveListener.onSaved();
         }
     }
