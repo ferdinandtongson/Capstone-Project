@@ -55,7 +55,7 @@ public class ClientContract extends MyContractor implements BaseColumns {
     public static final String COLUMN_PROFILE_PIC = "profile_pic";
 
     //default sort order
-    public static final String SORT_ORDER_DEFAULT = COLUMN_CLIENT_NAME + " ASC";
+    public static final String SORT_ORDER_DEFAULT = COLUMN_CLIENT_NAME + " COLLATE NOCASE ASC";
 
 /**************************************************************************************************/
 
