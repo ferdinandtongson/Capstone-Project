@@ -5,9 +5,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
-import me.makeachoice.gymratpta.model.contract.user.UserColumns;
-
-import static android.content.ContentUris.withAppendedId;
 
 /**************************************************************************************************/
 /*
@@ -38,42 +35,6 @@ public class Contractor {
 
 /**************************************************************************************************/
 
-/**************************************************************************************************/
-/*
- *  User / Client Inner Classes
- */
-/**************************************************************************************************/
-    /*
-     * UserEntry - GymRat app users
-     */
-    public static final class UserEntry extends UserColumns implements BaseColumns {
-
-        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER).build();
-
-        public static String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
-        public static String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
-
-        //"content://CONTENT_AUTHORITY/user/[_id]
-        public static Uri buildUserUri(long id) {
-            return withAppendedId(CONTENT_URI, id);
-        }
-
-        //"content://CONTENT_AUTHORITY/user/[uid]
-        public static Uri buildUserByUID(String uid) {
-            return CONTENT_URI.buildUpon().appendPath(uid).build();
-        }
-
-        //"content://CONTENT_AUTHORITY/user/[uid]
-        public static String getUIdFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-    }
-
-
-
-/**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
