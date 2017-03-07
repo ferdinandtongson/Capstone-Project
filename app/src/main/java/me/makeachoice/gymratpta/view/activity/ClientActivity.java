@@ -1,10 +1,21 @@
 package me.makeachoice.gymratpta.view.activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
+import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.manager.HouseKeeperRegistry;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static me.makeachoice.gymratpta.controller.viewside.Helper.PermissionHelper.READ_CONTACTS_PERMISSIONS_REQUEST;
 
 /**************************************************************************************************/
 /*
@@ -77,5 +88,62 @@ public class ClientActivity extends MyActivity {
     }
 
 /**************************************************************************************************/
+
+    @TargetApi(23)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == READ_CONTACTS_PERMISSIONS_REQUEST) {
+            // for each permission check if the user granted/denied them
+            // you may want to group the rationale in a single dialog,
+            // this is just an example
+            for (int i = 0, len = permissions.length; i < len; i++) {
+                //get permission
+                String permission = permissions[i];
+
+                //check if user has denied request
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+                    boolean showRationale = shouldShowRequestPermissionRationale(permission);
+                    if (! showRationale) {
+                        //user does NOT want to see rational,
+                    } else if (Manifest.permission.READ_CONTACTS.equals(permission)) {
+                        //get dialog title
+                        String title = getString(R.string.permission_request);
+                        //get dialog message
+                        String msg = getString(R.string.msg_permissionRequest_readContacts);
+                        showExplanation(title, msg, Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSIONS_REQUEST);
+                    }
+                }
+            }
+        }
+    }
+
+    /*
+     * void showExplanation(...) - show alert dialog explaining permission request
+     */
+    private void showExplanation(String title,
+                                 String message,
+                                 final String permission,
+                                 final int permissionRequestCode) {
+        Log.d("Choice", "PermissionHelper.showExplanation");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        requestReadContactsPermission(permission, permissionRequestCode);
+                    }
+                });
+        builder.create().show();
+    }
+
+    /*
+     * void requestPermission(...) - start async permission request
+     */
+    @TargetApi(Build.VERSION_CODES.M)
+    public  void requestReadContactsPermission(String permissionName, int permissionRequestCode) {
+        Log.d("Choice", "PermissionHelper.requestPermission - ActivityCompat.");
+        ActivityCompat.requestPermissions(this, new String[]{permissionName}, permissionRequestCode);
+    }
 
 }
