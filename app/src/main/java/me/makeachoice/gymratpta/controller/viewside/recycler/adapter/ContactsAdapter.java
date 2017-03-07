@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.model.contract.contacts.ContactsColumns;
-import me.makeachoice.gymratpta.model.item.ContactsItem;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
 
 /**************************************************************************************************/
 /*
@@ -153,10 +153,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         long contactId = mCursor.getLong(ContactsColumns.INDEX_ID);
 
         // Create contact model
-        ContactsItem item = new ContactsItem();
+        ClientItem item = new ClientItem();
         item.contactId = contactId;
-        item.contactName = mCursor.getString(ContactsColumns.INDEX_PRIMARY_NAME);
-        item.profilePic = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+        item.clientName = mCursor.getString(ContactsColumns.INDEX_PRIMARY_NAME);
+        item.profilePic = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId).toString();
 
         //bind to viewHolder
         holder.bindItemView(item, position);
@@ -219,7 +219,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      * void bindItemView(ContactsItem,int) - bind data to cardView. Set tag values, bg color,
      * and contextMenu listener, if not null
      */
-    public void bindItemView(ContactsItem item, int position){
+    public void bindItemView(ClientItem item, int position){
         mItemView.setTag(R.string.recycler_tagPosition, position);
         mItemView.setTag(R.string.recycler_tagItem, item);
 
@@ -232,16 +232,16 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
     /*
      * void bindTextView(ContactsItem) - bind data to textView component; display contact name
      */
-    public void bindTextView(ContactsItem item) {
-        mTxtName.setText(item.contactName);
-        mTxtName.setContentDescription(item.contactName);
+    public void bindTextView(ClientItem item) {
+        mTxtName.setText(item.clientName);
+        mTxtName.setContentDescription(item.clientName);
     }
 
     /*
      * void bindProfileImage(ContactsItem) - bind data to circleImageView. Using Picasso, load the
      * image profile of client
      */
-    private void bindProfileImage(ContactsItem item){
+    private void bindProfileImage(ClientItem item){
         Picasso.with(itemView.getContext())
                 .load(item.profilePic)
                 .placeholder(R.drawable.gym_rat_black_48dp)
