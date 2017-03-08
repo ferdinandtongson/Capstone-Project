@@ -1,34 +1,22 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
+import me.makeachoice.gymratpta.controller.viewside.bottomnav.ClientDetailNav;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.ExerciseNav;
-import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineMaid;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
-import static android.app.Activity.RESULT_OK;
-import static me.makeachoice.gymratpta.controller.manager.Boss.EXTRA_ROUTINE_UPDATE;
-import static me.makeachoice.gymratpta.controller.manager.Boss.REQUEST_CODE_ROUTINE_DETAIL;
-
-/**************************************************************************************************/
-/*
- * TODO - need to add accessibility values to bottom navigation menu items
- *          todo - add content descriptions to menu items
- *          todo - add d-pad navigation
- * TODO - need to style components
- *          todo - bottom navigation
- */
-/**************************************************************************************************/
+import static me.makeachoice.gymratpta.R.id.bottom_nav_item1;
+import static me.makeachoice.gymratpta.R.id.bottom_nav_item2;
 
 /**************************************************************************************************/
 /*
  * AppointmentKeeper is responsible for maintaining the Appointment screen. It is directly responsible
  * for handling toolbar and drawer events (see GymRatBaseKeeper), bottom navigation events (see
- * AppointmentNav) and the creation of ExerciseMaid and RoutineMaid.
+ * ScheduleNav) and the creation of ExerciseMaid and RoutineMaid.
  *
  * Variables from MyHouseKeeper:
  *      int TABLET_LAYOUT_ID - default id value defined in res/layout-sw600/*.xml to signify a tablet device
@@ -62,7 +50,7 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.REQUEST_CODE_ROUT
  */
 /**************************************************************************************************/
 
-public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.Bridge {
+public class ExerciseKeeper extends GymRatBaseKeeper implements MyActivity.Bridge {
 
 /**************************************************************************************************/
 /*
@@ -75,18 +63,17 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
 
 /**************************************************************************************************/
 /*
- * StubExerciseKeeper - constructor
+ * ExerciseKeeper - constructor
  */
 /**************************************************************************************************/
     /*
-     * StubExerciseKeeper - constructor
+     * ExerciseKeeper - constructor
      */
-    public StubExerciseKeeper(int layoutId){
+    public ExerciseKeeper(int layoutId){
 
         //get layout id
         mActivityLayoutId = layoutId;
 
-        mToolbarMenuId = R.menu.toolbar_menu;
         mBottomNavSelectedItemId = R.id.nav_exercises;
     }
 
@@ -116,8 +103,6 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
             openBundle(bundle);
         }
 
-        initializeLayout();
-
     }
 
     /*
@@ -128,21 +113,12 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
         //set saved instance state data
     }
 
-    public void activityResult(int requestCode, int resultCode, Intent data){
-        Log.d("Choice", "ExerciseKeeper.activityResult: " + requestCode);
-        Log.d("Choice", "     request code: " + requestCode);
-        Log.d("Choice", "     result: " + resultCode);
-
-        //get result of Activity
-        if(requestCode == REQUEST_CODE_ROUTINE_DETAIL){
-            if(resultCode == RESULT_OK){
-                Log.d("Choice", "     reset RoutineMaid");
-                //get maid registry
-                MaidRegistry maidRegistry = MaidRegistry.getInstance();
-
-                RoutineMaid maid = (RoutineMaid)maidRegistry.requestMaid(MaidRegistry.MAID_ROUTINE);
-                maid.resetData();
-
+    public void start(){
+        super.start();
+        if(mIsAuth){
+            if(!mInitialized){
+                mInitialized = true;
+                initializeLayout();
             }
         }
     }
@@ -161,6 +137,7 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
      * void initializeLayout() - initialize maids and bottom navigation
      */
     private void initializeLayout(){
+
         //initialize maids
         initializeMaid();
 
@@ -192,7 +169,13 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
     private void initializeBottomNavigation(){
 
         //create bottom navigator
-        new ExerciseNav(mActivity);
+        ExerciseNav nav = new ExerciseNav(mActivity);
+        nav.setOnNavSelectedListener(new ClientDetailNav.OnNavSelectedListener() {
+            @Override
+            public void onNavSelected(int navId) {
+                onBottomNavigationSelected(navId);
+            }
+        });
     }
 
 /**************************************************************************************************/
@@ -208,6 +191,21 @@ public class StubExerciseKeeper extends GymRatBaseKeeper implements MyActivity.B
      */
     @Override
     public void backPressed(){
+    }
+
+    /*
+     * void onBottomNavigationSelected(int) - bottom navigation item has been selected
+     */
+    public void onBottomNavigationSelected(int navId){
+        switch (navId) {
+            case bottom_nav_item1: // 0 - exercise
+                //does nothing
+                break;
+            case bottom_nav_item2: // 1 - routine
+                //does nothing
+                break;
+        }
+
     }
 
 /**************************************************************************************************/
