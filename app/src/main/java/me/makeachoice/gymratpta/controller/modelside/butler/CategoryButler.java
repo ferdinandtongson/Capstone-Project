@@ -2,13 +2,17 @@ package me.makeachoice.gymratpta.controller.modelside.butler;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.controller.modelside.firebase.CategoryFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.loader.CategoryLoader;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
-import me.makeachoice.gymratpta.model.item.exercise.CategoryFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
@@ -34,6 +38,8 @@ public class CategoryButler {
 
     //mCategoryList - data loaded from database
     private ArrayList<CategoryItem> mCategoryList;
+
+    private CategoryItem mSaveItem;
 
     //mLoaderId - loader id number
     private int mLoaderId;
@@ -156,24 +162,38 @@ public class CategoryButler {
         //save to firebase
         saveToFirebase(saveItem);
 
-        //save to local database
-        saveToDatabase(saveItem);
-
     }
 
     /*
      * void saveToFB(StatsItem) - save to firebase
      */
     private void saveToFirebase(CategoryItem saveItem){
+        mSaveItem = saveItem;
+
         //get firebase helper instance
         CategoryFirebaseHelper fbHelper = CategoryFirebaseHelper.getInstance();
 
-        //create firebase item
-        CategoryFBItem fbItem = new CategoryFBItem();
-        fbItem.categoryName = saveItem.categoryName;
-
         //save to firebase
-        fbHelper.addCategory(mUserId, fbItem);
+        fbHelper.addCategory(mUserId, saveItem.getFBItem(), new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    CategoryItem item = postSnapshot.getValue(CategoryItem.class);
+
+                    if(item.categoryName.equals(mSaveItem.categoryName)){
+                        mSaveItem.fkey = postSnapshot.getKey();
+                    }
+                }
+                //save to local database
+                saveToDatabase(mSaveItem);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
