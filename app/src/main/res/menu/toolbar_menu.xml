@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/toolbar_quick_help"
-        android:title="@string/toolbar_menu_quick_help"/>
-    <item android:id="@+id/toolbar_sign_out"
-        android:title="@string/toolbar_menu_sign_out" />
+        android:icon="@drawable/ic_help_outline_black_36dp"
+        android:title="@string/toolbar_menu_quick_help"
+        app:showAsAction="ifRoom"/>
 
 </menu>
