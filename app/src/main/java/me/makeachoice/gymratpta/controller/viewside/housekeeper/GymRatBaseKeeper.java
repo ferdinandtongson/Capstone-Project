@@ -1,5 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.viewside.drawer.HomeDrawer;
 import me.makeachoice.gymratpta.controller.viewside.toolbar.HomeToolbar;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
+import me.makeachoice.library.android.base.utilities.NetworkHelper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -117,6 +119,20 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
         void onQuickHelpRequested();
     }
 
+    DialogInterface.OnClickListener mOnRefreshListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            onRefreshLogin();
+        }
+    };
+
+    DialogInterface.OnClickListener mOnCancelListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            onCancelLogin();
+        }
+    };
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -157,7 +173,6 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
                 mBoss.setUser(user);
             }
         }
-
     }
 
     /*
@@ -221,6 +236,7 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
      */
     @Override
     public void activityResult(int requestCode, int resultCode, Intent data){
+        Log.d("Choice", "Keeper.activityResult - " + resultCode);
         if (requestCode == REQUEST_CODE_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 mBoss.checkInUser();
@@ -232,15 +248,26 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
             if (resultCode == RESULT_CANCELED) {
                 //TODO - need to show dialog
                 mActivity.finish();
+
                 return;
             }
 
             // No network
             if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
-                //TODO - need to show dialog
+                NetworkHelper.showNoNetworkDialog(mActivity, mOnRefreshListener, mOnCancelListener);
                 return;
             }
         }
+    }
+
+    private void onCancelLogin(){
+        mActivity.finish();
+    }
+
+    private void onRefreshLogin(){
+        mBoss.userSignIn();
+        mIsAuth = false;
+
     }
 
 /**************************************************************************************************/
