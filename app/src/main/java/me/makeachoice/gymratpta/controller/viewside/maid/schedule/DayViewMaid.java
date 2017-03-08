@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -295,18 +296,22 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         mAdapter.setOnImageClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onProfileImageClicked(view);
+                AppointmentCardItem item = (AppointmentCardItem)view.getTag(R.string.recycler_tagItem);
+                ClientItem clientItem = (ClientItem)view.getTag(R.string.recycler_tagItem02);
+
+                mDialogCounter = -1;
+                onProfileImageClicked(item, clientItem);
             }
         });
 
         mAdapter.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                //get item index
-                int index = (int)view.getTag(R.string.recycler_tagPosition);
+                AppointmentCardItem item = (AppointmentCardItem)view.getTag(R.string.recycler_tagItem);
+                ClientItem clientItem = (ClientItem)view.getTag(R.string.recycler_tagItem02);
 
                 //edit appointment item
-                onEditAppointment(index);
+                onEditAppointment(item, clientItem);
 
                 return false;
             }
@@ -315,13 +320,14 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         mAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //get item index
-                int index = (int)view.getTag(R.string.recycler_tagPosition);
+                AppointmentCardItem item = (AppointmentCardItem)view.getTag(R.string.recycler_tagItem);
+                ClientItem clientItem = (ClientItem)view.getTag(R.string.recycler_tagItem02);
 
                 //onItemClick event occurred
-                onItemClicked(index);
+                onItemClicked(item, clientItem);
             }
         });
+        mAdapter.setClientList(mClients);
 
         //swap data into adapter
         mAdapter.swapData(mData);
@@ -388,6 +394,7 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
                 @Override
                 public void onSaveClicked(ScheduleItem appItem) {
                     mAppDialog.dismiss();
+                    mDialogCounter = -1;
                     onSaveAppointment(appItem);
                 }
             });
@@ -436,6 +443,7 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
 
                     //dismiss dialog
                     mWarningDialog.dismiss();
+                    mDialogCounter = -1;
 
                     if(mEditingAppointment){
                         deleteOldEditAppointment();
@@ -495,6 +503,7 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //clear client list
         mClients.clear();
         mAppointmentMap.clear();
+        //mClientMap.clear();
 
         //load client data
         loadClient();
@@ -583,29 +592,28 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     /*
      * void onIconClicked(View) - icon clicked
      */
-    private void onProfileImageClicked(View view){
+    private void onProfileImageClicked(AppointmentCardItem item, ClientItem clientItem){
         Boss boss = (Boss)mActivity.getApplication();
 
-        //get index position
-        int index = (int)view.getTag(R.string.recycler_tagPosition);
+        boss.setClient(clientItem);
 
         //info icon, show client info screen
         Intent intent = new Intent(mActivity, ClientDetailActivity.class);
-        boss.setClient(mClients.get(index));
         mActivity.startActivity(intent);
     }
 
     /*
      * void onEditAppointment() - edit appointment item
      */
-    private void onEditAppointment(int index){
+    private void onEditAppointment(AppointmentCardItem item, ClientItem clientItem){
+
         //set edit appointment status flag as true
         mEditingAppointment = true;
 
         //save edit appointment as delete appointment item
-        mOldEditAppointment = mAppointments.get(index);
+        mOldEditAppointment = createScheduleItem(clientItem, item);
 
-        mClientEditItem = mClients.get(index);
+        mClientEditItem = clientItem;
 
         mDialogCounter = 0;
         //open schedule appointment dialog
@@ -645,13 +653,21 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
     /*
      * void onItemClicked(int) - exercise routine has been clicked
      */
-    private void onItemClicked(int index){
+    private void onItemClicked(AppointmentCardItem item, ClientItem clientItem){
+
         Boss boss = (Boss)mActivity.getApplication();
-        boss.setClient(mClients.get(index));
-        boss.setAppointmentItem(mAppointments.get(index));
+
+        ScheduleItem scheduleItem = createScheduleItem(clientItem, item);
+
+        boss.setClient(clientItem);
+        boss.setAppointmentItem(scheduleItem);
+
+        String today = DateTimeHelper.getToday();
+
+        boolean isToday = today.equals(scheduleItem.appointmentDate);
 
         Intent intent;
-        if(mPageIndex == 0){
+        if(isToday){
             intent = new Intent(mActivity, SessionDetailActivity.class);
         }
         else{
@@ -660,6 +676,20 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         //info icon, show client info screen
         mActivity.startActivity(intent);
     }
+
+    private ScheduleItem createScheduleItem(ClientItem clientItem, AppointmentCardItem appointmentItem){
+        ScheduleItem scheduleItem = new ScheduleItem();
+        scheduleItem.datestamp = appointmentItem.datestamp;
+        scheduleItem.appointmentDate = DateTimeHelper.convertDatestampToDate(appointmentItem.datestamp);
+        scheduleItem.appointmentTime = appointmentItem.clientInfo;;
+        scheduleItem.clientKey = appointmentItem.clientKey;
+        scheduleItem.clientName = appointmentItem.clientName;
+        scheduleItem.routineName = appointmentItem.routineName;
+        scheduleItem.status = "";
+
+        return scheduleItem;
+    }
+
 
 /**************************************************************************************************/
 
