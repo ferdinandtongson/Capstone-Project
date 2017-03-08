@@ -1,22 +1,21 @@
 package me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 
 /**************************************************************************************************/
 /*
- * ExerciseRecyclerAdapter extends RecyclerView.Adapter. It displays a list of exercises defined by
+ * ExerciseAdapter extends RecyclerView.Adapter. It displays a list of exercises defined by
  * the user.
  *
  * Methods from RecyclerView.Adapter:
@@ -29,7 +28,7 @@ import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
  */
 /**************************************************************************************************/
 
-public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecyclerAdapter.MyViewHolder>{
+public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.MyViewHolder>{
 
 /**************************************************************************************************/
 /*
@@ -48,35 +47,35 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     //mItemLayoutId - item layout resource id
     private int mItemLayoutId;
 
-    //mCursor - cursor consumed by adapter
-    private Cursor mCursor;
+    private ArrayList<ExerciseItem> mData;
 
-    //mCreateContextMenuListener - "create context menu" event listener
-    private static View.OnCreateContextMenuListener mCreateContextMenuListener;
 
-    //mOnClickListener - onClick listener for item click event
-    private static View.OnClickListener mOnItemClickListener;
+    //mOnLongClickListener - list item onLongClick event listener
+    private static View.OnLongClickListener mOnLongClickListener;
+
+    //mOnClickListener - list item onClick event click listener
+    private static View.OnClickListener mOnClickListener;
 
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * ExerciseRecyclerAdapter - constructor
+ * ExerciseAdapter - constructor
  */
 /**************************************************************************************************/
     /*
-     * ExerciseRecyclerAdapter - constructor
+     * ExerciseAdapter - constructor
      */
-    public ExerciseRecyclerAdapter(Context ctx, Cursor cursor, int itemLayoutId){
+    public ExerciseAdapter(Context ctx, int itemLayoutId){
         //get context
         mContext = ctx;
 
         //set item layout resource id
         mItemLayoutId = itemLayoutId;
 
-        mCursor = cursor;
-
+        //initialize data array
+        mData = new ArrayList<>();
     }
 
 /**************************************************************************************************/
@@ -94,44 +93,121 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
      */
     @Override
     public int getItemCount(){
-        if(mCursor != null){
-            return mCursor.getCount();
+        if(mData != null){
+            //return number of items
+            return mData.size();
         }
-
         return 0;
     }
 
     /*
-     * void setOnCreateContextMenuListener(...) - set listener for "create context menu" event
+     * ExerciseItem getItem(int) - get item at given position
      */
-    public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener listener){
-        mCreateContextMenuListener = listener;
+    public ExerciseItem getItem(int position){
+        return mData.get(position);
     }
 
     /*
-     * void setOnItemClickListener(...) - set listener to listen for item click events
+     * ArrayList<ExerciseItem> getData() - get array data used by recycler
      */
-    public void setOnItemClickListener(View.OnClickListener listener){
-        mOnItemClickListener = listener;
+    public ArrayList<ExerciseItem> getData(){ return mData; }
+
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Set Listener Methods:
+ *      void setOnLongClickListener(...) - set list item onLongClick listener
+ *      void setOnClickListener(...) - sett list item onClick listener
+ */
+/**************************************************************************************************/
+    /*
+     * void setOnLongClickListener(...) - set list item onLongClick listener
+     */
+    public void setOnLongClickListener(View.OnLongClickListener listener){
+        mOnLongClickListener = listener;
     }
 
-    public void setCursor(Cursor cursor){
-        mCursor = cursor;
+    /*
+     * void setOnClickListener(...) - sett list item onClick listener
+     */
+    public void setOnClickListener(View.OnClickListener listener){
+        mOnClickListener = listener;
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Public Methods:
+ *      void addItem(ExerciseItem) - dynamically add items to adapter
+ *      void adItemAt(ExerciseItem,int) - add item to adapter at specific position
+ *      void removeItemAt(int) - remove item from adapter then refresh adapter
+ *      void swapData(ArrayList<ExerciseItem>) - swap old data with new data
+ *      void clearData() - remove all data from adapter
+ */
+/**************************************************************************************************/
+    /*
+     * void addItem(ExerciseItem) - dynamically add items to adapter
+     */
+    public void addItem(ExerciseItem item) {
+        //add item object to data array
+        mData.add(item);
+        //notify adapter of data change
+        this.notifyDataSetChanged();
+    }
+
+    /*
+     * void adItemAt(ExerciseItem,int) - add item to adapter at specific position
+     */
+    public void addItemAt(ExerciseItem item, int position){
+        //add item object to data array at position
+        mData.add(position, item);
+
+        //notify adapter of data change
+        this.notifyDataSetChanged();
+    }
+
+    /*
+     * void removeItemAt(int) - remove item from adapter then refresh adapter
+     */
+    public void removeItemAt(int position){
+        //remove item at given position
+        mData.remove(position);
+
+        //notify item was removed
+        this.notifyItemRemoved(position);
+        //notify data range has changed
+        this.notifyItemRangeRemoved(position, mData.size());
+        //notify adapter of data change
+        this.notifyDataSetChanged();
+    }
+
+    /*
+     * void swapData(ArrayList<ExerciseItem>) - swap old data with new data
+     */
+    public void swapData(ArrayList<ExerciseItem> data){
+        //clear old data
+        mData.clear();
+        //add new data
+        mData.addAll(data);
+        //notify adapter of data change
         notifyDataSetChanged();
     }
 
     /*
-     * void closeCurosr() - close cursor
+     * void clearData() - remove all data from adapter
      */
-    public void closeCursor(){
-        if(mCursor != null && !mCursor.isClosed()){
-            mCursor.close();
-            mCursor = null;
-        }
+    public void clearData(){
+        //clear data
+        mData.clear();
+        //notify adapter of data change
+        notifyDataSetChanged();
     }
 
-
 /**************************************************************************************************/
+
 
 /**************************************************************************************************/
 /*
@@ -161,10 +237,8 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
      */
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        // Extract info from cursor
-        mCursor.moveToPosition(position);
 
-        ExerciseItem item = new ExerciseItem(mCursor);
+        ExerciseItem item = mData.get(position);
 
         //bind viewHolder components
         holder.bindItemView(item, position);
@@ -229,10 +303,6 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         mItemView.setTag(R.string.recycler_tagPosition, position);
         mItemView.setTag(R.string.recycler_tagItem, item);
-
-        if(mCreateContextMenuListener != null){
-            mItemView.setOnCreateContextMenuListener(mCreateContextMenuListener);
-        }
 
     }
 
