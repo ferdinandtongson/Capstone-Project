@@ -3,7 +3,6 @@ package me.makeachoice.gymratpta.controller.viewside.toolbar;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -86,7 +85,7 @@ public class HomeToolbar extends MyBartender implements MyActivity.OptionsMenuBr
         //current activity
         mActivity = activity;
 
-        mMenuId = DEFAULT_MENU_ID;
+        mMenuId = NO_MENU_OPTIONS;
         String title = mActivity.getResources().getString(DEFAULT_TITLE_ID);
         String subtitle = mActivity.getResources().getString(DEFAULT_SUBTITLE_ID);
 
