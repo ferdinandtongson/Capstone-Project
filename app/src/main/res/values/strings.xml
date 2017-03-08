@@ -165,7 +165,9 @@
     <string name="chest" translatable="true">Chest</string>
     <string name="client" translatable="true">Client</string>
     <string name="client_goals" translatable="true">Client Goals</string>
+    <string name="client_history" translatable="true">Client History</string>
     <string name="client_info" translatable="true">Client Info</string>
+    <string name="client_schedule" translatable="true">Client Schedule</string>
     <string name="clients" translatable="true">Clients</string>
     <string name="contact_info" translatable="true">Contact Info</string>
     <string name="contacts_list" translatable="true">Contacts List</string>
@@ -186,6 +188,7 @@
     <string name="gym_rat" translatable="true">Gym Rat</string>
     <string name="last" translatable="true">Last</string>
     <string name="legs" translatable="true">Legs</string>
+    <string name="minutes" translatable="true">Minutes</string>
     <string name="modified" translatable="true">Modified</string>
     <string name="no_notes" translatable="true">No Notes</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
@@ -210,6 +213,7 @@
     <string name="schedule" translatable="true">Schedule</string>
     <string name="schedule_daily" translatable="true">Daily Schedule</string>
     <string name="schedule_weekly" translatable="true">Weekly Schedule</string>
+    <string name="seconds" translatable="true">Seconds</string>
     <string name="send_email_using" translatable="true">Send email using...</string>
     <string name="session" translatable="true">Session</string>
     <string name="session_date" translatable="true">Session Date</string>
