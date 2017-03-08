@@ -3,42 +3,34 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 
 import com.firebase.ui.auth.ui.ResultCodes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.viewside.drawer.HomeDrawer;
 import me.makeachoice.gymratpta.controller.viewside.toolbar.HomeToolbar;
-import me.makeachoice.library.android.base.controller.viewside.bartender.MyBartender;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
-
-/**************************************************************************************************/
-/*
- * TODO - Need to add shared transition animation between toolbar and drawer component
- *          todo - components to animate are Gym Rat icon, title and subtitle
- * TODO - need to add accessibility values to toolbar and drawer menu items
- *          todo - add content descriptions to toolbar
- *                  todo - navigation icon, title, subtitle, options menu, menu items
- *          todo - add content descriptions to drawer
- *                  todo - navigation icon, title, subtitle, menu items
- *          todo - add d-pad navigation
- *                  todo - toolbar
- *                  todo - drawer
- * TODO - need to style components
- *          todo - toolbar
- *          todo - drawer
- *          todo - navigation header
- * TODO - need "no sign in" dialog
- */
-/**************************************************************************************************/
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_CONTACTS;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_EXERCISE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_EXERCISE_RECORD;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_GOALS;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_NOTES_RECORD;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_SCHEDULE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_STATS_RECORD;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_WARNING_DELETE;
 
 /**************************************************************************************************/
 /*
@@ -103,6 +95,10 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
     //mBottomNavSelectedItemId - used to determine which menu item is selected in the drawer
     protected int mBottomNavSelectedItemId;
 
+    protected boolean mIsAuth;
+    protected boolean mInitialized;
+    protected String mUserId;
+
     //mFirebaseAuth - firebase authentication instance
     private FirebaseAuth mFirebaseAuth;
 
@@ -146,8 +142,22 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
 
         //get Boss application
         mBoss = (Boss)mActivity.getApplication();
+        mIsAuth = true;
+        mInitialized = false;
 
-        initializeNavigation();
+        FirebaseAuth fbAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = fbAuth.getCurrentUser();
+
+        if(user == null){
+            mBoss.userSignIn();
+            mIsAuth = false;
+        }
+        else{
+            if(mBoss.getUserId().isEmpty()){
+                mBoss.setUser(user);
+            }
+        }
+
     }
 
     /*
@@ -156,8 +166,42 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
      */
     public void start(){
         super.start();
-        //set authentication listener
-        //mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
+        if(mIsAuth){
+            mUserId = mBoss.getUserId();
+            //get user id from Boss
+            if(!mInitialized){
+                initializeNavigation();
+            }
+        }
+    }
+
+
+    public void pause(){
+        super.pause();
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+
+        ArrayList<String> tagList = new ArrayList<>();
+        tagList.add(DIA_SCHEDULE);
+        tagList.add(DIA_WARNING_DELETE);
+        tagList.add(DIA_CONTACTS);
+        tagList.add(DIA_GOALS);
+        tagList.add(DIA_EXERCISE_RECORD);
+        tagList.add(DIA_EXERCISE);
+        tagList.add(DIA_STATS_RECORD);
+        tagList.add(DIA_NOTES_RECORD);
+
+
+        String tag;
+        DialogFragment dia;
+        int count = tagList.size();
+        for(int i = 0; i < count; i++){
+            tag = tagList.get(i);
+
+            dia = (DialogFragment)fm.findFragmentByTag(tag);
+            if (dia != null) { dia.dismiss(); }
+        }
+
     }
 
     /*
@@ -179,8 +223,8 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
     public void activityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == REQUEST_CODE_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                //user is signed in, initialize navigation components
-                //initializeNavigation();
+                mBoss.checkInUser();
+                mIsAuth = true;
                 return;
             }
 
@@ -243,23 +287,6 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
             }
         });
 
-        mHomeToolbar.setOnMenuItemClick(new MyBartender.OnMenuItemClick() {
-            @Override
-            public void onMenuItemClick(MenuItem menuItem) {
-                int itemId = menuItem.getItemId();
-                switch(itemId){
-                    case R.id.toolbar_sign_out:
-                        mFirebaseAuth.signOut();
-                        break;
-                    case R.id.toolbar_quick_help:
-                        if(mQuickHelpListener != null){
-                            //notify listener, "quick help" requested
-                            mQuickHelpListener.onQuickHelpRequested();
-                        }
-                        break;
-                }
-            }
-        });
 
         View navigationIcon = mHomeToolbar.getToolbarNavigationIcon();
 
@@ -297,17 +324,6 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
     public void setOnQuickHelpRequestListener(OnQuickHelpRequestListener listener){
         mQuickHelpListener = listener;
     }
-
-    /*private void updateUserProfile(FirebaseUser user){
-        if(mBoss.getUser() == null || !mBoss.getUser().getUid().equals(user.getUid())){
-            mBoss.setUser(user);
-
-            FirebaseDatabase fireDB = FirebaseDatabase.getInstance();
-            mBoss.initializeUser(fireDB);
-        }
-
-    }*/
-
 
 /**************************************************************************************************/
 
