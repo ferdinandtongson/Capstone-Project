@@ -24,16 +24,6 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT_ROU
 
 /**************************************************************************************************/
 /*
- * TODO - need to add accessibility values to bottom navigation menu items
- *          todo - add content descriptions to menu items
- *          todo - add d-pad navigation
- * TODO - need to style components
- *          todo - bottom navigation
- */
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
  * ScheduleDetailKeeper maintains the main components of the schedule detail screen. It is directly
  * responsible for handling toolbar and drawer events (see GymRatBaseKeeper), bottom navigation events
  * (see SaveNav) and the fragment container holding the fragment maintained by RoutineDetailMaid
@@ -86,9 +76,6 @@ public class ScheduleDetailKeeper extends GymRatBaseKeeper implements MyActivity
  */
 /**************************************************************************************************/
 
-    //mUserId - user id taken from firebase authentication
-    private String mUserId;
-
     //mClientItem - client item
     private ClientItem mClientItem;
 
@@ -123,8 +110,6 @@ public class ScheduleDetailKeeper extends GymRatBaseKeeper implements MyActivity
         //get layout id
         mActivityLayoutId = layoutId;
 
-        //get menu for toolbar
-        mToolbarMenuId = R.menu.toolbar_menu;
     }
 
 /**************************************************************************************************/
@@ -153,7 +138,14 @@ public class ScheduleDetailKeeper extends GymRatBaseKeeper implements MyActivity
             openBundle(bundle);
         }
 
-        initializeValues();
+        //initialize strings
+        mStrNone = mActivity.getString(R.string.msg_none_selected);
+        mStrCustom = mActivity.getString(R.string.custom_routine);
+        mStrRoutine = mActivity.getString(R.string.routine);
+
+        //initialize list arrays
+        mExerciseList = new ArrayList<>();
+        mOldList = new ArrayList();
 
     }
 
@@ -164,6 +156,33 @@ public class ScheduleDetailKeeper extends GymRatBaseKeeper implements MyActivity
         //TODO - handle saved instance states from bundle
         //set saved instance state data
     }
+
+    public void start(){
+        super.start();
+        if(mIsAuth){
+            if(!mInitialized){
+                mInitialized = true;
+                initializeValues();
+            }
+        }
+    }
+
+    /*
+     * void initializeValues() - initialize values used by keeper
+     */
+    private void initializeValues(){
+
+        //get routine detail item from Boss
+        mClientItem = mBoss.getClient();
+
+        mScheduleItem = mBoss.getAppointmentItem();
+
+        mRoutineButler = new ClientRoutineButler(mActivity, mUserId, mClientItem.fkey);
+        mScheduleButler = new ScheduleButler(mActivity, mUserId);
+
+        initializeLayout();
+    }
+
 
 /**************************************************************************************************/
 
@@ -176,31 +195,6 @@ public class ScheduleDetailKeeper extends GymRatBaseKeeper implements MyActivity
  *      void initializeBottomNavigation - initialize bottom navigation for the exercise screen
  */
 /**************************************************************************************************/
-    /*
-     * void initializeValues() - initialize values used by keeper
-     */
-    private void initializeValues(){
-
-        //get user id from Boss
-        mUserId = mBoss.getUserId();
-
-        //get routine detail item from Boss
-        mClientItem = mBoss.getClient();
-
-        mScheduleItem = mBoss.getAppointmentItem();
-        mExerciseList = new ArrayList<>();
-        mOldList = new ArrayList();
-
-        mStrNone = mActivity.getString(R.string.msg_none_selected);
-        mStrCustom = mActivity.getString(R.string.custom_routine);
-        mStrRoutine = mActivity.getString(R.string.routine);
-
-        mRoutineButler = new ClientRoutineButler(mActivity, mUserId, mClientItem.fkey);
-        mScheduleButler = new ScheduleButler(mActivity, mUserId);
-
-        initializeLayout();
-    }
-
     /*
      * void initializeLayout() - initialize maids and bottom navigation
      */
