@@ -8,9 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 /**************************************************************************************************/
@@ -33,26 +32,26 @@ public class RoutineQueryHelper {
     static{
         //initialize routineQueryBuilder
         routineQueryBuilder = new SQLiteQueryBuilder();
-        //set builder to query user table
-        routineQueryBuilder.setTables(Contractor.RoutineEntry.TABLE_NAME);
+        //set builder to query table
+        routineQueryBuilder.setTables(RoutineContract.TABLE_NAME);
     }
 
     //query selection - routine.uid = ?
     public static final String uidSelection =
-            Contractor.RoutineEntry.TABLE_NAME + "." + Contractor.RoutineEntry.COLUMN_UID + " = ? ";
+            RoutineContract.TABLE_NAME + "." + RoutineContract.COLUMN_UID + " = ? ";
 
     //query selection - routine.uid = ? AND routine_name = ?
     public static final String routineNameSelection =
-            Contractor.RoutineEntry.TABLE_NAME+
-                    "." + Contractor.RoutineEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.RoutineEntry.COLUMN_ROUTINE_NAME + " = ? ";
+            RoutineContract.TABLE_NAME+
+                    "." + RoutineContract.COLUMN_UID + " = ? AND " +
+                    RoutineContract.COLUMN_ROUTINE_NAME + " = ? ";
 
     //query selection - routine.uid = ? AND routine_name = ? AND order_number = ?
     public static final String orderNumberSelection =
-            Contractor.RoutineEntry.TABLE_NAME+
-                    "." + Contractor.RoutineEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.RoutineEntry.COLUMN_ROUTINE_NAME + " = ? AND " +
-                    Contractor.RoutineEntry.COLUMN_ORDER_NUMBER + " = ? ";
+            RoutineContract.TABLE_NAME+
+                    "." + RoutineContract.COLUMN_UID + " = ? AND " +
+                    RoutineContract.COLUMN_ROUTINE_NAME + " = ? AND " +
+                    RoutineContract.COLUMN_ORDER_NUMBER + " = ? ";
 
 
 /**************************************************************************************************/
@@ -71,7 +70,7 @@ public class RoutineQueryHelper {
      */
     public static Cursor getRoutine(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/routine/[uid]/....
-        String uid = Contractor.RoutineEntry.getUIdFromUri(uri);
+        String uid = RoutineContract.getUIdFromUri(uri);
 
         //query routine table
         return RoutineQueryHelper.routineQueryBuilder.query(
@@ -91,7 +90,7 @@ public class RoutineQueryHelper {
      */
     public static Cursor getRoutineByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/routine/[uid]
-        String uid = Contractor.RoutineEntry.getUIdFromUri(uri);
+        String uid = RoutineContract.getUIdFromUri(uri);
 
         //query from user table
         return RoutineQueryHelper.routineQueryBuilder.query(
@@ -111,8 +110,8 @@ public class RoutineQueryHelper {
      */
     public static Cursor getRoutineByRoutineName(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]
-        String uid = Contractor.RoutineEntry.getUIdFromUri(uri);
-        String routineName = Contractor.RoutineEntry.getRoutineNameFromUri(uri);
+        String uid = RoutineContract.getUIdFromUri(uri);
+        String routineName = RoutineContract.getRoutineNameFromUri(uri);
 
         //query from user table
         return RoutineQueryHelper.routineQueryBuilder.query(
@@ -132,9 +131,9 @@ public class RoutineQueryHelper {
      */
     public static Cursor getRoutineExerciseByOrderNumber(DBHelper dbHelper, Uri uri, String[] projection) {
         //"content://CONTENT_AUTHORITY/routine/[uid]/[routineName]/[orderNumber]
-        String uid = Contractor.RoutineEntry.getUIdFromUri(uri);
-        String routineName = Contractor.RoutineEntry.getRoutineNameFromUri(uri);
-        String orderNumber = Contractor.RoutineEntry.getOrderNumberFromUri(uri);
+        String uid = RoutineContract.getUIdFromUri(uri);
+        String routineName = RoutineContract.getRoutineNameFromUri(uri);
+        String orderNumber = RoutineContract.getOrderNumberFromUri(uri);
 
         //query from user table
         return RoutineQueryHelper.routineQueryBuilder.query(
@@ -165,21 +164,18 @@ public class RoutineQueryHelper {
     public static Uri insertRoutine(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.RoutineEntry.TABLE_NAME, null, values);
+            _id = db.insert(RoutineContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
-            Log.d("Choice", "     exception: " + mSQLException.toString());
             if(mSQLException instanceof SQLiteConstraintException){
                 //some toast message to user.
-                Log.d("Choice", "     constraint exception");
             }else if(mSQLException instanceof SQLiteDatatypeMismatchException) {
                 //some toast message to user.
-                Log.d("Choice", "     mismatch exception");
             }
             throw mSQLException;
         }
 
-        return Contractor.RoutineEntry.buildRoutineUri(_id);
+        return RoutineContract.buildRoutineUri(_id);
     }
 
     /*
@@ -193,7 +189,7 @@ public class RoutineQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.RoutineEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(RoutineContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -209,7 +205,7 @@ public class RoutineQueryHelper {
                                      String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.RoutineEntry.TABLE_NAME, values, whereClause, whereArgs);
+            rowsUpdated = db.update(RoutineContract.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
