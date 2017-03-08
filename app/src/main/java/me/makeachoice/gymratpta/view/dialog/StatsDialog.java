@@ -106,12 +106,12 @@ public class StatsDialog extends DialogFragment {
 
     private OnSaveListener mOnSaveListener;
     public interface OnSaveListener{
-        public void onSave(StatsItem saveItem);
+        void onSave(StatsItem saveItem);
     }
 
     private OnDismissListener mDismissListener;
     public interface OnDismissListener{
-        public void onDismiss(DialogInterface dialogInterface);
+        void onDismiss(DialogInterface dialogInterface);
     }
 
 /**************************************************************************************************/
