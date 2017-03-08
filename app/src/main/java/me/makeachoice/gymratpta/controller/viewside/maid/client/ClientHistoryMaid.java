@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.viewpager.StandardStateViewPager;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
 /**************************************************************************************************/
@@ -40,8 +42,15 @@ public class ClientHistoryMaid extends MyMaid implements BasicFragment.Bridge {
  */
 /**************************************************************************************************/
 
+    public final static int MAID_SESSION_INDEX = 0;
+    public final static int MAID_STATS_INDEX = 1;
+    public final static int MAID_NOTES_INDEX = 2;
+
     //mPageTitles - list of titles used by viewPager tabLayout
-    ArrayList<String> mPageTitles;
+    private ArrayList<String> mPageTitles;
+
+    private String mUserId;
+    private ClientItem mClientItem;
 
 /**************************************************************************************************/
 
@@ -93,6 +102,12 @@ public class ClientHistoryMaid extends MyMaid implements BasicFragment.Bridge {
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
+        Boss boss = (Boss)mActivity.getApplication();
+
+        //get user id from Boss
+        mUserId = boss.getUserId();
+        mClientItem = boss.getClient();
+
         //prepare fragment components
         prepareFragment();
     }
@@ -125,16 +140,19 @@ public class ClientHistoryMaid extends MyMaid implements BasicFragment.Bridge {
         initializeVPMaids();
 
         //initialize view pager
-        new StandardStateViewPager(mFragment, mPageTitles, MaidRegistry.MAID_DAY_VP);
+        new StandardStateViewPager(mFragment, mPageTitles, MaidRegistry.MAID_CLIENT_HISTORY_VP);
 
     }
 
     private void loadData(){
         mPageTitles = new ArrayList();
 
-        mPageTitles.add("Sessions");
-        mPageTitles.add("Stats");
-        mPageTitles.add("Notes");
+        String strSessions = mActivity.getString(R.string.sessions);
+        String strStats = mActivity.getString(R.string.stats);
+        String strNotes = mActivity.getString(R.string.notes);
+        mPageTitles.add(strSessions);
+        mPageTitles.add(strStats);
+        mPageTitles.add(strNotes);
     }
 
     private void initializeVPMaids(){
@@ -142,21 +160,17 @@ public class ClientHistoryMaid extends MyMaid implements BasicFragment.Bridge {
         //int layoutId = R.layout.standard_recycler_fab;
         int layoutId = R.layout.standard_recycler_fab;
 
-        int count = mPageTitles.size();
+        String maidSessionId = MaidRegistry.MAID_CLIENT_HISTORY_VP + MAID_SESSION_INDEX;
+        String maidStatsId = MaidRegistry.MAID_CLIENT_HISTORY_VP + MAID_STATS_INDEX;
+        String maidNotesId = MaidRegistry.MAID_CLIENT_HISTORY_VP +MAID_NOTES_INDEX;
 
-        //initialize maids
-        /*for(int i = 0; i < count; i++){
-            //get exercise list
-            ArrayList<ClientCardItem> clients = SessionStubData.createData(mFragment.getContext());
+        MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
-            //create unique maid id numbers using a base number
-            String maidKey = MaidRegistry.MAID_DAY_VP + i;
+        int noFabId = R.layout.standard_recycler;
 
-            MaidRegistry maidRegistry = MaidRegistry.getInstance();
-
-            //initialize maid
-            maidRegistry.initializeDayViewPagerMaid(maidKey, layoutId, userId, clients);
-        }*/
+        maidRegistry.initializeClientHistorySessionMaid(maidSessionId, noFabId, mUserId, mClientItem);
+        maidRegistry.initializeClientHistoryStatsMaid(maidStatsId, noFabId, mUserId, mClientItem);
+        maidRegistry.initializeClientHistoryNotesMaid(maidNotesId, noFabId, mUserId, mClientItem);
 
     }
 
