@@ -757,11 +757,16 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         mScheduleButler.saveSchedule(mSaveItem, new ScheduleButler.OnScheduleSavedListener() {
             @Override
             public void onScheduleSaved(){
+                broadcastScheduleUpdate(mSaveItem);
                 mExerciseCounter = 0;
                 saveExercises(mExerciseCounter);
             }
         });
+    }
 
+    private void broadcastScheduleUpdate(ScheduleItem item){
+        Boss boss = (Boss)mActivity.getApplication();
+        boss.broadcastScheduleUpdate(item);
     }
 
     private int mExerciseCounter;
@@ -841,6 +846,7 @@ public class DayViewMaid extends GymRatRecyclerMaid implements BasicFragment.Bri
         mScheduleButler.deleteSchedule(mDeleteAppointment, new ScheduleButler.OnScheduleDeletedListener() {
             @Override
             public void onScheduleDeleted() {
+                broadcastScheduleUpdate(mDeleteAppointment);
                 deleteRoutineExercises(mDeleteAppointment);
             }
         });

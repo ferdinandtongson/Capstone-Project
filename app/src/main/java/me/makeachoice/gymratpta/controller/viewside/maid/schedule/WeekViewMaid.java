@@ -810,12 +810,19 @@ public class WeekViewMaid extends GymRatRecyclerMaid implements BasicFragment.Br
         mScheduleButler.saveSchedule(mSaveItem, new ScheduleButler.OnScheduleSavedListener() {
             @Override
             public void onScheduleSaved(){
+                broadcastScheduleUpdate(mSaveItem);
                 mExerciseCounter = 0;
                 saveExercises(mExerciseCounter);
             }
         });
 
     }
+
+    private void broadcastScheduleUpdate(ScheduleItem item){
+        Boss boss = (Boss)mActivity.getApplication();
+        boss.broadcastScheduleUpdate(item);
+    }
+
 
     private int mExerciseCounter;
     private void saveExercises(int counter){
@@ -895,6 +902,7 @@ public class WeekViewMaid extends GymRatRecyclerMaid implements BasicFragment.Br
         mScheduleButler.deleteSchedule(mDeleteAppointment, new ScheduleButler.OnScheduleDeletedListener() {
             @Override
             public void onScheduleDeleted() {
+                broadcastScheduleUpdate(mDeleteAppointment);
                 deleteRoutineExercises(mDeleteAppointment);
             }
         });
