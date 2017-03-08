@@ -16,16 +16,6 @@ import static me.makeachoice.gymratpta.R.id.bottom_nav_item3;
 
 /**************************************************************************************************/
 /*
- * TODO - need to add accessibility values to bottom navigation menu items
- *          todo - add content descriptions to menu items
- *          todo - add d-pad navigation
- * TODO - need to style components
- *          todo - bottom navigation
- */
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*
  * SessionDetailKeeper is responsible for maintaining the Session Detail screens. It is directly
  * responsible for handling toolbar and drawer events (see GymRatBaseKeeper), bottom navigation
  * events (see ClientDetailNav) and the creation of SessionRoutine, SessionStats and Session Notes
@@ -94,9 +84,6 @@ public class SessionDetailKeeper extends GymRatBaseKeeper {
         //get layout id from HouseKeeper Registry
         mActivityLayoutId = layoutId;
 
-        //set toolbar menu resource id consumed by HomeToolbar
-        mToolbarMenuId = R.menu.toolbar_menu;
-
     }
 
 /**************************************************************************************************/
@@ -136,7 +123,6 @@ public class SessionDetailKeeper extends GymRatBaseKeeper {
         mStrNotes = mActivity.getString(R.string.notes);
         mStrToday = mActivity.getString(R.string.today);
 
-        initializeLayout();
     }
 
     /*
@@ -145,6 +131,17 @@ public class SessionDetailKeeper extends GymRatBaseKeeper {
     protected void openBundle(Bundle bundle){
         //set saved instance state data
     }
+
+    public void start(){
+        super.start();
+        if(mIsAuth){
+            if(!mInitialized){
+                mInitialized = true;
+                initializeLayout();
+            }
+        }
+    }
+
 
 /**************************************************************************************************/
 
