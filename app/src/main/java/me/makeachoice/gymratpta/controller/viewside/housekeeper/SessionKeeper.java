@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -46,16 +45,6 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_SCHEDULE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT;
 import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING_APPOINTMENT;
-
-/**************************************************************************************************/
-/*
- *  TODO - Enable Context Menu
- *          todo - reschedule session
- *          todo - cancel session
- *  TODO - Add divider lines in Context Menu
- *  TODO - Use client data for email and phone icon events
- */
-/**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
@@ -121,7 +110,6 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
     //mAdapter - recycler adapter
     private AppointmentAdapter mAdapter;
 
-    private String mUserId;
     private boolean mEditingAppointment;
     private ScheduleItem mDeleteAppointment;
     private ScheduleItem mSaveItem;
@@ -141,6 +129,8 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
     private String mStrDelete;
     private String mMsgUpdatePart1;
     private String mMsgUpdatePart2;
+    private String mStrGymRat;
+    private String mMsgToday;
 
     private AppointmentDialog mAppDialog;
     private DeleteWarningDialog mWarningDialog;
@@ -193,13 +183,16 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         //get layout id from HouseKeeper Registry
         mActivityLayoutId = layoutId;
 
-        //set toolbar menu resource id consumed by HomeToolbar
-        mToolbarMenuId = R.menu.toolbar_menu;
-
         //flag used to determine which menu items is selected in drawer component
         mBottomNavSelectedItemId = R.id.nav_sessions;
 
+        //initialize array buffers
         mData = new ArrayList<>();
+        mAppointments = new ArrayList<>();
+        mAppointmentMap = new HashMap<>();
+        mClients = new ArrayList<>();
+        mExercises = new ArrayList<>();
+
     }
 
 /**************************************************************************************************/
@@ -228,33 +221,19 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
             openBundle(bundle);
         }
 
-        mAppointments = new ArrayList<>();
-        mAppointmentMap = new HashMap<>();
-        mClients = new ArrayList<>();
-        mExercises = new ArrayList<>();
-        mEditingAppointment = false;
-
-        //get user shared preference
-        SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
-
-        //get user preference to want to receive deletion warning
-        mShowWarning = prefs.getBoolean(PREF_DELETE_WARNING_APPOINTMENT, true);
-
+        //initialize string values
         mStrDelete = mActivity.getString(R.string.delete);
         mMsgUpdatePart1 = mActivity.getString(R.string.msg_update_session_part1);
         mMsgUpdatePart2 = mActivity.getString(R.string.msg_update_session_part2);
+        mStrGymRat = mActivity.getString(R.string.gym_rat);
+        mMsgToday = mActivity.getString(R.string.msg_today_session);
 
-        //get user id from Boss
-        mUserId = mBoss.getUserId();
-
+        //initialize date, ids and counters
         mDatestamp = DateTimeHelper.getDatestamp(0);
         mAppointmentLoaderId = LOADER_SCHEDULE;
         mClientLoaderId = LOADER_CLIENT;
         mDialogCounter = -1;
 
-        mClientButler = new ClientButler(mActivity, mUserId);
-        mScheduleButler = new ScheduleButler(mActivity, mUserId);
-        mRoutineButler = new RoutineButler(mActivity, mUserId);
     }
 
     /*
@@ -266,26 +245,32 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
 
     public void start(){
         super.start();
-        mScheduleButler.loadSchedule(mAppointmentLoaderId, mDatestamp, mOnScheduleLoadListener);
+        if(mIsAuth){
+            if(!mInitialized){
+                mInitialized = true;
+                initializeValues();
+                mScheduleButler.loadSchedule(mAppointmentLoaderId, mDatestamp, mOnScheduleLoadListener);
+            }
+            else{
+                mScheduleButler.loadSchedule(mAppointmentLoaderId, mDatestamp, mOnScheduleLoadListener);
+            }
+        }
     }
 
-    public void pause(){
-        super.pause();
-        FragmentManager fm = mActivity.getSupportFragmentManager();
+    private void initializeValues(){
+        mEditingAppointment = false;
 
-        ArrayList<String> tagList = new ArrayList<>();
-        tagList.add(DIA_SCHEDULE);
-        tagList.add(DIA_WARNING_DELETE);
+        //get user shared preference
+        SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
 
-        String tag;
-        DialogFragment dia;
-        int count = tagList.size();
-        for(int i = 0; i < count; i++){
-            tag = tagList.get(i);
+        //get user preference to want to receive deletion warning
+        mShowWarning = prefs.getBoolean(PREF_DELETE_WARNING_APPOINTMENT, true);
 
-            dia = (DialogFragment)fm.findFragmentByTag(tag);
-            if (dia != null) { dia.dismiss(); }
-        }
+        mClientButler = new ClientButler(mActivity, mUserId);
+        mScheduleButler = new ScheduleButler(mActivity, mUserId);
+        mRoutineButler = new RoutineButler(mActivity, mUserId);
+
+        initializeLayout();
     }
 
 
@@ -305,11 +290,6 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
      * void initializeLayout() - initialize ui
      */
     private void initializeLayout(){
-        String strGymRat = mActivity.getString(R.string.gym_rat);
-        String strMsgToday = mActivity.getString(R.string.msg_today_session);
-
-        mHomeToolbar.setGymRatToolbarTitle(strGymRat, strMsgToday);
-
 
         //initialize "empty" textView used when recycler is empty
         initializeEmptyText();
@@ -505,6 +485,26 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
 
     }
 
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Update methods
+ */
+/**************************************************************************************************/
+
+
+    private void updateLayout(){
+
+        mHomeToolbar.setGymRatToolbarTitle(mStrGymRat, mMsgToday);
+
+        //swap data into adapter
+        mAdapter.swapData(mData);
+
+        //check if recycler has any data; if not, display "empty" textView
+        updateEmptyText();
+    }
+
     /*
      * void updateEmptyText() - check if adapter is empty or not then updates empty textView
      */
@@ -573,8 +573,8 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
             });
         }
         else{
-            //index is more than appointment list, initialize layout
-            initializeLayout();
+            //index is more than appointment list, update layout
+            updateLayout();
         }
 
     }
