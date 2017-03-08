@@ -23,6 +23,8 @@ import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.view.dialog.GoalDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_GOALS;
+
 /**************************************************************************************************/
 /*
  * ClientInfoMaid displays client contact info and exercise goals
@@ -277,7 +279,7 @@ public class ClientInfoMaid extends MyMaid  implements BasicFragment.Bridge{
 
         mGoalDialog.setCancelable(true);
 
-        mGoalDialog.show(fm, "diaNotes");
+        mGoalDialog.show(fm, DIA_GOALS);
 
         return mGoalDialog;
     }
