@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.model.item.client.NotesItem;
+import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
 /**************************************************************************************************/
@@ -368,8 +369,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         mTxtDate.setText(item.appointmentDate);
         mTxtDate.setContentDescription(item.appointmentDate);
 
-        mTxtTime.setText(item.appointmentTime);
-        mTxtTime.setContentDescription(item.appointmentTime);
+        mTxtTime.setText(DateTimeHelper.convert24Hour(item.appointmentTime));
+        mTxtTime.setContentDescription(DateTimeHelper.convert24Hour(item.appointmentTime));
 
         mTxtSubjective.setText("S - " + item.subjectiveNotes);
         mTxtSubjective.setContentDescription(item.subjectiveNotes);
