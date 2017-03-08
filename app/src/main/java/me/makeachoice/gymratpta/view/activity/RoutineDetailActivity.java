@@ -1,6 +1,5 @@
 package me.makeachoice.gymratpta.view.activity;
 
-
 import android.os.Bundle;
 
 import me.makeachoice.gymratpta.controller.manager.Boss;
@@ -50,8 +49,7 @@ public class RoutineDetailActivity extends MyActivity {
  * Initialization Methods:
  *      void onCreate(Bundle) - called when activity is first created
  */
-
-    /**************************************************************************************************/
+/**************************************************************************************************/
     /*
      * void onCreate(Bundle) - called when activity is first created. Get Boss application class to
      *      set activity context and get HouseKeeper class for this activity.
