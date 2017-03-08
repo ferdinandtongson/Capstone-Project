@@ -51,6 +51,24 @@
         <provider android:name=".controller.modelside.provider.GymRatProvider"
             android:authorities="me.makeachoice.gymratpta.app"/>
 
+
+        <receiver android:name=".view.widget.AppointmentWidgetProvider"
+            android:label="GymRat">
+            <intent-filter>
+                <action android:name="me.makeachoice.gymratpta.app.ACTION_WIDGET_UPDATED"/>
+                <action android:name="me.makeachoice.gymratpta.app.ACTION_WIDGET_REFRESH"/>
+                <action android:name="me.makeachoice.gymratpta.app.ACTION_APP_UPDATED"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appointment_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".view.widget.AppointmentWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+
     </application>
 
 </manifest>
