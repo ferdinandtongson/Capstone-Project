@@ -1,30 +1,20 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.exercise;
 
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.modelside.butler.ExerciseButler;
 import me.makeachoice.gymratpta.controller.viewside.maid.GymRatRecyclerMaid;
-import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.ExerciseRecyclerAdapter;
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.exercise.ExerciseAdapter;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
-import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_EXERCISE_BASE;
 
@@ -49,35 +39,24 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_EXERCISE_B
  */
 /**************************************************************************************************/
 
-public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge,
-        RecyclerView.OnCreateContextMenuListener, MyActivity.OnContextItemSelectedListener{
+public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFragment.Bridge{
 
 /**************************************************************************************************/
 /*
  * Class Variables
- *      int CONTEXT_MENU_EDIT - "edit" context menu id number
- *      int CONTEXT_MENU_DELETE = "delete" context menu id number
- *      ArrayList<ExerciseItem> mData - data list consumed by the adapter
- *      ExerciseRecyclerAdapter mAdapter - adapter consumed by recycler
  */
 /**************************************************************************************************/
-
-    //CONTEXT_MENU_EDIT - "edit" context menu id number
-    private final static int CONTEXT_MENU_EDIT = 0;
-
-    //CONTEXT_MENU_DELETE = "delete" context menu id number
-    private final static int CONTEXT_MENU_DELETE = 1;
 
     //mData - data list consumed by the adapter
     private ArrayList<ExerciseItem> mData;
 
     //mAdapter - adapter consumed by recycler
-    private ExerciseRecyclerAdapter mAdapter;
+    private ExerciseAdapter mAdapter;
 
     private String mUserId;
     private String mCategoryKey;
     private int mLoaderId;
-
+    private ExerciseButler mExerciseButler;
 
 /**************************************************************************************************/
 
@@ -98,6 +77,7 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
 
         mUserId = item.uid;
         mCategoryKey = item.fkey;
+        mData = new ArrayList<>();
 
         mLoaderId = LOADER_EXERCISE_BASE + index;
 
@@ -135,8 +115,15 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     public void activityCreated(Bundle bundle){
         super.activityCreated(bundle);
 
+        mExerciseButler = new ExerciseButler(mActivity, mUserId);
+
         //load exercises
-        loadExercises();
+        mExerciseButler.loadExercises(mCategoryKey, mLoaderId, new ExerciseButler.OnLoadedListener() {
+            @Override
+            public void onLoaded(ArrayList<ExerciseItem> exerciseList) {
+                onExercisesLoaded(exerciseList);
+            }
+        });
     }
 
     /*
@@ -163,24 +150,19 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     /*
      * void prepareFragment(View) - prepare components and data to be displayed by fragment
      */
-    private void prepareFragment(Cursor cursor){
+    private void prepareFragment(){
 
-        //initialize "empty" text, displayed if data is empty
+        //initialize "empty" textView used when recycler is empty
         initializeEmptyText();
 
-        //initialize adapter
-        initializeAdapter(cursor);
+        //initialize adapter used by recycler
+        initializeAdapter();
 
-        //initialize recycler view
+        //initialize recycler
         initializeRecycler();
 
-        if(cursor != null && cursor.getCount() > 0){
-            //check if data is empty
-            isEmptyRecycler(false);
-        }
-        else{
-            isEmptyRecycler(true);
-        }
+        //initialize floating action button
+        initializeFAB();
     }
 
     /*
@@ -197,113 +179,100 @@ public class ExerciseViewPagerMaid extends GymRatRecyclerMaid implements BasicFr
     /*
      * void initializeAdapter() - adapter used by recycler component
      */
-    private void initializeAdapter(Cursor cursor) {
+    private void initializeAdapter() {
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.item_simple;
 
         //create adapter consumed by the recyclerView
-        mAdapter = new ExerciseRecyclerAdapter(mLayout.getContext(), cursor, adapterLayoutId);
+        mAdapter = new ExerciseAdapter(mActivity, adapterLayoutId);
 
-        //set context menu create listener
-        mAdapter.setOnCreateContextMenuListener(this);
+        mAdapter.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //get item index
+                int index = (int)view.getTag(R.string.recycler_tagPosition);
+
+                //does nothing
+
+                return false;
+            }
+        });
+
+        //swap data into adapter
+        mAdapter.swapData(mData);
+
+        //check if recycler has any data; if not, display "empty" textView
+        updateEmptyText();
 
     }
 
     /*
-     * void initializeRecycler() - initialize recycler to display exercise items
+     * void initializeRecycler() - initialize recycler component
      */
     private void initializeRecycler(){
-        //add dividers between items
-        //mBasicRecycler.showItemDivider(mFragment.getContext());
-
         //set adapter
         mBasicRecycler.setAdapter(mAdapter);
+
     }
+
+    /*
+ * void initializeFAB() - initialize FAB component
+ */
+    private void initializeFAB(){
+        //get content description string value
+        //String description = mActivity.getString(R.string.description_fab_appointment);
+
+        //add content description to FAB
+        //mFAB.setContentDescription(description);
+
+        //add listener for onFABClick events
+        setOnClickFABListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //onFABClick event occurred
+                //onFabClicked(view);
+                String msg = mActivity.getString(R.string.msg_purchase_gymrat);
+                Toast.makeText(mActivity,msg, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /*
+     * void updateEmptyText() - check if adapter is empty or not then updates empty textView
+     */
+    private void updateEmptyText(){
+        if(mAdapter.getItemCount() > 0){
+            //is not empty
+            isEmptyRecycler(false);
+        }
+        else{
+            //is empty
+            isEmptyRecycler(true);
+        }
+    }
+
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * Context Menu Methods:
- *      void onCreateContextMenu(...) - create context menu
- *      boolean onMenuItemClick(MenuItem) - an item in the context menu has been clicked
+ * Load Methods:
  */
 /**************************************************************************************************/
     /*
-     * void onCreateContextMenu(...) - create context menu
+     * void onExercisesLoaded() - exercises loaded
      */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        //get clientCardItem
-        ExerciseItem item = (ExerciseItem)v.getTag(R.string.recycler_tagItem);
+    private void onExercisesLoaded(ArrayList<ExerciseItem> exerciseList){
+        mData.clear();
 
-        //get exercise name
-        String exerciseName = (item.exerciseName);
+        mData.addAll(exerciseList);
 
-        //create string values for menu
-        String strEdit = mFragment.getString(R.string.edit);
-        String strDelete = mFragment.getString(R.string.delete);
+        prepareFragment();
 
-        //create context menu
-        menu.setHeaderTitle(exerciseName);
-        menu.add(0, CONTEXT_MENU_EDIT, 0, strEdit);
-        menu.add(0, CONTEXT_MENU_DELETE, 0, strDelete);
-
-    }
-
-    /*
-     * boolean onContextItemSelected(MenuItem) - an item in the context menu has been clicked
-     */
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case CONTEXT_MENU_EDIT:
-                Log.d("Choice", "     edit");
-                //TODO - need to edit exercise
-                return true;
-            case CONTEXT_MENU_DELETE:
-                Log.d("Choice", "     delete");
-                //TODO - need to delete exercise
-                return true;
-        }
-        return false;
     }
 
 
 /**************************************************************************************************/
-    /*
-     * void loadExercises() - loads exercises onto cursor used by Adapter.
-     */
-    private void loadExercises(){
-        // Initializes a loader for loading clients
-        mFragment.getActivity().getSupportLoaderManager().initLoader(mLoaderId, null,
-                new LoaderManager.LoaderCallbacks<Cursor>() {
-                    @Override
-                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
-                        //request client cursor from local database
-                        Uri uri = Contractor.ExerciseEntry.buildExerciseByCategoryKey(mUserId, mCategoryKey);
-
-                        //get cursor
-                        return new CursorLoader(
-                                mFragment.getActivity(),
-                                uri,
-                                ExerciseColumns.PROJECTION_EXERCISE,
-                                null,
-                                null,
-                                Contractor.ExerciseEntry.SORT_ORDER_DEFAULT);
-                    }
-
-                    @Override
-                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
-                        //category cursor loaded, initialize layout
-                        prepareFragment(cursor);
-                    }
-
-                    @Override
-                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-                    }
-                });
-    }
 
 
 }
