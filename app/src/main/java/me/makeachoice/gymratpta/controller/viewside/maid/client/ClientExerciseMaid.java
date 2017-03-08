@@ -1,12 +1,12 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.client;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +34,14 @@ import me.makeachoice.gymratpta.view.dialog.RoutineExerciseDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
+import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_EXERCISE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_EXERCISE_RECORD;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_WARNING_DELETE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT_EXERCISE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT_ROUTINE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING;
+import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING_APPOINTMENT;
 
 /**************************************************************************************************/
 /*
@@ -111,6 +117,7 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
     private boolean mRefreshOnDismiss;
     private boolean mAlreadyModified;
     private boolean mIsModified;
+    private boolean mShowWarning;
 
     private ClientRoutineButler.OnLoadedListener mRLoadedListener = new ClientRoutineButler.OnLoadedListener() {
         @Override
@@ -218,6 +225,13 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
 
         mData = new ArrayList<>();
 
+        //get user shared preference
+        SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
+
+        //get user preference to want to receive deletion warning
+        mShowWarning = prefs.getBoolean(PREF_DELETE_WARNING, true);
+
+
         mExerciseButler = new ClientExerciseButler(mActivity, mUserId, mClientItem.fkey);
         mRoutineButler = new ClientRoutineButler(mActivity, mUserId, mClientItem.fkey);
         mScheduleButler = new ScheduleButler(mActivity, mUserId);
@@ -299,7 +313,6 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
         mAdapter.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Log.d("Choice", "Maid.onLonClick");
                 int index = (int)view.getTag(R.string.recycler_tagPosition);
                 onEditRoutine(index);
                 return false;
@@ -385,7 +398,7 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
             });
 
 
-            mExerciseRecordDialog.show(fm, "diaExerciseRecord");
+            mExerciseRecordDialog.show(fm, DIA_EXERCISE_RECORD);
 
             return mExerciseRecordDialog;
         }
@@ -447,7 +460,7 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
 
 
             //show dialog
-            mWarningDialog.show(fm, "diaDeleteRoutine");
+            mWarningDialog.show(fm, DIA_WARNING_DELETE);
 
             return mWarningDialog;
         }
@@ -488,7 +501,7 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
             });
 
             //show dialog
-            mAddDialog.show(fm, "diaRoutineExercise");
+            mAddDialog.show(fm, DIA_EXERCISE);
 
             return mAddDialog;
         }
@@ -846,12 +859,20 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
 
         //check if any records exist
         if(!exerciseRecords.isEmpty()){
-            mWarningMode = WARNING_DELETE;
-            //has records, warn user
-            initializeWarningDialog(mDeleteRoutine);
+            if(mShowWarning){
+                mWarningMode = WARNING_DELETE;
+                //has records, warn user
+                initializeWarningDialog(mDeleteRoutine);
+            }
+            else{
+                mAdapter.onItemDismiss(mDeleteIndex);
+
+                //delete client routine
+                deleteClientRoutine();
+
+            }
         }
         else{
-            //no records, notify adapter of swipe to dismiss event
             mAdapter.onItemDismiss(mDeleteIndex);
 
             //delete client routine
