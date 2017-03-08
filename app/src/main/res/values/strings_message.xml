@@ -29,4 +29,12 @@
 
     <string name="msg_today_session" translatable="true">Today\'s Sessions</string>
     <string name="msg_purchase_gymrat" translatable="true">Purchase Gym Rat to enable!</string>
+    <string name="msg_please_login" translatable="true">Please Login</string>
+    <string name="msg_short_no_network" translatable="true">No Network</string>
+
+
+    <string name="action_widget_refresh" translatable="false">me.makeachoice.gymratpta.app.ACTION_WIDGET_REFRESH</string>
+    <string name="action_widget_update" translatable="false">me.makeachoice.gymratpta.app.ACTION_WIDGET_UPDATED</string>
+    <string name="action_app_update" translatable="false">me.makeachoice.gymratpta.app.ACTION_APP_UPDATED</string>
+
 </resources>
