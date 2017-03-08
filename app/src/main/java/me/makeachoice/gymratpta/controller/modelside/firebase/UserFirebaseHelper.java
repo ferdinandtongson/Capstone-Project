@@ -8,6 +8,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import me.makeachoice.gymratpta.model.item.UserFBItem;
 import me.makeachoice.gymratpta.model.item.UserItem;
 
 /**************************************************************************************************/
@@ -89,7 +90,7 @@ public class UserFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addUserData(ArrayList<UserItem> users){
+    public void addUserData(ArrayList<UserFBItem> users){
         int count = users.size();
         for(int i = 0; i < count; i++){
             addUser(users.get(i));
@@ -97,7 +98,7 @@ public class UserFirebaseHelper {
 
     }
 
-    public void addUser(UserItem item){
+    public void addUser(UserFBItem item){
         DatabaseReference ref = getUserReference(item.uid);
         ref.setValue(item);
     }
