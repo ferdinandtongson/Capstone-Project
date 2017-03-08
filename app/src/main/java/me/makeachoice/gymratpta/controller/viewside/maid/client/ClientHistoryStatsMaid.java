@@ -61,6 +61,7 @@ public class ClientHistoryStatsMaid extends GymRatRecyclerMaid implements BasicF
     private StatsAdapter mAdapter;
 
     private StatsButler mStatsButler;
+    private int mDialogCounter;
 
     private StatsButler.OnLoadedListener mOnLoadListener =
             new StatsButler.OnLoadedListener() {
@@ -92,6 +93,7 @@ public class ClientHistoryStatsMaid extends GymRatRecyclerMaid implements BasicF
         mClientItem = clientItem;
 
         mSaveItem = createStatsItem();
+        mDialogCounter = -1;
     }
 
     /*
@@ -263,33 +265,36 @@ public class ClientHistoryStatsMaid extends GymRatRecyclerMaid implements BasicF
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
-        //create dialog
-        mStatsDialog = new StatsDialog();
-        mStatsDialog.setDialogValues(mActivity, mUserId, mode, item, prevItem);
+        if(mDialogCounter == 0){
+            //create dialog
+            mStatsDialog = new StatsDialog();
+            mStatsDialog.setDialogValues(mActivity, mUserId, mode, item, prevItem);
 
-        if(mode != StatsDialog.MODE_READ){
-            mStatsDialog.setOnSaveListener(new StatsDialog.OnSaveListener() {
-                @Override
-                public void onSave(StatsItem statsItem) {
-                    onStatsSaved(statsItem);
-                }
-            });
+            if(mode != StatsDialog.MODE_READ){
+                mStatsDialog.setOnSaveListener(new StatsDialog.OnSaveListener() {
+                    @Override
+                    public void onSave(StatsItem statsItem) {
+                        mDialogCounter = -1;
+                        onStatsSaved(statsItem);
+                    }
+                });
 
-            mStatsDialog.setOnCancelListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onStatsCanceled();
-                }
-            });
+                mStatsDialog.setOnCancelListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mDialogCounter = -1;
+                        onStatsCanceled();
+                    }
+                });
 
-            mStatsDialog.setCancelable(false);
+                mStatsDialog.setCancelable(false);
+            }
+            else{
+                mStatsDialog.setCancelable(true);
+            }
+
+            mStatsDialog.show(fm, DIA_STATS_RECORD);
         }
-        else{
-            mStatsDialog.setCancelable(true);
-        }
-
-        mStatsDialog.show(fm, DIA_STATS_RECORD);
-
         return mStatsDialog;
     }
 
@@ -403,6 +408,7 @@ public class ClientHistoryStatsMaid extends GymRatRecyclerMaid implements BasicF
         StatsItem prevItem = mPrevList.get(index);
 
         mDeleteItem = item;
+        mDialogCounter = 0;
         initializeStatsDialog(StatsDialog.MODE_EDIT, item, prevItem);
     }
 
