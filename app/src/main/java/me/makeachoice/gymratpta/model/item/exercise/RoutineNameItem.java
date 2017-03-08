@@ -3,8 +3,7 @@ package me.makeachoice.gymratpta.model.item.exercise;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameContract;
 
 /**************************************************************************************************/
 /*
@@ -12,7 +11,7 @@ import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameColumns;
  */
 /**************************************************************************************************/
 
-public class RoutineNameItem{
+public class RoutineNameItem extends RoutineNameFBItem{
 
 /**************************************************************************************************/
 /*
@@ -21,7 +20,6 @@ public class RoutineNameItem{
 /**************************************************************************************************/
 
     public String uid;
-    public String routineName;
 
 /**************************************************************************************************/
 
@@ -33,13 +31,17 @@ public class RoutineNameItem{
 
     public RoutineNameItem(){}
 
+    public RoutineNameItem(RoutineNameFBItem item){
+        routineName = item.routineName;
+    }
+
     public RoutineNameItem(String name){
         routineName = name;
     }
 
     public RoutineNameItem(Cursor cursor){
-        uid = cursor.getString(RoutineNameColumns.INDEX_UID);
-        routineName = cursor.getString(RoutineNameColumns.INDEX_ROUTINE_NAME);
+        uid = cursor.getString(RoutineNameContract.INDEX_UID);
+        routineName = cursor.getString(RoutineNameContract.INDEX_ROUTINE_NAME);
     }
 
 /**************************************************************************************************/
@@ -57,10 +59,17 @@ public class RoutineNameItem{
     public ContentValues getContentValues(){
         // Add a new student record
         ContentValues values = new ContentValues();
-        values.put(Contractor.RoutineNameEntry.COLUMN_UID, uid);
-        values.put(Contractor.RoutineNameEntry.COLUMN_ROUTINE_NAME, routineName);
+        values.put(RoutineNameContract.COLUMN_UID, uid);
+        values.put(RoutineNameContract.COLUMN_ROUTINE_NAME, routineName);
 
         return values;
+    }
+
+    public RoutineNameFBItem getFBItem(){
+        RoutineNameFBItem fbItem = new RoutineNameFBItem();
+        fbItem.routineName = routineName;
+
+        return fbItem;
     }
 
 /**************************************************************************************************/
