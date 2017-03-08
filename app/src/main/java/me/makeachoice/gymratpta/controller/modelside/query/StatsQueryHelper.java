@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 

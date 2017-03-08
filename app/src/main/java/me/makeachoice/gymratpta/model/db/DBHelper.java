@@ -18,9 +18,7 @@ package me.makeachoice.gymratpta.model.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;

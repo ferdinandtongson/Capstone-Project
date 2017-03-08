@@ -1,6 +1,5 @@
 package me.makeachoice.gymratpta.model.db.table;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;

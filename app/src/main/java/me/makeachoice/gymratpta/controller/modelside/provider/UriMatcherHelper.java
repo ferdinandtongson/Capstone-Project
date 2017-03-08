@@ -1,9 +1,7 @@
 package me.makeachoice.gymratpta.controller.modelside.provider;
 
 import android.content.UriMatcher;
-import android.net.Uri;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.MyContractor;
 import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
@@ -14,9 +12,6 @@ import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 
-/**
- * Created by Usuario on 2/2/2017.
- */
 
 public class UriMatcherHelper {
 
@@ -93,7 +88,7 @@ public class UriMatcherHelper {
         // found.  The code passed into the constructor represents the code to return for the root
         // URI.  It's common to use NO_MATCH as the code for this case.
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = Contractor.CONTENT_AUTHORITY;
+        final String authority = MyContractor.CONTENT_AUTHORITY;
 
         //"content://CONTENT_AUTHORITY/user/
         matcher.addURI(authority, MyContractor.PATH_USER, USER);
