@@ -87,17 +87,18 @@ public class CategoryFirebaseHelper {
  */
 /**************************************************************************************************/
 
-    public void addCategoryData(String userId, ArrayList<CategoryFBItem> categories){
+    public void addCategoryData(String userId, ArrayList<CategoryFBItem> categories, ValueEventListener listener){
         int count = categories.size();
         for(int i = 0; i < count; i++){
-            addCategory(userId, categories.get(i));
+            addCategory(userId, categories.get(i), listener);
         }
 
     }
 
-    public void addCategory(String userId, CategoryFBItem item){
+    public void addCategory(String userId, CategoryFBItem item, ValueEventListener listener){
         DatabaseReference ref = getCategoryReference(userId);
         ref.push().setValue(item);
+        ref.addListenerForSingleValueEvent(listener);
     }
 
 /**************************************************************************************************/
