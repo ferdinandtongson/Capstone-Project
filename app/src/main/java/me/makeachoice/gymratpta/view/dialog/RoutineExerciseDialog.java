@@ -1,7 +1,7 @@
 package me.makeachoice.gymratpta.view.dialog;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -16,14 +16,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.loader.CategoryLoader;
-import me.makeachoice.gymratpta.controller.modelside.loader.ExerciseLoader;
+import me.makeachoice.gymratpta.controller.modelside.butler.CategoryButler;
+import me.makeachoice.gymratpta.controller.modelside.butler.ExerciseButler;
 import me.makeachoice.gymratpta.model.item.exercise.CategoryItem;
 import me.makeachoice.gymratpta.model.item.exercise.ExerciseItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CATEGORY;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_EXERCISE_BASE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_SET_MAX;
 
 /**************************************************************************************************/
@@ -64,6 +66,9 @@ public class RoutineExerciseDialog extends DialogFragment {
     
     //mUserId - user id number from firebase authentication
     private String mUserId;
+
+    private ExerciseButler mExerciseButler;
+    private CategoryButler mCategoryButler;
     
     //mRoutineItem - routine item object containing exercises and name of the routine
     private RoutineItem mRoutineItem;
@@ -113,7 +118,12 @@ public class RoutineExerciseDialog extends DialogFragment {
     //mSavedListener - notifies listener that the saved button was clicked
     private OnSaveClickListener mSavedListener;
     public interface OnSaveClickListener{
-        public void onSaveClicked(RoutineItem item);
+        void onSaveClicked(RoutineItem item);
+    }
+
+    private OnDismissListener mDismissListener;
+    public interface OnDismissListener{
+        void onDismiss(DialogInterface dialogInterface);
     }
 
 /**************************************************************************************************/
@@ -168,6 +178,11 @@ public class RoutineExerciseDialog extends DialogFragment {
         mExercises = new ArrayList<>();
         mExerciseNames = new ArrayList<>();
         mExerciseMap = new HashMap<>();
+
+        //initialize butlers
+        mExerciseButler = new ExerciseButler(mActivity, mUserId);
+        mCategoryButler = new CategoryButler(mActivity, mUserId);
+
     }
 
     /*
@@ -177,12 +192,21 @@ public class RoutineExerciseDialog extends DialogFragment {
         mSavedListener = listener;
     }
 
+    /*
+     * void setOnDismissListener(...) - set listener for dialog dismiss events
+     */
+    public void setOnDismissListener(OnDismissListener listener){
+        mDismissListener = listener;
+    }
+
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * Public Method
  *      View onCreateView(...) - called when dialog show is requested
+ *      void initializeDialog() - initialize dialog components
  *      void initializeTitleTextView() - initialize textView title component
  *      void initializeSaveTextView() - initialize textView save component
  *      void initializeSetSpinner() - initialize spinner for number of exercise sets to do
@@ -201,6 +225,18 @@ public class RoutineExerciseDialog extends DialogFragment {
         //inflate root view, parent child components
         mRootView = inflater.inflate(layoutId, container, false);
 
+        //load category data from database
+        loadCategories();
+
+        initializeDialog();
+
+        return mRootView;
+    }
+
+    /*
+     * void initializeDialog() - initialize dialog components
+     */
+    private void initializeDialog(){
         //initialize title textView components
         initializeTitleTextView();
 
@@ -212,11 +248,6 @@ public class RoutineExerciseDialog extends DialogFragment {
 
         //initialize spinner components
         initializeSpinners();
-
-        //load category data from database
-        loadCategories();
-
-        return mRootView;
     }
 
     /*
@@ -285,7 +316,7 @@ public class RoutineExerciseDialog extends DialogFragment {
         //check if routine item is not Null
         if(mRoutineItem != null){
             //get set index
-            mSetIndex = mRoutineItem.numOfSets - 1;
+            mSetIndex = Integer.valueOf(mRoutineItem.numOfSets) - 1;
         }
         else{
             //use default set index value
@@ -365,11 +396,10 @@ public class RoutineExerciseDialog extends DialogFragment {
      * void loadCategories() - load category data from database
      */
     private void loadCategories(){
-        //start loader to get category data from database
-        CategoryLoader.loadCategories(mActivity, mUserId, new CategoryLoader.OnCategoryLoadListener() {
+        mCategoryButler.loadCategories(LOADER_CATEGORY, new CategoryButler.OnLoadedListener() {
             @Override
-            public void onCategoryLoadFinished(Cursor cursor) {
-                onCategoryDataLoaded(cursor);
+            public void onLoaded(ArrayList<CategoryItem> categoryList) {
+                onCategoriesLoaded(categoryList);
             }
         });
     }
@@ -382,28 +412,26 @@ public class RoutineExerciseDialog extends DialogFragment {
         String categoryKey = mCategories.get(mCategoryIndex).fkey;
 
         //start loader to get exercise data from database
-        ExerciseLoader.loadExercises(mActivity, mUserId, categoryKey, new ExerciseLoader.OnExerciseLoadListener() {
+        mExerciseButler.loadExercises(categoryKey, LOADER_EXERCISE_BASE, new ExerciseButler.OnLoadedListener() {
             @Override
-            public void onExerciseLoadFinished(Cursor cursor) {
-                onExerciseDataLoaded(cursor);
+            public void onLoaded(ArrayList<ExerciseItem> exerciseList) {
+                onExerciseDataLoaded(exerciseList);
             }
         });
     }
 
     /*
-     * void onCategoryDataLoaded(Cursor) - category data from database has been loaded
+     * void onCategoryDataLoaded(..) - category data from database has been loaded
      */
-    private void onCategoryDataLoaded(Cursor cursor){
+    private void onCategoriesLoaded(ArrayList<CategoryItem> categoryList){
+
         //get number of categories
-        int count = cursor.getCount();
+        int count = categoryList.size();
 
         //loop through categories
         for(int i = 0; i < count; i++){
-            //move cursor to index
-            cursor.moveToPosition(i);
-
-            //create category item object with cursor
-            CategoryItem item = new CategoryItem(cursor);
+            //create category item object
+            CategoryItem item = categoryList.get(i);
 
             //set category buffers
             mCategories.add(item);
@@ -424,29 +452,23 @@ public class RoutineExerciseDialog extends DialogFragment {
 
         //update category spinner with list of categories
         updateSpinner(mSpnCategory, mCategoryNames, mCategoryIndex);
-
-        //destroy category loader
-        CategoryLoader.destroyLoader(mActivity);
     }
 
     /*
      * void onExerciseDataLoaded(Cursor) - exercise data from database has been loaded
      */
-    private void onExerciseDataLoaded(Cursor cursor){
+    private void onExerciseDataLoaded(ArrayList<ExerciseItem> exerciseList){
         mExercises.clear();
         mExerciseNames.clear();
         mExerciseMap.clear();
 
         //get number of exercises loaded
-        int count = cursor.getCount();
+        int count = exerciseList.size();
 
         //loop through exercises
         for(int i = 0; i < count; i++){
-            //move cursor to index
-            cursor.moveToPosition(i);
-
             //create exercise item object with cursor
-            ExerciseItem item = new ExerciseItem(cursor);
+            ExerciseItem item = exerciseList.get(i);
 
             //set exercise buffers
             mExercises.add(item);
@@ -474,8 +496,6 @@ public class RoutineExerciseDialog extends DialogFragment {
         //update exercise spinner with exercise list
         updateSpinner(mSpnExercise, mExerciseNames, mExerciseIndex);
 
-        //destroy exercise loader
-        ExerciseLoader.destroyLoader(mActivity);
     }
 
 
@@ -533,13 +553,13 @@ public class RoutineExerciseDialog extends DialogFragment {
             //initialize routine item data
             item.uid = "";
             item.routineName = "";
-            item.orderNumber = -1;
+            item.orderNumber = "-1";
         }
 
         //save selected routine options
         item.category = mCategoryNames.get(mCategoryIndex);
         item.exercise = mExerciseNames.get(mExerciseIndex);
-        item.numOfSets = Integer.valueOf(mSets.get(mSetIndex));
+        item.numOfSets = mSets.get(mSetIndex);
 
         //check for listener
         if(mSavedListener != null){
@@ -547,6 +567,19 @@ public class RoutineExerciseDialog extends DialogFragment {
             mSavedListener.onSaveClicked(item);
         }
     }
+
+    /*
+     * void onDismiss(DialogInterface) - dialog dismiss event occurred
+     */
+    @Override
+    public void onDismiss(DialogInterface dialogInterface){
+        //check for listener
+        if(mDismissListener != null){
+            //notify listener for dismiss event
+            mDismissListener.onDismiss(dialogInterface);
+        }
+    }
+
 
 /**************************************************************************************************/
 
