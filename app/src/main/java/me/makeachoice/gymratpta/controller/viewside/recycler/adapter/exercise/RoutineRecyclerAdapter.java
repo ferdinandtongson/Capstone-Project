@@ -397,7 +397,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
             }
             else{
                 //index is greater than exercise list, hid textView
-                setExerciseValues(i, "", 0);
+                setExerciseValues(i, "", String.valueOf(0));
             }
 
         }
@@ -406,7 +406,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
     /*
      * void setExerciseValues(...) - set textViews and values corresponding to the index
      */
-    private void setExerciseValues(int index, String exercise, int numOfSets){
+    private void setExerciseValues(int index, String exercise, String numOfSets){
         switch(index){
             case 0:
                 setTextViews(mTxtExercise01, mTxtSet01, exercise, numOfSets);
@@ -446,7 +446,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
     /*
      * void setTextViews(...) - set exercise name and sets for routine
      */
-    private void setTextViews(TextView txtExercise, TextView txtSet, String exercise, int set){
+    private void setTextViews(TextView txtExercise, TextView txtSet, String exercise, String set){
         //check if exercise has any value
         if(exercise == null || exercise.equals("")){
             //empty or null, hid textViews
@@ -461,7 +461,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
             txtExercise.setText(exercise);
             txtExercise.setContentDescription(exercise);
 
-            txtSet.setText(String.valueOf(set));
+            txtSet.setText(set);
             txtSet.setContentDescription(mStrDescriptionSet + " " + set);
         }
     }
