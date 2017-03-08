@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.modelside.butler.ClientButler;
 import me.makeachoice.gymratpta.controller.modelside.butler.RoutineNameButler;
 import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
@@ -26,6 +27,7 @@ import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
+import static me.makeachoice.gymratpta.R.string.routine;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NAME;
 
@@ -98,6 +100,7 @@ public class AppointmentDialog extends DialogFragment {
     //string value - used by save button
     private String mStrSave;
     private String mStrSaveAnyway;
+    private String mStrNoClients;
 
     //background drawable and color
     private int mTxtOrange;
@@ -172,8 +175,9 @@ public class AppointmentDialog extends DialogFragment {
         //initialize client name list buffer
         mClientNames = new ArrayList<>();
 
+        Boss boss = (Boss)mActivity.getApplication();
         //initialize routine name list buffer
-        mRoutineNames = new ArrayList<>();
+        mRoutineNames = boss.getRoutineNamesForDialog();
 
         //initialize exercises in routine
         mAppointmentMap = appointmentMap;
@@ -295,6 +299,7 @@ public class AppointmentDialog extends DialogFragment {
 
         mStrSave = mActivity.getString(R.string.save);
         mStrSaveAnyway = mActivity.getString(R.string.save_anyway);
+        mStrNoClients = mActivity.getString(R.string.no_clients);
 
         mTxtOrange = DeprecatedUtility.getColor(mActivity, R.color.orange);
         mTxtBlack = DeprecatedUtility.getColor(mActivity, R.color.black);
@@ -525,8 +530,32 @@ public class AppointmentDialog extends DialogFragment {
             mClientNames.add(client);
         }
 
-        //load routine names for routine spinner
-        loadRoutinesNames();
+        if(mClientNames.isEmpty()){
+            setNoClients();
+            mClientNames.add(mStrNoClients);
+        }
+
+        if(mRoutineNames.isEmpty()){
+            //load routine names for routine spinner
+            loadRoutinesNames();
+        }
+        else{
+            setRoutineNameIndex();
+
+        }
+    }
+
+    private void setRoutineNameIndex(){
+        int count = mRoutineNames.size();
+        for(int i = 0; i < count; i++){
+            //check if name is equal to routine item name
+            if(mRoutineNames.equals(routine)){
+
+                mRoutineIndex = i;
+            }
+        }
+        //initialize dialog
+        initializeDialog();
     }
 
     /*
@@ -602,14 +631,18 @@ public class AppointmentDialog extends DialogFragment {
      * void onClientSelected(int) - client was selected from spinner
      */
     private void onClientSelected(int index) {
-        //get client from list
-        ClientItem clientItem = mClientList.get(index);
+        if(!mClientNames.get(index).equals(mStrNoClients)){
+            //get client from list
+            ClientItem clientItem = mClientList.get(index);
 
-        //save client data to save appointment item
-        mSaveApmtItem.clientKey = clientItem.fkey;
-        mSaveApmtItem.clientName = clientItem.clientName;
+            //save client data to save appointment item
+            mSaveApmtItem.clientKey = clientItem.fkey;
+            mSaveApmtItem.clientName = clientItem.clientName;
 
-        validateClient(clientItem.fkey);
+            validateClient(clientItem.fkey);
+        }else{
+            setNoClients();
+        }
     }
 
     /*
@@ -715,6 +748,13 @@ public class AppointmentDialog extends DialogFragment {
                 mTxtSave.setText(mStrSave);
             }
         }
+    }
+
+    private void setNoClients(){
+        mTxtClientLabel.setTextColor(mTxtOrange);
+        mTxtClientLabel.setText(mStrNoClients);
+        mTxtSave.setVisibility(View.INVISIBLE);
+
     }
 
     /*
