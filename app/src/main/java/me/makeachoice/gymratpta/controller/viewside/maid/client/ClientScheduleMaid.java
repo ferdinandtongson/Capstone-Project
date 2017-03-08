@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.modelside.butler.ClientRoutineButler;
 import me.makeachoice.gymratpta.controller.modelside.butler.RoutineButler;
 import me.makeachoice.gymratpta.controller.modelside.butler.ScheduleButler;
@@ -537,7 +538,6 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
  */
 /**************************************************************************************************/
     private int mRoutineCounter;
-    private ScheduleItem mRScheduleItem;
     /*
      * void saveAppointment(...) - save appointment
      */
@@ -578,9 +578,6 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //set routine recursive counter
         mRoutineCounter = 0;
 
-        //set schedule item used in recursive method
-        mRScheduleItem = mSaveItem;
-
         //save routine (recursive)
         butlerSaveRoutine(mRoutineCounter);
     }
@@ -593,7 +590,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //check recursive counter, less than exercise list
         if(mRoutineCounter < mExercises.size()){
             //get client routine item
-            ClientRoutineItem item = new ClientRoutineItem(mRScheduleItem, mExercises.get(count));
+            ClientRoutineItem item = new ClientRoutineItem(mSaveItem, mExercises.get(count));
 
             //save client routine to database
             mClientRoutineButler.saveClientRoutine(item, new ClientRoutineButler.OnSavedListener() {
@@ -603,13 +600,13 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
                     mRoutineCounter++;
 
                     //save exercise routine
-                    butlerSaveRoutine( mRoutineCounter);
+                    butlerSaveRoutine(mRoutineCounter);
                 }
             });
         }
         else{
             //no more exercises to save, save scheduled appointment
-            butlerSaveAppointment(mRScheduleItem);
+            butlerSaveAppointment(mSaveItem);
         }
 
     }
@@ -621,10 +618,17 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         mScheduleButler.saveSchedule(saveItem, new ScheduleButler.OnScheduleSavedListener() {
             @Override
             public void onScheduleSaved() {
+                broadcastScheduleUpdate(mSaveItem);
                 onRefresh();
             }
         });
     }
+
+    private void broadcastScheduleUpdate(ScheduleItem item){
+        Boss boss = (Boss)mActivity.getApplication();
+        boss.broadcastScheduleUpdate(item);
+    }
+
 
 /**************************************************************************************************/
 
@@ -657,6 +661,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
                     saveAppointment(mSaveItem);
                 }
                 else{
+                    broadcastScheduleUpdate(mDeleteItem);
                     onRefresh();
                 }
             }
