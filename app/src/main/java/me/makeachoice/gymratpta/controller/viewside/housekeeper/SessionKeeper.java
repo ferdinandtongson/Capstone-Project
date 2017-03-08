@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.modelside.butler.ClientButler;
 import me.makeachoice.gymratpta.controller.modelside.butler.ClientRoutineButler;
 import me.makeachoice.gymratpta.controller.modelside.butler.RoutineButler;
@@ -783,12 +784,19 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         mScheduleButler.saveSchedule(mSaveItem, new ScheduleButler.OnScheduleSavedListener() {
             @Override
             public void onScheduleSaved(){
+                broadcastScheduleUpdate(mSaveItem);
                 mExerciseCounter = 0;
                 saveExercises(mExerciseCounter);
             }
         });
 
     }
+
+    private void broadcastScheduleUpdate(ScheduleItem item){
+        Boss boss = (Boss)mActivity.getApplication();
+        boss.broadcastScheduleUpdate(item);
+    }
+
 
     private int mExerciseCounter;
     private void saveExercises(int counter){
@@ -868,6 +876,7 @@ public class SessionKeeper extends GymRatRecyclerKeeper implements MyActivity.Br
         mScheduleButler.deleteSchedule(mDeleteAppointment, new ScheduleButler.OnScheduleDeletedListener() {
             @Override
             public void onScheduleDeleted() {
+                broadcastScheduleUpdate(mDeleteAppointment);
                 deleteRoutineExercises(mDeleteAppointment);
             }
         });
