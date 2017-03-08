@@ -30,6 +30,8 @@ import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameContract;
+import me.makeachoice.gymratpta.model.contract.user.UserContract;
 import me.makeachoice.gymratpta.model.db.table.TableHelper;
 
 
@@ -49,7 +51,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.d("Choice", "DBHelper.onCreate");
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_USER_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_CLIENT_TABLE);
         sqLiteDatabase.execSQL(TableHelper.SQL_CREATE_SCHEDULE_TABLE);
@@ -65,13 +66,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.UserEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + UserContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CategoryContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ClientContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScheduleContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ExerciseContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RoutineContract.TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contractor.RoutineNameEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RoutineNameContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + NotesContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + StatsContract.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ClientRoutineContract.TABLE_NAME);
@@ -80,7 +81,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void dropTable(SQLiteDatabase sqLiteDatabase, String table){
-        Log.d("Choice", "DBHelper.dropTable: " + table);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + table);
     }
 }
