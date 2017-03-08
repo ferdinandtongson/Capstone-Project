@@ -1,6 +1,7 @@
 package me.makeachoice.gymratpta.controller.viewside.maid.client;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +27,8 @@ import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.model.item.client.ClientRoutineItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
+import me.makeachoice.gymratpta.view.activity.ScheduleDetailActivity;
+import me.makeachoice.gymratpta.view.activity.SessionDetailActivity;
 import me.makeachoice.gymratpta.view.dialog.ClientAppointmentDialog;
 import me.makeachoice.gymratpta.view.dialog.DeleteWarningDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
@@ -90,6 +93,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
 
     private boolean mEditMode;
     private boolean mShowWarning;
+    private int mDialogCounter;
 
 
     //mTouchCallback - helper class that enables drag-and-drop and swipe to dismiss functionality to recycler
@@ -135,6 +139,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         mUserId = userId;
 
         mClientItem = item;
+        mDialogCounter = -1;
     }
 
 /**************************************************************************************************/
@@ -244,6 +249,18 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //create adapter consumed by the recyclerView
         mAdapter = new ClientAppAdapter(mFragment.getActivity(), adapterLayoutId);
 
+        mAdapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //get item index
+                int index = (int)view.getTag(R.string.recycler_tagPosition);
+
+                //onItemClick event occurred
+                onItemClicked(index);
+            }
+        });
+
+
         mAdapter.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -305,19 +322,22 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
-        //create dialog
-        mAppDialog = new ClientAppointmentDialog();
-        mAppDialog.setDialogValues(mActivity, mUserId, mClientItem, item, mScheduleMap);
-        mAppDialog.setEditMode(mEditMode);
+        if(mDialogCounter == 0){
+            //create dialog
+            mAppDialog = new ClientAppointmentDialog();
+            mAppDialog.setDialogValues(mActivity, mUserId, mClientItem, item, mScheduleMap);
+            mAppDialog.setEditMode(mEditMode);
 
-        mAppDialog.setOnSavedListener(new ClientAppointmentDialog.OnSaveClickListener() {
-            @Override
-            public void onSaveClicked(ScheduleItem appItem) {
-                onSaveAppointment(appItem);
-            }
-        });
+            mAppDialog.setOnSavedListener(new ClientAppointmentDialog.OnSaveClickListener() {
+                @Override
+                public void onSaveClicked(ScheduleItem appItem) {
+                    onSaveAppointment(appItem);
+                    mDialogCounter = -1;
+                }
+            });
 
-        mAppDialog.show(fm, DIA_SCHEDULE);
+            mAppDialog.show(fm, DIA_SCHEDULE);
+        }
 
         return mAppDialog;
     }
@@ -333,38 +353,42 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
-        //create dialog
-        mWarningDialog = new DeleteWarningDialog();
+        if(mDialogCounter == 0){
+            //create dialog
+            mWarningDialog = new DeleteWarningDialog();
 
-        //set dialog values
-        mWarningDialog.setDialogValues(mActivity, mUserId, strTitle);
+            //set dialog values
+            mWarningDialog.setDialogValues(mActivity, mUserId, strTitle);
 
-        //set onDismiss listener
-        mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                if(mRefreshOnDismiss){
-                    onRefresh();
+            //set onDismiss listener
+            mWarningDialog.setOnDismissListener(new DeleteWarningDialog.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    if(mRefreshOnDismiss){
+                        onRefresh();
+                    }
+                    mDialogCounter = -1;
                 }
-            }
-        });
+            });
 
-        //set onDelete listener
-        mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
-            @Override
-            public void onDelete() {
-                mRefreshOnDismiss = false;
-                //delete routine
-                butlerDeleteAppointment(mDeleteItem);
+            //set onDelete listener
+            mWarningDialog.setOnDeleteListener(new DeleteWarningDialog.OnDeleteListener() {
+                @Override
+                public void onDelete() {
+                    mRefreshOnDismiss = false;
+                    //delete routine
+                    butlerDeleteAppointment(mDeleteItem);
 
-                //dismiss dialog
-                mWarningDialog.dismiss();
-            }
-        });
+                    //dismiss dialog
+                    mWarningDialog.dismiss();
+                }
+            });
 
 
-        //show dialog
-        mWarningDialog.show(fm, DIA_WARNING_DELETE);
+            //show dialog
+            mWarningDialog.show(fm, DIA_WARNING_DELETE);
+
+        }
 
         return mWarningDialog;
     }
@@ -465,6 +489,7 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //set edit mode false, creating new appointment
         mEditMode = false;
 
+        mDialogCounter = 0;
         //initialize schedule appointment dialog
         initializeScheduleDialog(null);
     }
@@ -479,9 +504,38 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
         //save edit appointment as delete appointment item
         mEditItem = mScheduleList.get(index);
 
+        mDialogCounter = 0;
+
         //open schedule appointment dialog
         initializeScheduleDialog(mEditItem);
     }
+
+    /*
+     * void onItemClicked(int) - exercise routine has been clicked
+     */
+    private void onItemClicked(int index){
+
+        Boss boss = (Boss)mActivity.getApplication();
+
+        ScheduleItem scheduleItem = mScheduleList.get(index);
+
+        boss.setAppointmentItem(scheduleItem);
+
+        String today = DateTimeHelper.getToday();
+
+        boolean isToday = today.equals(scheduleItem.appointmentDate);
+
+        Intent intent;
+        if(isToday){
+            intent = new Intent(mActivity, SessionDetailActivity.class);
+        }
+        else{
+            intent = new Intent(mActivity, ScheduleDetailActivity.class);
+        }
+        //info icon, show client info screen
+        mActivity.startActivity(intent);
+    }
+
 
     /*
      * void onSaveAppointment(...) - save appointment request
@@ -489,6 +543,8 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
     private void onSaveAppointment(ScheduleItem appointmentItem){
         //get save appointment item
         mSaveItem = appointmentItem;
+
+        mDialogCounter = -1;
 
         //dismiss schedule appointment dialog
         mAppDialog.dismiss();
@@ -517,6 +573,8 @@ public class ClientScheduleMaid extends GymRatRecyclerMaid implements BasicFragm
 
         //check status
         if(mShowWarning){
+            mDialogCounter = 0;
+
             //wants warning, show "delete warning" dialog
             initializeWarningDialog(mDeleteItem, mClientItem);
         }
