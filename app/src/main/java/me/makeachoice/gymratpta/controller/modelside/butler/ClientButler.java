@@ -18,7 +18,6 @@ import me.makeachoice.gymratpta.controller.modelside.query.ClientQueryHelper;
 import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 import me.makeachoice.gymratpta.model.item.client.AppointmentCardItem;
-import me.makeachoice.gymratpta.model.item.client.ClientFBItem;
 import me.makeachoice.gymratpta.model.item.client.ScheduleItem;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
@@ -275,17 +274,8 @@ public class ClientButler {
         //get firebase helper instance
         ClientFirebaseHelper fbHelper = ClientFirebaseHelper.getInstance();
 
-        //create firebase item
-        ClientFBItem fbItem = new ClientFBItem();
-        fbItem.clientName = saveItem.clientName;
-        fbItem.email = saveItem.email;
-        fbItem.phone = saveItem.phone;
-        fbItem.firstSession = saveItem.firstSession;
-        fbItem.goals = saveItem.goals;
-        fbItem.status = saveItem.status;
-
         //save notes item to firebase
-        fbHelper.addClient(mUserId, fbItem, new ValueEventListener() {
+        fbHelper.addClient(mUserId, mSaveItem.getFBItem(), new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
