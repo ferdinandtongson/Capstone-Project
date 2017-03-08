@@ -1,7 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
@@ -105,6 +104,8 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
         mStrSchedule = mActivity.getString(R.string.schedule);
         mStrDaily = mActivity.getString(R.string.daily);
         mStrWeekly = mActivity.getString(R.string.weekly);
+
+        mBoss.loadRoutineNames();
 
         if(bundle != null){
             //open bundle to set saved instance states
