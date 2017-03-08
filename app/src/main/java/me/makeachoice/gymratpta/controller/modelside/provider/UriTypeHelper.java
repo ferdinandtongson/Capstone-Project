@@ -2,7 +2,6 @@ package me.makeachoice.gymratpta.controller.modelside.provider;
 
 import android.net.Uri;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
 import me.makeachoice.gymratpta.model.contract.client.ClientContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientExerciseContract;
 import me.makeachoice.gymratpta.model.contract.client.ClientRoutineContract;
@@ -12,6 +11,8 @@ import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameContract;
+import me.makeachoice.gymratpta.model.contract.user.UserContract;
 
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY;
 import static me.makeachoice.gymratpta.controller.modelside.provider.UriMatcherHelper.CATEGORY_WITH_FKEY;
@@ -79,9 +80,9 @@ public class UriTypeHelper {
 
         switch (match) {
             case USER:
-                return Contractor.UserEntry.CONTENT_TYPE;
+                return UserContract.CONTENT_TYPE;
             case USER_WITH_KEY:
-                return Contractor.UserEntry.CONTENT_ITEM_TYPE;
+                return UserContract.CONTENT_ITEM_TYPE;
             case CLIENT:
                 return ClientContract.CONTENT_TYPE;
             case CLIENT_WITH_UID:
@@ -117,11 +118,11 @@ public class UriTypeHelper {
             case ROUTINE_EXERCISE_WITH_ORDER_NUMBER:
                 return RoutineContract.CONTENT_ITEM_TYPE;
             case ROUTINE_NAME:
-                return Contractor.RoutineNameEntry.CONTENT_TYPE;
+                return RoutineNameContract.CONTENT_TYPE;
             case ROUTINE_NAME_WITH_UID:
-                return Contractor.RoutineNameEntry.CONTENT_TYPE;
+                return RoutineNameContract.CONTENT_TYPE;
             case ROUTINE_NAME_WITH_NAME:
-                return Contractor.RoutineNameEntry.CONTENT_ITEM_TYPE;
+                return RoutineNameContract.CONTENT_ITEM_TYPE;
             case SCHEDULE:
                 return ScheduleContract.CONTENT_TYPE;
             case SCHEDULE_WITH_TIMESTAMP:
