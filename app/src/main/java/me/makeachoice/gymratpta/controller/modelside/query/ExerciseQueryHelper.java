@@ -8,9 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 /**************************************************************************************************/
@@ -34,31 +33,31 @@ public class ExerciseQueryHelper {
         //initialize exerciseQueryBuilder
         exerciseQueryBuilder = new SQLiteQueryBuilder();
         //set builder to query user table
-        exerciseQueryBuilder.setTables(Contractor.ExerciseEntry.TABLE_NAME);
+        exerciseQueryBuilder.setTables(ExerciseContract.TABLE_NAME);
     }
 
     //query selection - exercise.uid = ?
     public static final String uidSelection =
-            Contractor.ExerciseEntry.TABLE_NAME + "." + Contractor.ExerciseEntry.COLUMN_UID + " = ? ";
+            ExerciseContract.TABLE_NAME + "." + ExerciseContract.COLUMN_UID + " = ? ";
 
     //query selection - exercise.uid = ? AND category_key = ?
     public static final String categorySelection =
-            Contractor.ExerciseEntry.TABLE_NAME+
-                    "." + Contractor.ExerciseEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ExerciseEntry.COLUMN_CATEGORY_KEY + " = ? ";
+            ExerciseContract.TABLE_NAME+
+                    "." + ExerciseContract.COLUMN_UID + " = ? AND " +
+                    ExerciseContract.COLUMN_CATEGORY_KEY + " = ? ";
 
     //query selection - exercise.uid = ? AND fkey = ?
     public static final String fkeySelection =
-            Contractor.ExerciseEntry.TABLE_NAME+
-                    "." + Contractor.ExerciseEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ExerciseEntry.COLUMN_FKEY + " = ? ";
+            ExerciseContract.TABLE_NAME+
+                    "." + ExerciseContract.COLUMN_UID + " = ? AND " +
+                    ExerciseContract.COLUMN_FKEY + " = ? ";
 
     //query selection - exercise.uid = ? AND category_key = ? AND exercise_name = ?
-    public static final String nameSelection =
-            Contractor.ExerciseEntry.TABLE_NAME+
-                    "." + Contractor.ExerciseEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.ExerciseEntry.COLUMN_CATEGORY_KEY + " = ? AND" +
-                    Contractor.ExerciseEntry.COLUMN_EXERCISE_NAME + " = ? ";
+    public static final String categoryKeyExerciseSelection =
+            ExerciseContract.TABLE_NAME+
+                    "." + ExerciseContract.COLUMN_UID + " = ? AND " +
+                    ExerciseContract.COLUMN_CATEGORY_KEY + " = ? AND " +
+                    ExerciseContract.COLUMN_EXERCISE_NAME + " = ? ";
 
 /**************************************************************************************************/
 
@@ -76,7 +75,7 @@ public class ExerciseQueryHelper {
      */
     public static Cursor getExercises(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/exercise/[uid]/....
-        String uid = Contractor.ExerciseEntry.getUIdFromUri(uri);
+        String uid = ExerciseContract.getUIdFromUri(uri);
 
         //query exercise table
         return ExerciseQueryHelper.exerciseQueryBuilder.query(
@@ -92,11 +91,11 @@ public class ExerciseQueryHelper {
     }
 
     /*
-     * Cursor getExerciseByUId(...) - get exercise by user and category id
+     * Cursor getExerciseByUId(...) - get exercise by user id
      */
     public static Cursor getExerciseByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/exercise/[uid]
-        String uid = Contractor.ExerciseEntry.getUIdFromUri(uri);
+        String uid = ExerciseContract.getUIdFromUri(uri);
 
         //query from user table
         return ExerciseQueryHelper.exerciseQueryBuilder.query(
@@ -116,8 +115,8 @@ public class ExerciseQueryHelper {
      */
     public static Cursor getExerciseByCategory(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/exercise/[uid]/category_key/[categoryKey]
-        String uid = Contractor.ExerciseEntry.getUIdFromUri(uri);
-        String categoryKey = Contractor.ExerciseEntry.getCategoryKeyFromUri(uri);
+        String uid = ExerciseContract.getUIdFromUri(uri);
+        String categoryKey = ExerciseContract.getCategoryKeyFromUri(uri);
 
         //query from user table
         return ExerciseQueryHelper.exerciseQueryBuilder.query(
@@ -137,8 +136,8 @@ public class ExerciseQueryHelper {
      */
     public static Cursor getExerciseByFKey(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/exercise/[uid]/fkey/[fKey]
-        String uid = Contractor.ExerciseEntry.getUIdFromUri(uri);
-        String fkey = Contractor.ExerciseEntry.getFirebaseKeyFromUri(uri);
+        String uid = ExerciseContract.getUIdFromUri(uri);
+        String fkey = ExerciseContract.getFirebaseKeyFromUri(uri);
 
         //query from user table
         return ExerciseQueryHelper.exerciseQueryBuilder.query(
@@ -157,17 +156,17 @@ public class ExerciseQueryHelper {
      * Cursor getExerciseByName(...) - get exercises by category and name
      */
     public static Cursor getExerciseByName(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
-        //"content://CONTENT_AUTHORITY/exercise/[uid]/[categoryKey]/exercise_name/[exerciseName]
-        String uid = Contractor.ExerciseEntry.getUIdFromUri(uri);
-        String categoryKey = Contractor.ExerciseEntry.getCategoryKeyFromExerciseNameUri(uri);
-        String exerciseName = Contractor.ExerciseEntry.getNameFromExerciseNameUri(uri);
+        //"content://CONTENT_AUTHORITY/exercise/[uid]/exercise_name/[exerciseName]
+        String uid = ExerciseContract.getUIdFromUri(uri);
+        String categoryKey = ExerciseContract.getCategoryKeyFromExerciseNameUri(uri);
+        String exerciseName = ExerciseContract.getExerciseNameFromExerciseNameUri(uri);
 
         //query from user table
         return ExerciseQueryHelper.exerciseQueryBuilder.query(
                 dbHelper.getReadableDatabase(),
                 projection,
                 //query selection - exercise.uid = ? AND category_key = ? AND exercise_name = ?
-                ExerciseQueryHelper.nameSelection,
+                ExerciseQueryHelper.categoryKeyExerciseSelection,
                 new String[]{uid, categoryKey, exerciseName},
                 null,
                 null,
@@ -191,21 +190,18 @@ public class ExerciseQueryHelper {
     public static Uri insertExercise(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.ExerciseEntry.TABLE_NAME, null, values);
+            _id = db.insert(ExerciseContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
-            Log.d("Choice", "     exception: " + mSQLException.toString());
             if(mSQLException instanceof SQLiteConstraintException){
                 //some toast message to user.
-                Log.d("Choice", "     constraint exception");
             }else if(mSQLException instanceof SQLiteDatatypeMismatchException) {
                 //some toast message to user.
-                Log.d("Choice", "     mismatch exception");
             }
             throw mSQLException;
         }
 
-        return Contractor.ExerciseEntry.buildExerciseUri(_id);
+        return ExerciseContract.buildExerciseUri(_id);
     }
 
     /*
@@ -219,7 +215,7 @@ public class ExerciseQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.ExerciseEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(ExerciseContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -235,7 +231,7 @@ public class ExerciseQueryHelper {
                                    String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.ExerciseEntry.TABLE_NAME, values, whereClause, whereArgs);
+            rowsUpdated = db.update(ExerciseContract.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
