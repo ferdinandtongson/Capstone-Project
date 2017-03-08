@@ -41,7 +41,6 @@ import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_WARNING_DELET
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT_EXERCISE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT_ROUTINE;
 import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING;
-import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_DELETE_WARNING_APPOINTMENT;
 
 /**************************************************************************************************/
 /*
@@ -281,7 +280,7 @@ public class ClientExerciseMaid extends GymRatRecyclerMaid implements BasicFragm
      */
     private void initializeEmptyText(){
         //get "empty" textView message
-        String emptyMsg = mFragment.getResources().getString(R.string.emptyRecycler_noStats);
+        String emptyMsg = mFragment.getResources().getString(R.string.emptyRecycler_addExercise);
 
         //set message to textView
         setEmptyMessage(emptyMsg);
