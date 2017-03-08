@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 
 import me.makeachoice.gymratpta.model.contract.client.ScheduleContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
@@ -164,7 +163,6 @@ public class ScheduleLoader {
 
                         //request cursor from local database
                         Uri uri = ScheduleContract.buildScheduleByTimestamp(mUserId, mTimestamp);
-                        Log.d("Choice", "     uri: " + uri.toString());
 
                         //get cursor
                         return new CursorLoader(
@@ -407,6 +405,5 @@ public class ScheduleLoader {
     }
 
 /**************************************************************************************************/
-
 
 }
