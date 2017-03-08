@@ -1,8 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
-
 import android.os.Bundle;
-import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
@@ -10,15 +8,9 @@ import me.makeachoice.gymratpta.controller.viewside.bottomnav.ClientDetailNav;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
-/**************************************************************************************************/
-/*
- * TODO - need to add accessibility values to bottom navigation menu items
- *          todo - add content descriptions to menu items
- *          todo - add d-pad navigation
- * TODO - need to style components
- *          todo - bottom navigation
- */
-/**************************************************************************************************/
+import static me.makeachoice.gymratpta.R.id.bottom_nav_item1;
+import static me.makeachoice.gymratpta.R.id.bottom_nav_item2;
+import static me.makeachoice.gymratpta.R.id.bottom_nav_item3;
 
 /**************************************************************************************************/
 /*
@@ -58,7 +50,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  */
 /**************************************************************************************************/
 
-public class StubClientDetailKeeper extends GymRatBaseKeeper{
+public class ClientDetailKeeper extends GymRatBaseKeeper{
 
 /**************************************************************************************************/
 /*
@@ -67,23 +59,23 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
 /**************************************************************************************************/
 
     private ClientItem mClientItem;
+    private String mStrInfo;
+    private String mStrSchedule;
+    private String mStrHistory;
 
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
- * StubClientDetailKeeper - constructor
+ * ClientDetailKeeper - constructor
  */
 /**************************************************************************************************/
     /*
-     * StubClientDetailKeeper - constructor
+     * ClientDetailKeeper - constructor
      */
-    public StubClientDetailKeeper(int layoutId){
+    public ClientDetailKeeper(int layoutId){
         //get layout id from HouseKeeper Registry
         mActivityLayoutId = layoutId;
-
-        //set toolbar menu resource id consumed by HomeToolbar
-        mToolbarMenuId = R.menu.toolbar_menu;
 
     }
 
@@ -115,7 +107,10 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
 
         mClientItem = mBoss.getClient();
 
-        initializeLayout();
+        mStrInfo = mActivity.getString(R.string.client_info);
+        mStrSchedule = mActivity.getString(R.string.client_schedule);
+        mStrHistory = mActivity.getString(R.string.client_history);
+
     }
 
     /*
@@ -125,13 +120,24 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
         //set saved instance state data
     }
 
+    public void start(){
+        super.start();
+        if(mIsAuth){
+            if(!mInitialized){
+                mInitialized = true;
+                initializeLayout();
+            }
+        }
+    }
+
+
 /**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
  * Layout Initialization Methods:
  *      void initializeLayout() - initialize maids and bottom navigation
- *      void initializeMaid() - initialize DayMaid and WeekMaid
+ *      void initializeMaid() - initialize DailyMaid and WeeklyMaid
  *      void initializeBottomNavigation - initialize bottom navigation for the appointment screen
  */
 /**************************************************************************************************/
@@ -139,6 +145,10 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
      * void initializeLayout() - initialize maids and bottom navigation
      */
     private void initializeLayout(){
+        String title = mStrInfo;
+        String subtitle = mClientItem.clientName;
+        mHomeToolbar.setGymRatToolbarTitle(title, subtitle);
+
         //initialize maids
         initializeMaid();
 
@@ -147,10 +157,9 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
     }
 
     /*
-     * void initializeMaid() - initialize DayMaid and WeekMaid
+     * void initializeMaid() - initialize DailyMaid and WeeklyMaid
      */
     private void initializeMaid(){
-        Log.d("Choice", "ClientDetail.initializeMaid");
         MaidRegistry maidRegistry = MaidRegistry.getInstance();
 
         int infoId = R.layout.fragment_client_info;
@@ -170,7 +179,13 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
     private void initializeBottomNavigation(){
 
         //create bottom navigator
-        new ClientDetailNav(mActivity);
+        ClientDetailNav nav = new ClientDetailNav(mActivity);
+        nav.setOnNavSelectedListener(new ClientDetailNav.OnNavSelectedListener() {
+            @Override
+            public void onNavSelected(int navId) {
+                onBottomNavigationSelected(navId);
+            }
+        });
     }
 
 /**************************************************************************************************/
@@ -187,6 +202,30 @@ public class StubClientDetailKeeper extends GymRatBaseKeeper{
     @Override
     public void backPressed(){
     }
+
+    /*
+     * void onBottomNavigationSelected(int) - bottom navigation item has been selected
+     */
+    public void onBottomNavigationSelected(int navId){
+        String subtitle = mClientItem.clientName;
+        String title;
+        switch (navId) {
+            case bottom_nav_item1: // 0 - session routine
+                title = mStrInfo;
+                mHomeToolbar.setGymRatToolbarTitle(title, subtitle);
+                break;
+            case bottom_nav_item2: // 1 - session stats
+                title = mStrSchedule;
+                mHomeToolbar.setGymRatToolbarTitle(title, subtitle);
+                break;
+            case bottom_nav_item3: // 1 - session notes
+                title = mStrHistory;
+                mHomeToolbar.setGymRatToolbarTitle(title, subtitle);
+                break;
+        }
+
+    }
+
 
 /**************************************************************************************************/
 
