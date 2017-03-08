@@ -61,6 +61,7 @@ public class ClientHistoryNotesMaid extends GymRatRecyclerMaid implements BasicF
     private boolean mEditingNotes;
     private NotesButler mNotesButler;
     private NotesDialog mNotesDialog;
+    private int mDialogCounter;
 
     private NotesButler.OnLoadedListener mOnLoadListener =
             new NotesButler.OnLoadedListener() {
@@ -94,6 +95,7 @@ public class ClientHistoryNotesMaid extends GymRatRecyclerMaid implements BasicF
         mClientItem = clientItem;
 
         mEditingNotes = false;
+        mDialogCounter = -1;
     }
 
 /**************************************************************************************************/
@@ -240,32 +242,36 @@ public class ClientHistoryNotesMaid extends GymRatRecyclerMaid implements BasicF
         //get fragment manager
         FragmentManager fm = mActivity.getSupportFragmentManager();
 
-        //create dialog
-        mNotesDialog = new NotesDialog();
-        mNotesDialog.setDialogValues(mActivity, mUserId, mode, item);
+        if(mDialogCounter == 0){
+            //create dialog
+            mNotesDialog = new NotesDialog();
+            mNotesDialog.setDialogValues(mActivity, mUserId, mode, item);
 
-        if(mode != NotesDialog.MODE_READ){
-            mNotesDialog.setOnSaveListener(new NotesDialog.OnSaveNotesListener() {
-                @Override
-                public void onSaveNotes(ArrayList<String> notes) {
-                    onNotesSaved(notes);
-                }
-            });
+            if(mode != NotesDialog.MODE_READ){
+                mNotesDialog.setOnSaveListener(new NotesDialog.OnSaveNotesListener() {
+                    @Override
+                    public void onSaveNotes(ArrayList<String> notes) {
+                        mDialogCounter = -1;
+                        onNotesSaved(notes);
+                    }
+                });
 
-            mNotesDialog.setOnCancelListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onNotesCanceled();
-                }
-            });
+                mNotesDialog.setOnCancelListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mDialogCounter = -1;
+                        onNotesCanceled();
+                    }
+                });
 
-            mNotesDialog.setCancelable(false);
+                mNotesDialog.setCancelable(false);
+            }
+            else{
+                mNotesDialog.setCancelable(true);
+            }
+
+            mNotesDialog.show(fm, DIA_NOTES_RECORD);
         }
-        else{
-            mNotesDialog.setCancelable(true);
-        }
-
-        mNotesDialog.show(fm, DIA_NOTES_RECORD);
 
         return mNotesDialog;
     }
@@ -327,6 +333,7 @@ public class ClientHistoryNotesMaid extends GymRatRecyclerMaid implements BasicF
 
         mSaveItem = mData.get(index);
 
+        mDialogCounter = 0;
         initializeNotesDialog(NotesDialog.MODE_EDIT, mSaveItem);
     }
     /*
@@ -336,6 +343,7 @@ public class ClientHistoryNotesMaid extends GymRatRecyclerMaid implements BasicF
         NotesItem item = mData.get(index);
 
         mEditingNotes = false;
+        mDialogCounter = 0;
         initializeNotesDialog(NotesDialog.MODE_READ, item);
     }
 
