@@ -301,7 +301,7 @@ public class RoutineDetailRecyclerAdapter extends RecyclerView.Adapter<RoutineDe
             RoutineItem item = mData.get(position);
 
             //update item order number
-            item.orderNumber = position;
+            item.orderNumber = String.valueOf(position);
 
             //add marker to list
             mMarkerList.add(MARKER + position);
