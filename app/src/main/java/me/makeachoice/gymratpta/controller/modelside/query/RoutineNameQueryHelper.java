@@ -8,14 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatatypeMismatchException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
-/**
- * Created by Usuario on 2/7/2017.
- */
 
 public class RoutineNameQueryHelper {
 
@@ -32,18 +28,18 @@ public class RoutineNameQueryHelper {
         //initialize routineNameQueryBuilder
         routineNameQueryBuilder = new SQLiteQueryBuilder();
         //set builder to query user table
-        routineNameQueryBuilder.setTables(Contractor.RoutineNameEntry.TABLE_NAME);
+        routineNameQueryBuilder.setTables(RoutineNameContract.TABLE_NAME);
     }
 
     //query selection - routineName.uid = ?
     public static final String uidSelection =
-            Contractor.RoutineNameEntry.TABLE_NAME + "." + Contractor.RoutineNameEntry.COLUMN_UID + " = ? ";
+            RoutineNameContract.TABLE_NAME + "." + RoutineNameContract.COLUMN_UID + " = ? ";
 
     //query selection - routineName.uid = ? AND routine_name = ?
     public static final String routineNameSelection =
-            Contractor.RoutineNameEntry.TABLE_NAME+
-                    "." + Contractor.RoutineNameEntry.COLUMN_UID + " = ? AND " +
-                    Contractor.RoutineNameEntry.COLUMN_ROUTINE_NAME + " = ? ";
+            RoutineNameContract.TABLE_NAME+
+                    "." + RoutineNameContract.COLUMN_UID + " = ? AND " +
+                    RoutineNameContract.COLUMN_ROUTINE_NAME + " = ? ";
 
 
 /**************************************************************************************************/
@@ -62,7 +58,7 @@ public class RoutineNameQueryHelper {
      */
     public static Cursor getRoutineName(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/routineName/[uid]/....
-        String uid = Contractor.RoutineNameEntry.getUIdFromUri(uri);
+        String uid = RoutineNameContract.getUIdFromUri(uri);
 
         //query routine table
         return RoutineNameQueryHelper.routineNameQueryBuilder.query(
@@ -82,7 +78,7 @@ public class RoutineNameQueryHelper {
      */
     public static Cursor getRoutineNameByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/routine/[uid]
-        String uid = Contractor.RoutineNameEntry.getUIdFromUri(uri);
+        String uid = RoutineNameContract.getUIdFromUri(uri);
 
         //query from user table
         return RoutineNameQueryHelper.routineNameQueryBuilder.query(
@@ -102,8 +98,8 @@ public class RoutineNameQueryHelper {
      */
     public static Cursor getRoutineNameByName(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/routineName/[uid]/routine_name/[name]
-        String uid = Contractor.RoutineNameEntry.getUIdFromUri(uri);
-        String routineName = Contractor.RoutineNameEntry.getRoutineNameFromUri(uri);
+        String uid = RoutineNameContract.getUIdFromUri(uri);
+        String routineName = RoutineNameContract.getRoutineNameFromUri(uri);
 
         //query from user table
         return RoutineNameQueryHelper.routineNameQueryBuilder.query(
@@ -134,21 +130,18 @@ public class RoutineNameQueryHelper {
     public static Uri insertRoutineName(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.RoutineNameEntry.TABLE_NAME, null, values);
+            _id = db.insert(RoutineNameContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
-            Log.d("Choice", "     exception: " + mSQLException.toString());
             if(mSQLException instanceof SQLiteConstraintException){
                 //some toast message to user.
-                Log.d("Choice", "     constraint exception");
             }else if(mSQLException instanceof SQLiteDatatypeMismatchException) {
                 //some toast message to user.
-                Log.d("Choice", "     mismatch exception");
             }
             throw mSQLException;
         }
 
-        return Contractor.RoutineNameEntry.buildRoutineNameUri(_id);
+        return RoutineNameContract.buildRoutineNameUri(_id);
     }
 
     /*
@@ -162,7 +155,7 @@ public class RoutineNameQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.RoutineNameEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(RoutineNameContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -178,7 +171,7 @@ public class RoutineNameQueryHelper {
                                     String[] whereArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.RoutineNameEntry.TABLE_NAME, values, whereClause, whereArgs);
+            rowsUpdated = db.update(RoutineNameContract.TABLE_NAME, values, whereClause, whereArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
