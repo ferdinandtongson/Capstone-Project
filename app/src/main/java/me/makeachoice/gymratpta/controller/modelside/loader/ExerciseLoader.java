@@ -7,15 +7,14 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.exercise.ExerciseColumns;
+import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_EXERCISE_BASE;
 
 /**************************************************************************************************/
 /*
- * ExerciseLoader is a cursor loader that loads data from exercise table
+ * ExerciseLoader loads data from exercise table
  */
 /**************************************************************************************************/
 
@@ -35,19 +34,34 @@ public class ExerciseLoader {
 /**************************************************************************************************/
 
     //mActivity - activity context
-    private static MyActivity mActivity;
+    private MyActivity mActivity;
 
     //mUserId - user id number taken from firebase authentication
-    private static String mUserId;
+    private String mUserId;
 
     //mCategoryKey - category he list of exercises should belong to
-    private static String mCategoryKey;
+    private String mCategoryKey;
+
+    private String mExercise;
 
     //mListener - listens for when the category data is loaded
-    private static OnExerciseLoadListener mListener;
+    private OnExerciseLoadListener mListener;
     public interface OnExerciseLoadListener{
         //notifies listener exercise data has finished loading
-        public void onExerciseLoadFinished(Cursor cursor);
+        void onExerciseLoadFinished(Cursor cursor);
+    }
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Constructor
+ */
+/**************************************************************************************************/
+
+    public ExerciseLoader(MyActivity activity, String userId){
+        mActivity = activity;
+        mUserId = userId;
     }
 
 /**************************************************************************************************/
@@ -55,30 +69,22 @@ public class ExerciseLoader {
 /**************************************************************************************************/
 /*
  * Public Methods
- *      void loadCategories(...) - start loader to load category data from database
+ *      void loadExercises(...) - start loader to load exercise data from database
  *      void destroyLoader(...) - destroy loader and any data managed by the loader
  */
 /**************************************************************************************************/
     /*
      * void loadExercises(...) - start loader to load exercise data from database
      */
-     public static void loadExercises(MyActivity activity, String userId, String categoryKey,
-                                      OnExerciseLoadListener listener){
+     public void loadExercises(String categoryKey, OnExerciseLoadListener listener){
          //load exercise using default loader exercise id
-         loadExercises(activity, userId, categoryKey, LOADER_EXERCISE_BASE, listener);
+         loadExercises(categoryKey, LOADER_EXERCISE_BASE, listener);
      }
-
 
     /*
      * void loadExercises(...) - start loader to load exercise data from database
      */
-    public static void loadExercises(MyActivity activity, String userId, String categoryKey,
-                                     int loaderId, OnExerciseLoadListener listener){
-        //get activity context
-        mActivity = activity;
-
-        //get user id
-        mUserId = userId;
+    public void loadExercises(String categoryKey, int loaderId, OnExerciseLoadListener listener){
 
         //get category key
         mCategoryKey = categoryKey;
@@ -87,22 +93,22 @@ public class ExerciseLoader {
         mListener = listener;
 
         // Initializes exercise loader
-        mActivity.getSupportLoaderManager().initLoader(LOADER_EXERCISE_BASE, null,
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
                 new LoaderManager.LoaderCallbacks<Cursor>() {
                     @Override
                     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
                         //request client cursor from local database
-                        Uri uri = Contractor.ExerciseEntry.buildExerciseByCategoryKey(mUserId, mCategoryKey);
+                        Uri uri = ExerciseContract.buildExerciseByCategoryKey(mUserId, mCategoryKey);
 
                         //get cursor
                         return new CursorLoader(
                                 mActivity,
                                 uri,
-                                ExerciseColumns.PROJECTION_EXERCISE,
+                                ExerciseContract.PROJECTION_EXERCISE,
                                 null,
                                 null,
-                                Contractor.ExerciseEntry.SORT_ORDER_DEFAULT);
+                                ExerciseContract.SORT_ORDER_DEFAULT);
                     }
 
                     @Override
@@ -122,19 +128,74 @@ public class ExerciseLoader {
     }
 
     /*
+     * void loadExercisesByName(...) - start loader to load exercise data from database by name
+     */
+    public void loadExercisesByName(String categoryKey, String exercise, OnExerciseLoadListener listener){
+        //load exercise using default loader exercise id
+        loadExercisesByName(categoryKey, exercise, LOADER_EXERCISE_BASE, listener);
+    }
+
+    /*
+     * void loadExercisesByName(...) - start loader to load exercise data from database
+     */
+    public void loadExercisesByName(String categoryKey, String exercise, int loaderId, OnExerciseLoadListener listener){
+
+        mCategoryKey = categoryKey;
+        mExercise = exercise;
+
+        //get listener
+        mListener = listener;
+
+        // Initializes exercise loader
+        mActivity.getSupportLoaderManager().initLoader(loaderId, null,
+                new LoaderManager.LoaderCallbacks<Cursor>() {
+                    @Override
+                    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+                        //request client cursor from local database
+                        Uri uri = ExerciseContract.buildExerciseByName(mUserId, mCategoryKey, mExercise);
+
+                        //get cursor
+                        return new CursorLoader(
+                                mActivity,
+                                uri,
+                                ExerciseContract.PROJECTION_EXERCISE,
+                                null,
+                                null,
+                                ExerciseContract.SORT_ORDER_DEFAULT);
+                    }
+
+                    @Override
+                    public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
+                        //make sure listener is not NULL
+                        if(mListener != null){
+                            //notify listener that exercise data has finished loading
+                            mListener.onExerciseLoadFinished(cursor);
+                        }
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+                        //does nothing
+                    }
+                });
+    }
+
+
+    /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity){
+    public void destroyLoader(){
         //destroy loader using default loader exercise id
-        activity.getSupportLoaderManager().destroyLoader(LOADER_EXERCISE_BASE);
+        mActivity.getSupportLoaderManager().destroyLoader(LOADER_EXERCISE_BASE);
     }
 
     /*
      * void destroyLoader(...) - destroy loader and any data managed by the loader
      */
-    public static void destroyLoader(MyActivity activity, int loaderId){
+    public void destroyLoader(int loaderId){
         //destroy loader
-        activity.getSupportLoaderManager().destroyLoader(loaderId);
+        mActivity.getSupportLoaderManager().destroyLoader(loaderId);
     }
 
 /**************************************************************************************************/
