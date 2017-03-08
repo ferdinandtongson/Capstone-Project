@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.model.item.client.AppointmentCardItem;
+import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
 
@@ -67,6 +68,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     //mData - an array list of item data consumed by the adapter
     private ArrayList<AppointmentCardItem> mData;
+    private ArrayList<ClientItem> mClientList;
 
     //mOnLongClickListener - list item onLongClick event listener
     private static View.OnLongClickListener mOnLongClickListener;
@@ -103,6 +105,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
         //initialize data array
         mData = new ArrayList<>();
+        mClientList = new ArrayList<>();
     }
 
 /**************************************************************************************************/
@@ -168,6 +171,11 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
      */
     public void setOnClickListener(View.OnClickListener listener){
         mOnClickListener = listener;
+    }
+
+    public void setClientList(ArrayList<ClientItem> clientList){
+        mClientList.clear();
+        mClientList.addAll(clientList);
     }
 
 /**************************************************************************************************/
@@ -275,6 +283,11 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             // Extract info from cursor
             AppointmentCardItem item = mData.get(position);
 
+            ClientItem clientItem = new ClientItem();
+            if(!mClientList.isEmpty()){
+                clientItem = mClientList.get(position);
+            }
+
             //set default card color background
             int cardColor = mCardDefaultColor;
 
@@ -285,9 +298,9 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             }
 
             //bind viewHolder components
-            holder.bindCardView(item, position, cardColor);
+            holder.bindCardView(item, clientItem, position, cardColor);
             holder.bindTextView(item);
-            holder.bindProfileImage(item, position);
+            holder.bindProfileImage(item, clientItem, position);
         }
     }
 
@@ -351,10 +364,11 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      * void bindCardView(AppointmentCardItem,int,int) - bind data to cardView. Set tag values, bg color,
      * and contextMenu listener, if not null
      */
-    private void bindCardView(AppointmentCardItem item, int position, int cardColor) {
+    private void bindCardView(AppointmentCardItem item, ClientItem clientItem, int position, int cardColor) {
 
         mCardView.setTag(R.string.recycler_tagPosition, position);
         mCardView.setTag(R.string.recycler_tagItem, item);
+        mCardView.setTag(R.string.recycler_tagItem02, clientItem);
         mCardView.setCardBackgroundColor(cardColor);
 
         if(mOnLongClickListener != null){
@@ -386,9 +400,10 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
      * void bindProfileImage(AppointmentCardItem) - bind data to circleImageView. Using Picasso, load the
      * image profile of client
      */
-    private void bindProfileImage(AppointmentCardItem item, int position){
+    private void bindProfileImage(AppointmentCardItem item, ClientItem clientItem, int position){
         mImgProfile.setTag(R.string.recycler_tagPosition, position);
         mImgProfile.setTag(R.string.recycler_tagItem, item);
+        mImgProfile.setTag(R.string.recycler_tagItem02, clientItem);
         mImgProfile.setOnClickListener(mImageClickListener);
 
         Picasso.with(itemView.getContext())
