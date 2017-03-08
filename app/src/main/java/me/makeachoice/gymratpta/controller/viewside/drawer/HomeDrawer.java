@@ -8,10 +8,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import me.makeachoice.gymratpta.R;
+import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.utilities.DeprecatedUtility;
-import me.makeachoice.gymratpta.view.activity.AppointmentActivity;
+import me.makeachoice.gymratpta.view.activity.ScheduleActivity;
 import me.makeachoice.gymratpta.view.activity.ClientActivity;
 import me.makeachoice.gymratpta.view.activity.ExerciseActivity;
 import me.makeachoice.gymratpta.view.activity.SessionActivity;
@@ -123,10 +125,12 @@ public class HomeDrawer extends MyDrawer implements NavigationView.OnNavigationI
      * void requestActivity(int) - request intent to start a new activity
      */
     private void requestActivity(int menuId){
+        Boss boss = (Boss)mActivity.getApplication();
+
         Intent intent;
         switch (menuId) {
             case APPOINTMENTS_ID:
-                intent = new Intent(mActivity, AppointmentActivity.class);
+                intent = new Intent(mActivity, ScheduleActivity.class);
                 break;
             case CLIENTS_ID:
                 intent = new Intent(mActivity, ClientActivity.class);
@@ -136,6 +140,14 @@ public class HomeDrawer extends MyDrawer implements NavigationView.OnNavigationI
                 break;
             case SESSIONS_ID:
                 intent = new Intent(mActivity, SessionActivity.class);
+                break;
+            case R.id.nav_help:
+                intent = null;
+                Toast.makeText(mActivity, "Help Coming Soon!", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.nav_signout:
+                intent = null;
+                boss.signOutFirebaseAuth();
                 break;
             default:
                 intent = null;
