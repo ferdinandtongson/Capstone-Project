@@ -20,6 +20,7 @@ import me.makeachoice.gymratpta.view.dialog.NotesDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_NOTES_RECORD;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_NOTES;
 
 /**************************************************************************************************/
@@ -286,7 +287,7 @@ public class ClientNotesMaid extends GymRatRecyclerMaid implements BasicFragment
             mNotesDialog.setCancelable(true);
         }
 
-        mNotesDialog.show(fm, "diaNotes");
+        mNotesDialog.show(fm, DIA_NOTES_RECORD);
 
         return mNotesDialog;
     }
