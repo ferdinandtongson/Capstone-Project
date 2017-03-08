@@ -2,46 +2,36 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-
-import com.google.firebase.database.DataSnapshot;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.firebase.ClientFirebaseHelper;
-import me.makeachoice.gymratpta.controller.modelside.loader.ContactsLoader;
+import me.makeachoice.gymratpta.controller.modelside.butler.ClientButler;
 import me.makeachoice.gymratpta.controller.viewside.Helper.PermissionHelper;
-import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.ClientItemAdapter;
-import me.makeachoice.gymratpta.model.contract.Contractor;
-import me.makeachoice.gymratpta.model.contract.client.ClientColumns;
-import me.makeachoice.gymratpta.model.item.client.ClientFBItem;
+import me.makeachoice.gymratpta.controller.viewside.recycler.adapter.client.ClientAdapter;
 import me.makeachoice.gymratpta.model.item.client.ClientItem;
 import me.makeachoice.gymratpta.view.activity.ClientDetailActivity;
 import me.makeachoice.gymratpta.view.dialog.ContactListDialog;
+import me.makeachoice.library.android.base.controller.viewside.bartender.MyBartender;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
-/**************************************************************************************************/
-/*
- * TODO - need to be able to display different client status
- *      todo - display active status only
- *      todo - display retired status only
- * TODO - need to display progress bar during loading
- * TODO - clean up code
- */
-/**************************************************************************************************/
+import static android.content.Context.MODE_PRIVATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.CLIENT_ACTIVE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.CLIENT_ALL;
+import static me.makeachoice.gymratpta.controller.manager.Boss.CLIENT_RETIRED;
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_CONTACTS;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_CLIENT;
+import static me.makeachoice.gymratpta.controller.manager.Boss.PREF_CLIENT_STATUS;
 
 /**************************************************************************************************/
 /*
@@ -85,14 +75,14 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
  */
 /**************************************************************************************************/
 
-public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge{
+public class ClientKeeper extends GymRatRecyclerKeeper implements MyActivity.Bridge{
 
 /**************************************************************************************************/
 /*
  * Class Variables:
  *      String mUId - user id number
  *      HashMap<String,ClientItem> mClientMap - client hashMap, created by adapter and used by ContactListDialog
- *      ClientItemAdapter mAdapter - recycler adapter
+ *      ClientAdapter mAdapter - recycler adapter
  *      PermissionHelper mPermissionHelper - helps making permission requests
  *
  *      int mRecursiveCount - recursive counter used to update client data
@@ -102,30 +92,29 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
  */
 /**************************************************************************************************/
 
-    //mUserId - user id number
-    private String mUserId;
-
     //mClientMap - client hashMap, created by adapter and used by ContactListDialog
     private HashMap<String, ClientItem> mClientMap;
 
     //mAdapter - recycler adapter
-    private ClientItemAdapter mAdapter;
+    private ClientAdapter mAdapter;
 
     //mPermissionHelper - helps making permission requests
     private PermissionHelper mPermissionHelper;
 
-    //mRecursiveCount - recursive counter used to update client data
-    private int mRecursiveCount;
-
-    //mClientItem - client item used in recursion
-    private ClientItem mClientItem;
-
     //mClients - client list used in recursion
     private ArrayList<ClientItem> mClients;
 
-    private int LOADER_CLIENT = 0;
-    //LOADER_BASE - base loader id used to identify loader managers
-    private int LOADER_BASE = 100;
+    private ClientButler mClientButler;
+    private String mStatus;
+    private int mDialogCounter;
+
+
+    ClientButler.OnLoadedListener mLoadListener = new ClientButler.OnLoadedListener() {
+        @Override
+        public void onLoaded(ArrayList<ClientItem> clientList) {
+            onClientsLoaded(clientList);
+        }
+    };
 
 /**************************************************************************************************/
 
@@ -138,12 +127,12 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
      * ClientKeeper - constructor
      * @param layoutId - layout resource id used by Keeper
      */
-    public StubClientKeeper(int layoutId){
+    public ClientKeeper(int layoutId){
         //get layout id from HouseKeeper Registry
         mActivityLayoutId = layoutId;
 
         //set toolbar menu resource id consumed by HomeToolbar
-        mToolbarMenuId = R.menu.toolbar_menu;
+        mToolbarMenuId = R.menu.toolbar_client_menu;
 
         //flag used to determine which menu items is selected in drawer component
         mBottomNavSelectedItemId = R.id.nav_clients;
@@ -176,16 +165,12 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         }
 
         //get user id
-        mUserId = mBoss.getUserId();
+        mClients = new ArrayList();
+        mDialogCounter = -1;
 
-        //check if "read contacts" permission has been granted
-        mPermissionHelper = new PermissionHelper(activity);
-        mPermissionHelper.requestPermission(PermissionHelper.READ_CONTACTS_REQUEST);
+        mPermissionHelper = new PermissionHelper(mActivity);
 
-        //TODO - set up progress bar
-        //showProgressBar(true);
-        initializeLayout(null);
-        loadClients();
+
 
     }
 
@@ -196,20 +181,29 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         //set saved instance state data
     }
 
-    public void stop(){
-        int count = mClients.size();
-        for(int i = 0; i < count; i++){
-            //destroy loader manager
-            mActivity.getLoaderManager().destroyLoader(LOADER_BASE + i);
+    public void start(){
+        super.start();
+        if(mIsAuth){
+            if(!mInitialized){
+                mInitialized = true;
+                initializeValues();
+                requestClients(mStatus);
+            }
+            else{
+                requestClients(mStatus);
+            }
         }
     }
 
-    public void destroy(){
-        super.destroy();
+    private void initializeValues(){
+        //get user shared preference
+        SharedPreferences prefs = mActivity.getSharedPreferences(mUserId, MODE_PRIVATE);
 
-        mAdapter.closeCursor();
-        mActivity.getSupportLoaderManager().destroyLoader(LOADER_CLIENT);
+        //get user preference to want to receive deletion warning
+        mStatus = prefs.getString(PREF_CLIENT_STATUS, CLIENT_ALL);
+        mClientButler = new ClientButler(mActivity, mUserId);
 
+        initializeLayout();
     }
 
 /**************************************************************************************************/
@@ -225,15 +219,18 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
     /*
      * void initializeLayout() - initialize ui
      */
-    private void initializeLayout(Cursor cursor){
+    private void initializeLayout(){
         //initialize "empty" textView used when recycler is empty
         initializeEmptyText();
 
         //initialize FAB
         initializeFAB();
+        initializeToolbar();
 
         //initialize adapter used by recycler
-        initializeAdapter(cursor);
+        initializeAdapter();
+
+        initializeRecycler();
     }
 
     /*
@@ -245,6 +242,15 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
         //set message to textView
         setEmptyMessage(emptyMsg);
+    }
+
+    private void initializeToolbar(){
+        mHomeToolbar.setOnMenuItemClick(new MyBartender.OnMenuItemClick() {
+            @Override
+            public void onMenuItemClick(MenuItem menuItem) {
+                onMenuChangeClientStatus(menuItem);
+            }
+        });
     }
 
     private void initializeFAB(){
@@ -262,28 +268,37 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
     /*
      * void initializeAdapter() - adapter used by recycler component
      */
-    private void initializeAdapter(Cursor cursor) {
+    private void initializeAdapter() {
         //layout resource file id used by recyclerView adapter
         int adapterLayoutId = R.layout.item_client;
 
         //create adapter consumed by the recyclerView
-        mAdapter = new ClientItemAdapter(mActivity, cursor, adapterLayoutId);
+        mAdapter = new ClientAdapter(mActivity, adapterLayoutId);
 
         //set item click listener event
-        mAdapter.setOnItemClickListener(new View.OnClickListener() {
+        mAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onItemClicked(view);
             }
         });
 
-        //set adapter in recycler
-        mBasicRecycler.setAdapter(mAdapter);
+        //swap data into adapter
+        mAdapter.swapData(mClients);
 
         //get client hashMap
-        mClientMap = mAdapter.getClientMap();
+        mClientMap = mClientButler.getClientMap();
 
-        updateEmptyText(cursor);
+        //check if recycler has any data; if not, display "empty" textView
+        updateEmptyText();
+    }
+
+    /*
+     * void initializeRecycler() - initialize recycler component
+     */
+    private void initializeRecycler(){
+        //set adapter
+        mBasicRecycler.setAdapter(mAdapter);
     }
 
     /*
@@ -295,19 +310,57 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
 
         //create dialog
         ContactListDialog dia = new ContactListDialog();
-        dia.setClientMap(mClientMap);
-        dia.setUserId(mUserId);
 
-        dia.show(fm, "diaContactList");
+        if(mDialogCounter == 0) {
+
+            dia.setClientMap(mClientMap);
+            dia.setOnAddClientListener(new ContactListDialog.OnAddClientListener() {
+                @Override
+                public void onAddClient(ClientItem clientItem) {
+                    clientItem.uid = mUserId;
+                    clientItem.firstSession = "";
+                    clientItem.goals = "";
+                    clientItem.status = CLIENT_ACTIVE;
+
+                    mDialogCounter = -1;
+                    addClient(clientItem);
+                }
+            });
+
+            dia.show(fm, DIA_CONTACTS);
+        }
 
         return dia;
     }
 
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Update methods
+ */
+/**************************************************************************************************/
+
+
+    private void updateLayout(){
+
+        //swap data into adapter
+        mAdapter.swapData(mClients);
+
+        //get client hashMap
+        mClientMap = mClientButler.getClientMap();
+
+        //check if recycler has any data; if not, display "empty" textView
+        updateEmptyText();
+    }
+
+
     /*
      * void updateEmptyText() - check if adapter is empty or not then updates empty textView
      */
-    private void updateEmptyText(Cursor cursor){
-        if(cursor != null && cursor.getCount() > 0){
+    private void updateEmptyText(){
+        if(mClients.size() > 0){
             //is not empty
             isEmptyRecycler(false);
         }
@@ -354,12 +407,32 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED){
             //request Read Contacts permission
-            mPermissionHelper.requestPermission(PermissionHelper.READ_CONTACTS_REQUEST);
+            mPermissionHelper.getPermissionToReadContacts();
         }
         else{
+            mDialogCounter = 0;
             //show contacts dialog
             initializeDialog();
         }
+    }
+
+    private void onMenuChangeClientStatus(MenuItem menuItem){
+        int id = menuItem.getItemId();
+        switch(id){
+            case R.id.toolbar_client_retired:
+                mStatus = CLIENT_RETIRED;
+                break;
+            case R.id.toolbar_client_active:
+                mStatus = CLIENT_ACTIVE;
+                break;
+            case R.id.toolbar_client_all:
+                mStatus = CLIENT_ALL;
+                break;
+            default:
+                mStatus = CLIENT_ALL;
+        }
+
+        requestClients(mStatus);
     }
 
 /**************************************************************************************************/
@@ -373,142 +446,44 @@ public class StubClientKeeper extends GymRatRecyclerKeeper implements MyActivity
  *      void updateDatabase(ClientItem) - update local database with client data
  */
 /**************************************************************************************************/
+    private void requestClients(String status){
+
+        if(status.equals(CLIENT_ACTIVE)){
+            mClientButler.loadActiveClients(LOADER_CLIENT, mLoadListener);
+        }
+        else if(status.equals(CLIENT_RETIRED)){
+            mClientButler.loadRetiredClients(LOADER_CLIENT, mLoadListener);
+        }
+        else{
+            mClientButler.loadAllClients(LOADER_CLIENT, mLoadListener);
+
+        }
+
+    }
+
     /*
      * void loadClients() - loads clients onto cursor used by Adapter. First gets clients from Firebase,
      * loads client data to sqlite local database and then retrieves and delivers that data as a cursor
      */
-    private void loadClients(){
-        // Initializes a loader for loading clients
-        mActivity.getSupportLoaderManager().initLoader(LOADER_CLIENT, null, new LoaderManager.LoaderCallbacks<Cursor>() {
-            @Override
-            public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+    private void onClientsLoaded(ArrayList<ClientItem> clientList){
+        mClients.clear();
+        mClients.addAll(clientList);
 
-                //load clients from firebase, insert into local database
-                loadFirebaseClients();
-
-                //request client cursor from local database
-                Uri uri = Contractor.ClientEntry.buildClientByUID(mUserId);
-                //get cursor
-                return new CursorLoader(
-                        mActivity,
-                        uri,
-                        ClientColumns.PROJECTION,
-                        null,
-                        null,
-                        Contractor.ClientEntry.SORT_ORDER_DEFAULT);
-            }
-
-            @Override
-            public void onLoadFinished(Loader<Cursor> objectLoader, Cursor cursor) {
-                Log.d("Choice", "ClientKeeper.onLoadFinished: " + cursor.getCount());
-                updateEmptyText(cursor);
-
-                //client cursor loaded, initialize layout
-                mAdapter.setCursor(cursor);
-
-            }
-
-            @Override
-            public void onLoaderReset(Loader<Cursor> cursorLoader) {
-            }
-        });
-    }
-
-
-    /*
-     * void loadFirebaseClients() - gets client data from Firebase
-     */
-    private void loadFirebaseClients(){
-        //initialize client list array
-        mClients = new ArrayList();
-        mDoublesMap = new HashMap();
-
-        //get client firebase instance
-        final ClientFirebaseHelper clientFB = ClientFirebaseHelper.getInstance();
-
-        //get orderBy string value
-        String orderBy = ClientFirebaseHelper.CHILD_CLIENT_NAME;
-
-        //request client data ordered by client name
-        clientFB.requestClientData(mUserId, orderBy, new ClientFirebaseHelper.OnDataLoadedListener() {
-            @Override
-            public void onDataLoaded(DataSnapshot dataSnapshot) {
-
-                //loop through client data
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //get the data from snapshot
-                    ClientFBItem client = postSnapshot.getValue(ClientFBItem.class);
-
-                    //create client item, used for local database
-                    ClientItem item = new ClientItem(client);
-                    item.uid = mUserId;
-                    item.fkey = postSnapshot.getKey();
-
-                    //add item to client list
-                    mClients.add(item);
-                }
-
-                //recursive counter
-                mRecursiveCount = 0;
-                requestContactInfo();
-            }
-
-            @Override
-            public void onCancelled() {
-
-            }
-        });
-    }
-
-    private HashMap<String,String> mDoublesMap;
-
-    /*
-     * void requestContactInfo() - request device contact id and profile picture
-     */
-    private void requestContactInfo(){
-
-        //check if recursive count is greater than client list size
-        if (mRecursiveCount < mClients.size()) {
-            //not greater, get client from list
-            mClientItem = mClients.get(mRecursiveCount);
-
-            //create loader Id
-            int loaderId = LOADER_BASE + mRecursiveCount;
-
-            //request client's contact id and profile from device
-            ContactsLoader.requestContactIdAndProfile(mActivity, loaderId, mClientItem,
-                    new ContactsLoader.OnLoadContactInfoListener() {
-                @Override
-                public void onLoadContactInfo(ClientItem item) {
-                    //update database
-                    updateDatabase(item);
-                }
-            });
-
-        }
-    }
-
-    /*
-     * void updateDatabase(ClientItem) - update local database with client data
-     */
-    private void updateDatabase(ClientItem item){
-        //get uri value for client
-        Uri uriValue = Contractor.ClientEntry.CONTENT_URI;
-
-        if(!mDoublesMap.containsKey(item.clientName)){
-            mDoublesMap.put(item.clientName, item.clientName);
-            //add client to sqlite database
-            mActivity.getContentResolver().insert(uriValue, item.getContentValues());
-        }
-
-        //increase recursive count
-        mRecursiveCount++;
-
-        //request client info of clients in list
-        requestContactInfo();
-
+        updateLayout();
     }
 
 /**************************************************************************************************/
 
+    private ClientItem mSaveItem;
+    private void addClient(ClientItem clientItem){
+        mSaveItem = clientItem;
+        mClientButler.saveClient(clientItem, new ClientButler.OnSavedListener() {
+            @Override
+            public void onSaved() {
+                Toast.makeText(mActivity, mSaveItem.clientName + " added", Toast.LENGTH_LONG).show();
+                requestClients(mStatus);
+            }
+        });
+
+    }
 }
