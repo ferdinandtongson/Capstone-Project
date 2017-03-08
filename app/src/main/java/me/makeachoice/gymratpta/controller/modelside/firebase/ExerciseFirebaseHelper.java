@@ -4,6 +4,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -179,6 +180,23 @@ public class ExerciseFirebaseHelper {
     }
 
 /**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Delete Data Methods
+ */
+/**************************************************************************************************/
+
+    public void deleteExercise(String userId, String categoryKey, String exercise, ValueEventListener listener){
+        DatabaseReference ref = getExerciseCategoryReference(userId, categoryKey);
+
+        Query query = ref.orderByChild(CHILD_EXERCISE_NAME).equalTo(exercise);
+
+        query.addListenerForSingleValueEvent(listener);
+    }
+
+/**************************************************************************************************/
+
 
 /**************************************************************************************************/
 /*
