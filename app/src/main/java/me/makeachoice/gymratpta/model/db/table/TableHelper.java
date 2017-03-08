@@ -10,6 +10,8 @@ import me.makeachoice.gymratpta.model.contract.client.StatsContract;
 import me.makeachoice.gymratpta.model.contract.exercise.CategoryContract;
 import me.makeachoice.gymratpta.model.contract.exercise.ExerciseContract;
 import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameContract;
+import me.makeachoice.gymratpta.model.contract.user.UserContract;
 
 /**************************************************************************************************/
 /*
@@ -19,13 +21,12 @@ import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
 
 public class TableHelper {
 
-    public final static String SQL_CREATE_USER_TABLE = "CREATE TABLE " + Contractor.UserEntry.TABLE_NAME + " (" +
-            Contractor.UserEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.UserEntry.COLUMN_UID + " TEXT UNIQUE NOT NULL, " +
-            Contractor.UserEntry.COLUMN_USER_NAME + " TEXT NOT NULL, " +
-            Contractor.UserEntry.COLUMN_USER_EMAIL + " TEXT, " +
-            Contractor.UserEntry.COLUMN_USER_PHOTO+ " TEXT, " +
-            Contractor.UserEntry.COLUMN_USER_STATUS + " TEXT NOT NULL);";
+    public final static String SQL_CREATE_USER_TABLE = "CREATE TABLE " + UserContract.TABLE_NAME + " (" +
+            UserContract._ID + " INTEGER PRIMARY KEY," +
+            UserContract.COLUMN_UID + " TEXT UNIQUE NOT NULL, " +
+            UserContract.COLUMN_USER_NAME + " TEXT NOT NULL, " +
+            UserContract.COLUMN_USER_EMAIL + " TEXT, " +
+            UserContract.COLUMN_USER_STATUS + " TEXT NOT NULL);";
 
     public final static String SQL_CREATE_CLIENT_TABLE = "CREATE TABLE " + ClientContract.TABLE_NAME + " (" +
             ClientContract._ID + " INTEGER PRIMARY KEY," +
@@ -50,7 +51,7 @@ public class TableHelper {
             ExerciseContract._ID + " INTEGER PRIMARY KEY," +
             ExerciseContract.COLUMN_UID + " TEXT NOT NULL, " +
             ExerciseContract.COLUMN_CATEGORY_KEY + " TEXT NOT NULL, " +
-            ExerciseContract.COLUMN_FKEY + " TEXT UNIQUE NOT NULL, " +
+            ExerciseContract.COLUMN_FKEY + " TEXT, " +
             ExerciseContract.COLUMN_EXERCISE_NAME + " TEXT NOT NULL, " +
             ExerciseContract.COLUMN_EXERCISE_CATEGORY + " TEXT NOT NULL, " +
             ExerciseContract.COLUMN_RECORD_PRIMARY + " TEXT, " +
@@ -65,10 +66,10 @@ public class TableHelper {
             RoutineContract.COLUMN_CATEGORY + " TEXT NOT NULL, " +
             RoutineContract.COLUMN_NUM_SETS + " TEXT NOT NULL);";
 
-    public final static String SQL_CREATE_ROUTINE_NAME_TABLE = "CREATE TABLE " + Contractor.RoutineNameEntry.TABLE_NAME + " (" +
-            Contractor.RoutineNameEntry._ID + " INTEGER PRIMARY KEY," +
-            Contractor.RoutineNameEntry.COLUMN_UID + " TEXT NOT NULL, " +
-            Contractor.RoutineNameEntry.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL);";
+    public final static String SQL_CREATE_ROUTINE_NAME_TABLE = "CREATE TABLE " + RoutineNameContract.TABLE_NAME + " (" +
+            RoutineNameContract._ID + " INTEGER PRIMARY KEY," +
+            RoutineNameContract.COLUMN_UID + " TEXT NOT NULL, " +
+            RoutineNameContract.COLUMN_ROUTINE_NAME+ " TEXT NOT NULL);";
 
     public final static String SQL_CREATE_SCHEDULE_TABLE = "CREATE TABLE " + ScheduleContract.TABLE_NAME + " (" +
             ScheduleContract._ID + " INTEGER PRIMARY KEY," +
