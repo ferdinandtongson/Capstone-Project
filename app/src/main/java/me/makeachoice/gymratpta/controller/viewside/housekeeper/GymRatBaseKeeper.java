@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.View;
 
 import com.firebase.ui.auth.ui.ResultCodes;
@@ -236,7 +235,6 @@ public abstract class GymRatBaseKeeper extends MyHouseKeeper implements MyActivi
      */
     @Override
     public void activityResult(int requestCode, int resultCode, Intent data){
-        Log.d("Choice", "Keeper.activityResult - " + resultCode);
         if (requestCode == REQUEST_CODE_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 mBoss.checkInUser();
