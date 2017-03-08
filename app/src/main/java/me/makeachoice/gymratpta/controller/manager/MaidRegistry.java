@@ -5,6 +5,7 @@ import java.util.Date;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.maid.StubMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistoryNotesMaid;
+import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistorySessionMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.client.ClientHistoryStatsMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DailyMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.schedule.DayViewMaid;
@@ -219,6 +220,15 @@ public class MaidRegistry extends MyMaidRegistry {
                                                  ClientItem item){
         //create maid
         ClientHistoryStatsMaid maid = new ClientHistoryStatsMaid(maidKey, layoutId, userId, item);
+
+        //register maid
+        registerMaid(maidKey, maid);
+    }
+
+    public void initializeClientHistorySessionMaid(String maidKey, int layoutId, String userId,
+                                                 ClientItem item){
+        //create maid
+        ClientHistorySessionMaid maid = new ClientHistorySessionMaid(maidKey, layoutId, userId, item);
 
         //register maid
         registerMaid(maidKey, maid);
