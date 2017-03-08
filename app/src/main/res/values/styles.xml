@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="GymRatTheme" parent="FirebaseUI">
+        <item name="colorPrimary">@color/orange</item>
+        <item name="colorPrimaryDark">@color/powderOrangeish</item>
+        <item name="colorAccent">@color/powderBlueish</item>
+        <item name="colorControlNormal">@color/orange</item>
+        <item name="colorControlActivated">@color/powderOrangeish</item>
+        <item name="colorControlHighlight">@color/powderBlueish</item>
+        <item name="android:windowBackground">@drawable/sun_background</item>
+    </style>
+
 </resources>
