@@ -64,6 +64,13 @@ public class CategoryItem extends CategoryFBItem{
         return values;
     }
 
+    public CategoryFBItem getFBItem(){
+        CategoryFBItem fbItem = new CategoryFBItem();
+        fbItem.categoryName = categoryName;
+
+        return fbItem;
+    }
+
 /**************************************************************************************************/
 
 }
