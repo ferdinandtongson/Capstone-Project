@@ -1,30 +1,15 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-
-import java.util.ArrayList;
+import android.util.Log;
 
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.manager.Boss;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.ScheduleNav;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
 import static me.makeachoice.gymratpta.R.id.bottom_nav_item1;
 import static me.makeachoice.gymratpta.R.id.bottom_nav_item2;
-import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_SCHEDULE;
-import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_WARNING_DELETE;
-
-/**************************************************************************************************/
-/*
- * TODO - Need to handle "Quick Help" request event from toolbar menu option
- *      todo - get bottom navigation status to know which screen is being displayed (day or week)
- *      todo - set "quick help" listener here (keeper) or at maid level???
- *      todo - create "quick help" dialog
- */
-/**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
@@ -72,7 +57,6 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
  */
 /**************************************************************************************************/
 
-    private String mUserId;
     private String mStrSchedule;
     private String mStrDaily;
     private String mStrWeekly;
@@ -92,7 +76,6 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
         //get layout id
         mActivityLayoutId = layoutId;
 
-        mToolbarMenuId = R.menu.toolbar_menu;
         mBottomNavSelectedItemId = R.id.nav_appointments;
 
     }
@@ -118,54 +101,33 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
     public void create(MyActivity activity, Bundle bundle){
         super.create(activity, bundle);
 
+        //initialize string values
+        mStrSchedule = mActivity.getString(R.string.schedule);
+        mStrDaily = mActivity.getString(R.string.daily);
+        mStrWeekly = mActivity.getString(R.string.weekly);
+
         if(bundle != null){
             //open bundle to set saved instance states
             openBundle(bundle);
         }
 
-        mStrSchedule = mActivity.getString(R.string.schedule);
-        mStrDaily = mActivity.getString(R.string.daily);
-        mStrWeekly = mActivity.getString(R.string.weekly);
-
-        mBoss.initializeFirebaseAuth(new Boss.OnSignedInListener() {
-            @Override
-            public void onSignedIn(String userId) {
-                //get user id from Boss
-                mUserId = mBoss.getUserId();
-
-                //initialize layout
-                initializeLayout();
-
-            }
-        });
-
-    }
-
-    public void pause(){
-        super.pause();
-        FragmentManager fm = mActivity.getSupportFragmentManager();
-
-        ArrayList<String> tagList = new ArrayList<>();
-        tagList.add(DIA_SCHEDULE);
-        tagList.add(DIA_WARNING_DELETE);
-
-        String tag;
-        DialogFragment dia;
-        int count = tagList.size();
-        for(int i = 0; i < count; i++){
-            tag = tagList.get(i);
-
-            dia = (DialogFragment)fm.findFragmentByTag(tag);
-            if (dia != null) { dia.dismiss(); }
-        }
     }
 
     /*
      * void openBundle(Bundle) - opens bundle to set saved instance states during create().
      */
     private void openBundle(Bundle bundle){
-        //TODO - handle saved instance states from bundle
         //set saved instance state data
+    }
+
+    public void start(){
+        super.start();
+        if(mIsAuth){
+            if(!mInitialized){
+                mInitialized = true;
+                initializeLayout();
+            }
+        }
     }
 
 /**************************************************************************************************/
