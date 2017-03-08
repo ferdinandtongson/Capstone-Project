@@ -19,6 +19,7 @@ import me.makeachoice.gymratpta.view.dialog.StatsDialog;
 import me.makeachoice.gymratpta.view.fragment.BasicFragment;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
+import static me.makeachoice.gymratpta.controller.manager.Boss.DIA_STATS_RECORD;
 import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_STATS;
 
 /**************************************************************************************************/
@@ -287,7 +288,7 @@ public class ClientHistoryStatsMaid extends GymRatRecyclerMaid implements BasicF
             mStatsDialog.setCancelable(true);
         }
 
-        mStatsDialog.show(fm, "diaStatsDia");
+        mStatsDialog.show(fm, DIA_STATS_RECORD);
 
         return mStatsDialog;
     }
