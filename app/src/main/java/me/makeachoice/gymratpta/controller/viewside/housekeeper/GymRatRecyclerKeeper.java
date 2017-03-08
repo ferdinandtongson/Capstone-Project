@@ -2,6 +2,7 @@ package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -9,19 +10,6 @@ import android.widget.TextView;
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.viewside.recycler.BasicRecycler;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
-
-/**************************************************************************************************/
-/*
- * TODO - need to style components
- *          todo - recyler
- *          todo - "empty" textView
- * TODO - need to add accessibility values to fab and "empty" textView
- *          todo - add content description to "empty" textView
- *          todo - add content description to FAB
- *          todo - how to access FAB with d-pad?
- * TODO - need to set up progress bar component
- */
-/**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
@@ -108,9 +96,20 @@ public abstract class GymRatRecyclerKeeper extends GymRatBaseKeeper implements M
     public void create(MyActivity activity, Bundle bundle){
         super.create(activity, bundle);
 
-        //initialize recycler components
-        initializeRecyclerComponents();
     }
+
+    public void start(){
+        super.start();
+
+        if(mIsAuth){
+            //get user id from Boss
+            if(!mInitialized){
+                //initialize recycler components
+                initializeRecyclerComponents();
+            }
+        }
+    }
+
 
 /**************************************************************************************************/
 
