@@ -1,7 +1,6 @@
 package me.makeachoice.gymratpta.controller.viewside.housekeeper;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,20 +8,25 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.gymratpta.controller.manager.MaidRegistry;
+import me.makeachoice.gymratpta.controller.modelside.butler.RoutineNameButler;
 import me.makeachoice.gymratpta.controller.modelside.firebase.RoutineFirebaseHelper;
 import me.makeachoice.gymratpta.controller.modelside.firebase.RoutineNameFirebaseHelper;
-import me.makeachoice.gymratpta.controller.modelside.loader.RoutineNameLoader;
 import me.makeachoice.gymratpta.controller.modelside.query.RoutineNameQueryHelper;
 import me.makeachoice.gymratpta.controller.modelside.query.RoutineQueryHelper;
 import me.makeachoice.gymratpta.controller.viewside.bottomnav.SaveNav;
 import me.makeachoice.gymratpta.controller.viewside.maid.MyMaid;
 import me.makeachoice.gymratpta.controller.viewside.maid.exercise.RoutineDetailMaid;
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineContract;
+import me.makeachoice.gymratpta.model.contract.exercise.RoutineNameContract;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineDetailItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineFBItem;
 import me.makeachoice.gymratpta.model.item.exercise.RoutineItem;
@@ -32,6 +36,7 @@ import me.makeachoice.library.android.base.view.activity.MyActivity;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static me.makeachoice.gymratpta.controller.manager.Boss.EXTRA_ROUTINE_UPDATE;
+import static me.makeachoice.gymratpta.controller.manager.Boss.LOADER_ROUTINE_NAME;
 
 /**************************************************************************************************/
 /*
@@ -96,9 +101,6 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
  */
 /**************************************************************************************************/
 
-    //mUserId - user id taken from firebase authentication
-    private String mUserId;
-
     //mIsNewRoutine - status flag if routine is new routine or old
     private boolean mIsNewRoutine;
 
@@ -114,6 +116,7 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
     //mMaid - routine detail maid
     private RoutineDetailMaid mMaid;
 
+    private RoutineNameButler mRoutineButler;
 
 
 /**************************************************************************************************/
@@ -130,9 +133,6 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
 
         //get layout id
         mActivityLayoutId = layoutId;
-
-        //get menu for toolbar
-        mToolbarMenuId = R.menu.toolbar_menu;
     }
 
 /**************************************************************************************************/
@@ -161,8 +161,13 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
             openBundle(bundle);
         }
 
-        //load routine names
-        loadRoutineNames();
+        mRoutineButler = new RoutineNameButler(mActivity, mUserId);
+        mRoutineButler.loadRoutineNames(LOADER_ROUTINE_NAME, new RoutineNameButler.OnLoadedListener() {
+            @Override
+            public void onLoaded(ArrayList<RoutineNameItem> routineList) {
+                onRoutineNamesLoaded(routineList);
+            }
+        });
 
         //initialize keeper values
         initializeValues();
@@ -180,26 +185,24 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
         //set saved instance state data
     }
 
-/**************************************************************************************************/
+    public void start(){
+        super.start();
+        if(mIsAuth){
+            if(!mInitialized){
+                mInitialized = true;
+                initializeValues();
+            }
+        }
+    }
 
-/**************************************************************************************************/
-/*
- * Initialization Methods:
- *      void initializeValues() - initialize values used by keeper
- *      void initializeLayout() - initialize maids and bottom navigation
- *      void initializeMaid() - initialize ExerciseMaid and RoutineMaid
- *      void initializeBottomNavigation - initialize bottom navigation for the exercise screen
- */
-/**************************************************************************************************/
+
+
     /*
      * void initializeValues() - initialize values used by keeper
      */
     private void initializeValues(){
         //initialize hashMap used for mapping routine names
         mRoutineNameMap = new HashMap<>();
-
-        //get user id from Boss
-        mUserId = mBoss.getUserId();
 
         //get routine detail item from Boss
         mRoutineDetailItem = mBoss.getRoutineDetail();
@@ -223,9 +226,21 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
         //set result
         mActivity.setResult(RESULT_OK, intent);
 
-
+        initializeLayout();
     }
 
+
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/*
+ * Initialization Methods:
+ *      void initializeValues() - initialize values used by keeper
+ *      void initializeLayout() - initialize maids and bottom navigation
+ *      void initializeMaid() - initialize ExerciseMaid and RoutineMaid
+ *      void initializeBottomNavigation - initialize bottom navigation for the exercise screen
+ */
+/**************************************************************************************************/
     /*
      * void initializeLayout() - initialize maids and bottom navigation
      */
@@ -315,19 +330,6 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
         fragmentTransaction.commit();
     }
 
-    /*
-     * void loadRoutines() - load routine data from database
-     */
-    private void loadRoutineNames(){
-        //start loader to get routine data from database
-        RoutineNameLoader.loadRoutineNames(mActivity, mUserId, new RoutineNameLoader.OnRoutineNameLoadListener() {
-            @Override
-            public void onRoutineNameLoadFinished(Cursor cursor) {
-                onRoutineNameDataLoaded(cursor);
-            }
-        });
-    }
-
 /**************************************************************************************************/
 
 /**************************************************************************************************/
@@ -385,29 +387,25 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
     }
 
     /*
-     * void onRoutineNameDataLoaded(Cursor) - routine name data has been loaded
+     * void onRoutineNamesLoaded(...) - routine name data has been loaded
      */
-    private void onRoutineNameDataLoaded(Cursor cursor){
+    private void onRoutineNamesLoaded(ArrayList<RoutineNameItem> routineList){
         //clear routine name hashMap
         mRoutineNameMap.clear();
 
         //get size of cursor
-        int count = cursor.getCount();
+        int count = routineList.size();
 
         //loop through cursor
         for(int i = 0; i < count; i++){
-            //move to cursor to index
-            cursor.moveToPosition(i);
 
             //create routine name item
-            RoutineNameItem item = new RoutineNameItem(cursor);
+            RoutineNameItem item = routineList.get(i);
 
             //add item to hashMap
             mRoutineNameMap.put(item.routineName, item);
         }
 
-        //destroy loader
-        RoutineNameLoader.destroyLoader(mActivity);
     }
 
     /*
@@ -586,7 +584,17 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
             routineNameFB.deleteRoutineName(mUserId, oldName);
 
             //remove routine from routine firebase
-            routineFB.deleteRoutine(mUserId, oldName);
+            routineFB.deleteRoutine(mUserId, oldName, new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //todo - need to fix
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
         //save routine name
@@ -598,7 +606,7 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
      */
     private void saveRoutineNameToDatabase(RoutineNameItem nameItem){
         //get uri value for routine name table
-        Uri uriValue = Contractor.RoutineNameEntry.CONTENT_URI;
+        Uri uriValue = RoutineNameContract.CONTENT_URI;
 
         //get name from routine detail item
         String oldName = mRoutineDetailItem.routineName;
@@ -666,7 +674,7 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
                 //get routine exercise item from new list and set routine name and order number
                 RoutineItem detailItem = exerciseList.get(i);
                 detailItem.routineName = routineName;
-                detailItem.orderNumber = i;
+                detailItem.orderNumber = String.valueOf(i);
 
                 //create firebase item
                 RoutineFBItem fbItem = new RoutineFBItem();
@@ -679,7 +687,18 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
             }
             else{
                 //if index is greater than newCount, delete routine exercise from firebase
-                routineFB.deleteRoutineExercise(mUserId, routineName, String.valueOf(i));
+                routineFB.deleteRoutineExerciseByIndex(mUserId, routineName, String.valueOf(i),
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                //todo - need to fix
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
             }
 
         }
@@ -691,7 +710,7 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
      */
     private void saveListToDatabase(String routineName, ArrayList<RoutineItem> exerciseList){
         //get uri for routine table
-        Uri uriValue = Contractor.RoutineEntry.CONTENT_URI;
+        Uri uriValue = RoutineContract.CONTENT_URI;
 
         //check if routine is a new routine
         if(!mIsNewRoutine) {
@@ -712,7 +731,7 @@ public class StubRoutineDetailKeeper extends GymRatBaseKeeper implements MyActiv
             RoutineItem item = exerciseList.get(i);
             item.uid = mUserId;
             item.routineName = routineName;
-            item.orderNumber = i;
+            item.orderNumber = String.valueOf(i);
 
             //add routine to sqlite database
             Uri uri = mActivity.getContentResolver().insert(uriValue, item.getContentValues());
