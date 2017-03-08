@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
-import me.makeachoice.gymratpta.model.contract.Contractor;
+import me.makeachoice.gymratpta.model.contract.user.UserContract;
 import me.makeachoice.gymratpta.model.db.DBHelper;
 
 /**************************************************************************************************/
@@ -34,12 +34,12 @@ public class UserQueryHelper {
         //initialize userQueryBuilder
         userQueryBuilder = new SQLiteQueryBuilder();
         //set builder to query user table
-        userQueryBuilder.setTables(Contractor.UserEntry.TABLE_NAME);
+        userQueryBuilder.setTables(UserContract.TABLE_NAME);
     }
 
     //query selection - user.uid = ?
     private static final String uidSelection =
-            Contractor.UserEntry.TABLE_NAME + "." + Contractor.UserEntry.COLUMN_UID + " = ? ";
+            UserContract.TABLE_NAME + "." + UserContract.COLUMN_UID + " = ? ";
 
 /**************************************************************************************************/
 
@@ -55,7 +55,7 @@ public class UserQueryHelper {
      */
     public static Cursor getUserByUId(DBHelper dbHelper, Uri uri, String[] projection, String sortOrder) {
         //"content://CONTENT_AUTHORITY/user/[uid]/user_name=[userName],uid=[uid],.....
-        String uid = Contractor.UserEntry.getUIdFromUri(uri);
+        String uid = UserContract.getUIdFromUri(uri);
 
         //query from user table
         return UserQueryHelper.userQueryBuilder.query(
@@ -77,7 +77,7 @@ public class UserQueryHelper {
 
         //query user table
         return dbHelper.getReadableDatabase().query(
-                Contractor.UserEntry.TABLE_NAME,
+                UserContract.TABLE_NAME,
                 projection,
                 null,
                 null,
@@ -104,7 +104,7 @@ public class UserQueryHelper {
     public static Uri insertUser(SQLiteDatabase db, ContentValues values){
         long _id = -1;
         try{
-            _id = db.insert(Contractor.UserEntry.TABLE_NAME, null, values);
+            _id = db.insert(UserContract.TABLE_NAME, null, values);
         }
         catch (SQLException mSQLException) {
             Log.d("Choice", "     exception: " + mSQLException.toString());
@@ -119,7 +119,7 @@ public class UserQueryHelper {
             }
         }
 
-        return Contractor.UserEntry.buildUserUri(_id);
+        return UserContract.buildUserUri(_id);
     }
 
     /*
@@ -133,7 +133,7 @@ public class UserQueryHelper {
         if ( selection == null ) selection = "1";
 
         try{
-            rowsDeleted = db.delete(Contractor.UserEntry.TABLE_NAME, selection, selectionArgs);
+            rowsDeleted = db.delete(UserContract.TABLE_NAME, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
@@ -149,7 +149,7 @@ public class UserQueryHelper {
                                  String[] selectionArgs){
         int rowsUpdated;
         try{
-            rowsUpdated = db.update(Contractor.UserEntry.TABLE_NAME, values, selection, selectionArgs);
+            rowsUpdated = db.update(UserContract.TABLE_NAME, values, selection, selectionArgs);
         }
         catch (SQLException mSQLException) {
             throw mSQLException;
