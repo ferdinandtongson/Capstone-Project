@@ -1,19 +1,15 @@
 package me.makeachoice.gymratpta.utilities;
 
-import android.util.Log;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static me.makeachoice.gymratpta.R.string.date;
-
-/**
- * Created by Usuario on 2/16/2017.
- */
 
 public class DateTimeHelper {
+
+    private final static String FORMAT_TIMESTAMP = "yyyy-MM-dd HH:mm";
+    private final static String FORMAT_DATESTAMP = "yyyy-MM-dd";
 
     public static String getMonthDayFromToday(int addDays){
         Calendar cal = Calendar.getInstance();
@@ -28,9 +24,19 @@ public class DateTimeHelper {
         return dateFormat.format(cal.getTime());
     }
 
+    public static String getDatestamp(int year, int month, int dayOfMonth){
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, dayOfMonth);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DATESTAMP);
+
+        return dateFormat.format(cal.getTime());
+    }
+
+
     public static String getDatestamp(int addDays){
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DATESTAMP);
 
         //get today's date
         cal.getTime();
@@ -42,13 +48,13 @@ public class DateTimeHelper {
     }
 
     public static String getDatestamp(Date date){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DATESTAMP);
 
         return dateFormat.format(date);
     }
 
     public static String getDatestamp(Date date, int addDay){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DATESTAMP);
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -70,12 +76,11 @@ public class DateTimeHelper {
     }
 
     public static String convertDatestampToDate(String datestamp){
-        SimpleDateFormat stampFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat stampFormat = new SimpleDateFormat(FORMAT_DATESTAMP);
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyy");
 
         try {
             Date date = (Date)stampFormat.parse(datestamp);
-
 
             return dateFormat.format(date.getTime());
         } catch (ParseException e){
@@ -84,17 +89,72 @@ public class DateTimeHelper {
         return "";
     }
 
-    public static long getTimestamp(String strDate, String strTime){
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyy hh:mm aa");
-        try {
-            Date date = (Date)dateFormat.parse(strDate + " " + strTime);
+    public static String convertDateToDatestamp(String strDate){
+        SimpleDateFormat stampFormat = new SimpleDateFormat(FORMAT_DATESTAMP);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyy");
 
-            return date.getTime();
+        try {
+            Date date = (Date)dateFormat.parse(strDate);
+
+            return stampFormat.format(date.getTime());
         } catch (ParseException e){
             // Exception handling goes here
         }
-        return -1;
+        return "";
+    }
+
+    public static String getTimestamp(String strDate, String strTime){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyy HH:mm");
+        SimpleDateFormat stampFormat = new SimpleDateFormat(FORMAT_TIMESTAMP);
+        try {
+            Date date = (Date)dateFormat.parse(strDate + " " + strTime);
+
+            return stampFormat.format(date.getTime());
+        } catch (ParseException e){
+            // Exception handling goes here
+        }
+        return strDate;
+    }
+
+    public static boolean hasAppointmentTimePassed(String timestamp){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat stampFormat = new SimpleDateFormat(FORMAT_TIMESTAMP);
+        try {
+            Date appointmentTime = (Date)stampFormat.parse(timestamp);
+            Date currentTime = cal.getTime();
+
+            //return 1 if appointmentTime in past, return -1 if appointmentTime in future
+            //return 1 if currentTime is after appointmentTime, return -1 if currentTime is before appointmentTime
+            int hasPassed = currentTime.compareTo(appointmentTime);
+            if(hasPassed == 1){
+                //has passed, appointment time is invalid
+                return true;
+            }
+            else{
+                //has not passed, appointment time is valid
+                return false;
+            }
+        } catch (ParseException e){
+            // Exception handling goes here
+        }
+        return true;
+    }
+
+    public static boolean hasDatePast(String datestamp){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat stampFormat = new SimpleDateFormat(FORMAT_DATESTAMP);
+        try {
+            Date appointmentDate = (Date)stampFormat.parse(datestamp);
+            Date currentDate = cal.getTime();
+
+            //if current date is after appointment true, invalid (past already)
+            return currentDate.after(appointmentDate);
+
+        } catch (ParseException e){
+            // Exception handling goes here
+        }
+        return true;
     }
 
     public static String getToday(){
@@ -192,7 +252,6 @@ public class DateTimeHelper {
 
         return -1;
     }
-
 
 
 
