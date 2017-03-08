@@ -2,6 +2,7 @@
     <!-- app title -->
     <string name="app_title" translatable="false">@string/gym_rat</string>
     <string name="app_subtitle" translatable="false">@string/personal_trainer_assistant</string>
+    <string name="default_toolbar_title" translatable="true">Please Login</string>
 
     <!-- message: email -->
     <string name="msgEmail_send_using" translatable="false">@string/send_email_using</string>
@@ -191,12 +192,14 @@
     <string name="legs" translatable="true">Legs</string>
     <string name="minutes" translatable="true">Minutes</string>
     <string name="modified" translatable="true">Modified</string>
+    <string name="no_clients" translatable="true">- No Clients -</string>
     <string name="no_notes" translatable="true">No Notes</string>
     <string name="no_sessions" translatable="true">No Sessions</string>
     <string name="no_stats" translatable="true">No Stats</string>
     <string name="none" translatable="true">None</string>
     <string name="notes" translatable="true">Notes</string>
     <string name="objective" translatable="true">Objective</string>
+    <string name="open_drawer_navigation" translatable="true">Open Drawer Navigation</string>
     <string name="permission_request" translatable="true">Permission Request</string>
     <string name="personal_trainer_assistant" translatable="true">Personal Trainer Assistant</string>
     <string name="phone" translatable="true">Phone</string>
