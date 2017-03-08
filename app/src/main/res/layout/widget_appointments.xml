@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/widgetLayoutMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" >
+
+            <ImageView android:id="@+id/widgetApp_imgRefresh"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="Refresh Appointment"
+                android:visibility="visible"
+                android:src="@mipmap/ic_refresh_black_36dp" />
+
+            <TextView android:id="@+id/widgetApp_txtTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:contentDescription="Start Gym Rat"
+                android:text="Gym Rat"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#4B4B4D"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#aaa" />
+
+        <ListView
+            android:id="@+id/widgetApp_lstAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="3dp"
+            >
+        </ListView>
+
+        <TextView android:id="@+id/widgetApp_txtEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:gravity="center"
+            android:padding="2dp"
+            android:textSize="24sp"
+            android:textColor="@color/powderOrangeish_90"
+            android:background="@color/white"/>
+
+    </LinearLayout>
+
+</FrameLayout>
