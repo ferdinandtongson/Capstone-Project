@@ -2,24 +2,18 @@ package me.makeachoice.gymratpta.controller.viewside.Helper;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.widget.Toast;
 
 import me.makeachoice.gymratpta.R;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
 
-/**************************************************************************************************/
-/*
- * TODO - toast is not showing, need to debug
- */
-/**************************************************************************************************/
 
 /**************************************************************************************************/
 /*
@@ -41,7 +35,7 @@ public class PermissionHelper implements ActivityCompat.OnRequestPermissionsResu
     public static final int ALL_REQUEST = 0;
 
     //READ_CONTACTS_PERMISSIONS_REQUEST - identifier for request contact permission
-    public static final int READ_CONTACTS_REQUEST = 1;
+    public static final int READ_CONTACTS_PERMISSIONS_REQUEST = 1;
 
     private MyActivity mActivity;
 
@@ -66,46 +60,31 @@ public class PermissionHelper implements ActivityCompat.OnRequestPermissionsResu
  *      void getPermissionToReadContacts() - request permission to read contacts info
  */
 /**************************************************************************************************/
-    /*
-     * void requestPermission(int) - request permission from user
-     */
-    public void requestPermission(int request){
-        Log.d("Choice", "PermissionHelper: " + request);
-        switch(request){
-            case ALL_REQUEST:
-                //request permission for all features
-                getPermissionToReadContacts();
-                break;
-            case READ_CONTACTS_REQUEST:
-                //request permission to read contacts info
-                getPermissionToReadContacts();
-                break;
-        }
-    }
 
     /*
      * void getPermissionToReadContacts() - request permission to read contacts info. Permission
      * request is only valid for Marshmallow (api 23, 6.0)
      */
     @TargetApi(Build.VERSION_CODES.M)
-    private void getPermissionToReadContacts() {
+    public void getPermissionToReadContacts() {
         //check if permission has NOT been granted
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            //check if user has denied request
-            if (mActivity.shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
-                //get dialog title
-                String title = mActivity.getString(R.string.permission_request);
-                //get dialog message
-                String msg = mActivity.getString(R.string.msg_permissionRequest_readContacts);
+            //show permission request dialog with async handler
+            requestReadContactsPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSIONS_REQUEST);
+        }
+    }
 
-                //show explanation dialog
-                showExplanation(title, msg, Manifest.permission.READ_CONTACTS, READ_CONTACTS_REQUEST);
-            }
+    @TargetApi(Build.VERSION_CODES.M)
+    public void getFragmentPermissionToReadContacts(Fragment fragment) {
+        //check if permission has NOT been granted
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
 
             //show permission request dialog with async handler
-            requestPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_REQUEST);
+            requestReadContactsFragmentPermission(fragment, Manifest.permission.READ_CONTACTS,
+                    READ_CONTACTS_PERMISSIONS_REQUEST);
         }
     }
 
@@ -122,8 +101,15 @@ public class PermissionHelper implements ActivityCompat.OnRequestPermissionsResu
     /*
      * void requestPermission(...) - start async permission request
      */
-    private  void requestPermission(String permissionName, int permissionRequestCode) {
+    @TargetApi(Build.VERSION_CODES.M)
+    public  void requestReadContactsPermission(String permissionName, int permissionRequestCode) {
         ActivityCompat.requestPermissions(mActivity,
+                new String[]{permissionName}, permissionRequestCode);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public  void requestReadContactsFragmentPermission(Fragment frag, String permissionName, int permissionRequestCode) {
+        FragmentCompat.requestPermissions(frag,
                 new String[]{permissionName}, permissionRequestCode);
     }
 
@@ -134,13 +120,12 @@ public class PermissionHelper implements ActivityCompat.OnRequestPermissionsResu
                                  String message,
                                  final String permission,
                                  final int permissionRequestCode) {
-        Log.d("Choice", "PermissionHelper.showExplanation");
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        requestPermission(permission, permissionRequestCode);
+                        requestReadContactsPermission(permission, permissionRequestCode);
                     }
                 });
         builder.create().show();
@@ -154,27 +139,35 @@ public class PermissionHelper implements ActivityCompat.OnRequestPermissionsResu
  *      void onRequestPermissionResult() - async result of permission request
  */
 /**************************************************************************************************/
-    /*
-     * void onRequestPermissionResult() - async result of permission request
-     */
+
+    @TargetApi(23)
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == READ_CONTACTS_PERMISSIONS_REQUEST) {
+            // for each permission check if the user granted/denied them
+            // you may want to group the rationale in a single dialog,
+            // this is just an example
+            for (int i = 0, len = permissions.length; i < len; i++) {
+                //get permission
+                String permission = permissions[i];
 
-        // Make sure it's our original READ_CONTACTS request
-        if (requestCode == READ_CONTACTS_REQUEST) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                String granted = mActivity.getString(R.string.msg_permissionRequest_readContacts_granted);
-                Toast.makeText(mActivity, granted, Toast.LENGTH_SHORT).show();
-            } else {
-                String denied = mActivity.getString(R.string.msg_permissionRequest_readContacts_denied);
-                Toast.makeText(mActivity, denied, Toast.LENGTH_SHORT).show();
+                //check if user has denied request
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+                    boolean showRationale = mActivity.shouldShowRequestPermissionRationale(permission);
+                    if (! showRationale) {
+                        //user does NOT want to see rational,
+                    } else if (Manifest.permission.READ_CONTACTS.equals(permission)) {
+                        //get dialog title
+                        String title = mActivity.getString(R.string.permission_request);
+                        //get dialog message
+                        String msg = mActivity.getString(R.string.msg_permissionRequest_readContacts);
+                        showExplanation(title, msg, Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSIONS_REQUEST);
+                    }
+                }
             }
-
         }
     }
-
 /**************************************************************************************************/
 
 }
