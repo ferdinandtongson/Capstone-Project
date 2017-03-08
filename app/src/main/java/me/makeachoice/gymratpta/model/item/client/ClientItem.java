@@ -85,6 +85,18 @@ public class ClientItem extends ClientFBItem {
         return values;
     }
 
+    public ClientFBItem getFBItem(){
+        ClientFBItem fbItem = new ClientFBItem();
+        fbItem.clientName = clientName;
+        fbItem.email = email;
+        fbItem.phone = phone;
+        fbItem.firstSession = firstSession;
+        fbItem.goals = goals;
+        fbItem.status = status;
+
+        return fbItem;
+    }
+
 /**************************************************************************************************/
 
 }
