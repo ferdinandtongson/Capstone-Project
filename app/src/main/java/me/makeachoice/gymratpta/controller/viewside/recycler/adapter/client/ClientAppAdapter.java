@@ -56,8 +56,8 @@ public class ClientAppAdapter extends RecyclerView.Adapter<ClientAppAdapter.MyVi
     //mCreateContextMenuListener - "create context menu" event listener
     private static View.OnLongClickListener mOnLongClickListener;
 
-    //mImageClickListener - profile image event click listener
-    private static View.OnClickListener mImageClickListener;
+    //mOnClickListener - on card event click listener
+    private static View.OnClickListener mOnClickListener;
 
 
 /**************************************************************************************************/
@@ -128,6 +128,10 @@ public class ClientAppAdapter extends RecyclerView.Adapter<ClientAppAdapter.MyVi
      */
     public void setOnLongClickListener(View.OnLongClickListener listener){
         mOnLongClickListener = listener;
+    }
+
+    public void setOnClickListener(View.OnClickListener listener){
+        mOnClickListener = listener;
     }
 
 /**************************************************************************************************/
@@ -306,6 +310,10 @@ public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         if(mOnLongClickListener != null){
             mCardView.setOnLongClickListener(mOnLongClickListener);
+        }
+
+        if(mOnClickListener != null){
+            mCardView.setOnClickListener(mOnClickListener);
         }
 
     }
