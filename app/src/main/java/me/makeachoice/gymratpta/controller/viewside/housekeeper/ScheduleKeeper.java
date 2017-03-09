@@ -105,8 +105,6 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
         mStrDaily = mActivity.getString(R.string.daily);
         mStrWeekly = mActivity.getString(R.string.weekly);
 
-        mBoss.loadRoutineNames();
-
         if(bundle != null){
             //open bundle to set saved instance states
             openBundle(bundle);
@@ -128,6 +126,7 @@ public class ScheduleKeeper extends GymRatBaseKeeper implements MyActivity.Bridg
                 mInitialized = true;
                 initializeLayout();
             }
+            mBoss.loadRoutineNames();
         }
     }
 

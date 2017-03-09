@@ -33,21 +33,19 @@ package me.makeachoice.gymratpta.controller.manager;
  */
 /**************************************************************************************************/
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import me.makeachoice.gymratpta.BuildConfig;
 import me.makeachoice.gymratpta.R;
-import me.makeachoice.gymratpta.controller.modelside.butler.RoutineButler;
 import me.makeachoice.gymratpta.controller.modelside.butler.RoutineNameButler;
 import me.makeachoice.gymratpta.controller.modelside.butler.UserButler;
 import me.makeachoice.gymratpta.model.item.UserItem;
@@ -59,6 +57,8 @@ import me.makeachoice.gymratpta.utilities.DateTimeHelper;
 import me.makeachoice.gymratpta.view.widget.AppointmentWidgetProvider;
 import me.makeachoice.library.android.base.controller.viewside.housekeeper.MyHouseKeeper;
 import me.makeachoice.library.android.base.view.activity.MyActivity;
+
+import static me.makeachoice.gymratpta.R.string.routines;
 
 /**************************************************************************************************/
 
@@ -146,8 +146,7 @@ public class Boss extends MyBoss {
         mKeeperRegistry.initializeHouseKeepers();
 
         //get authentication instance
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         //initialize database
         initDatabase();
@@ -364,16 +363,24 @@ public class Boss extends MyBoss {
     }
 
     public ArrayList<String> getRoutineNamesForDialog(){
-        String strNone = mActivity.getString(R.string.msg_none_selected);
         ArrayList<String> routines = new ArrayList<>();
-        routines.add(strNone);
-        routines.addAll(mRoutineNames);
-        return routines;
+        if(!mRoutineNames.isEmpty()){
+            String strNone = mActivity.getString(R.string.msg_none_selected);
+            routines.add(strNone);
+            routines.addAll(mRoutineNames);
+            return routines;
+        }
+        else{
+            loadRoutineNames();
+            return routines;
+        }
     }
 
     public void loadRoutineNames(){
         if(mRoutineNames.isEmpty()){
-            RoutineNameButler butler = new RoutineNameButler((MyActivity)mActivity, mUserItem.uid);
+            mFirebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+            RoutineNameButler butler = new RoutineNameButler((MyActivity)mActivity, user.getUid());
             butler.loadRoutineNames(LOADER_ROUTINE, new RoutineNameButler.OnLoadedListener() {
                 @Override
                 public void onLoaded(ArrayList<RoutineNameItem> routineList) {
