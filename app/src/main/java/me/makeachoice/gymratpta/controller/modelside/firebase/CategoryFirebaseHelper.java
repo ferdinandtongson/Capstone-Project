@@ -97,7 +97,7 @@ public class CategoryFirebaseHelper {
 
     public void addCategory(String userId, CategoryFBItem item, ValueEventListener listener){
         DatabaseReference ref = getCategoryReference(userId);
-        ref.push().setValue(item);
+        ref.child(item.categoryName).setValue(item);
         ref.addListenerForSingleValueEvent(listener);
     }
 
