@@ -111,6 +111,7 @@ public class AppointmentDialog extends DialogFragment {
     private boolean mSameBooking;
     private boolean mDoubleClient;
     private boolean mEditMode;
+    private boolean mNoClients;
 
     private TimePickerDialog.OnTimeSetListener mTimePickerListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -186,6 +187,7 @@ public class AppointmentDialog extends DialogFragment {
         mRoutineNameButler = new RoutineNameButler(mActivity, mUserId);
         mClientButler = new ClientButler(mActivity, mUserId);
 
+        mNoClients = true;
         mEditMode = false;
         //initialize appointment item to save
         initializeSaveItem(item);
@@ -432,6 +434,10 @@ public class AppointmentDialog extends DialogFragment {
 
         //set client selection
         mSpnClient.setSelection(mClientIndex);
+
+        if(mNoClients){
+            setNoClients();
+        }
     }
 
     /*
@@ -531,8 +537,11 @@ public class AppointmentDialog extends DialogFragment {
         }
 
         if(mClientNames.isEmpty()){
-            setNoClients();
+            mNoClients = true;
             mClientNames.add(mStrNoClients);
+        }
+        else{
+            mNoClients = false;
         }
 
         if(mRoutineNames.isEmpty()){
@@ -631,7 +640,7 @@ public class AppointmentDialog extends DialogFragment {
      * void onClientSelected(int) - client was selected from spinner
      */
     private void onClientSelected(int index) {
-        if(!mClientNames.get(index).equals(mStrNoClients)){
+        if(!mNoClients){
             //get client from list
             ClientItem clientItem = mClientList.get(index);
 
@@ -671,7 +680,10 @@ public class AppointmentDialog extends DialogFragment {
         String timestamp = DateTimeHelper.getTimestamp(mSaveApmtItem.appointmentDate, strTime);
 
         mValidTime = validTime(timestamp);
-        validateClient(mSaveApmtItem.clientKey);
+
+        if(!mNoClients){
+            validateClient(mSaveApmtItem.clientKey);
+        }
     }
 
     /*
