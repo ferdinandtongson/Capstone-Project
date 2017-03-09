@@ -7,7 +7,7 @@
     <application
         android:name=".controller.manager.Boss"
         android:allowBackup="true"
-        android:icon="@drawable/gym_rat_white_right_48dp"
+        android:icon="@drawable/ic_sun"
         android:label="@string/app_title"
         android:supportsRtl="true"
         android:theme="@style/ChoiceTheme.Activity">
