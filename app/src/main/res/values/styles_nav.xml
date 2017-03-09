@@ -4,8 +4,8 @@
     <style name="GymRat.BottomNavigation" parent="Base.ThemeOverlay.AppCompat.Light">
         <item name="android:layout_gravity">bottom</item>
         <item name="android:background">@color/orange</item>
-        <item name="itemIconTint">@color/bottomnav_selector</item>
-        <item name="itemTextColor">@color/bottomnav_selector</item>
+        <item name="itemIconTint">@color/nav_selector</item>
+        <item name="itemTextColor">@color/nav_selector</item>
     </style>
 
 </resources>
