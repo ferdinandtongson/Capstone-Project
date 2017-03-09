@@ -86,6 +86,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/clientInfo_txtEmail"
                 android:layout_marginEnd="10dp"
+                android:contentDescription="@string/phone"
                 android:background="@drawable/ic_phone_black_36dp"
                 style="@style/GymRat.Fragment.ImageView.Icon"
                 />
@@ -95,6 +96,7 @@
                 android:layout_below="@id/clientInfo_txtEmail"
                 android:layout_toStartOf="@id/clientInfo_imgPhone"
                 android:layout_marginEnd="20dp"
+                android:contentDescription="@string/email"
                 android:background="@drawable/ic_mail_outline_black_36dp"
                 style="@style/GymRat.Fragment.ImageView.Icon"
                 />

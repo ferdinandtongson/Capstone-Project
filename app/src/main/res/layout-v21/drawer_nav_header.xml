@@ -28,6 +28,7 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:paddingTop="16dp"
+            android:contentDescription="@string/gym_rat_icon"
             app:srcCompat="@drawable/gym_rat_black_right_48dp" />
 
         <TextView

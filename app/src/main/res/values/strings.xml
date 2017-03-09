@@ -169,6 +169,7 @@
     <string name="client_goals" translatable="true">Client Goals</string>
     <string name="client_history" translatable="true">Client History</string>
     <string name="client_info" translatable="true">Client Info</string>
+    <string name="client_profile" translatable="true">Client Profile</string>
     <string name="client_schedule" translatable="true">Client Schedule</string>
     <string name="clients" translatable="true">Clients</string>
     <string name="contact_info" translatable="true">Contact Info</string>
@@ -188,6 +189,7 @@
     <string name="history" translatable="true">History</string>
     <string name="info" translatable="true">Info</string>
     <string name="gym_rat" translatable="true">Gym Rat</string>
+    <string name="gym_rat_icon" translatable="true">Gym Rat icon</string>
     <string name="last" translatable="true">Last</string>
     <string name="legs" translatable="true">Legs</string>
     <string name="minutes" translatable="true">Minutes</string>
