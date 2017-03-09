@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtPrimary01"
             android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtSecondary01"
             android:layout_below="@id/diaRecordExercise_txtPrimaryLabel"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -158,7 +158,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtPrimary02"
             android:layout_below="@id/diaRecordExercise_txtSet01"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -191,7 +191,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtSecondary02"
             android:layout_below="@id/diaRecordExercise_txtSet01"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -229,7 +229,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtPrimary03"
             android:layout_below="@id/diaRecordExercise_txtSet02"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -262,7 +262,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtSecondary03"
             android:layout_below="@id/diaRecordExercise_txtSet02"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -299,7 +299,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtPrimary04"
             android:layout_below="@id/diaRecordExercise_txtSet03"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -332,7 +332,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtSecondary04"
             android:layout_below="@id/diaRecordExercise_txtSet03"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -369,7 +369,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtPrimary05"
             android:layout_below="@id/diaRecordExercise_txtSet04"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -402,7 +402,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtSecondary05"
             android:layout_below="@id/diaRecordExercise_txtSet04"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -439,7 +439,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtPrimary06"
             android:layout_below="@id/diaRecordExercise_txtSet05"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -472,7 +472,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtSecondary06"
             android:layout_below="@id/diaRecordExercise_txtSet05"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -509,7 +509,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtPrimary07"
             android:layout_below="@id/diaRecordExercise_txtSet06"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView
@@ -542,7 +542,7 @@
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/diaRecordExercise_edtSecondary07"
             android:layout_below="@id/diaRecordExercise_txtSet06"
-            android:text="/"
+            android:text="@string/back_slash"
             style="@style/GymRat.Dialog.Exercise.Text.Separator"/>
 
         <TextView

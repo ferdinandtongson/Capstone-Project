@@ -147,6 +147,7 @@
     </string-array>
 
     <!-- dictionary -->
+    <string name="back_slash" translatable="false">/</string>
     <string name="activate" translatable="true">Activate</string>
     <string name="active" translatable="true">Active</string>
     <string name="add_appointment" translatable="true">Add Appointment</string>
@@ -154,10 +155,14 @@
     <string name="add_exercise" translatable="true">Add Exercise</string>
     <string name="add_routine" translatable="true">Add Routine</string>
     <string name="add_routine_exercise" translatable="true">Add Routine Exercise</string>
+    <string name="add_measurement" translatable="true">Add Measurement</string>
+    <string name="all" translatable="true">All</string>
     <string name="appointments" translatable="true">Appointments</string>
     <string name="arms" translatable="true">Arms</string>
     <string name="assessment" translatable="true">Assessment</string>
     <string name="back" translatable="true">Back</string>
+    <string name="background_orange" translatable="true">Background Orange</string>
+    <string name="background_sun" translatable="true">Background Sun</string>
     <string name="cancel" translatable="true">Cancel</string>
     <string name="cancel_session" translatable="true">Cancel Session</string>
     <string name="cardio" translatable="true">Cardio</string>
@@ -188,6 +193,7 @@
     <string name="help" translatable="true">Help</string>
     <string name="history" translatable="true">History</string>
     <string name="info" translatable="true">Info</string>
+    <string name="goals" translatable="true">Goals</string>
     <string name="gym_rat" translatable="true">Gym Rat</string>
     <string name="gym_rat_icon" translatable="true">Gym Rat icon</string>
     <string name="last" translatable="true">Last</string>
@@ -208,6 +214,7 @@
     <string name="plan" translatable="true">Plan</string>
     <string name="prev" translatable="true">Prev.</string>
     <string name="quick_help" translatable="true">Quick Help</string>
+    <string name="refresh_appointments">Refresh Appointments</string>
     <string name="reps" translatable="true">Reps</string>
     <string name="reschedule" translatable="true">Reschedule</string>
     <string name="retire" translatable="true">Retire</string>

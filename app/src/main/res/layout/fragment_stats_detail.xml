@@ -37,9 +37,8 @@
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
                 android:gravity="end"
-                android:text="1000"
-                android:textColor="@color/black"
                 android:textSize="16sp"
+                android:contentDescription="@string/add_measurement"
                 android:background="#FFFFFF"
 
                 />
@@ -57,7 +56,6 @@
                 android:layout_alignTop="@id/txtCurrentChangePrevious"
                 android:layout_toEndOf="@id/txtCurrentChangePrevious"
                 android:gravity="end"
-                android:text="1000 (0%)"
                 style="@style/GymRatTheme.Measure.Details.Text.Info"/>
 
             <TextView android:id="@+id/txtCurrentChangeStart"
@@ -73,7 +71,6 @@
                 android:layout_alignTop="@id/txtCurrentChangeStart"
                 android:layout_toEndOf="@id/txtCurrentChangeStart"
                 android:gravity="end"
-                android:text="1000 (0%)"
                 style="@style/GymRatTheme.Measure.Details.Text.Info"/>
 
             <Button
@@ -124,7 +121,6 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/txtLastLabel"
                 android:gravity="end"
-                android:text="1000"
                 style="@style/GymRatTheme.Measure.Details.Text.Info"/>
 
             <TextView android:id="@+id/txtLastChangePrevious"
@@ -140,7 +136,6 @@
                 android:layout_alignTop="@id/txtLastChangePrevious"
                 android:layout_toEndOf="@id/txtLastChangePrevious"
                 android:gravity="end"
-                android:text="1000 (0%)"
                 style="@style/GymRatTheme.Measure.Details.Text.Info"/>
 
             <TextView android:id="@+id/txtLastChangeStart"
@@ -156,7 +151,6 @@
                 android:layout_alignTop="@id/txtLastChangeStart"
                 android:layout_toEndOf="@id/txtLastChangeStart"
                 android:gravity="end"
-                android:text="1000 (0%)"
                 style="@style/GymRatTheme.Measure.Details.Text.Info"/>
 
         </RelativeLayout>
@@ -198,7 +192,6 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/txtStartLabel"
                 android:gravity="end"
-                android:text="1000"
                 style="@style/GymRatTheme.Measure.Details.Text.Info"/>
 
         </RelativeLayout>

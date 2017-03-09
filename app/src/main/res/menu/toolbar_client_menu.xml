@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/toolbar_client_active"
-        android:title="Active"/>
+        android:title="@string/active"/>
     <item android:id="@+id/toolbar_client_retired"
-        android:title="Retired" />
+        android:title="@string/retired" />
     <item android:id="@+id/toolbar_client_all"
-        android:title="All" />
+        android:title="@string/all" />
 
 </menu>

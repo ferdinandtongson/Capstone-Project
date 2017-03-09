@@ -22,7 +22,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="Refresh Appointment"
+                android:contentDescription="@string/refresh_appointments"
                 android:visibility="visible"
                 android:src="@mipmap/ic_refresh_black_36dp" />
 
@@ -32,8 +32,8 @@
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:gravity="center"
-                android:contentDescription="Start Gym Rat"
-                android:text="Gym Rat"
+                android:contentDescription="@string/gym_rat"
+                android:text="@string/gym_rat"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#4B4B4D"
                 android:textStyle="bold" />

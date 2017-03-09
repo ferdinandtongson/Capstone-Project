@@ -9,7 +9,7 @@
         android:id="@+id/diaGoals_txtGoals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Goals"
+        android:text="@string/goals"
         style="@style/GymRat.Dialog.TextView.Large"
         />
 
