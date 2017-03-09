@@ -204,6 +204,13 @@ public class ClientKeeper extends GymRatRecyclerKeeper implements MyActivity.Bri
         mClientButler = new ClientButler(mActivity, mUserId);
 
         initializeLayout();
+
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED){
+            //request Read Contacts permission
+            mPermissionHelper.getPermissionToReadContacts();
+        }
+
     }
 
 /**************************************************************************************************/
