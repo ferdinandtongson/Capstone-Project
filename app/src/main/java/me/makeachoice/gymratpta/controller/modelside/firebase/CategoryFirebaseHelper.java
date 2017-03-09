@@ -99,6 +99,7 @@ public class CategoryFirebaseHelper {
         DatabaseReference ref = getCategoryReference(userId);
         ref.child(item.categoryName).setValue(item);
         ref.addListenerForSingleValueEvent(listener);
+
     }
 
 /**************************************************************************************************/
